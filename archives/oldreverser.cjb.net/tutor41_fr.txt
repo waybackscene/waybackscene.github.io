@@ -1,0 +1,625 @@
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
+    ²²    ____                     __       __           ²²ßÛ
+    ²²   /  _/_ _  __ _  ___  ____/ /____ _/ /           ²² ÛßÛ
+    ²²  _/ //  ' \/  ' \/ _ \/ __/ __/ _ `/ /            ²² Û Û
+    ²² /___/_/_/_/_/_/_/\___/_/  \__/\_,_/_/             ²² Û Û
+    ²²   ____                          __          __    ²² Û Û
+    ²²  / __ \___ ___ _______ ___  ___/ /__ ____  / /____²² Û Û
+    ²² / /_/ / -_|_-</ __/ -_) _ \/ _  / _ `/ _ \/ __(_-<²² Û Û
+    ²²/_____/\__/___/\__/\__/_//_/\_,_/\_,_/_//_/\__/___/²² Û Û
+    ²²                                                   ²² Û Û
+    ²²      Web: http://www.ImmortalDescendants.org      ²² Û Û
+    ²²                Author: ACiD BuRN                  ²² Û Û
+    ²²                Date: 11/06/2000                   ²² Û Û
+    ²²         Topic: Chasse aux Dongles		 ²² Û Û
+    ²²                                                   ²² Û Û
+    ²²                                                   ²² Û Û
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²² Û Û
+      ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ Û
+        ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ
+
+
+		*Dongle* Hunting tutorial by ACiD BuRN
+
+
+	How to UNdongle Autodesk AUTOCAD 14 French version !
+
+--------------------------------------------------------------
+-Niveau:  ( )Beginner (x)Intermediate ()Advanced ( )Expert  -
+--------------------------------------------------------------
+
+
+tools of the trade:
+
+Soft ice 3.x (quoi d'autre??)
+Un editeur hexa (Comme d'hab pour moi: Hexworkshop)
+Quelques bases en Asm 
+Wdasm89 (pas vraiment util mais bon)
+A brain (vous en avez un , je pense :)
+Some beers :O ( ca c pour qd on desassemble ! car c'est vraiment trop long !)
+Some music ;)
+
+
+Histoire:
+
+J'ai deja cracké ce programme qd j'ai commencé a cracker...
+C'etait dur pour moi a l'epoque, et ca m'avais pris qq jours pour bien comprendre.
+Le plus dur etait de trouver comme 'breaker' au bon endroit , et avec quel bpx !
+J'avais reussis ,mais pas de la facon que je vais vous expliquer ici !
+c'etais vraiment , un crack 'a la va comme je te pousse' :)
+De temps à autre , ca planté grave.
+Il y a quelque jour , j'etais en train de finir un autre keygen et ca commencé
+a me saouler..
+Je me suis dis , pourquoi ne pas faire autre chose que des keygens pour changer !
+et la , je me suis rappelé de Autocad 14! Doh! dongle protected ;)
+Je n'ai vraiment pas l'habitude des dongles, donc je me suis lancé :)
+Pour ceux qui ne savent pas , les dongles sont les protections qui coutent
+le plus cher , et qui ne sont pas forcement les meilleurs !
+
+a l'époque, Autocad coutait 40 000 Francs francais .. * no comment*
+
+
+Let's Crack this babe :)
+
+Donc sinon j'ai cracké ce prog en 2 heures environ! Mais en fait le plus long c'etait pas
+de le cracker , mais de le desassambler ! (7 mega le fichier exe :)
+Donc c pour ca que j'ai pas pris de IDA ;)
+
+
+1)Ride the fucker :)
+
+bon, commencons par regarder notre programme, je commence par l'installer, mais
+c'est vraiment lent !
+Les CD sont supposés rapides ...
+Bon, voila , une fois installé, si on jete un coup d'oeil dans le repertoire ou
+on vient d'installer notre programme , on voir un executable "acad.exe' et pas mal de
+dll! hmmm ok.
+
+Je lance le programme et boom, un petit message nous disant :
+
+ "ERREUR FATALE : Le system de securité(verrouillage materiel..."
+
+
+Bon , il nous saoule car on a pas branché de dongles!
+bon, on va voir ce qu'on peut faire pour corriger ce bug !
+
+Donc , je lance soft ice , et je met les breakpoints tres utilises dans 
+le cracking dongle, sur LPT1:
+
+(BPIO -H 378 R). on arrive ici :
+
+
+0028:CE5AA885  88442405          MOV     [ESP+05],AL             ; ici.
+0028:CE5AA889  66C746680100      MOV     WORD PTR [ESI+68],0001
+0028:CE5AA88F  8A442405          MOV     AL,[ESP+05]
+0028:CE5AA893  884615            MOV     [ESI+15],AL
+0028:CE5AA896  884614            MOV     [ESI+14],AL
+0028:CE5AA899  5E                POP     ESI
+0028:CE5AA89A  83C404            ADD     ESP,04
+0028:CE5AA89D  C3                RET
+0028:CE5AA89E  CC                INT     3
+0028:CE5AA89F  CC                INT     3
+0028:CE5AA8A0  83EC04            SUB     ESP,04
+0028:CE5AA8A3  56                PUSH    ESI
+0028:CE5AA8A4  8B74240C          MOV     ESI,[ESP+0C]
+0028:CE5AA8A8  56                PUSH    ESI
+0028:CE5AA8A9  E832000000        CALL    CE5AA8E0
+0028:CE5AA8AE  668B465C          MOV     AX,[ESI+5C]
+0028:CE5AA8B2  83C404            ADD     ESP,04
+0028:CE5AA8B5  6689442406        MOV     [ESP+06],AX
+0028:CE5AA8BA  8A4658            MOV     AL,[ESI+58]
+0028:CE5AA8BD  243F              AND     AL,3F
+0028:CE5AA8BF  88442405          MOV     [ESP+05],AL
+0028:CE5AA8C3  8A442405          MOV     AL,[ESP+05]
+0028:CE5AA8C7  668B542406        MOV     DX,[ESP+06]
+0028:CE5AA8CC  EE                OUT     DX,AL
+0028:CE5AA8CD  5E                POP     ESI
+0028:CE5AA8CE  83C404            ADD     ESP,04
+0028:CE5AA8D1  C3                RET
+
+
+On est dans la routine de "discussion" du dongle! entre le prog et 
+le dongle..
+Si on regarde en bas de la fenetre de soft ice pour savoir dans quel
+fichier nous sommes , on voit : SENTINELXXX...
+
+huh, ou sommes nous ?
+Vous savez surement qu'il existe plusieurs compagnies qui fournissent
+des protections par dongle comme :
+Hasp, Sentinel, DesKEY, Activator/Unikey et bcp d'autres..
+
+Donc on peut en conclure que nous sommes en presence d'un dongle de type
+sentinel.
+Nous sommes dans le fichier: SENTINEL.VXD ...
+
+De retour au tutorial , on arrive donc ici :
+
+0028:CE5AA885  88442405            MOV     [ESP+05],AL   ;  ici..
+0028:CE5AA889  66C746680100        MOV     WORD PTR [ESI+68],0001
+0028:CE5AA88F  8A442405            MOV     AL,[ESP+05]
+0028:CE5AA893  884615              MOV     [ESI+15],AL
+0028:CE5AA896  884614              MOV     [ESI+14],AL
+
+
+On veut voir le call qui est responsable , donc on fait un petit F12, trois
+ou quatres fois, et on arrive ici :
+
+
+
+0028:CE5B35D6  50            PUSH    EAX
+0028:CE5B35D7  55            PUSH    EBP
+0028:CE5B35D8  57            PUSH    EDI
+0028:CE5B35D9  E8D2FEFFFF    CALL    CE5B34B0    ; notre call :)
+0028:CE5B35DE  C06C241F01    SHR     BYTE PTR [ESP+1F],01  ;de retour ici.
+0028:CE5B35E3  83C40C        ADD     ESP,0C
+0028:CE5B35E6  0AD8          OR      BL,AL
+0028:CE5B35E8  664E          DEC     SI
+0028:CE5B35EA  75E1          JNZ     CE5B35CD
+0028:CE5B35EC  C0EB01        SHR     BL,01
+0028:CE5B35EF  6A64          PUSH    64
+0028:CE5B35F1  57            PUSH    EDI
+0028:CE5B35F2  E8C979FFFF    CALL    CE5AAFC0
+0028:CE5B35F7  8A44241B      MOV     AL,[ESP+1B]
+0028:CE5B35FB  83C408        ADD     ESP,08
+0028:CE5B35FE  2401          AND     AL,01
+0028:CE5B3600  50            PUSH    EAX
+0028:CE5B3601  55            PUSH    EBP
+0028:CE5B3602  57            PUSH    EDI
+0028:CE5B3603  E8A8FEFFFF    CALL    CE5B34B0
+0028:CE5B3608  83C40C        ADD     ESP,0C
+0028:CE5B360B  0AD8          OR      BL,AL
+0028:CE5B360D  66BE0300      MOV     SI,0003
+0028:CE5B3611  6A64          PUSH    64
+0028:CE5B3613  C06C241701    SHR     BYTE PTR [ESP+17],01
+0028:CE5B3618  57            PUSH    EDI
+
+
+Dans le CALL:
+
+0028:CE5B35D6  50                  PUSH    EAX
+0028:CE5B35D7  55                  PUSH    EBP
+0028:CE5B35D8  57                  PUSH    EDI
+0028:CE5B35D9  E8D2FEFFFF          CALL    CE5B34B0
+0028:CE5B35DE  C06C241F01          SHR     BYTE PTR [ESP+1F],01
+0028:CE5B35E3  83C40C              ADD     ESP,0C
+0028:CE5B35E6  0AD8                OR      BL,AL
+0028:CE5B35E8  664E                DEC     SI
+0028:CE5B35EA  75E1                JNZ     CE5B35CD
+0028:CE5B35EC  C0EB01              SHR     BL,01
+0028:CE5B35EF  6A64                PUSH    64
+0028:CE5B35F1  57                  PUSH    EDI
+0028:CE5B35F2  E8C979FFFF          CALL    CE5AAFC0
+0028:CE5B35F7  8A44241B            MOV     AL,[ESP+1B]
+0028:CE5B35FB  83C408              ADD     ESP,08
+0028:CE5B35FE  2401                AND     AL,01
+0028:CE5B3600  50                  PUSH    EAX
+0028:CE5B3601  55                  PUSH    EBP
+0028:CE5B3602  57                  PUSH    EDI
+0028:CE5B3603  E8A8FEFFFF          CALL    CE5B34B0
+0028:CE5B3608  83C40C              ADD     ESP,0C
+0028:CE5B360B  0AD8                OR      BL,AL
+0028:CE5B360D  66BE0300            MOV     SI,0003
+0028:CE5B3611  6A64                PUSH    64
+0028:CE5B3613  C06C241701          SHR     BYTE PTR [ESP+17],01
+0028:CE5B3618  57                  PUSH    EDI
+0028:CE5B3619  E8A279FFFF          CALL    CE5AAFC0
+0028:CE5B361E  83C408              ADD     ESP,08
+0028:CE5B3621  C0EB01              SHR     BL,01
+0028:CE5B3624  8A442413            MOV     AL,[ESP+13]
+0028:CE5B3628  2401                AND     AL,01
+0028:CE5B362A  50                  PUSH    EAX
+0028:CE5B362B  55                  PUSH    EBP
+0028:CE5B362C  57                  PUSH    EDI
+0028:CE5B362D  E87EFEFFFF          CALL    CE5B34B0
+0028:CE5B3632  C06C241F01          SHR     BYTE PTR [ESP+1F],01
+0028:CE5B3637  83C40C              ADD     ESP,0C
+0028:CE5B363A  0AD8                OR      BL,AL
+0028:CE5B363C  664E                DEC     SI
+0028:CE5B363E  75E1                JNZ     CE5B3621
+0028:CE5B3640  6A05                PUSH    05
+0028:CE5B3642  80E380              AND     BL,80
+0028:CE5B3645  68DF000000          PUSH    000000DF
+0028:CE5B364A  57                  PUSH    EDI
+0028:CE5B364B  FF5718              CALL    [EDI+18]
+0028:CE5B364E  83C40C              ADD     ESP,0C
+0028:CE5B3651  B900000000          MOV     ECX,00000000
+0028:CE5B3656  80FB01              CMP     BL,01
+0028:CE5B3659  5D                  POP     EBP
+0028:CE5B365A  83D1FF              ADC     ECX,-01
+0028:CE5B365D  5F                  POP     EDI
+0028:CE5B365E  6683E103            AND     CX,03
+0028:CE5B3662  5E                  POP     ESI
+0028:CE5B3663  668BC1              MOV     AX,CX
+0028:CE5B3666  5B                  POP     EBX
+0028:CE5B3667  83C404              ADD     ESP,04
+0028:CE5B366A  C3                  RET
+
+
+Bon, si on jete un oeil au code ci dessus , ca va pas bcp nous aider :(
+J'ai vu plusieurs tutorials sur les dongles ou c'etait casiment terminé
+apres avoir fait ce que l'on vient de faire , mais faut pas rever , c'est 
+pas le cas ici !
+
+Ce que je veux dire par la , c'est que apres notre Call , y a souvent
+un CMP Registre , valeur_si_le_dongle_est_branché et jmp_va_te_faire
+si c'est pas bon ! en mettant un mauvais flag :)
+ 
+
+Quoi qu'il en soit , on est pas chanceux, ca ne sera pas si simple ici :)
+Apres avoir jouer un peu avec ce code (tracer les calls , chercher pour des comparaisons)
+j'ai pressé F12 quelques fois , mais j'ai rien trouver de super bien !
+
+note: j'ai jamais pu sortir de ce putain de sentinel VXD !
+
+Meme en faisant que d'appuyer sur F12, ca ne changeait rien
+Ce putain de VXD me rendait fou ...
+Je voulais retourner dans le fichier acad.exe , car je ne vais pas cracker les drivers
+du dongle ( le VXD), car la plus part du temps, le point faible dans une protection
+par dongle est dans l'exe lui meme !
+
+j'ai essayé BPIO -h 378 R
+
+Donc essayons les autres BPX sur les ports I/O:
+
+ 378   deja testé
+ 3BC   donc celui la ;) 
+ 278   et celui la aussi ! ;o)
+
+
+Ok, on lance le programme et il ne break pas du tout sur les BPX :(((( putain !
+
+
+comment vais-je pourvaire "attaquer' ce programme ?!
+
+
+		**********************
+		* Dura lex , sed lex *
+		**********************
+
+
+J'ai aussi essayé le bpx CreateFileA car c'est un VXD, mais ca ne m'a pas
+avancé beaucoup !
+bon, ben pourquoi ne pas le desassembler ? avec un peu de chance le message d'erreur
+sera en clair dans les strings date references ! (ne revons pas trop! 
+le message n'y sera pas lol :p )
+
+Comme je le disais dans : tools of the trade, il nous fallait des bieres !
+car ca va prendre du temps a desassembler! c pour ca que j'ai pas utilisé IDA
+sinon j'aurais finis bouré lol ;)
+
+Notre executable fait 7,24 mega !!
+voila pourquoi c'est long ...
+
+zZZzZZZzzzZZz buuuuuurp :p ZZzzzZZz burp putain , trop bonne cette biere lol
+
+ok, apres un LOOOOONG moment , le programme est desassemblé !
+En premier, sauvegardez avec Wdasm! on va pas encore attendre une fois non ?
+si jamais ton pc plante, ou autre ! on serait forcé d'attendre encore
+et par consequent d'etre bouré aussi a force de boire ! lol ;)
+
+c'est fait ? ok bien!
+Bon , avec peut d'espoire , on regarde les string data reference et on cherche
+pour le message d'erreur ! mais on ne le trouve pas hehe
+on en etait sur , mais c pas grave ;(
+
+Ermmm, reflechissons un peu! comment attaquer ce programme maintenant ?
+que pensez vous de regarder dans 'import references' pour voir ce que pourait
+utiliser le dongle! ;)
+On pourait trouver une '133t' API pour breaker dans le control du dongle!
+hehe ;o bon , je ne trouve rien de bien dans USER, je vais voir dans kernel...
+
+
+w00t ! :) j'ai trouvé qq choses qui a l 'air vraiment cool :
+
+DeviceIoControl
+
+Jamais vu ca avant ! mais le nom sonne vachement bien !
+heh! virez tout les vieux BPX : 'bc *' dans soft ice , et faites :
+
+BPX DeviceIocontrol
+
+Maintenant on lance notre programme:
+rOXXXxxxx , on a stoppé ! on press F12 pour sortir des DLL et on se retrouve
+dans ACAD.exe :)
+C'est partis ..
+
+Je regardais le code autour , et j'ai pressé F12 jusqu'a 
+trouver :THE FUCKING GOOOD place hehe !
+Voila une partie de mon winice.log :
+
+
+:bl
+00) BPX KERNEL32!DeviceIoControl   // Cool :)
+
+
+Break due to BPX KERNEL32!DeviceIoControl
+Break due to BPX KERNEL32!DeviceIoControl
+Break due to BPX KERNEL32!DeviceIoControl
+Break due to BPX KERNEL32!DeviceIoControl
+Break due to BPX KERNEL32!DeviceIoControl
+Break due to BPX KERNEL32!DeviceIoControl
+
+// Ici on voit combient de fois j'ai stoppé dans le programme avant d'atterir au
+// bonne endroit !
+// On lance le prog avec ces bpx, on press F5 3 fois et il continue de tourner un peu
+// pour finir par restopper dans soft ice ! la on fait encore 2 fois F5 et on arrive
+// ici :
+
+
+025F:0098B1AF  668B442402      MOV     AX,[ESP+02] ; EAX = une valeur.
+025F:0098B1B4  83C404          ADD     ESP,04
+025F:0098B1B7  C20800          RET     0008
+025F:0098B1BA  8D9B00000000    LEA     EBX,[EBX+00000000]
+025F:0098B1C0  33C0            XOR     EAX,EAX
+025F:0098B1C2  8A442408        MOV     AL,[ESP+08]
+025F:0098B1C6  83F801          CMP     EAX,01
+025F:0098B1C9  7415            JZ      0098B1E0
+025F:0098B1CB  83F802          CMP     EAX,02
+025F:0098B1CE  7456            JZ      0098B226
+025F:0098B1D0  83F803          CMP     EAX,03
+025F:0098B1D3  0F8497000000    JZ      0098B270
+025F:0098B1D9  C20800          RET     0008
+
+
+// apres le RET on arrive ici:
+
+
+025F:006ABE9A  0FBFC0              MOVSX   EAX,AX   ; erm :)
+025F:006ABE9D  83F8FF              CMP     EAX,-01  ; is EAX = FFFF ?!
+025F:006ABEA0  7405                JZ      006ABEA7 ; oui jump 6abea7
+025F:006ABEA2  25FFFF0000          AND     EAX,0000FFFF
+025F:006ABEA7  5F                  POP     EDI
+025F:006ABEA8  C3                  RET     ; return ....
+
+
+// La partie la plus importante ici :
+
+
+025F:006ABD94  83C404              ADD     ESP,04
+025F:006ABD97  85C0                TEST    EAX,EAX
+025F:006ABD99  7C36                JL      006ABDD1
+025F:006ABD9B  8D44240C            LEA     EAX,[ESP+0C]
+025F:006ABD9F  50                  PUSH    EAX
+025F:006ABDA0  E8DB000000          CALL    006ABE80
+025F:006ABDA5  83C404              ADD     ESP,04
+025F:006ABDA8  85C0                TEST    EAX,EAX
+025F:006ABDAA  7C25                JL      006ABDD1
+025F:006ABDAC  686071A700          PUSH    00A77160
+025F:006ABDB1  E8CA000000          CALL    006ABE80
+025F:006ABDB6  83C404              ADD     ESP,04
+025F:006ABDB9  85C0                TEST    EAX,EAX
+025F:006ABDBB  7C14                JL      006ABDD1
+025F:006ABDBD  68F470A700          PUSH    00A770F4
+025F:006ABDC2  E8B9000000          CALL    006ABE80
+025F:006ABDC7  83C404              ADD     ESP,04
+025F:006ABDCA  3DFDDC0000          CMP     EAX,0000DCFD ; eax= DCFD? 
+025F:006ABDCF  7408                JZ      006ABDD9     ; oui dongle present 
+025F:006ABDD1  47                  INC     EDI          
+025F:006ABDD2  83FF04              CMP     EDI,04
+025F:006ABDD5  7EA3                JLE     006ABD7A
+025F:006ABDD7  EB17                JMP     006ABDF0     ;NAH you fuck.
+025F:006ABDD9  8B0D8871A700        MOV     ECX,[00A77188] ;dongle here
+025F:006ABDDF  6633F6              XOR     SI,SI
+025F:006ABDE2  A18471A700          MOV     EAX,[00A77184]
+025F:006ABDE7  8B1481              MOV     EDX,[EAX*4+ECX]
+025F:006ABDEA  C70202000000        MOV     DWORD PTR [EDX],00000002
+025F:006ABDF0  8B0D8471A700        MOV     ECX,[00A77184]  ;no dongle:/ 
+025F:006ABDF6  A18871A700          MOV     EAX,[00A77188]
+025F:006ABDFB  8B1488              MOV     EDX,[ECX*4+EAX]
+025F:006ABDFE  8D0C88              LEA     ECX,[ECX*4+EAX]
+025F:006ABE01  8B1D8471A700        MOV     EBX,[00A77184]
+025F:006ABE07  8B02                MOV     EAX,[EDX]
+025F:006ABE09  35A9B50000          XOR     EAX,0000B5A9
+025F:006ABE0E  03C3                ADD     EAX,EBX
+025F:006ABE10  A3A471A700          MOV     [00A771A4],EAX
+025F:006ABE15  8B11                MOV     EDX,[ECX]
+025F:006ABE17  833A00              CMP     DWORD PTR [EDX],00
+025F:006ABE1A  752F                JNZ     006ABE4B
+025F:006ABE1C  E81F010000          CALL    006ABF40
+025F:006ABE21  35A9B50000          XOR     EAX,0000B5A9
+025F:006ABE26  3D564AFFFF          CMP     EAX,FFFF4A56
+025F:006ABE2B  741E                JZ      006ABE4B
+
+--------------------------- 8< ---------------------- snipped :p
+
+
+Ok, en premier j'ai pensé a patché comme ceci :
+
+025F:006ABDCA  3DFDDC0000    CMP     EAX,0000DCFD ; eax= DCFD ?
+025F:006ABDCF  7408          JZ      006ABDD9  ;  oui dongle present!
+
+IN:
+
+
+025F:006ABDCA  3DFDDC0000    CMP   EAX,0000DCFD      
+025F:006ABDCF  EB08          JMP   006ABDD9 ; on se fout du EAX on saute!
+
+
+Mais on dirait que la valeur dans EAX est importante car il a commencé a se 
+lancer et ca a planter mechement !
+On peut aussi voir que bcp de choses se font sur le registre EAX apres
+la comparaison et le control pourait donc etre appelé plusieurs fois !
+ok, ce que nous avons a faire , c'est de forcer EAX a etre egual a DCDF
+
+note pour idiots: 
+qui se demande pourquoi ca doit etre egual a DCFD:
+Tu te souviens deja plus de: CMP EAX,0000DCFD ?????!! putain :p
+ok, bon maintenant c clair pour tout le monde !
+
+Donc, ou allons nous patcher notre programme ?
+Vous vous souvenez de l'endroit ou une valeur etait placé dans AX ?
+laissez moi vous rafraichir la memoire :
+
+
+025F:0098B1AF  668B442402      MOV     AX,[ESP+02] ; EAX = une valeur.
+025F:0098B1B4  83C404          ADD     ESP,04
+025F:0098B1B7  C20800          RET     0008
+025F:0098B1BA  8D9B00000000    LEA     EBX,[EBX+00000000]
+025F:0098B1C0  33C0            XOR     EAX,EAX
+025F:0098B1C2  8A442408        MOV     AL,[ESP+08]
+025F:0098B1C6  83F801          CMP     EAX,01
+025F:0098B1C9  7415            JZ      0098B1E0
+025F:0098B1CB  83F802          CMP     EAX,02
+025F:0098B1CE  7456            JZ      0098B226
+025F:0098B1D0  83F803          CMP     EAX,03
+025F:0098B1D3  0F8497000000    JZ      0098B270
+025F:0098B1D9  C20800          RET     0008
+
+
+'ah oui cet endroit la' vous allez me dire !
+*SLAP* !! 
+
+heheh, donc on a juste a faire en sorte que EAX=DCFD pour toujours donc ca devient :
+
+66B8FDDC       MOV     AX,DCFD ;  tu sais ce que ca fait non ? ;) 
+90	       NOP             ;  un NOP pour ne pas foirer le code !
+C20800         RET     0008    ;  ne change pas
+
+.......
+
+ok , simple isn't it ?
+
+Remarque : Quand vous patchez, n'oubliez pas de changer l'odre des bits!
+ie: B8FDCD pour CDFD   vous comprenez ? non ? RTFM :p
+
+Maintenant patchez votre executable et vous verrez ;)
+
+			*********************
+			* Veni, Vidi , Vici *
+			*********************
+
+WOW ca marche! hehehe *Sure it does :p*
+
+On le test un peu , on essai plusieurs options au cas ou il y aurait des test
+cachés ! 
+Mais la facon dont nous avons patché est bonne , car meme si d'autres controles
+se font et que ca appel cette partie de code , ca enverra tjs la bonne valeur !
+j'ai laissé tourner le prog 25 mins, pas de plantage , ni fermé ;)
+
+J'ai filé le crack a un ami qui a le prog pour son boulot , donc il a aussi le
+dongle , et il m'a dit que ca marché tres bien ! pas de *bugs*, pas de plantage !
+Il a donc la licence , et le dongle ! on ne va se servir de se prog sans le dongle
+non ? ;)
+		ACiD BuRN [ECLiPSE / Immortal Descendants]
+
+		url : www.acidburn2k.cjb.net
+		mail: acid2600@hotmail.com
+
+Conclusion:
+
+pauvre protection pour un programme a 40 000 balles !
+on aurait pu remplacer le dongle par un serial, ou meme un bon keyfile..
+C'est plus un parasite qu'autre chose !
+ca ralentit plus l'application que ca ne la protege lol
+Mais ct plutot simple par rapport a certains dongle HASP !
+:)
+
+
+2)Greets part (it's gonna be quite LONG :p ) :
+
+
+// 		NOT TRANSLATED                             //
+
+
+Darkeye: My girly !!!! tutorial dedicated to you ;-x 
+         BEST REVERSER outta here , she reversed my heart haha :p
+
+ACiD BuRN: hey! it's me ! for being a lazy ass cracker and tuts 
+           writter :p oh.. and for this lame tut on dongle :p
+
+CyberBlade: Almighty VB Cracker ! this dude doesn't Phear PCDODE :)
+            Keep working on your VB5 Pcode discompiler ! Bro ;)
+
+R!SC: I phear you ! thx for cdilla help time ago ! cdilla master ;p
+
+inferno: wait 'till i got a new line ! gotta be top keygener in 
+ECLiPSE as old day ;p
+
+Death aka AB4DS: ltns ! nice VBREf thingy ;)
+
+Volatility: 'lo friend ! you still like my tut , don't you ? :)
+
+Duelist: you're l33t :P
+
+tKC: ltns brother ! hope ur fine bitch heheh :p
+
+BuLLeT: ltns ! keep coding good and migthy crackme pal!
+
+Lucifer48: Damn!! you own :p french power hehe :)
+
+SiFLyiNG: ltns :( hope all is going good! french power here too ;)
+
+CrackZ:  l33t0 ! hope to talk to you soon :)
+
+neural_noise: hehe!! brother ;p still reversing your girly ?! :p
+
+WarezPup: old bro ! hope you are ok ! cya soon ...
+
+_y: nice and leet pal ;) is that Hash still good ? heh
+
+Lazarus: good friend :) still making some nice tut ?!
+
+Eternal_Bliss: nice site you got there ;)
+
+Carpathia: that lamers logs are so funny !!! cya bro
+
+JB007: Bro :p ltns
+
+Kwai_lo: where the fuck are you ?!!!!!!!! LTNS bro...
+
+Alpine: unpacking master :p good reverser and good friend !
+
+zoltan: leet keygeners ! get ur ass back on IRC plz !! 
+
+Punkguy2: My beloved Webmaster ! thx for all bro
+
+Sortof: AOL against BSA (army of lamers against boy scout ...)
+        Remember hehehe ?!!!
+
++Spath: French power :p amazing reverser and good friend!
+
++Frog sprint: French Power ! Amazing reverser too :)
+
+All ECLiPSE , All Cracking4newbies , ALL +HCU...
+
+Also thx to numega for their leet Soft ice :)))))
+
+
+"Put your name here! :P" :   "your comment here" ;p
+
+
+
+Also greetings to:
+
+Klefz , TORN@DO , T4D , Jeff , [Virus] , JaNe , Appbusta , MiZ, 
+DnNuke,Bjanes , Skymarshall , afkayas , elmopio , Fire Worx , 
+SiONIDE, SKORPIEN , Magic Raphoun , DEZM , Bisoux , K17 , theMc,
+noos , Xmen, TeeJi , Arobas , T0AD , ytc , Killer_3K , TaMaMBoLo 
+gizmo , [yAtes], TarGon , Icecream , TRDdonjuan , Lord Soth , Judged 
+G-Rom , Quantico , Christal , psike , Leo0n , , Pulsar , Night , 
+psike , Uno , Lixus , LosT , RD-116 , Ben0 , Whizkid , [MandKind] ,
+Alsindor, Stone,Elraizer , Fravia+ , Iczelion , nody , Asphalt , 
+Rhythm , rudeboy ,
+X-Calibre , Cirus , shaoni...
+...
+
+I might have forgotten someone :( sorry pal ...
+
+
+#####################################################################
+DOH:
+
+I wont even bother explaining you that you should BUY this target 
+program if you intend to use it for a longer period than the allowed 
+one.Should you want to STEAL this software instead, you don't need to
+crack its protection 
+scheme at all: you'll find it on most Warez sites, complete and 
+already regged, farewell.
+
+#####################################################################
+
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+ALL rights Reversed 
+
+				http://www.immortaldescendants.org

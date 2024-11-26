@@ -1,0 +1,370 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!-- TlJHdR Ver 3.12 1/8/97 -->
+<LINK REL="home" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/index-3.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/index.htm">
+<LINK REL="toc" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/F_ToC.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_ToC.html">
+<LINK REV="made" HREF="mailto:filipg@repairfaq.org">
+<META HTTP-EQUIV="Reply-to" CONTENT="filipg@repairfaq.org (Filip Gieszczykiewicz)">
+<meta name="description" content="HTML-ized FAQs that I need to link to. LOTS of electronics/life related FAQs.">
+<meta name="keywords" content="AD4PC CPM CallerID ChangeLog DSO DTMF Dating FD_steppers FM10 FM10_more Hardware Homebuilt IDE-tech LCD_HD44780 LCD_menu LCD_progr LINK_IN MIDI MacroVision OnHook PCjr Pads_LOG_Man Pads_PCB_Man Phrack_Mag Running SCSI SMPTE_faq Tech_LCD Theory_LCD UPS Woman_speak archivers cardreader crc_uP crc ibmkey mail_order meeting midi2 pal_gal pixcon quiz touchscreen Keyboard MODEMS PARALLEL Parallel The_Serial_Port gameport isabus rs-232 rs232c PC IBMPC IBM Port 68hc11 8051 ATA COP8 ELE I2C PIC ST6 8085 8080 8088 8086 6811 Parallax MicroChip Programmer GAL PAL PLD">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Fil's FAQ-Link-In Corner: CRC algorithms</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/Background.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Background.gif">
+
+<H1>A PAINLESS GUIDE TO CRC ERROR DETECTION ALGORITHMS</H1>
+<P>Contents:</P>
+
+<UL>
+<!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI><A HREF="F_crc_v33.html#CRCV_001">Chapter 9) A Straightforward CRC Implementation</A>
+	<LI><A HREF="F_crc_v33.html#CRCV_002">Chapter 10) A Table-Driven Implementation</A>
+	<LI><A HREF="F_crc_v33.html#CRCV_003">Chapter 11) A Slightly Mangled Table-Driven Implementation</A> <!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI>Jump to [<A HREF="F_crc_v34.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_crc_v34.html">Next</A>] segment
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_001"></A>Chapter 9) A Straightforward CRC Implementation</H1>
+<P>That's the end of the theory; now we turn to implementations. To start with, we examine an absolutely straight-down-the-middle
+boring straightforward low-speed implementation that doesn't use any speed tricks at all. We'll then transform
+that program progessively until we end up with the compact table-driven code we all know and love and which some
+of us would like to understand.</P>
+<P>To implement a CRC algorithm all we have to do is implement CRC division. There are two reasons why we cannot
+simply use the divide instruction of whatever machine we are on. The first is that we have to do the divide in
+CRC arithmetic. The second is that the dividend might be ten megabytes long, and todays processors do not have
+registers that big.</P>
+<P>So to implement CRC division, we have to feed the message through a division register. At this point, we have
+to be absolutely precise about the message data. In all the following examples the message will be considered to
+be a stream of bytes (each of 8 bits) with bit 7 of each byte being considered to be the most significant bit (MSB).
+The bit stream formed from these bytes will be the bit stream with the MSB (bit 7) of the first byte first, going
+down to bit 0 of the first byte, and then the MSB of the second byte and so on.</P>
+<P>With this in mind, we can sketch an implementation of the CRC division. For the purposes of example, consider
+a poly with W=4 and the poly=10111. Then, the perform the division, we need to use a 4-bit register:</P>
+<P>
+<PRE>            3   2   1   0   Bits
+          +---+---+---+---+
+ Pop! &lt;-- |   |   |   |   | &lt;----- Augmented message
+          +---+---+---+---+
+
+       1    0   1   1   1   = The Poly
+</PRE>
+<P>(Reminder: The augmented message is the message followed by W zero bits.)</P>
+<P>To perform the division perform the following:</P>
+<P>
+<PRE>   Load the register with zero bits.
+   Augment the message by appending W zero bits to the end of it.
+   While (more message bits)
+      Begin
+      Shift the register left by one bit, reading the next bit of the
+         augmented message into register bit position 0.
+      If (a 1 bit popped out of the register during step 3)
+         Register = Register XOR Poly.
+      End
+   The register now contains the remainder.
+</PRE>
+<P>(Note: In practice, the IF condition can be tested by testing the top bit of R before performing the shift.)</P>
+<P>We will call this algorithm &quot;SIMPLE&quot;.</P>
+<P>This might look a bit messy, but all we are really doing is &quot;subtracting&quot; various powers (i.e. shiftings)
+of the poly from the message until there is nothing left but the remainder. Study the manual examples of long division
+if you don't understand this.</P>
+<P>It should be clear that the above algorithm will work for any width W.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_002"></A>Chapter 10) A Table-Driven Implementation</H1>
+<P>The SIMPLE algorithm above is a good starting point because it corresponds directly to the theory presented
+so far, and because it is so SIMPLE. However, because it operates at the bit level, it is rather awkward to code
+(even in C), and inefficient to execute (it has to loop once for each bit). To speed it up, we need to find a way
+to enable the algorithm to process the message in units larger than one bit. Candidate quantities are nibbles (4
+bits), bytes (8 bits), words (16 bits) and longwords (32 bits) and higher if we can achieve it. Of these, 4 bits
+is best avoided because it does not correspond to a byte boundary. At the very least, any speedup should allow
+us to operate at byte boundaries, and in fact most of the table driven algorithms operate a byte at a time.</P>
+<P>For the purposes of discussion, let us switch from a 4-bit poly to a 32-bit one. Our register looks much the
+same, except the boxes represent bytes instead of bits, and the Poly is 33 bits (one implicit 1 bit at the top
+and 32 &quot;active&quot; bits) (W=32).</P>
+<P>
+<PRE>             3    2    1    0   Bytes
+          +----+----+----+----+
+ Pop! &lt;-- |    |    |    |    | &lt;----- Augmented message
+          +----+----+----+----+
+
+         1&lt;------32 bits------&gt;
+</PRE>
+<P>The SIMPLE algorithm is still applicable. Let us examine what it does. Imagine that the SIMPLE algorithm is
+in full swing and consider the top 8 bits of the 32-bit register (byte 3) to have the values:</P>
+<P>
+<PRE>   t7 t6 t5 t4 t3 t2 t1 t0
+</PRE>
+<P>In the next iteration of SIMPLE, t7 will determine whether the Poly will be XORed into the entire register.
+If t7=1, this will happen, otherwise it will not. Suppose that the top 8 bits of the poly are g7 g6.. g0, then
+after the next iteration, the top byte will be:</P>
+<P>
+<PRE>        t6 t5 t4 t3 t2 t1 t0 ??
++ t7 * (g7 g6 g5 g4 g3 g2 g1 g0)    [Reminder: + is XOR]
+</PRE>
+<P>The NEW top bit (that will control what happens in the next iteration) now has the value t6 + t7*g7. The important
+thing to notice here is that from an informational point of view, all the information required to calculate the
+NEW top bit was present in the top TWO bits of the original top byte. Similarly, the NEXT top bit can be calculated
+in advance SOLELY from the top THREE bits t7, t6, and t5. In fact, in general, the value of the top bit in the
+register in k iterations can be calculated from the top k bits of the register. Let us take this for granted for
+a moment.</P>
+<P>Consider for a moment that we use the top 8 bits of the register to calculate the value of the top bit of the
+register during the next 8 iterations. Suppose that we drive the next 8 iterations using the calculated values
+(which we could perhaps store in a single byte register and shift out to pick off each bit). Then we note three
+things:</P>
+
+<UL>
+	<LI>The top byte of the register now doesn't matter. No matter how many times and at what offset the poly is XORed
+	to the top 8 bits, they will all be shifted out the right hand side during the next 8 iterations anyway.
+	<LI>The remaining bits will be shifted left one position and the rightmost byte of the register will be shifted
+	in the next byte
+</UL>
+
+<P>AND</P>
+
+<UL>
+	<LI>While all this is going on, the register will be subjected to a series of XOR's in accordance with the bits
+	of the pre-calculated control byte.
+</UL>
+
+<P>Now consider the effect of XORing in a constant value at various offsets to a register. For example:</P>
+<P>
+<PRE>       0100010  Register
+       ...0110  XOR this
+       ..0110.  XOR this
+       0110...  XOR this
+       -------
+       0011000
+       -------
+</PRE>
+<P>The point of this is that you can XOR constant values into a register to your heart's delight, and in the end,
+there will exist a value which when XORed in with the original register will have the same effect as all the other
+XORs.</P>
+<P>Perhaps you can see the solution now. Putting all the pieces together we have an algorithm that goes like this:</P>
+<P>
+<PRE>   While (augmented message is not exhausted)
+      Begin
+      Examine the top byte of the register
+      Calculate the control byte from the top byte of the register
+      Sum all the Polys at various offsets that are to be XORed into
+         the register in accordance with the control byte
+      Shift the register left by one byte, reading a new message byte
+         into the rightmost byte of the register
+      XOR the summed polys to the register
+      End
+</PRE>
+<P>As it stands this is not much better than the SIMPLE algorithm. However, it turns out that most of the calculation
+can be precomputed and assembled into a table. As a result, the above algorithm can be reduced to:</P>
+<P>
+<PRE>   While (augmented message is not exhaused)
+      Begin
+      Top = top_byte(Register);
+      Register = (Register &lt;&lt; 24) | next_augmessage_byte;
+      Register = Register XOR precomputed_table[Top];
+      End
+</PRE>
+<P>There! If you understand this, you've grasped the main idea of table-driven CRC algorithms. The above is a very
+efficient algorithm requiring just a shift, and OR, an XOR, and a table lookup per byte. Graphically, it looks
+like this:</P>
+<P>
+<PRE>              3    2    1    0   Bytes
+           +----+----+----+----+
+    +-----&lt;|    |    |    |    | &lt;----- Augmented message
+    |      +----+----+----+----+
+    |                ^
+    |                |
+    |               XOR
+    |                |
+    |     0+----+----+----+----+
+    v      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    +-----&gt;+----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+        255+----+----+----+----+
+</PRE>
+<P><STRONG>Algorithm</STRONG></P>
+
+<OL>
+	<LI>Shift the register left by one byte, reading in a new message byte.
+	<LI>Use the top byte just rotated out of the register to index the table of 256 32-bit values.
+	<LI>XOR the table value into the register.
+	<LI>Goto 1 iff more augmented message bytes.
+</OL>
+
+<P>In C, the algorithm main loop looks like this:</P>
+<P>
+<PRE>   r=0;
+   while (len--)
+     {
+      byte t = (r &gt;&gt; 24) &amp; 0xFF;
+      r = (r &lt;&lt; 8) | *++;
+      r^=table[t];
+     }
+</PRE>
+<P>where len is the length of the augmented message in bytes, p points to the augmented message, r is the register,
+t is a temporary, and table is the computed table. This code can be made even more unreadable as follows:</P>
+<P>
+<PRE>   r=0;
+   while (len--)
+          r = ((r &lt;&lt; 8) | *++) ^ t[(r &gt;&gt; 24) &amp; 0xFF];
+</PRE>
+<P>This is a very clean, efficient loop, although not a very obvious one to the casual observer not versed in CRC
+theory. We will call this the TABLE algorithm.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_003"></A>Chapter 11) A Slightly Mangled Table-Driven Implementation</H1>
+<P>Despite the terse beauty of the line</P>
+<P>
+<PRE>   r=0;
+   while (len--)
+          r = ((r &lt;&lt; 8) | *++) ^ t[(r &gt;&gt; 24) &amp; 0xFF];
+</PRE>
+<P>those optimizing hackers couldn't leave it alone. The trouble, you see, is that this loop operates upon the
+AUGMENTED message and in order to use this code, you have to append W/8 zero bytes to the end of the message before
+pointing p at it. Depending on the run-time environment, this may or may not be a problem; if the block of data
+was handed to us by some other code, it could be a BIG problem. One alternative is simply to append the following
+line after the above loop, once for each zero byte:</P>
+<P>
+<PRE>      for (i=0; i&lt;W/4; i++)
+           r = (r &lt;&lt; 8) ^ t[(r &gt;&gt; 24) &amp; 0xFF];
+</PRE>
+<P>This looks like a sane enough solution to me. However, at the further expense of clarity (which, you must admit,
+is already a pretty scare commodity in this code) we can reorganize this small loop further so as to avoid the
+need to either augment the message with zero bytes, or to explicitly process zero bytes at the end as above. To
+explain the optimization, we return to the processing diagram given earlier.</P>
+<P>
+<PRE>              3    2    1    0   Bytes
+           +----+----+----+----+
+    +-----&lt;|    |    |    |    | &lt;----- Augmented message
+    |      +----+----+----+----+
+    |                ^
+    |                |
+    |               XOR
+    |                |
+    |     0+----+----+----+----+
+    v      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    +-----&gt;+----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+        255+----+----+----+----+
+</PRE>
+<P><STRONG>Algorithm</STRONG></P>
+
+<OL>
+	<LI>Shift the register left by one byte, reading in a new message byte.
+	<LI>Use the top byte just rotated out of the register to index the table of 256 32-bit values.
+	<LI>XOR the table value into the register.
+	<LI>Goto 1 iff more augmented message bytes.
+</OL>
+
+<P>Now, note the following facts:</P>
+
+<DL>
+	<DT><STRONG>TAIL</STRONG></DT>
+	<DD>The W/4 augmented zero bytes that appear at the end of the message will be pushed into the register from the
+	right as all the other bytes are, but their values (0) will have no effect whatsoever on the register because 1)
+	XORing with zero does not change the target byte, and 2) the four bytes are never propagated out the left side
+	of the register where their zeroness might have some sort of influence. Thus, the sole function of the W/4 augmented
+	zero bytes is to drive the calculation for another W/4 byte cycles so that the end of the REAL data passes all
+	the way through the register.
+	<DT><STRONG>HEAD</STRONG></DT>
+	<DD>If the initial value of the register is zero, the first four iterations of the loop will have the sole effect
+	of shifting in the first four bytes of the message from the right. This is because the first 32 control bits are
+	all zero and so nothing is XORed into the register. Even if the initial value is not zero, the first 4 byte iterations
+	of the algorithm will have the sole effect of shifting the first 4 bytes of the message into the register and then
+	XORing them with some constant value (that is a function of the initial value of the register).
+</DL>
+
+<P>These facts, combined with the XOR property</P>
+<P>
+<PRE>   (A xor B) xor C = A xor (B xor C)
+</PRE>
+<P>mean that message bytes need not actually travel through the W/4 bytes of the register. Instead, they can be
+XORed into the top byte just before it is used to index the lookup table. This leads to the following modified
+version of the algorithm.</P>
+<P>
+<PRE>    +-----&lt;Message (non augmented)
+    |
+    v         3    2    1    0   Bytes
+    |      +----+----+----+----+
+   XOR----&lt;|    |    |    |    |
+    |      +----+----+----+----+
+    |                ^
+    |                |
+    |               XOR
+    |                |
+    |     0+----+----+----+----+
+    v      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    |      +----+----+----+----+
+    +-----&gt;+----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+           +----+----+----+----+
+        255+----+----+----+----+
+</PRE>
+<P><STRONG>Algorithm</STRONG></P>
+
+<OL>
+	<LI>Shift the register left by one byte, reading in a new message byte.
+	<LI>XOR the top byte just rotated out of the register with the next message byte to yield an index into the table
+	([0,255]).
+	<LI>XOR the table value into the register.
+	<LI>Goto 1 iff more augmented message bytes.
+</OL>
+
+<P>Note: The initial register value for this algorithm must be the initial value of the register for the previous
+algorithm fed through the table four times. Note: The table is such that if the previous algorithm used 0, the
+new algorithm will too.</P>
+<P>This is an IDENTICAL algorithm and will yield IDENTICAL results. The C code looks something like this:</P>
+<P>
+<PRE>   r=0;
+   while (len--)
+          r = (r&lt;&lt;8) ^ t[(r &gt;&gt; 24) ^ *++];
+</PRE>
+<P>and THIS is the code that you are likely to find inside current table-driven CRC implementations. Some FF masks
+might have to be ANDed in here and there for portability's sake, but basically, the above loop is IT. We will call
+this the DIRECT TABLE ALGORITHM.</P>
+<P>During the process of trying to understand all this stuff, I managed to derive the SIMPLE algorithm and the
+table-driven version derived from that. However, when I compared my code with the code found in real-implementations,
+I was totally bamboozled as to why the bytes were being XORed in at the wrong end of the register! It took quite
+a while before I figured out that theirs and my algorithms were actually the same. Part of why I am writing this
+document is that, while the link between division and my earlier table-driven code is vaguely apparent, any such
+link is fairly well erased when you start pumping bytes in at the &quot;wrong end&quot; of the register. It looks
+all wrong!</P>
+<P>If you've got this far, you not only understand the theory, the practice, the optimized practice, but you also
+understand the real code you are likely to run into. Could get any more complicated? Yes it can. <!-- Footer --></P>
+
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

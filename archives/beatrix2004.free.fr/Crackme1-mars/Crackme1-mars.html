@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Win32)">
+	<META NAME="CREATED" CONTENT="20040716;20173044">
+	<META NAME="CHANGED" CONTENT="20040716;22125570">
+	<STYLE>
+	<!--
+		@page { size: 21cm 29.7cm; margin: 2cm }
+		P { margin-bottom: 0.21cm }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="fr-FR" DIR="LTR">
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=5><B>CRACKME
+1 de MARS.</B></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Nous
+entrons tout de suite dans le vif du sujet...le travail commence en
+401197 o&ugrave; vous pouvez voir deux GetDlgItemTextA qui r&eacute;cup&egrave;rent
+le nom et le serial.</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Voici
+un sch&eacute;ma qui illustre le fonctionnement du programme de MARS
+:</FONT></P>
+<P STYLE="margin-bottom: 0cm"><IMG SRC="Crackme1-mars_html_m75dae046.gif" NAME="Image1" ALIGN=LEFT WIDTH=314 HEIGHT=672 BORDER=0><BR CLEAR=LEFT><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4><I><B>Premi&egrave;re
+remarque : </B></I></FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Le
+nom ne doit pas d&eacute;passer 8 caract&egrave;res et le serial doit
+au moins avoir 1 caract&egrave;re de long. Vous voyez ces deux
+conditions en 4011B1 et 4011D5 : </FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">4011B1
+CMP EAX, 8  Compare la longueur du nom &agrave; 8</FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">4011B4</FONT>
+JG Crackme1.004012FB  S'il est plus grand, sortie</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">4011D5 CMP EAX, 1 Compare la longueur
+du serial &agrave; 1</P>
+<P STYLE="margin-bottom: 0cm">4011D8 JLE Crackme1.004012FB  S'il est
+&eacute;gal ou inf&eacute;rieur, sortie aussi !!</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4><I><B>Deuxi&egrave;me
+remarque :</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Vous
+voyez que le second GetDlgItemTextA est entour&eacute; de deux
+GetTickCount (api qui &eacute;value le temps &eacute;coul&eacute;
+depuis le lancement du programme). L'&eacute;cart entre les deux
+relev&eacute;s ne doit pas exc&eacute;der 10 ms sinon, on sort de la
+proc&eacute;dure !! </FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">&ccedil;a
+sert &agrave; quoi me direz-vous ?</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">C'est
+un anti-debugger, tout simplement ! Si le programme se lance sans
+&ecirc;tre trac&eacute;, le temps ne d&eacute;passe pas les 10 ms
+mais si vous tracez avec F8, vous allez bien &eacute;videmment
+d&eacute;passer largement le temps pr&eacute;vu, vous &ecirc;tes donc
+en train de lire le programme qui se d&eacute;fend comme il peut en
+vous virant de la proc&eacute;dure...Vous n'avez qu'&agrave; poser un
+BP juste apr&egrave;s ce m&eacute;chant anti-debugger, c'est &agrave;
+dire en 4011EE.</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4><I><B>Troisi&egrave;me
+remarque : </B></I></FONT></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">La
+SEH sert &agrave; prot&eacute;ger le programme d'une exception
+(offense commise &agrave; windows) qui risque fort de se produire au
+moment du :</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">401242
+PUSH EAX</FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">401243
+RET</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">(Je
+signale au passage que ces deux instructions sont &eacute;quivalentes
+&agrave; un simple JMP EAX.)</FONT> 
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm">	<FONT FACE="Trebuchet MS, sans-serif">En
+effet, eax est calcul&eacute; en fonction du nom et du serial. Si le
+serial est mauvais, eax n'a pas la bonne valeur et le programme va
+sauter on ne sait o&ugrave; ce qui va g&eacute;n&eacute;rer une
+exception. Si l'exception se produit, la SEH nous envoie en 4012B1
+qui est l'offset du handler de la SEH (on le voit en 4011F5 PUSH
+4012B1).</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Que
+se passe-t-il en 4012B1 ? On affiche le message &laquo;NON&raquo;....Ben
+oui, votre serial est mauvais !!!</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4><I><B>Comment
+trouver le bon serial ?</B></I></FONT></FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">D&eacute;j&agrave;,
+lorsque vous saisissez un serial bidon, si vous validez, il ne se
+passe rien dans la plupart des cas ou vous avez droit au message
+&laquo;NON&raquo; cit&eacute; ci-dessus.</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><B>Que
+se passe-t-il ?</B></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">1
+) Si vous n'obtenez rien, c'est que votre eax calcul&eacute; ne
+remplit pas la double condition :</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">401248
+&lt; EAX &lt; 4012AF</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">2
+) Si vous obtenez &laquo;NON&raquo; comme message, c'est la SEH qui a
+r&eacute;gl&eacute; votre cas !</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><B>Que
+veut-on obtenir alors ? </B></FONT>
+</P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Que
+le message &laquo;NON&raquo; devienne un message &laquo;OUI&raquo;...ce
+serait sympa ;-))</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">En
+fait, notre auteur a choisi &laquo;yes&raquo; comme message pour nous
+signaler qu'on a r&eacute;ussi ! (le coquin) L&agrave;, il fallait y
+penser !!!On verra qu'on pouvait faire aussi sans le savoir.</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Partons
+du principe que le r&eacute;sultat est yes. En hexa, &ccedil;a donne
+736579 (oui, c'est &agrave; l'envers).Voici illustr&eacute;e la
+proc&eacute;dure d'affichage de ce fameux message :</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><IMG SRC="Crackme1-mars_html_65388934.gif" NAME="Image2" ALIGN=LEFT WIDTH=307 HEIGHT=324 BORDER=0><BR CLEAR=LEFT><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Elle
+d&eacute;bute en 4012B1 et commence par un test sur EDI (rappel
+:c'est NOM &ndash; SERIAL). Si EDI = 0, c'est que la SEH a
+fonctionn&eacute;, donc c'est pas bon et on d&eacute;gage !</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Sinon,
+on enchaine une soustraction et un XOR pour afficher le message EAX
+!! Et c'est ce message l&agrave; qui doit &ecirc;tre &laquo;yes&raquo;.
+On doit donc remonter les calculs en partant de la fin avec notre
+message &laquo;yes&raquo; comme point de &laquo;d&eacute;part&raquo;.
+Si on r&eacute;capitule le calcul en entier, &ccedil;a donne :</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><IMG SRC="Crackme1-mars_html_7c1d3fb2.gif" NAME="Image3" ALIGN=LEFT WIDTH=642 HEIGHT=159 BORDER=0><BR CLEAR=LEFT><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Nous
+allons donc inverser le calcul pour obtenir le bon serial ! (sch&eacute;ma
+orang&eacute;)</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">On
+choisit comme nom :    MarS</FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><I>Le
+R minuscule est volontaire...</I></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><FONT FACE="Trebuchet MS, sans-serif">Comme
+vous le voyez en orange, on part de <B>736579</B>, on inverse le XOR
+(XOR est son propre inverse !) et on obtient <B>3D2A37</B> ! On
+inverse la soustraction, on obtient <B>40125E !</B></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><FONT FACE="Trebuchet MS, sans-serif"><B>Tiens,
+le voil&agrave; notre EAX tant cherch&eacute; !</B></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<FONT FACE="Trebuchet MS, sans-serif">Pour finir, 40125E est en fait
+le r&eacute;sultat de la soustraction du NOM et du SERIAL...donc,
+pour obtenir le SERIAL, on fait : </FONT>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal"><FONT FACE="Trebuchet MS, sans-serif"><U><B>SERIAL
+= NOM &ndash; 40125E.</B></U></FONT></P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<FONT FACE="Trebuchet MS, sans-serif">Si NOM = <B><FONT SIZE=4>MArS</FONT></B>
+(en hexa, &ccedil;a donne 5372414D), on obtient :</FONT></P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<BR>
+</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal; font-weight: medium">
+<FONT FACE="Trebuchet MS, sans-serif">SERIAL = 5372414D &ndash;
+0040125E = 53322EEF. &Ccedil;a donne en ascii (on inverse), <B><FONT SIZE=5 STYLE="font-size: 20pt">&iuml;.2S</FONT></B></FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">(pour
+le saisir le &iuml; au clavier, c'est ALT + 139)</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif"><B><I><FONT SIZE=4>Remarque
+finale :</FONT></I></B> Si on ne devine pas que le message cherch&eacute;
+est &laquo;yes&raquo; on doit y aller en force en essayant toutes les
+adresses qui v&eacute;rifient la double condition :</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">401248
+&lt; EAX &lt; 4012AF.</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">	Pour
+&ccedil;a, il faut poser un BP en 401224 (juste avant la double
+condition), modifier la valeur de EAX et lui donner successivement
+les valeurs 401248 &ndash; 40124D &ndash; 401253 -.... - 4012AF !!</FONT></P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Evidemment,
+il y a autant d'adresses car l'auteur essaie de brouiller les pistes
+!!</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-bottom: 0cm"><FONT FACE="Trebuchet MS, sans-serif">Juillet
+2004 &ndash; BeatriX</FONT></P>
+<P STYLE="margin-bottom: 0cm"><BR>
+</P>
+</BODY>
+</HTML>

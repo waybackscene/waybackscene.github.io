@@ -1,0 +1,790 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+
+<BLOCKQUOTE>
+	<P></P>
+
+	<P>	<BR>
+<B><FONT SIZE="4" COLOR="maroon" FACE="Arial">Algorythme de Vigenere</FONT></B></P>
+	<P><FONT SIZE="2" FACE="Arial">On pourrait bien entendu attaquer le cryptage de plus haut dans le temps.En effet,des
+	l'epoque de Henri III,un jeune ingenieur,Blaise de Vigenere,inventa pour crypter et decrypter un message,une table
+	qui porte desormais son nom.</FONT></P>
+	<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial">La table de Vigenere</FONT></B></P>
+</BLOCKQUOTE>
+
+<CENTER>
+<P>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="400" BGCOLOR="whitesmoke">
+<TBODY> 
+              		<TR>
+		<TD class="savoir-centre"><B>A</B></TD>
+		<TD class="savoir-centre"><B>B</B></TD>
+		<TD class="savoir-centre"><B>C</B></TD>
+		<TD class="savoir-centre"><B>D</B></TD>
+		<TD class="savoir-centre"><B>E</B></TD>
+		<TD class="savoir-centre"><B>F</B></TD>
+		<TD class="savoir-centre"><B>G</B></TD>
+		<TD class="savoir-centre"><B>H</B></TD>
+		<TD class="savoir-centre"><B>I</B></TD>
+		<TD class="savoir-centre"><B>J</B></TD>
+		<TD class="savoir-centre"><B>K</B></TD>
+		<TD class="savoir-centre"><B>L</B></TD>
+		<TD class="savoir-centre"><B>M</B></TD>
+		<TD class="savoir-centre"><B>N</B></TD>
+		<TD class="savoir-centre"><B>O</B></TD>
+		<TD class="savoir-centre"><B>P</B></TD>
+		<TD class="savoir-centre"><B>Q</B></TD>
+		<TD class="savoir-centre"><B>R</B></TD>
+		<TD class="savoir-centre"><B>S</B></TD>
+		<TD class="savoir-centre"><B>T</B></TD>
+		<TD class="savoir-centre"><B>U</B></TD>
+		<TD class="savoir-centre"><B>V</B></TD>
+		<TD class="savoir-centre"><B>W</B></TD>
+		<TD class="savoir-centre"><B>X</B></TD>
+		<TD class="savoir-centre"><B>Y</B></TD>
+		<TD class="savoir-centre"><B>Z</B></TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>B</B></TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>C</B></TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>D</B></TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>E</B></TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>F</B></TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>G</B></TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>H</B></TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>I</B></TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>J</B></TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>K</B></TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>L</B></TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>M</B></TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>N</B></TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>O</B></TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>P</B></TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>Q</B></TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>R</B></TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>S</B></TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>T</B></TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>U</B></TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>V</B></TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>W</B></TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>X</B></TD>
+		<TD class="savoir-centre">Y</TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>Y</B></TD>
+		<TD class="savoir-centre">Z</TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+	</TR>
+	<TR>
+		<TD class="savoir-centre"><B>Z</B></TD>
+		<TD class="savoir-centre">A</TD>
+		<TD class="savoir-centre">B</TD>
+		<TD class="savoir-centre">C</TD>
+		<TD class="savoir-centre">D</TD>
+		<TD class="savoir-centre">E</TD>
+		<TD class="savoir-centre">F</TD>
+		<TD class="savoir-centre">G</TD>
+		<TD class="savoir-centre">H</TD>
+		<TD class="savoir-centre">I</TD>
+		<TD class="savoir-centre">J</TD>
+		<TD class="savoir-centre">K</TD>
+		<TD class="savoir-centre">L</TD>
+		<TD class="savoir-centre">M</TD>
+		<TD class="savoir-centre">N</TD>
+		<TD class="savoir-centre">O</TD>
+		<TD class="savoir-centre">P</TD>
+		<TD class="savoir-centre">Q</TD>
+		<TD class="savoir-centre">R</TD>
+		<TD class="savoir-centre">S</TD>
+		<TD class="savoir-centre">T</TD>
+		<TD class="savoir-centre">U</TD>
+		<TD class="savoir-centre">V</TD>
+		<TD class="savoir-centre">W</TD>
+		<TD class="savoir-centre">X</TD>
+		<TD class="savoir-centre">Y</TD>
+	</TR>
+</TBODY> 
+            </TABLE>
+
+</CENTER>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Examinons un peu cette table.A priori rien de complique.C'est une table de 26 sur
+	26 cases.Chaque case porte une lettre et celle qui suit est l'incrementation de celle ci (ouf).Voila ce qu'etait
+	la table de Vigenere.</FONT></P>
+	<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial">Methode de Cryptage par cette table</FONT></B></P>
+	<P><FONT SIZE="2" FACE="Arial">Cette methode est simple.Le cryptage se fait avec 2 elements essentiels. <BR>
+	-Le mot de passe <BR>
+	-Le message a crypter<BR>
+	Ici nous allons essayer de crypter le message &quot;Christal,Lutin Noir et MInoTHauR&quot; avec le mot cle CRYPTO.Voila
+	comment nous procedons <BR>
+	1-On se pose sur la colonne signal&eacute;e en haut par un C <BR>
+	2-On descend jusqu’&agrave; la ligne au d&eacute;but de laquelle se trouve la lettre M <BR>
+	3-On note la lettre situe a l'intersection des 2.(ici c'est un O) <BR>
+	4-On fait cela autant de fois qu'il y a de lettres dans le message et quand le mot de passe arrive a la fin on
+	recommence avec au debut.</FONT></P>
+	<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial">Methode de Decryptage par cette table</FONT></B></P>
+
+	<P><FONT SIZE="2" FACE="Arial">On fait le contraire</FONT> <FONT SIZE="2" FACE="Arial">1-On se pose sur la colonne
+	signalee par la lettre C <BR>
+	2-On descend jusqu'a qu'on trouve la lettre du message code <BR>
+	3-On regarde en face.C'est la lettre du message non crypte <BR>
+	4-On fait cela autant de fois qu'il y a de lettres dans le message et quand le mot de passe arrive a la fin on
+	recommence avec au debut. Bien sur le nombre de fois que le cryptage peut etre fait n'est pas exhaustif.Comme quoi
+	un bon cryptage n'est pas forcement fe avec du rsa ou autre.</FONT>
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

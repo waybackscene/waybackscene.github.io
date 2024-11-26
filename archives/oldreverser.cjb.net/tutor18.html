@@ -1,0 +1,194 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+<pre>
+   How to crack Cracker World Crackme 1 cracked by ACiD BuRN
+
+
+hello here :)
+well this time , my tutor is for a Crackme written in ASM32
+where : http://surf.to/crackmes   (E_Bliss site !! too cool)
+
+Level : Medium (i wanted to say Easy , but not easy as some)
+
+
+the protections are : - Anti Soft ice
+		      - 2 Nags (one of them isn't normal)
+		      - Name / Serial
+
+
+              tools :  - Sice
+                       - hex editor
+                       - a little brain
+
+
+For this tutor , i assume u know how to use Sice and how to put 
+Bpx ...
+
+1st part : Anti Sice
+
+ok , Run the crackme , and u see the messagebox : Disable Sice
+hehe , i am pretty sure , it is a lame meltice check...
+Most of Sice check use the API createfileA..
+so , in Sice, type : Bpx createfilea and press F5 to leave Sice...
+Run the crackme again and u will be kicked back in Sice , great !!
+Be sure , we are in the main exe , and not in window explorer !!
+hehe , so u break in the crackme , now press F11.
+
+In sice you are here now :
+
+XXXX:XXXXXXXX    83F8FF  CMP EAX,-01  <=== little comparaison
+XXXX:XXXXXXXX    7406    JZ  00400F7  <=== if EAX = -1 no sice , else Sice!
+XXXX:XXXXXXXX    ...................
+
+So , we will change the JZ tp JMP , like this , the crackme will
+jum all time , like if Sice wasn't loaded :)
+open the crackme with an hex editor (i use hexwork shop) and search
+for this bytes : 83F8FF7406
+u found them and replace them by : 83F8FFEB06
+u need only to patch the 1st time you found this in the file !!
+save it , and run the crackme...
+COOL , no more Sice check , you see now a messagebox with : KiLL this
+Fucking nag as text...
+we will see this after , for now , i will do the Name / serial.
+1st part CRACKED
+
+**************************
+*2nd Part : Name / serial*
+**************************
+
+ok , i will try the commom bpx for name / serial :
+getwindowtexta and getdlgitemtexta.
+bpx them , and press F5 to close sice.
+name : ACiD BuRN
+serial : 121212
+
+Enter your name / serial and press on the check button...
+Boom , we are kicked in Sice , so press F12 , u can trace little
+but press F12 a second times instead of tracing with F10.
+Now , We see this in memory :
+
+XXXX:XXXXXXXX    CMP EAX,EDX   <== compare EAX to EDX
+XXXX:XXXXXXXX    JNZ 0401453   <== if not equal jmp Bad cracker
+XXXX:XXXXXXXX    JMP .......   <== if eax = edx , then jmp Good cracker
+............................
+
+
+So , to found the Good serial , u think :
+D EAX to see the Fake code and
+D EDX to see the Good code !!
+
+eheh , Wrong answer !!
+if you look in EAX , u see 6 (my serial length was 6 = 121212)
+if you look in EDX , u see 80008300 (dunno where this shit come from)
+so , it compare your serial length with 80008300 (it is hexa)
+and if the length of your serial is equal to this , the crackme
+jump to Good cracker message !!
+80008300(h) = 2147517184(d)
+Unless your are crazy !! you won't try to type one serial with this
+length !!! so when u are at the CMP line in sice , type this:
+R EAX EDX   <== this will copy in EAX the value of EDX
+now trace with F10 the JNZ won't jump , and now u can press F5 to
+look your Good cracker message !! : "Good Work"
+hehe , so , u can enter the name u want , the serial must always
+have a length of 8008300 in hexa !!
+u can code a kind of keygen if you want , with random value , but 
+sux , coz no calculations ...
+
+2nd Part CRACKED !!!
+
+
+***********************************
+*3rd part : the EXit nag screen !!*
+***********************************
+
+ok , click on exit in menu or on the cross , and you will see a 
+messagebox saying you : Kill this also , please confirm exit....
+i will show kill it like a lazy man !! hehe , in summer , it is hot !
+i will only put a bpx on messageboxa to kick this one...
+so , in Sice : bpx messageboxa , press F5.
+Click on Exit and u are kicked in Sice :)))
+press F5 , and you will see the nag , clik on a button , no for exemple
+and you are back in sice !!
+
+you see this :
+
+XXXX:004014E5  E8BD000000    Call User32!Messageboxa  <== call da bitch
+XXXX:XXXXXXXX  ..........    CMP EAX,07   <== we are here !
+
+ok , you see that the call at 4014E5 call this motherfucking Nag
+so , in sice put a bpx on 4014E5.
+disable the bpx messageboxa.
+reclick on the quit menu or cross , and we are in Sice again at the
+call place
+
+now , type : 
+A	{enter}
+nop	{enter}
+nop	{enter}
+nop	{enter}
+nop	{enter}
+nop	{enter}
+	{echap}
+and press F5 , and you won't see any nag asking u to leave !!!
+Great , we just have noped all the Call to the messagebox :))
+now , with an hex editor , search this byte : E8BD000000 (original nag code)
+and replace it with 5 nops !!!
+save , run it again , and exit without seeing any NAG !!
+
+3rd Part CRACKED !!
+
+
+************************
+*4th Part : the 1st nag*
+************************
+
+
+the 1st nag is a messagebox too , but not the same this time coz the
+code , TeXskyman did something to hidde the call of the API..
+So the way i explained you doesn't work, i did it , but i don't know
+how to explain it really good but this worked .Maybe one cracker
+will Give me another way , but i don't care for now , i kicked this 
+fucking nag!!
+when you run the crackme u see this text : "Kill this fucking nag"
+ok , do a ascii search of this text with your hex editor.
+now , i dunno how to explain but coz we can't see the call in memory
+due to the hidded trick in this nag , i thought that the call will me
+after this text , so , i did a search near the down and looked for
+a : E8 (call start with E8 , not all but lot)
+i found one , just under the message :)
+ALL crackers know that a CALL = 5 byte in hexa , so nop it all , save 
+your exe , and Run it...
+CONGRATULATIONS !! no more nag at start !!!
+you have now , a crackme without nags , and no problem with Sice !
+
+4th part CRACKED !
+
+Well , this tut is finish , hope u understand all this piece of
+text , but if you have a comment or one question, mail me to :
+ACiD_BuRN@nema.com or acid2600@caramail.com.
+HaVE PHuN and happy cracking !
+
+
+
+Time to Greetz !!
+
+greets to my groups : ECLiPSE / PWA / CiA
+also greetingz to:
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, Torn@do, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPuP , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM...
+
+if your name is not here sorry !!! lot of men to greets !
+
+					ACiD BuRN [ECL/CiA/PWA]
+
+
+</PRE></left>
+</BODY>
+</HTML>

@@ -1,0 +1,1631 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<META content="text/html; charset=windows-1252" http-equiv=Content-Type>
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Le chiffrement de Vigenere</TITLE>
+</HEAD>
+
+<BODY TEXT="yellow" BGCOLOR="#666666" LINK="white" ALINK="white" VLINK="aqua">
+
+<FORM METHOD="POST" ENCTYPE="application/x-www-form-urlencoded" name="form">
+<P><B><U><FONT SIZE="4" COLOR="#00CCFF" FACE="Arial">Introduction</FONT></U></B></P>
+
+<P><FONT SIZE="2" FACE="Arial">Suite &agrave; un </FONT><A HREF="VigCodDec.htm#defi"><FONT SIZE="2" FACE="Arial">d&eacute;fi
+de K-509</FONT></A><FONT SIZE="2" FACE="Arial">, j'ai voulu compl&eacute;ter un dossier sur la Cryptanalyse que
+j'avais commenc&eacute; peu de temps auparavant.<BR>
+Le probl&egrave;me que j'ai trouv&eacute; le plus amusant &agrave; r&eacute;soudre est celui de Vigen&egrave;re,
+dont </FONT><A HREF="vigenere.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/vigenere.htm"><FONT SIZE="2" FACE="Arial">MinoTHauR</FONT></A><FONT SIZE="2" FACE="Arial">
+avait &eacute;t&eacute; le premier &agrave; m'en parler. Suite &agrave; quelques recherches sur le Net, je me suis
+rendu compte qu'il y avait pas mal de sites qui &eacute;taient consacr&eacute; &agrave; ce chiffrement. Le texte
+qui suit est largement inspir&eacute; du contenu de plusieurs d'entres eux dont:</FONT><FONT SIZE="2" COLOR="#CC9900"
+FACE="Arial"><BR>
+</FONT><A HREF="javascript:if(confirm('http://www.u-bourgogne.fr/monge/math2000/Crypto  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.u-bourgogne.fr/monge/math2000/Crypto'" tppabs="http://www.u-bourgogne.fr/monge/math2000/Crypto" target="_blank"><FONT SIZE="2" FACE="Arial">http://www.u-bourgogne.fr/monge/math2000/Crypto</FONT></A><FONT
+SIZE="2" FACE="Arial"> et l'excellent </FONT><A HREF="javascript:if(confirm('http://www.jura.ch/lcp/cours/dm/codage/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.jura.ch/lcp/cours/dm/codage/'" tppabs="http://www.jura.ch/lcp/cours/dm/codage/" target="_blank"><FONT
+SIZE="2" FACE="Arial">http://www.jura.ch/lcp/cours/dm/codage/</FONT></A></P>
+<P><A HREF="mailto:christal@lemel.fr"><FONT SIZE="2" FACE="Arial">Christal</FONT></A></P>
+<P ALIGN="RIGHT"><U><B><FONT SIZE="6" COLOR="#CC9900" FACE="Arial Black">Le chiffrement de VIGENERE</FONT></B></U></P>
+<P><FONT SIZE="2" COLOR="white" FACE="Arial"><BR>
+</FONT><FONT SIZE="2" FACE="Arial">Blaise de Vigen&egrave;re &eacute;tait un diplomate fran&ccedil;ais qui v&eacute;cu
+au seizi&egrave;me si&egrave;cle. Il publia un </FONT><I><FONT SIZE="2" FACE="Arial">Trait&eacute; des chiffres</FONT></I><FONT
+SIZE="2" FACE="Arial"> en 1586 o&ugrave; il proposait un chiffrement qui palliait aux faiblesses de la technique
+par substitution (une lettre remplac&eacute;e par une autre, cons&eacute;cutive ou non). En utilisant la m&eacute;thode
+de Vigen&egrave;re, une m&ecirc;me lettre n'est pas toujours cod&eacute;e par le m&ecirc;me substitut. Tout d&eacute;pend
+de la position de celle-ci dans le texte.</FONT></P>
+
+<BLOCKQUOTE>
+	<P><A NAME="table"></A><B><FONT SIZE="4" COLOR="#00CCFF" FACE="Arial">La table de Vigenere</FONT></B></P>
+</BLOCKQUOTE>
+
+<CENTER>
+<P>
+<TABLE BORDER="1" CELLPADDING="0" CELLSPACING="0" WIDTH="400" BGCOLOR="whitesmoke">
+<TBODY> 
+              															<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">A</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">B</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">C</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">D</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">E</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">F</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">G</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">H</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">I</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">J</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">K</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">L</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">M</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">N</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">O</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">P</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">Q</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">R</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">S</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">T</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">U</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">V</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">W</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">X</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">Y</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">Z</FONT></B></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">B</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">C</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">D</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">E</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">F</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">G</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">H</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">I</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">J</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">K</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">L</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">M</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">N</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">O</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">P</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">Q</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">R</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">S</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">T</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">U</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">V</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">W</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">X</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">Y</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Z</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+	</TR>
+	<TR>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><B><FONT COLOR="black">Z</FONT></B></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">A</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">B</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">C</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">D</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">E</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">F</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">G</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">H</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">I</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">J</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">K</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">L</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">M</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">N</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">O</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">P</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Q</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">R</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">S</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">T</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">U</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">V</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">W</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">X</FONT></TD>
+		<TD BGCOLOR="#A0A0A4" class="savoir-centre"><FONT COLOR="black">Y</FONT></TD>
+	</TR>
+</TBODY> 
+            </TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">Le principe est simple.<BR>
+A l'aide d'un mot-cl&eacute; (christal, par exemple…), les lettres de la phrase &agrave; coder sont utilis&eacute;es
+en abscisse, caract&egrave;re par caract&egrave;re, et ceux de la cl&eacute; en ordonn&eacute;e jusqu'&agrave;
+&eacute;puisement du nombre de caract&egrave;res qui la compose. Une fois arriv&eacute; au bout de la cl&eacute;,
+il suffit de repointer &agrave; son d&eacute;but pour continuer le cryptage.<BR>
+<BR>
+Phrase &agrave; crypter :<BR>
+</FONT><B><FONT SIZE="2" FACE="Arial">CRYPTANALYSE</FONT></B><FONT SIZE="2" FACE="Arial"><BR>
+<BR>
+Ce qui donnera :</FONT></P>
+
+<BLOCKQUOTE>
+	<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">C - </FONT><FONT SIZE="2" FACE="Courier New">C</FONT><FONT
+	SIZE="2" COLOR="white" FACE="Courier New">  =  E
+R - </FONT><FONT SIZE="2" FACE="Courier New">H </FONT><FONT SIZE="2" COLOR="white" FACE="Courier New"> =  Y
+Y - </FONT><FONT SIZE="2" FACE="Courier New">R</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">  =  P
+P - </FONT><FONT SIZE="2" FACE="Courier New">I</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">  =  X
+T - </FONT><FONT SIZE="2" FACE="Courier New">S</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">  =  L
+A - </FONT><FONT SIZE="2" FACE="Courier New">T</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">  =  T
+N - </FONT><FONT SIZE="2" FACE="Courier New">A </FONT><FONT SIZE="2" COLOR="white" FACE="Courier New"> =  N
+A - </FONT><FONT SIZE="2" FACE="Courier New">L</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">  =  L
+L - C  =  N
+Y - H  =  F
+S - R  =  J
+E - I  =  M</FONT></PRE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">Soit EYPXLTNLNFJM comme Cipher (texte cod&eacute;) pour CRYPTANALYSE comme Plain
+Text (texte en clair).</FONT></P>
+
+<BLOCKQUOTE>
+	<P><B><FONT SIZE="4" COLOR="#00CCFF" FACE="Arial">Le nombre de clefs</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">Le chiffrement de Vigen&egrave;re offre un grand choix de cl&eacute;s, m&ecirc;me
+si celle choisie est relativement courte. Par exemple, pour une cl&eacute; de 13 lettres il y a 26 choix pour la
+premi&egrave;re lettre, 26 choix pour la seconde lettre, etc... soit au total 26^13 = 26*26*26*26*26*26*26*26*26*26*26*26*26
+choix possibles, ce qui fait dans les 2 481 152 873 203 736 576. Un ordinateur essayant un million de cl&eacute;s
+par seconde mettrait un peu moins de 2 millions d'ann&eacute;es pour toutes les essayer. Imaginez ce que c'est
+avec une cl&eacute; de 200 lettres... Ceci devrait vous d&eacute;courager de tenter une attaque brutale (consistant
+&agrave; essayer toutes les cl&eacute;s) contre le chiffrement de Vigen&egrave;re.</FONT></P>
+
+<BLOCKQUOTE>
+	<P><B><FONT SIZE="4" COLOR="#00CCFF" FACE="Arial">Cryptanalyse</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">Comme nous l'avons remarqu&eacute; pr&eacute;c&eacute;demment, la cryptanalyse du
+chiffrement de Vigen&egrave;re se r&eacute;duit au d&eacute;codage d'une s&eacute;rie de &quot;chiffrements de
+Jules C&eacute;sar&quot; d&egrave;s qu'on connait la longueur de la clef. Une m&eacute;thode pour retrouver la
+longueur de la clef a &eacute;t&eacute; invent&eacute;e par Charles Babbage en 1854. Elle a &eacute;t&eacute; ensuite
+red&eacute;couverte quelques ann&eacute;es plus tard par Friedrich Wilhelm Kasiski. La voici d&eacute;crite.<BR>
+On cherche des paires de segments d'au moins 3 lettres dans le texte chiffr&eacute;. Il y a de fortes chances pour
+qu'ils codent le m&ecirc;me segment de texte clair et que les premiers caract&egrave;res de chaque segment de la
+paire se trouvent dans la m&ecirc;me colonne du tableau servant au cryptage<BR>
+On calcule la distance, c'est-&agrave;-dire le nombre de lettres, entre leurs premiers caract&egrave;res. Si on
+obtient ainsi plusieurs distances, on peut raisonnablement penser que la longueur L de la cl&eacute; divise chacune
+de ces distances.&nbsp;&nbsp;On &eacute;crit alors le message cod&eacute; dans un tableau de L colonnes, comme
+pour le cryptage. Chaque colonne est crypt&eacute;e par un &quot;chiffrement de Jules C&eacute;sar&quot;. Il est
+alors assez facile de retrouver le message clair et la cl&eacute;. Illustrons ceci par un exemple:</FONT></P>
+
+<BLOCKQUOTE>
+	<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">NORYK UKTOE WJLDN SDZK</FONT><B><FONT SIZE="2" COLOR="blue"
+	FACE="Courier New">S PGG</FONT></B><FONT SIZE="2" COLOR="white" FACE="Courier New">NY
+UAUWO YXG</FONT><B><FONT SIZE="2" COLOR="blue" FACE="Courier New">SP GG</FONT></B><FONT SIZE="2" COLOR="white"
+	FACE="Courier New">DIP AXTCA ATHRF 
+SDJQB VECXJ VLVUI CFGBV URZCI 
+AWGHP HEVVG HCIRQ IWBPM RVYTQ 
+ZGRAI TGFLN LYTGU UOIIU</FONT></PRE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">Dans cette exemple, la phrase &eacute;tant trop courte, on ne retrouve qu'une seule
+occurence d'un m&ecirc;me groupe de lettre, et un seul groupe de lettres identiques. Plus le texte sera long, plus
+la probabilit&eacute; de retrouver plusieurs fois un m&ecirc;me groupe de lettres, et plusieurs groupes diff&eacute;rents,
+permettra de trouver plus surement la longueur exacte de la cl&eacute; qui aura &eacute;t&eacute; utilis&eacute;e.
+Le d&eacute;coupage par groupe de 5 caract&egrave;res ne sert ici qu'&agrave; rendre plus facile le comptage de
+la position d'un m&ecirc;me groupe de carac&egrave;res.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Une fois les groupes de caract&egrave;res trouv&eacute;s, il suffit d'en d&eacute;terminer
+la position de leurs premi&egrave;res lettres dans la phrase, et d'en d&eacute;duire l'intervalle les s&eacute;parant.</FONT></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" WIDTH="51%">
+	<TR>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">Groupe</FONT></B>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">1ere position</FONT></B>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">2nd position</FONT></B>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">intervalle</FONT></B>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">factorisation</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Arial">SPGG</FONT>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Arial">20</FONT>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Arial">34</FONT>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Arial">14</FONT>
+		</TD>
+		<TD WIDTH="20%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Arial">2 x 7</FONT>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">Comme dit pr&eacute;c&eacute;demment, un seul intervalle de r&eacute;f&eacute;rence
+n'est pas significatif, mais dans cet exemple, vous verrez qu'il nous permettra malgr&eacute; tout de trouver la
+solution.<BR>
+La r&eacute;p&eacute;tition de la cl&eacute; pourrait donc se faire tous les 2 ou 7 caract&egrave;res. Si vous
+obtenez un plus grand nombre d'intervalles, la taille de la cl&eacute; sera le facteur commun au plus grand nombre
+d'intervalles, comme dans cet exemple, ou le facteur commun est 7:</FONT></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" WIDTH="48%">
+	<TR>
+		<TD WIDTH="26%"><B><FONT SIZE="2" FACE="Arial">Groupe</FONT></B></TD>
+		<TD WIDTH="28%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">intervalle</FONT></B>
+		</TD>
+		<TD WIDTH="46%">
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">factorisation</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="26%"><FONT SIZE="2" COLOR="white" FACE="Courier New">GIKK</FONT></TD>
+		<TD WIDTH="28%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">133</FONT>
+		</TD>
+		<TD WIDTH="46%">
+			<P ALIGN="RIGHT"><B><FONT SIZE="2" COLOR="white" FACE="Courier New">7</FONT></B><FONT SIZE="2" COLOR="white" FACE="Courier New">
+			x 19</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="26%"><FONT SIZE="2" COLOR="white" FACE="Courier New">YHDX</FONT></TD>
+		<TD WIDTH="28%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">140</FONT>
+		</TD>
+		<TD WIDTH="46%">
+			<P ALIGN="RIGHT"><FONT SIZE="2" COLOR="white" FACE="Courier New">2 x 2 x 5 x 0</FONT><B><FONT SIZE="2" COLOR="white"
+			FACE="Courier New">7</FONT></B>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="26%"><FONT SIZE="2" COLOR="white" FACE="Courier New">VXMA</FONT></TD>
+		<TD WIDTH="28%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">238</FONT>
+		</TD>
+		<TD WIDTH="46%">
+			<P ALIGN="RIGHT"><FONT SIZE="2" COLOR="white" FACE="Courier New">2 x </FONT><B><FONT SIZE="2" COLOR="white" FACE="Courier New">7</FONT></B><FONT
+			SIZE="2" COLOR="white" FACE="Courier New"> x 17</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="26%"><FONT SIZE="2" COLOR="white" FACE="Courier New">POLQK</FONT></TD>
+		<TD WIDTH="28%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">483</FONT>
+		</TD>
+		<TD WIDTH="46%">
+			<P ALIGN="RIGHT"><FONT SIZE="2" COLOR="white" FACE="Courier New">3 x </FONT><B><FONT SIZE="2" COLOR="white" FACE="Courier New">7</FONT></B><FONT
+			SIZE="2" COLOR="white" FACE="Courier New"> x 23</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="26%"><FONT SIZE="2" COLOR="white" FACE="Courier New">MOGTZL</FONT></TD>
+		<TD WIDTH="28%">
+			<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">910</FONT>
+		</TD>
+		<TD WIDTH="46%">
+			<P ALIGN="RIGHT"><FONT SIZE="2" COLOR="white" FACE="Courier New">2 x 5 x </FONT><B><FONT SIZE="2" COLOR="white"
+			FACE="Courier New">7</FONT></B><FONT SIZE="2" COLOR="white" FACE="Courier New"> x 13</FONT>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">Revenons &agrave; notre probl&egrave;me. Une cl&eacute; de 2 caract&egrave;res &eacute;tant
+assez peu probable, partons de l'id&eacute;e que la cl&eacute; de d&eacute;cryptage est de 7 caract&egrave;res
+de long.</FONT></P>
+
+<BLOCKQUOTE>
+	<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">NORYKUK TOEWJLD NSDZKSP GGNYUAU WOYXGSP GGDIPAX TCAATHR 
+FSDJQBV ECXJVLV UICFGBV URZCIAW GHPHEVV GHCIRQI WBPMRVY
+TQZGRAI TGFLNLY TGUUOII U</FONT></PRE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">Il &quot;suffit&quot; maintenant d'&eacute;crire le texte dans un tableau &agrave;
+7 colonnes et de d&eacute;crypter chaque colonne obtenue par un chiffrement de C&eacute;sar comme nous le verrons
+plus tard. On peut, pour cela, calculer la fr&eacute;quence d'apparition des lettres dans chaque colonne afin de
+trouver par quelle lettre est remplac&eacute; '</FONT><B><FONT SIZE="2" COLOR="white" FACE="Arial">E</FONT></B><FONT
+SIZE="2" FACE="Arial">' et obtenir ainsi le d&eacute;calage pour chaque colonne. Le tableau en question serait
+de ce type:</FONT></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" WIDTH="36%">
+	<TR>
+		<TD WIDTH="10%">&nbsp;</TD>
+		<TD WIDTH="41%">
+			<PRE><FONT FACE="Courier New"> 1 2 3 4 5 6 7</FONT></PRE>
+		</TD>
+		<TD WIDTH="49%">&nbsp;</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="10%">
+			<PRE><FONT FACE="Courier New">A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z</FONT></PRE>
+		</TD>
+		<TD WIDTH="41%">
+			<PRE><FONT COLOR="white" FACE="Courier New"> . . 1 1 . 4 . 
+ . 1 . . . 2 .
+ . 2 2 1 . . .
+ . . 3 . . . 1
+ 1 . 1 . 1 . .
+ 1 . 1 1 . . .
+ 4 4 . 1 2 . .
+ . 2 . 1 . 1 .   
+ . 1 . 1 1 1 3 
+ . . . 2 1 . . 
+ . . . . 2 . 1
+ . . . 1 . 3 .
+ . . . 1 . . .
+ 2 . 1 . 1 . .
+ . 3 . . . . .
+ . . 2 . 1 . 2
+ . . . . 1 1 .
+ . 1 1 . 3 . 1 
+ . 2 . . . 2 . 
+ 5 . . . 1 . .
+ 2 . . 1 1 1 1 
+ . . . . 1 2 4
+ 2 . . 1 . . 1
+ . . 1 1 . . 1
+ . . 1 2 . . 2
+ . . 2 1 . . .</FONT></PRE>
+		</TD>
+		<TD WIDTH="49%" VALIGN="TOP"><FONT SIZE="2" FACE="Arial">Vous prenez le premier caract&egrave;re de chaque groupe de 7 lettres pour d&eacute;terminer
+			le nombre de fois ou une m&ecirc;me lettre se r&eacute;p&egrave;te. Par exemple, vous retrouverez la lettre G au
+			d&eacute;but de 4 groupes de 7 caract&egrave;res. Puis vous faites la m&ecirc;me chose avec les seconds caract&egrave;res.
+			L&agrave; encore la lettre G se retrouve 4 fois, mais est absente de la troisi&egrave;me position de tous les groupes….</FONT></TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">Je vais vous proposer ici une autre solution, peut &ecirc;tre plus longue, mais
+permettant &eacute;galement d'y arriver. Pour d&eacute;terminer le plus fort taux de probabilit&eacute; de la pr&eacute;sence
+d'une lettre donn&eacute;e dans un groupe de caract&egrave;res, il faut partir du principe qu'une lettre donn&eacute;e
+est toujours remplac&eacute;e par la m&ecirc;me lettre dans le message cod&eacute;, et que toutes les lettres n'apparaissent
+pas avec la m&ecirc;me fr&eacute;quence dans un texte. Vous trouverez ci dessous le tableau de la fr&eacute;quence
+d'apparition (en pourcentage) des lettres utilis&eacute;es dans la r&eacute;daction de textes en fran&ccedil;ais.</FONT></P>
+<CENTER>
+<P><A NAME="frequences"></A>
+<TABLE BORDER="1" CELLPADDING="2" CELLSPACING="0" WIDTH="47%">
+	<TR>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">E  17.8</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">S   8.2</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">A   7.7</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">N   7.6</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">T   7.3</FONT></PRE>
+		</TD>
+		<TD WIDTH="20%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">I   7.2</FONT></PRE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">R   6.8</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">U   6.1</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">L   5.9</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">O   5.3</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">D   3.6</FONT></PRE>
+		</TD>
+		<TD WIDTH="20%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">C   3.3</FONT></PRE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">P   3.2</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">M   2.7</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">Q   1.3</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">V   1.3</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">G   1.1</FONT></PRE>
+		</TD>
+		<TD WIDTH="20%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">F   1.1</FONT></PRE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">B   0.8</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">H   0.6</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">X   0.2</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">Y   0.2</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">J   0.2</FONT></PRE>
+		</TD>
+		<TD WIDTH="20%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">Z &lt; 0.1</FONT></PRE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">K &lt; 0.1</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">
+			<PRE ALIGN="CENTER"><FONT SIZE="2" COLOR="black" FACE="Courier">W &lt; 0.1</FONT></PRE>
+		</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">&nbsp;</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">&nbsp;</TD>
+		<TD WIDTH="16%" BGCOLOR="silver">&nbsp;</TD>
+		<TD WIDTH="20%" BGCOLOR="silver">&nbsp;</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">Vous allez maintenant regrouper en une cha&icirc;ne tous les premiers caract&egrave;res
+de chaque groupe de lettres. Ainsi notre premi&egrave;re cha&icirc;ne sera : NTNGWGTFEUUGGWTTTU.<BR>
+A l'aide du </FONT><A HREF="VigCodDec.htm#VIGENERE"><FONT SIZE="2" FACE="Arial">Codeur/D&eacute;codeur</FONT></A><FONT SIZE="2"
+FACE="Arial"> que vous trouverez plus bas sur cette page, vous allez d&eacute;crypter cette cha&icirc;ne (dont
+toutes les lettres correspondent au premier caract&egrave;re de la cl&eacute;), en utilisant la lettre A comme
+cl&eacute; de chiffrement, puis la lettre B, et ainsi de suite…<BR>
+Le r&eacute;sultat que vous obtiendrez, pour au moins une lettre, correspondra au plain text d'origine.</FONT></P>
+<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">NTNGWGTFEUUGGWTTTU -&gt; A -&gt; NTNGWGTFEUUGGWTTTU</FONT></P>
+<P ALIGN="CENTER"><FONT SIZE="2" COLOR="white" FACE="Courier New">NTNGWGTFEUUGGWTTTU -&gt; </FONT><B><FONT SIZE="2"
+COLOR="white" FACE="Courier New">B -&gt; </FONT></B><FONT SIZE="2" COLOR="white" FACE="Courier New">MSMFVFSEDTTFFVSSST</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Mis dans un tableau, voici les r&eacute;sultats de NTNGWGTFEUUGGWTTTU d&eacute;crypt&eacute;
+avec chacune des lettres de l'alphabet.</FONT></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="54%">
+	<TR>
+		<TD WIDTH="50%">
+			<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">A  NTNGWGTFEUUGGWTTTU  *  5.19%
+B  MSMFVFSEDTTFFVSSST  -  5.37%
+C  LRLEUERDCSSEEURRRS  +  8.93%
+D  KQKDTDQCBRRDDTQQQR  *
+E  JPJCSCPBAQQCCSPPPQ  *
+F  IOIBRBOAZPPBBROOOP  *
+G  HNHAQANZYOOAAQNNNO  *
+H  GMGZPZMYXNNZZPMMMN  *
+I  FLFYOYLXWMMYYOLLLM  *
+J  EKEXNXKWVLLXXNKKKL  *
+K  DJDWMWJVUKKWWMJJJK  *
+L  CICVLVIUTJJVVLIIIJ  *  4.09%
+M  BHBUKUHTSIIUUKHHHI  *</FONT></PRE>
+		</TD>
+		<TD WIDTH="50%">
+			<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">N  AGATJTGSRHHTTJGGGH  *  3.71%
+O  ZFZSISFRQGGSSIFFFG  *
+P  YEYRHREQPFFRRHEEEF  *
+Q  XDXQGQDPOEEQQGDDDE  *
+R  WCWPFPCONDDPPFCCCD  *
+S  VBVOEOBNMCCOOEBBBC  +  4.64%
+T  UAUNDNAMLBBNNDAAAB  +
+U  TZTMCMZLKAAMMCZZZA  *
+V  SYSLBLYKJZZLLBYYYZ  *
+W  RXRKAKXJIYYKKAXXXY  *
+X  QWQJZJWIHXXJJZWWWX  *
+Y  PVPIYIVHGWWIIYVVVW  *
+Z  OUOHXHUGFVVHHXUUUV  *</FONT></PRE>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">En utilisant le tableau de fr&eacute;quentation d'apparition ci dessus, vous pouvez
+donner une &quot;note&quot; en pourcentage &agrave; la &quot;valeur&quot; de chacune des cha&icirc;nes d&eacute;crypt&eacute;es.
+le calcul de cette note &eacute;tant assez long, j'ai s&eacute;lectionn&eacute; les cha&icirc;nes me semblant les
+plus prometteuses en les faisant suivre du signe </FONT><FONT SIZE="2" COLOR="white" FACE="Arial">*</FONT><FONT
+SIZE="2" FACE="Arial"> quand le taux de probabilit&eacute; de la cha&icirc;ne &eacute;tait faible en raison de
+la pr&eacute;sence de</FONT><FONT SIZE="2" COLOR="#99FF99" FACE="Arial"> X Y J Z K W</FONT><FONT SIZE="2" FACE="Arial">
+( 3.71%, 4.09% et 5.19%), d'un</FONT><FONT SIZE="2" COLOR="white" FACE="Arial"> -</FONT><FONT SIZE="2" FACE="Arial">
+quand elles contenaient moins de deux </FONT><FONT SIZE="2" COLOR="#99FF99" FACE="Arial">E</FONT><FONT SIZE="2"
+FACE="Arial"> (5.73%), d'un </FONT><FONT SIZE="2" COLOR="white" FACE="Arial">+</FONT><FONT SIZE="2" FACE="Arial">
+quand elles comprennaient plus de un</FONT><FONT SIZE="2" COLOR="#99FF99" FACE="Arial"> E</FONT><FONT SIZE="2"
+FACE="Arial">, ou un grand nombre de </FONT><FONT SIZE="2" COLOR="#99FF99" FACE="Arial">S</FONT><FONT SIZE="2"
+FACE="Arial"> ou de </FONT><FONT SIZE="2" COLOR="#99FF99" FACE="Arial">A</FONT><FONT SIZE="2" FACE="Arial"> (4.64%
+et 8.93%). Une cha&icirc;ne se d&eacute;tache nettement des autres par sa fr&eacute;quence de lettres le plus souvent
+utilis&eacute;es. C'est celle dont la cl&eacute; de cryptage &eacute;tait </FONT><FONT SIZE="2" COLOR="#99FF99"
+FACE="Arial">C</FONT><FONT SIZE="2" FACE="Arial">. Le premier caract&egrave;re de cette cl&eacute; pourrait donc
+&ecirc;tre </FONT><B><FONT SIZE="2" COLOR="white" FACE="Arial">C</FONT></B><FONT SIZE="2" FACE="Arial">.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Faisons de m&ecirc;me pour les seconds caract&egrave;res de chaque groupe, puis
+pour les troisi&egrave;mes, etc...</FONT></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="3" CELLSPACING="0" WIDTH="71%">
+	<TR>
+		<TD WIDTH="215">
+			<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">2&egrave;me cha&icirc;ne</FONT>
+		</TD>
+		<TD WIDTH="215">
+			<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">3&egrave;me cha&icirc;ne</FONT>
+		</TD>
+		<TD WIDTH="215">
+			<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">4&egrave;me cha&icirc;ne</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="215" BGCOLOR="silver">
+			<PRE><FONT SIZE="2" COLOR="black" FACE="Courier New">B  NNRFNFBRBHQGGAPFF  -
+N  BBFTBTPFPVEUUODTT  -
+O  AAESASOEOUDTTNCSS  +</FONT></PRE>
+		</TD>
+		<TD WIDTH="215" BGCOLOR="#A0A0A4">
+			<P ALIGN="CENTER"><FONT COLOR="black">?????</FONT>
+		</TD>
+		<TD WIDTH="215" BGCOLOR="silver">
+			<PRE><FONT SIZE="2" COLOR="black" FACE="Courier New">S  GEHGFQIRRNKPQUOTC  -
+T  FDGFEPHQQMJOPTNSB  -  3.69%
+U  ECFEDOGPPLINOSMRA  +  5.99%</FONT></PRE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="215">&nbsp;</TD>
+		<TD WIDTH="215">&nbsp;</TD>
+		<TD WIDTH="215">&nbsp;</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="215">
+			<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">5&egrave;me cha&icirc;ne</FONT>
+		</TD>
+		<TD WIDTH="215">
+			<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">6&egrave;me cha&icirc;ne</FONT>
+		</TD>
+		<TD WIDTH="215">
+			<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">7&egrave;me cha&icirc;ne</FONT>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="215" BGCOLOR="silver">
+			<PRE><FONT SIZE="2" COLOR="black" FACE="Courier New">C  IHISENROTEGCPPPLM  +  </FONT></PRE>
+		</TD>
+		<TD WIDTH="215" BGCOLOR="#999999">
+			<PRE><FONT SIZE="2" COLOR="black" FACE="Courier New">A  ULSASAHBLBAVQVALI  -
+H  NELTLTAUEUTOJOTEB  +</FONT></PRE>
+		</TD>
+		<TD WIDTH="215" BGCOLOR="silver">
+			<PRE><FONT SIZE="2" COLOR="black" FACE="Courier New">D  HAMRMUOSSSTSFVFVF  ?  4.33%
+I  CVHMHPJNNNONAQAQA  ?  4.07%</FONT></PRE>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P><FONT SIZE="2" FACE="Arial">Certaines cha&icirc;nes, plus que d'autres, semblent assez &eacute;vidente dans
+le choix de la lettre de cryptage utilis&eacute;e (seconde, cinqui&egrave;me et six&egrave;me cha&icirc;ne), d'autres
+n&eacute;cessitent de calculer leur ratio pour les d&eacute;partager. La septi&egrave;me cha&icirc;ne est un peu
+plus atypique, aucune cl&eacute; n'ayant donn&eacute; un r&eacute;sultat satisfaisant, les lettres </FONT><FONT
+SIZE="2" COLOR="#99FF99" FACE="Arial">D</FONT><FONT SIZE="2" FACE="Arial"> et</FONT><FONT SIZE="2" COLOR="#99FF99"
+FACE="Arial"> I </FONT><FONT SIZE="2" FACE="Arial">semblaient &ecirc;tre les plus probables. Pour la troisi&egrave;me
+cha&icirc;ne, aucune cl&eacute; ne r&eacute;pondait aux crit&egrave;res que je m'&eacute;tais fix&eacute;s.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">A la fin de ces op&eacute;rations, ma cl&eacute; de cryptage ressemble &agrave;
+ceci:</FONT></P>
+<P ALIGN="CENTER"><B><FONT SIZE="2" COLOR="white" FACE="Arial">C O ? U C H D</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Le point d'interrogation devant &ecirc;tre obligatoirement remplac&eacute; par un
+caract&egrave;re, mon nouveau crit&egrave;re de recherche a &eacute;t&eacute; de selectionner les cha&icirc;nes
+contenant le plus de </FONT><FONT SIZE="2" COLOR="#99FF99" FACE="Arial">E</FONT><FONT SIZE="2" FACE="Arial">:</FONT></P>
+<PRE ALIGN="CENTER"><FONT SIZE="2" FACE="Arial"></FONT></PRE>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="23%">
+	<TR>
+		<TD WIDTH="100%">
+			<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">L  GTSCMXPSMROEREOUJ  +  8.08%
+T  YLKUEPHKEJGWJWGMB  -
+Y  TGFPZKCFZEBRERBHW  -
+Z  SFEOYJBEYDAQDQAGV  +  4.66%</FONT></PRE>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<PRE><FONT SIZE="2" FACE="Arial">Le</FONT><FONT SIZE="2" COLOR="white" FACE="Arial"> </FONT><B><FONT SIZE="2" COLOR="white"
+FACE="Arial">L</FONT></B><FONT SIZE="2" FACE="Arial"> remporte la palme. La cl&eacute; pourrait &ecirc;tre:</FONT></PRE>
+<P ALIGN="CENTER"><B><FONT SIZE="2" COLOR="white" FACE="Arial">C O L U C H D</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">En d&eacute;codant le cipher text dans son int&eacute;gralit&eacute; avec cette
+cl&eacute; de chiffrement, on obtient la phrase suivante:</FONT></P>
+<P><FONT SIZE="2" COLOR="white" FACE="Courier New">L AGE IN</FONT><B><FONT SIZE="2" COLOR="blue" FACE="Courier New">H</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">RAT CHE</FONT><B><FONT SIZE="2" COLOR="blue" FACE="Courier New">A</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New"> LES FIL</FONT><B><FONT SIZE="2" COLOR="blue" FACE="Courier New">M</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">ES C EST </FONT><B><FONT SIZE="2" COLOR="blue" FACE="Courier New">R</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">UAND ELMES SONT UROP GRAODES POUS COMPTES SUR LEUSS DOIGTT ET ENCOSE
+TROP JFUNES POVR COMPTFR SUR LEVRS JAMBFS</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Ce qui laisse &agrave; supposer que la solution est proche...</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Par contre, la 7&egrave;me lettre de la cl&eacute; semble ne pas convenir. En choisissant
+un mot dont le sens semble certain, malgr&eacute; une erreur, mais compte tenu de sa position dans la phrase, j'ai
+choisi JFUNES:</FONT>
+
+<BLOCKQUOTE>
+	<BLOCKQUOTE>
+		<BLOCKQUOTE>
+			<BLOCKQUOTE>
+				<BLOCKQUOTE>
+					<BLOCKQUOTE>
+						<PRE><B><FONT SIZE="4" COLOR="white" FACE="Courier New">J</FONT><FONT SIZE="4" COLOR="black" FACE="Courier New">F</FONT><FONT
+						SIZE="4" COLOR="white" FACE="Courier New">UNES</FONT><FONT SIZE="4" COLOR="white" FACE="Arial">
+</FONT><FONT SIZE="4" COLOR="white" FACE="Courier New">J</FONT><FONT SIZE="4" COLOR="black" FACE="Courier New">E</FONT><FONT
+						SIZE="4" COLOR="white" FACE="Courier New">UNES
+ ^</FONT></B></PRE>
+					</BLOCKQUOTE>
+				</BLOCKQUOTE>
+			</BLOCKQUOTE>
+			<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">mot origine :     QIWBPM
+mot probable:     JEUNES</FONT></PRE>
+		</BLOCKQUOTE>
+	</BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">En reprennant la grille de Vigen&egrave;re, et en descedant la colonne </FONT><B><FONT
+SIZE="2" FACE="Arial">E</FONT></B><FONT SIZE="2" FACE="Arial"> jusqu'&agrave; trouver la lettre</FONT><B><FONT
+SIZE="2" FACE="Arial"> I</FONT></B><FONT SIZE="2" FACE="Arial">, la ligne lui correspondant et le </FONT><B><FONT
+SIZE="2" FACE="Arial">E</FONT></B><FONT SIZE="2" FACE="Arial">. Ce qui nous donnerait alors:</FONT></P>
+<P ALIGN="CENTER"><B><FONT SIZE="2" COLOR="white" FACE="Arial">COLUCHE</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Un nouveau passage dans le Codeur/D&eacute;codeur, &agrave; supposer que nous ayons
+encore un doute, va donner:</FONT></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLSPACING="0" WIDTH="62%">
+	<TR>
+		<TD WIDTH="21%"><FONT SIZE="2" FACE="Arial">Cipher text:</FONT></TD>
+		<TD WIDTH="79%"><FONT SIZE="2" COLOR="white" FACE="Arial">NORYKUKTOEWJLDNSDZKSPGGNYUAUWOYXGSPGG<BR>
+			DIPAXTCAATHRFSDJQBVECXJVLVUICFGBVURZCIAW<BR>
+			GHPHEVVGHCIRQIWBPMRVYTQZGRAITGFLNLYTGUUOIIU</FONT></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="21%"><FONT SIZE="2" FACE="Arial">Cl&eacute;</FONT></TD>
+		<TD WIDTH="79%"><FONT SIZE="2" FACE="Arial">COLUCHE</FONT></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="21%"><FONT SIZE="2" FACE="Arial">Plain Text</FONT></TD>
+		<TD WIDTH="79%"><FONT SIZE="2" COLOR="white" FACE="Arial">LAGEINGRATCHEZLESFILLESCESTQUANDELLES<BR>
+			SONTTROPGRANDESPOURCOMPTERSURLEURSDOIGTS<BR>
+			ETENCORETROPJEUNESPOURCOMPTERSURLEURSJAMBES</FONT></TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<P ALIGN="RIGHT"><A NAME="VIGENERE"></A><U><B><FONT SIZE="6" COLOR="#CC9900" FACE="Arial Black">VIGENERE Codeur/D&eacute;codeur</FONT></B></U></P>
+<P><SCRIPT>
+function Vigenere (input, key, forward)
+{
+	if (key == null)
+		key = "";
+	var alphabet =   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	               + "abcdefghijklmnopqrstuvwxyz";
+
+	// Validate key:
+	key = key . toUpperCase ();
+	var key_len = key . length;
+	var i;
+	var adjusted_key = "";
+	for (i = 0; i < key_len; i ++)
+	{
+		var key_char = alphabet . indexOf (key . charAt (i));
+		if (key_char < 0)
+			continue;
+		adjusted_key += alphabet . charAt (key_char);
+	}
+	key = adjusted_key;
+	key_len = key . length;
+	if (key_len == 0)
+	{
+		alert ('Vous avez oublié de donner la clé !');
+		key = "a";
+		key_len = 1;
+	}
+
+	// Transform input:
+	var input_len = input . length;
+	var output = "";
+	var key_index = 0;
+	var in_tag = false;
+	for (i = 0; i < input_len; i ++)
+	{
+		var input_char = input . charAt (i);
+		if (input_char == "<")
+			in_tag = true;
+		else if (input_char == ">")
+			in_tag = false;
+		if (in_tag)
+		{
+			output += input_char;
+			continue;
+		}
+		var input_char_value = alphabet . indexOf (input_char);
+		if (input_char_value < 0)
+		{
+			output += input_char;
+			continue;
+		}
+		var lowercase = input_char_value >= 26 ? true : false;
+		if (forward)
+			input_char_value += alphabet . indexOf (key . charAt (key_index));
+		else
+			input_char_value -= alphabet . indexOf (key . charAt (key_index));
+		input_char_value += 26;
+		if (lowercase)
+			input_char_value = input_char_value % 26 + 26;
+		else
+			input_char_value %= 26;
+		output += alphabet . charAt (input_char_value);
+		key_index = (key_index + 1) % key_len;
+
+	}
+	return output;
+}
+
+function runcoder (dir)
+{
+	document . form . output . value = Vigenere (document . form . input . value, document . form . key . value, dir);
+/*  A bug in IE prevents this section from working correctly.
+	with (document . form)
+	{
+		output . value = Vigenere (input . value, key . value, dir);
+	}
+*/
+}</SCRIPT></P>
+<CENTER>
+<P><SCRIPT>
+</SCRIPT> 
+<TABLE BORDER="1" CELLSPACING="10">
+<TBODY>
+  																									<TR>
+		<TD WIDTH="96" BGCOLOR="yellow">
+			<P ALIGN="CENTER"><FONT COLOR="blue" FACE="Arial">Entr&eacute;e:</FONT></P>
+
+			<P ALIGN="CENTER"><FONT COLOR="blue" FACE="Arial"><BR>
+			</FONT><INPUT onclick="this.form.input.value='';" type=button value=clear>
+		</TD>
+		<TD BGCOLOR="#333333"><TEXTAREA NAME="input" ROWS="6" COLS="60" wrap="virtual">Placez ici votre texte &agrave; coder ou &agrave; d&eacute;coder
+				</TEXTAREA></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="96" BGCOLOR="yellow">
+			<P ALIGN="CENTER"><FONT COLOR="blue" FACE="Arial">Cl&eacute;:<BR>
+			</FONT><INPUT onclick="this.form.key.value='';" type=button value=clear>
+		</TD>
+		<TD BGCOLOR="#333333"><TEXTAREA NAME="key" ROWS="3" COLS="60" wrap="virtual">Placez ici votre cl&eacute; de cryptage
+				</TEXTAREA></TD>
+	</TR>
+	<TR>
+		<TD WIDTH="96" BGCOLOR="yellow">
+			<P ALIGN="CENTER"><FONT COLOR="blue" FACE="Arial">Votre choix:</FONT>
+		</TD>
+		<TD>
+			<P ALIGN="CENTER"><INPUT onclick="runcoder (true);" type=button value=encodage> <INPUT onclick="runcoder (false);" type=button value=decodage>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="96" BGCOLOR="yellow">
+			<P ALIGN="CENTER"><FONT COLOR="blue" FACE="Arial">Sortie:</FONT></P>
+
+			<P ALIGN="CENTER"><FONT COLOR="blue" FACE="Arial"><BR>
+			</FONT><INPUT onclick="this.form.output.value='';" type=button value=clear>
+		</TD>
+		<TD BGCOLOR="#333333"><TEXTAREA NAME="output" ROWS="6" COLS="60" wrap="virtual">Vous obtiendrez le r&eacute;sultat ici
+			</TEXTAREA></TD>
+	</TR>
+</TBODY></TABLE>
+<A NAME="instructions"></A></P>
+</CENTER>
+<P><A NAME="defi"></A><B><U><FONT SIZE="2" COLOR="#00CCFF" FACE="Arial">Le d&eacute;fi que K-509 proposait &eacute;tait
+le suivant:</FONT><FONT SIZE="2" FACE="Arial"><BR>
+</FONT></U></B><FONT SIZE="2" FACE="Arial"><BR>
+</FONT><U><FONT SIZE="2" FACE="Arial">Chiffre de Vig&eacute;n&egrave;re:</FONT></U><FONT SIZE="2" FACE="Arial"></FONT>
+<PRE><FONT SIZE="2" FACE="Arial"></FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">ouogbyhkwmazsuzknqnzvicgxqdaovrydxnynmzocmqgxaykfwyryantqmykcj
+bydwagdzrtdmfohuvrvmfvsmqyvmfvkafgqmeynqfvkznocartdabanivtodnt
+ycvyniayvmfvkkruelntcyhkvyhknqfzyzgoyvgkwxbxotykkcfuvvvjovikbv
+viytbxklbyzzvtqaaoyunnkvrxoxbtnmazvmakkvgyocyykjbxnyhkvyhkczry
+mickckegsotegmtmitrvbmfyovgroubsovgkcbikxcpkdbruxlryyvbxokrydt
+nxeurablryviamytvkbaqkfwekezfjeubtnm</FONT><FONT SIZE="2" FACE="Arial"></FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">La phrase &eacute;tant plus longue que dans l'exercice pr&eacute;c&eacute;dent,
+le nombre de trigrammes (r&eacute;p&eacute;tition de trois caract&egrave;res identiques)) le sera &eacute;galement,
+et cette fois ci une recherche par la fr&eacute;quence des r&eacute;p&eacute;tition aura plus de chance de donner
+des r&eacute;sultats rapides :<BR>
+<BR>
+Comme pr&eacute;c&eacute;demment, commencons par rechercher les trigrammes :</FONT>
+<PRE><FONT SIZE="2" FACE="Arial"></FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">YHK: apparait 5 fois, &agrave; la position 5, 145, 149, 237, 241
+     distance(s): 140, 144, 232, 236, 4, 92, 96, 88, 92, 4
+MAZ: apparait 2 fois, &agrave; la position 9, 217
+     distance(s): 208
+KNQ: apparait 2 fois, &agrave; la position 15, 151
+     distance(s): 136
+RYD: apparait 2 fois, &agrave; la position 30, 306
+     distance(s): 276
+XNY: apparait 2 fois, &agrave; la position 33, 235
+     distance(s): 202
+KFW: apparait 2 fois, &agrave; la position 47, 331
+     distance(s): 284
+RTD: apparait 2 fois, &agrave; la position 70, 110
+     distance(s): 40
+VMF: apparait 3 fois, &agrave; la position 80, 88, 132
+     distance(s): 8, 52, 44
+MFV: apparait 3 fois, &agrave; la position 81, 89, 133
+     distance(s): 8, 52, 44
+YVM: apparait 2 fois, &agrave; la position 87, 131
+     distance(s): 44
+FVK: apparait 3 fois, &agrave; la position 90, 102, 134
+     distance(s): 12, 44, 32
+NQF: apparait 2 fois, &agrave; la position 100, 152
+     distance(s): 52
+HKV: apparait 2 fois, &agrave; la position 146, 238
+     distance(s): 92
+KVY: apparait 2 fois, &agrave; la position 147, 239
+     distance(s): 92
+VYH: apparait 2 fois, &agrave; la position 148, 240
+     distance(s): 92
+VGK: apparait 2 fois, &agrave; la position 161, 281
+     distance(s): 120
+BXO: apparait 2 fois, &agrave; la position 166, 302
+     distance(s): 136
+BTN: apparait 2 fois, &agrave; la position 214, 342
+     distance(s): 128
+TNM: apparait 2 fois, &agrave; la position 215, 343
+     distance(s): 128
+OVG: apparait 2 fois, &agrave; la position 272, 280
+     distance(s): 8
+LRY: apparait 2 fois, &agrave; la position 297, 317
+     distance(s): 20</FONT><FONT SIZE="2" FACE="Arial"></FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">Apr&egrave;s factorisation, il en ressort que les seuls facteurs communs sont 2
+et 4.<BR>
+En se basant sur le plus grand de ces deux facteurs, &quot; saucissonnons &quot; le texte en tron&ccedil;ons de
+4 caract&egrave;res :</FONT>
+<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">ouog byhk wmaz suzk nqnz vicg xqda ovry dxny nmzo 
+cmqg xayk fwyr yant qmyk cjby dwag dzrt dmfo huvr 
+vmfv smqy vmfv kafg qmey nqfv kzno cart daba nivt 
+odnt ycvy niay vmfv kkru elnt cyhk vyhk nqfz yzgo 
+yvgk wxbx otyk kcfu vvvj ovik bvvi ytbx klby zzvt 
+qaao yunn kvrx oxbt nmaz vmak kvgy ocyy kjbx nyhk 
+vyhk czry mick ckeg sote gmtm itrv bmfy ovgr oubs 
+ovgk cbik xcpk dbru xlry yvbx okry dtnx eura blry 
+viam ytvk baqk fwek ezfj eubt nm</FONT><FONT SIZE="2" FACE="Arial"></FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">Pour composer plus facilement les cha&icirc;nes suivantes, dont POS1 reprend les
+premiers caract&egrave;res de chaque s&eacute;rie de 4 lettres, POS2 les seconds caract&egrave;res, et ainsi de
+suite:</FONT>
+<PRE><FONT SIZE="2" FACE="Arial"></FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">Pos1: OBWSNVXODNCXFYQCDDDHVSVKQNKCDNOYNVKECVNYYWOKVOBYKZQYKONVKOKNVCMCSGIBOOOCXDXYODEBVYBFEEN
+Pos2: UYMUQIQVXMMAWAMJWZMUMMMAMQZAAIDCIMKLYYQZVXTCVVVTLZAUVXMMVCJYYZIKOMTMVUVBCBLVKTULITAWZUM
+Pos3: OHAZNCDRNZQYYNYBARFVFQFFEFNRBVNVAFRNHHFGGBYFVIVBBVANRBAAGYBHHRCETTRFGBGIPRRBRNRRAVQEFB
+Pos4: GKZKZGAYYOGKRTKYGTORVYVGYVOTATTYYVUTKKZOKXKUJKIXYTONXTZKYYXKKYKGEMVYRSKKKUYXYXAYMKKKJT</FONT><FONT SIZE="2"
+FACE="Arial"></FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">Notons ensuite pour chacune de ces cha&icirc;nes le nombre de fois ou apparaisse
+chaque lettre de l'alphabet :</FONT>
+<PRE><FONT SIZE="2" FACE="Arial"></FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">      A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z
+Pos1  .  5  7  7  4  3  1  1  1  .  8  .  1  8 </FONT><B><FONT SIZE="2" COLOR="black" FACE="Courier New">11</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">  .  3  .  3  .  .  9  2  4  8  2
+Pos2  7  2  4  1  .  .  2  .  6  .  3  4 </FONT><B><FONT SIZE="2" COLOR="black" FACE="Courier New">15</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">  .  .  1  .  4  .  5  7 10  .  3  3  6
+Pos3  7 10  2  1  3 10  5  5  2  .  .  .  .  8  1  1  3 </FONT><B><FONT SIZE="2" COLOR="black" FACE="Courier New">12</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">  .  2  .  7  .  .  5  2
+Pos4  3  .  .  .  .  .  6  .  1  2 </FONT><B><FONT SIZE="2" COLOR="black" FACE="Courier New">19</FONT></B><FONT
+SIZE="2" COLOR="white" FACE="Courier New">  .  .  1  5  .  .  3  1  9  3  5  .  6 15  4</FONT><FONT SIZE="2" FACE="Arial">   </FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">Il en ressort que la lettre qui revient le plus souvent est:</FONT>
+<PRE><FONT SIZE="2" FACE="Arial"></FONT><FONT SIZE="2" COLOR="white" FACE="Courier New">Pos1: </FONT><FONT SIZE="2"
+COLOR="black" FACE="Courier New">O</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New"> (11 fois)
+Pos2: </FONT><FONT SIZE="2" COLOR="black" FACE="Courier New">M</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New"> (15 fois)
+Pos3: </FONT><FONT SIZE="2" COLOR="black" FACE="Courier New">R</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New"> (12 fois)
+Pos4: </FONT><FONT SIZE="2" COLOR="black" FACE="Courier New">K</FONT><FONT SIZE="2" COLOR="white" FACE="Courier New"> (19 fois)</FONT><FONT
+SIZE="2" FACE="Arial"></FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">En reprennant </FONT><A HREF="VigCodDec.htm#table"><FONT SIZE="2" FACE="Arial">la grille de Vigen&egrave;re</FONT></A><FONT
+SIZE="2" FACE="Arial">, et en utilisant la colonne &quot;E&quot;, la ligne correspondant au </FONT><FONT SIZE="2"
+COLOR="black" FACE="Arial">O</FONT><FONT SIZE="2" FACE="Arial"> va &ecirc;tre le</FONT><B><FONT SIZE="2" FACE="Arial">
+</FONT><FONT SIZE="2" COLOR="white" FACE="Arial">K</FONT></B><FONT SIZE="2" FACE="Arial">, pour le </FONT><FONT
+SIZE="2" COLOR="black" FACE="Arial">M</FONT><FONT SIZE="2" FACE="Arial"> on trouvera le </FONT><B><FONT SIZE="2"
+COLOR="white" FACE="Arial">I</FONT></B><FONT SIZE="2" FACE="Arial">, </FONT><FONT SIZE="2" COLOR="black" FACE="Arial">R</FONT><FONT
+SIZE="2" FACE="Arial"> donnera le </FONT><B><FONT SIZE="2" COLOR="white" FACE="Arial">N</FONT></B><FONT SIZE="2"
+FACE="Arial"> et </FONT><FONT SIZE="2" COLOR="black" FACE="Arial">K </FONT><FONT SIZE="2" FACE="Arial">la lettre</FONT><B><FONT
+SIZE="2" COLOR="white" FACE="Arial"> G</FONT></B><FONT SIZE="2" FACE="Arial">, soit la cl&eacute; </FONT><B><FONT
+SIZE="2" COLOR="white" FACE="Arial">KING</FONT></B><FONT SIZE="2" FACE="Arial"> pour d&eacute;coder le CipherText.<BR>
+<BR>
+La phrase ainsi obtenu sera:</FONT>
+<PRE><FONT SIZE="2" COLOR="white" FACE="Courier New">embarquementimmediatlapaniquenestpasdemisedanslevollosangelesb
+ostonatrentesixmillespiedslespassagersdisparaissentsoudainevan
+ouisdanslespaceoudansquelquedistortiontemporelleausolnidenvern
+icoloradospringsniomahanerepondentleneantseulsabordquelquesres
+capescraiggyweggylepressentlemomentestvenucetteondesonorecestl
+arumeurdeslangoliersdevoreursdumonde</FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">Bonne journ&eacute;e</FONT><FONT SIZE="2" COLOR="white" FACE="Arial"></FONT></P>
+
+<P><A HREF="mailto:christal@lemel.fr"><FONT SIZE="2" FACE="Arial">Christal</FONT></A>
+</FORM>
+
+</BODY>
+
+</HTML>

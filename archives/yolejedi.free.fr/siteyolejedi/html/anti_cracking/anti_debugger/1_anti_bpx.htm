@@ -1,0 +1,142 @@
+<html>
+<head>
+<title>Anti-bpx !</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript">
+<!--
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p align='justify'><font face="Fixedsys" size="2">:)</font></p>
+            </td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_nyark.gif" width="82" height="124" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="95%"> <div align="center"><font size="6" color="#33CC33" face="Fixedsys">Anti-BreakPoint<br>
+                    <font size="2">-=&curren; Force BreakPoint... &curren;=-</font></font><font face="Fixedsys" size="2"><u><br>
+                    </u>(version 1.01)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_nyark.gif" width="82" height="124" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p align="left"><font color="#33CC33" size="2" face="Fixedsys"><u>Les 
+              breakpoints des debuggers</u> :</font></p>
+            <p align="justify"><font face="Fixedsys" size="2">Le placement de 
+              breakpoints par un debugger peut se faire de diff&eacute;rentes 
+              mani&egrave;res. Une des possibilit&eacute;s est de placer sur l'instruction 
+              vis&eacute;e l'opcode 0xCCh (int 3) qui g&eacute;n&egrave;re une 
+              interruption 3 &agrave; son ex&eacute;cution.</font></p>
+            <p align="justify"><font face="Fixedsys" color="#FFFFFF" size="2">Tout 
+              debugger digne de ce nom se doit d'avoir acc&egrave;s aux interruptions 
+              3 avant tout le monde. Pour cela, il hooke la routine d&eacute;j&agrave; 
+              en place par le syst&egrave;me afin de filtrer ces interruptions.</font></p>
+            <p align="justify"><font face="Fixedsys" color="#FFFFFF" size="2">Voici 
+              un petit diagramme r&eacute;sumant une routine globale g&eacute;rant 
+              l'interruption 3 avec la pr&eacute;sence de Softice.</font></p>
+            <table border="0" cellspacing="4" cellpadding="0">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="20" height="8"></font></td>
+                <td nowrap><font color="#339999" face="Fixedsys" size="2">CPU</font></td>
+                <td bgcolor="#FFFF00"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="20" height="8"></font></td>
+                <td nowrap><font color="#FFFF00" face="Fixedsys" size="2">SoftIce</font></td>
+              </tr>
+              <tr> 
+                <td bgcolor="#33CC33">&nbsp;</td>
+                <td nowrap><font color="#33CC33" face="Fixedsys" size="2">Windows</font></td>
+                <td bgcolor="#00FFFF">&nbsp;</td>
+                <td nowrap><font color="#00FFFF" face="Fixedsys" size="2">Application</font></td>
+              </tr>
+            </table>
+            <p align="center"><font face="Fixedsys" size="2"><img src="../../../image/organ_int3.gif" width="560" height="558"></font></p>
+            <p><font color="#33CC33" size="2" face="Fixedsys"><u>La m&eacute;thode ForceBreakpoint</u> 
+              :</font></p>
+            <p align="justify"><font color="#FFFFFF" face="Fixedsys" size="2">Il 
+              est possible d'utiliser la pr&eacute;sence de breakpoints &agrave; 
+              des fins malveillantes. Pour cela, il faudra cr&eacute;er une fonction 
+              qui v&eacute;rifie une portion de code en pla&ccedil;ant et en ex&eacute;cutant 
+              sur chaque adresse un breakpoint (-&gt; int 3). <br>
+              </font><font face="Fixedsys" size="2">Un SEH sera utilis&eacute; 
+              pour r&eacute;cup&eacute;rer les interruptions 3 afin de restaurer 
+              le byte et de passer au byte suivant.<br>
+              Si un debugger d&eacute;tient un breakpoint dans cette portion de 
+              code, la routine de v&eacute;rification aura pour effet de forcer 
+              le debugger &agrave; prendre la main et &agrave; restaurer lui m&ecirc;me 
+              le byte. Le vilain crackeur peut penser, &agrave; ce moment l&agrave;, 
+              que l'application arrive tout simplement au breakpoint qu'il a plac&eacute;. 
+              Quoi qu'il en soit, l'application quittera la routine de v&eacute;rification 
+              pour continuer son ex&eacute;cution &agrave; l'adresse du breakpoint 
+              : plantade assur&eacute;e !!! nyark, nyark, nyark... :)</font></p>
+            <p align="justify"><font face="Fixedsys" size="2">Pour se faire, cette 
+              routine pourra &ecirc;tre plac&eacute;e juste avant l'ex&eacute;cution 
+              du code &agrave; v&eacute;rifier (donc dans le m&ecirc;me thread) 
+              ou dans un autre thread. Dans ce cas, la routine devra imp&eacute;rativement 
+              &ecirc;tre plac&eacute;e dans une section critique.</font></p>
+            <p align="justify"><font face="Fixedsys" color="#FFFFFF" size="2">Pour 
+              l'exemple, j'ai fait le choix de placer la routine dans un thread 
+              secondaire &agrave; l'aide de l'API 'SetTimer'. De cette mani&egrave;re, 
+              le code est v&eacute;rifi&eacute; sur la fr&eacute;quence d&eacute;finie 
+              du Timer.</font></p>
+            <p><font face="Fixedsys" size="2">RiDiCule n'aime pas les bpx (Anti-Bpx) 
+              : <a href="../../../telecharger/anti_cracking/anti_debugger/force_int3.zip" onFocus="if(this.blur)this.blur()" target="_blank"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a><br>
+              </font></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <div align="center"><font face="Fixedsys" size="2">Illustrations : 
+              Bill WATTERSON - &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 08/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+            </font> </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

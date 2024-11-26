@@ -1,0 +1,57 @@
+<html>
+
+<head>
+<SCRIPT language=JavaScript><!--
+
+var Version = navigator.appVersion;
+var Nom = navigator.appName;
+var texte = '...SHMEIT CORP...Knowledge for Fun, Knowledge for Free...';
+var width = 90; if (Nom == 'Microsoft Internet Explorer') var width = 60;
+var strLen = texte.length;
+var pos = 2 - width;    
+
+Titre();
+  
+function Titre(){
+
+    var scroll = "";                
+    pos++;                          
+    if (pos == strLen)  pos = 1 - width;
+
+    if (pos<0) 
+    {                    
+       for (var i=1; i<=Math.abs(pos); i++)  scroll = scroll + " ";
+       scroll = scroll + texte.substring(0, width - i + 1);
+       for (var i=scroll.length; i<=width; i++)  scroll = scroll + " ";
+    }
+    else
+    {
+       scroll = scroll + texte.substring(pos, pos + width);
+       for (var i=scroll.length; i<=width; i++)  scroll = scroll + " ";
+    }
+    window.status = scroll;   
+    setTimeout("Titre()",100);     
+}
+//--></SCRIPT>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>1995 -=[ShmeitCorp]=- 2003</title>
+</head>
+
+<frameset framespacing="0" border="0" frameborder="0" rows="58,*">
+  <frame name="banniere" scrolling="no" noresize target="sommaire" src="fup.htm" marginwidth="0" marginheight="0">
+  <frameset cols="150,*">
+    <frame name="sommaire" target="principal" src="fmenu.htm" marginwidth="0" marginheight="0" scrolling="no" noresize>
+    <frame name="principal" src="accueil.htm" scrolling="auto" noresize>
+  </frameset>
+  <noframes>
+  <body topmargin="0" leftmargin="0">
+
+  <p>Cette page utilise des cadres, mais votre navigateur ne les prend pas en 
+  charge.</p>
+
+  </body>
+  </noframes>
+</frameset>
+
+</html>

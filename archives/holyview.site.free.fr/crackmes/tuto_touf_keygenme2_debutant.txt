@@ -1,0 +1,104 @@
+KeygenMe 2 de Touf Spécial Débutant
+-----------------------------------
+OUTILS:
+-DeDe( Déassembler Delphi )
+-Stud_pe ( ou un autre lecteur de PE)
+-OllyDbg
+------------------------------------
+  MeNu
+1.Connaitre son ennemi
+2.Localiser l'endroit
+3.Passer à l'attaque
+
+------------------------------------
+1. Connaitre son ennemi
+
+On lance le programme ( bah oui on est curieux ), une jolie fenetre bleu nous demande un nom et un serial ! on entre notre pseudo et serial favori , Valider => " Try again ;-)"
+Si on connait deja notre victime a l'avance ( Touf ) , on sait qu'il code en delphi, mais pour confirmer on l'analyse avec stud_pe. On obtient Borland Delphi 6.0 ok , ca va etre dur a comprendre le listing, faut mieux prendre un Outil adequat: DeDe.
+-------------------------------------
+2.Localiser l'endroit
+
+On lance Donc DeDe . on ouvre notre crackme et on appuie sur process, on dit oui au messagebox et au reste, et ca charge :D
+En haut , 6 onglets permettent de naviguer dans le soft. je n'ai utilisé que celui nommé " Procedures " jusqu'a présent, et c'est encore celui ci qui va nous sauver la vie ( sisi ! ). donc Precedures => dans la fenetre de gauche, les fenetres que le soft " crée " , il n'y en a qu'une : Unit1. A droite les 2 "propriétés" de la fenetre Unit1, c'est a dire Button1click, et button2click. Bien sur : ca correspond au 2 boutons : quitter et valider. on va voir dans le button2click ( Double-clique) :
+
+* Reference to: Forms.TCustomForm.Close(TCustomForm);
+
+Bon des que vous voyez Form et close... c'est qu'on ferme la fenetre. donc c'est le bouton validé. on va donc voir dans Button1click. Ce listing correspond a ce qu'il se passe lorsqu'on clique sur le bouton 1 ( je suis un boss non?). On va analyser les appels aux APIs pour voir comment marche la vérification du sérial.
+
+[0045B63] : GetText => comprenez GetDlgItemText, récupération  de texte dans un control. Précédé d'une référénce au control Edit1 ( je parie que ca correspond au pseudo :D ). 
+
+[0045B71] : GetText , meme chose, précédé d'Edit2 :D
+
+===> Si nous sommes un petit peu malin, on regarde les arguments passé juste au dessus de cette fonction GetText : d'abord l'endroit ou sera stocké le texte récupéré, puis le control dans lequel il est récupéré. je rappelle qu'on doit lire ca de bas en haut, et qu'en réalité, le premier argument est le controle, et le second l'endroit ( ici Edx). 
+
+[OO45B7B] : LStrLen => Cette fonction calcule la longueur d'un string, dans ce cas ci le pseudo ( pour mieux se repérer dans DeDe : allez dans "variable" a droite de votre listing et mettez y la correpondance : [ebp-$04]:PSEUDO, [ebp-$08]:SERIAL, ensuite DeDe les rajoute dans le listing, et on voit qu'avant d'appeler la fonction LStrLen, on met le "PSEUDO" dans eax...).
+Ensuite on a un test eax,eax. si eax = 0, un sympathique jz nous fait sauter en :00453B91 ( on double clique sur cet ligne , on se retrouve a : Try Again ;-). Résultat: il faut mettre un pseudo ( vous trouvez ca long, c'est pas fini!!).
+
+[00453B87] : LstrLen => un autre, mais ici pour le serial. ensuite comparé a Fh ( 15 en décimal). si c'est 15 on saute au dessus du "try Again" . donc le serial doit faire 15 caractères. on voit que le début du sérial sera CRK-29 :D
+
+
+donc voila on sait les conditions. on va passer a l'attaque !
+------------------------------------
+3 passer a l'attaque
+
+Toujours dans DeDe, allons voir a l'endroit ou ca saute encore vers "try again :-)". Il n'y en a plus jusqu'a ce saut fatidique:
+[00453C4C] jz      00453C5A , regardons au dessus : l'api LStrCmp est appelé. rappel : cet api compare 2 string. le jump qui suit est "jz" : Jump if Zero, et il saute vers [00453C5A] l'endroit ou est le bon message :). on peut donc penser que lorsqu'on entre un pseudo, et un pass de 15 charactères, le programme genere un pass en fonction du nom, et ce pass est comparé. si le pass est égal au pass entré, LstrCmp renvoi zero , et on saute vers le bon message. il suffirait de modifier ce jump ( 74h, ou JE pour ceux qui ne savent que Jz = JE ) en un JNZ ou JNE, en tout cas en 75h. mais pas de patching dans ce cas :)
+
+On lance notre OllyDbg préféré, on va a la ligne de code [00453C47], on pose un breakpoint ( F2), et on "run" ( F9 ) ! la fenetre du crackme se lance. on entre un pseudo, et un pass de 15 caractères. pourquoi pas : CRK-290-0000000. on valide. Hop ca break. on regarde ce qu'il y a dans eax et edx. dans EAX le bon sérial , et dans EDX le notre ! pour neibavac, le bon sérial est donc : "CRK-29n-008-825", CRK-29, trouvé dans DeDe, est donc une constante. n, apres plusieurs test on vera que c'est la premiere lettre du pseudo :). -008, c'est le nombre de caractère du pseudo ! et -825, c'est mon pseudo  en décimal :D. Bon on va pas s'arreter la , ca serais bete. revenons dans DeDe. Apres avoir vu le string CRK-29 on appel :
+
+* Reference to: System.@LStrFromChar(String;String;Char); Cette api prend le 1Er caractère ;)
+
+* Reference to: System.@LStrLen(String):Integer; Cette api deja rencontré, calcule la longeur, mais cette fois ci, le stocke.
+
+* Possible String Reference to: '%0.3d', pas une api, mais un argument de la prochaine API.
+
+* Reference to: System.@LStrCatN; Cette API "concatène" le 1er caractère dans CRK-29, et l'argument %0.3d, met le nombre de caractère trouvé au dessus avec des 000, et le laisse en décimal ( toto = 004 )...
+
+* Reference to: System.@LStrLen(String):Integer; C'est la meme qu'au dessus, mais bien sur celle ci calcule toute la longueur du pseudo.
+On a ensuite une boucle qui va parcourir chaque caractère du pseudo.
+En effet la valeur du code ASCII de chaque caractère est ajoutée dans la boucle.
+Puis on a ensuite affaire a un modulo (le modulo est le reste de la division). Ici, la valeur trouvée est calculée modulo $3E8 (1000). Cela permet d'obtenir un nombre qui va de 0 à 999. Ex: Pour val=1146 , val mod 1000 = 146.
+
+* Possible String Reference to: '%0.3d', comme précédemment ...
+
+* Reference to: System.@LStrCat;  Idem précédemment, la valeur modulo 1000 est ajoutée au sérial.
+
+Voila !
+
+J'espere avoir expliqué au mieux mais c'est la premiere fois que j'approfondi un peu DeDe, et mon deuxieme Tuto :S
+
+Neibavac 
+
+
+
+---------
+
+
+Un exemple de keygen sous Delphi (By Touf) :
+
+procedure TForm1.Button1Click(Sender: TObject);
+// Déclaration des variables
+var
+  i:integer;
+  nom,serial:string;
+  tmp:integer;
+begin
+  // Initialisation des variables
+  nom:=edit1.Text;
+  tmp:=0;
+
+  // Vérification si le champ Nom est rempli
+  if (nom<>'') then begin
+    // Création du sérial
+    serial:= 'CRK-29' + nom[1] + '-' + Format('%0.3d',[length(nom)]) + '-';
+    // Calcul selon chaque caractère du nom
+    for i:=1 to length(nom) do begin
+      tmp:=tmp + ord(nom[i]);
+    end;
+    // On fait un modulo pour ne pas dépasser 999 caractères
+    tmp:=tmp mod 1000;
+    // On ajoute cette valeur au sérial
+    serial:=serial + Format('%0.3d',[tmp]);
+    edit2.Text:=serial;
+  end;
+end;

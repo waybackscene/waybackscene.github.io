@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>Multi-threading - CrkGenMe.exe</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+
+</head>
+
+<body>
+<div id="fenetre">
+<div class="titre"></div>
+
+<div class="menu">
+<ul>
+<li><a href='index.html'>Analyse</a></li>
+<li><a href='antidebugs.html'>Anti-debugs</a></li>
+<li><a href='watchdog.html' >WatchDog</a></li>
+<li><a href='keygen.html' >1/2 Keygen</a></li>
+<li><a href='greetz.html'>Greetz</a></li>
+</ul>
+
+</div>
+
+<div class="contenu">
+<p class="droite">Date de publication : vendredi 30 juin 2006</p>
+<p class="droite">Auteur : BeatriX</p>
+<div class="ligne"></div>
+
+<h1>5. Tricks anti-debug.</h1>
+<p> Je vais faire un listing complet des tricks anti-debugs utilisés dans ce binaire en proposant une source masm32 pour chacun d'eux.</p>
+<h2>5.1. IsDebuggerPresent</h2>
+<p> Sans aucun doute, c'est le plus connu de tous les tricks. La fonction kernel32.IsDebuggerPresent renvoie 0 dans eax si le programme n'est pas débuggué. Voici ce que fait réellement cette fonction :</p>
+<pre>
+mov eax, dword ptr fs:[18h]
+mov eax, dword ptr ds:[eax+30h]
+movzx eax, byte ptr ds:[eax+2]
+retn
+</pre>
+<p>Cette fonction accède au <strong>PEB</strong> (Process Environment Block). Voici le début de cette structure complexe :</p>
+<pre>
+Process Environment Block
++000 byte InheritedAddressSpace
++001 byte ReadImageFileExecOptions
+<strong>+002 byte BeingDebugged</strong>
+</pre>
+<p> Pour masquer le debuggueur, il suffit donc au démarrage de placer la valeur 00 sur le 3ème byte du PEB. Sous OllyDebugger, dans la fenêtre de dump, il suffit de taper CTRL+G et de saisir fs:[30h] puis de remplacer le 3ème octet comme ceci :</p>
+<h6>  <img src="images/IsDebuggerPresent.png" alt="" /></h6>
+
+<h2>5.2. Snapshot sur modules</h2>
+<p>Le programme réalise un snapshot des processus et récupère les noms des modules de chacun de ces processus. Il compare alors ces noms à des noms de modules relatifs aux outils IDA - OllyDbg - WinDbg - SoftIce.</p>
+<p> Pour <strong>OllyDbg</strong>, il recherche les modules suivants : ollydebugger.exe - ollydump.dll - Cmdbar.dll - hideDebugger.dll - IsDebug.dll et loader32.exe.</p>
+<p> Pour <strong>IDA</strong>, il recherche les modules suivants : ida.wll - idag64.exe et ida64.wll.</p>
+<p> Pour <strong>WinDbg</strong>, il recherche les modules suivants : windbg.exe et dbgeng.dll.</p>
+<p> Pour <strong>SoftIce</strong>, il recherche icedat.dll.</p>
+<p> Si l'un des modules précédents est repéré, le binaire termine le processus brutalement !</p>
+
+<p>Voici un exemple pour détecter OllyDebugger et le fermer violemment :</p>
+<pre>
+.386
+.Model Flat ,StdCall
+option casemap:none
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+includelib \masm32\lib\kernel32.lib
+ 
+.Data
+lpNumberOfBytesWritten  DWORD   0
+Module_IsDebugger       BYTE    "isdebug.dll",0
+hProcessSnap            DWORD   0
+hModuleSnap             DWORD   0
+pProcessEntry           PROCESSENTRY32 <>
+pModuleEntry            MODULEENTRY32 <>
+hProcess			DWORD   0
+
+.Code
+Main:
+  push 0
+  push TH32CS_SNAPPROCESS
+  <strong class="bleu">call CreateToolhelp32Snapshot</strong>                     ; Snapshot of processes
+  mov hProcessSnap, eax
+
+
+  mov pProcessEntry.dwSize, SIZEOF PROCESSENTRY32
+  push offset pProcessEntry
+  push hProcessSnap
+  <strong class="bleu">call Process32First</strong>                               ; Get first process
+
+Test_Process:
+  cmp eax, 0
+  <strong class="rouge">jnz Scan_Process</strong>
+  <strong class="rouge">jmp sortie</strong>
+
+Scan_Process:
+
+  push pProcessEntry.th32ProcessID
+  push TH32CS_SNAPMODULE
+  <strong class="bleu">call CreateToolhelp32Snapshot</strong>                     ; Snapshot of modules in the current process
+  mov hModuleSnap, eax
+
+  mov pModuleEntry.dwSize, SIZEOF MODULEENTRY32
+  push offset pModuleEntry
+  push hModuleSnap
+  <strong class="bleu">call Module32First</strong>                                ; Get first Module
+
+Test_Module:
+  cmp eax, 1
+  <strong class="rouge">jnz Next_Process </strong>
+  
+  push offset pModuleEntry.szModule
+  push offset Module_IsDebugger
+  <strong class="bleu">call lstrcmpiA</strong>                                    ; compare with "isdebug.dll"
+  test eax, eax
+  <strong class="rouge">jz Olly_Detected</strong>
+
+NextModule:
+  push offset pModuleEntry
+  push hModuleSnap
+  <strong class="bleu">call Module32Next</strong>
+  <strong class="rouge">jmp Test_Module</strong>
+
+Next_Process:
+  push hModuleSnap
+  call CloseHandle
+  push offset pProcessEntry
+  push hProcessSnap
+  <strong class="bleu">call Process32Next</strong>
+  <strong class="rouge">jmp Test_Process</strong>
+
+sortie:
+  push 0
+  call ExitProcess
+
+; ************************************ OllyDbg detected !
+Olly_Detected:
+  push pProcessEntry.th32ProcessID
+  push 0
+  push PROCESS_TERMINATE
+  <strong class="bleu">call OpenProcess</strong>
+  mov hProcess, eax
+
+  push hProcess
+  <strong class="bleu">call TerminateProcess</strong>
+
+  push 0
+  <strong class="bleu">call ExitProcess</strong>
+End Main                           
+</pre>
+
+<h2>5.3. CreateFileA sur drivers</h2>
+<p> Voici une technique vieille comme le monde qui permet de détecter deux services actifs si SoftIce est lancé : ntice.sys et sice.sys.</p>
+<pre>
+.386
+.Model Flat ,StdCall
+option casemap:none
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+includelib \masm32\lib\kernel32.lib
+include \masm32\include\user32.inc
+includelib \masm32\lib\user32.lib
+
+.Data
+
+service    BYTE  "\\.\NTICE",0
+titre      BYTE  "gloops",0
+texte      BYTE  "Soft Ice détecté !",0
+.Code
+Main:
+        push 0                      
+        push FILE_ATTRIBUTE_NORMAL
+        push OPEN_EXISTING         
+        push 0                      
+        push FILE_SHARE_READ + FILE_SHARE_WRITE                      
+        push GENERIC_READ + GENERIC_WRITE   
+        push offset service            
+        <strong class="bleu">Call CreateFileA </strong>
+        cmp eax, -1
+        jz @F
+        push MB_OK + MB_ICONHAND + MB_APPLMODAL        ; Soft Ice est détecté
+        push offset titre
+        push offset texte
+        push 0
+        call MessageBoxA
+
+@@:                   
+        push 0
+        call ExitProcess        
+End Main                           
+</pre>
+
+<h2>5.4. Contrôles du temps</h2>
+<p>Le programme utilise également un système très classique qui consiste à évaluer le temps écoulé entre deux relevés. S'il dépasse une certaine valeur seuil, on suppose que le programme est débuggué et on agit en conséquence. Les fonctions utilisées sont <strong>GetTickCount, msvcrt.time et GetSystemTime</strong>.</p>
+<p>Voici un exemple utilisant GetTickCount :</p>
+<pre>
+.386
+.Model Flat ,StdCall
+option casemap:none
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+includelib \masm32\lib\kernel32.lib
+include \masm32\include\user32.inc
+includelib \masm32\lib\user32.lib
+
+.Data
+
+titre      BYTE  "ok",0
+texte      BYTE  "no debugger detected !",0
+.Code
+Main:
+        <strong class="bleu">Call GetTickCount </strong>
+        mov ebx, eax
+        <strong class="bleu">Call GetTickCount </strong>
+        sub ebx,eax
+        cmp ebx, 1388h
+        <strong class="rouge">jl @F</strong>
+        push 0
+        call ExitProcess
+
+@@:
+        push MB_OK + MB_ICONHAND + MB_APPLMODAL
+        push offset titre
+        push offset texte
+        push 0
+        call MessageBoxA
+        push 0
+        call ExitProcess        
+End Main   
+</pre>                        
+<h2>5.5. Code d'auto-restauration</h2>
+<p>La technique la plus surprenante au premier abord est sans aucun doute l'usage de la fonction <strong>WriteProcessmemory</strong> pour patcher les routines critiques. Le programme restaure certaines portions de son propre code de façon régulière. Ceci a pour effet de supprimer les BreakPoints posés et je reconnais que ça surprend de prime abord ! L'effet est immédiat : OllyDbg ne breake plus et le programme s'exécute tranquillement. Comme la technique est utilisées conjointement à l'usage de threads, on peut rapidement perdre pied si on ne se méfie pas. Je ne vais pas proposer un code pour cette technique mais voici les étapes :</p>
+<div class="important">
+<ul>
+<li>1 - GetCurrentProcessId pour obtenir l'ID du process</li>
+<li>2 - OpenProcess pour obtenir un handle sur le process</li>
+<li>3 - WriteProcessMemory</li>
+<li>4 - CloseHandle pour fermer le handle</li>
+</ul>
+</div>
+<p>Comme je l'ai dit précédemment, si la fonction <strong>WriteProcessMemory</strong> n'est utilisée que pour la restauration du code, il est très facile de mettre cette technique en échec en plaçant un retn 14 au début de la fonction.</p>
+<p class="griser"> Copyright (C)- FRET (2006)</p>
+
+
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+</div>
+
+<ul id="aquarium">
+<li id="plante"><a href="../index.html"></a></li>
+<li id="poisson"><a href="watchdog.html"></a></li>
+</ul>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!-- #01                             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>CrackMe Chronos01</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#FFFFFF;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">CrackMe 01 de Chronos<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- PEId<br>&nbsp;- SmartCheck<br>&nbsp;- LordPE<br>&nbsp;- OllyDbg<br>&nbsp;- Calculatrice<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant en Cracking<br>ayant des connaissances de base en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/CrackMe.exe">CrackMe01_Chronos</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<tr><td width="20%"><b>1 - PEId</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par une analyse rapide avec <i>PeId</i> pour vérifier que le programme n'est pas compressé ou crypté. 
+Il ne l'est pas.<br> Par contre on voit qu'il a été compilé avec Visual Basic 5.0. On l'aura de toute façon remarqué à l'icône significatif des programmes VB.<br>
+<center><img src="Captures/VBIcon.gif" alt=""></center>
+Pour étudier les programmes VB, l'outil idéal est <i>Smartcheck</i>.
+</p></td></tr>
+
+<tr><td nowrap><b>2 - SmartCheck</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On lance SmartCheck, on charge le programme avec <i>Ctrl+o</i>, puis on le lance avec <i>F5</i>.<br>
+ On entre un code, par exemple: <b>123456</b>, puis on click sur le bouton "Verifier". Une MessageBox apparait nous demandant de recommencer. On click sur le bouton "OK" puis on regarde dans <i>SmartCheck</i> pour voir les événements qu'il a capturé.<br>
+</p>
+<center><img src="Captures/SmartRes.gif" alt=""></center>
+<p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On double-click sur l'événement <i>"_Click"</i> pour voir ce qu'il contient. On remarque la MessageBox: <i>"MsgBox(VARIANT:..."</i> qui nous demandait de recommencer.
+Juste au-dessus, il y a une ligne intéressante dans laquelle on voit notre code.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On comprend facilement que la fonction prend notre chaine de caractères (<i>ou plus exactement les chiffres compris dans cette chaine.</i>) puis la transforme en un nombre Réel.
+ Si l'on n'avait entré que des caractères alphabétiques, une erreur aurait été générée.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voilà tout ce que nous affiche <i>SmartCheck</i>! Il va falloir approfondir tout ça sous <i>OllyDbg</i>. Mais avant, on va noter l'adresse de la fonction de conversion.
+ En clickant dessus, on peut voir ceci dans la fenêtre de droite:<br></p>
+<center><img src="Captures/SmartAdd.gif" alt=""></center>
+<p align="justify">
+On note l'adresse qui apparait: <b>CRACKME.EXE!00001D71</b>. Cette adresse correspond à l'offset dans le fichier. Elle est différente de l'adresse en mémoire qui apparait sous <i>OllyDbg</i>.
+ Il va donc falloir calculer cette adresse avant de l'exploiter. Pour cela, on va utiliser <i>LordPe</i>
+
+</p>
+</td></tr>
+
+<tr><td width="20%"><b>3 - LordPE</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>(Pour cette partie, je recommande de lire le Memento 5 de <a href="http://shmeitcorp.deep-ice.com/shmeit.htm">SHMEITCORP</a> qui contient une description détaillée du format de fichier PE)</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On lance <i>LordPE</i>, on click sur le bouton "PE Editor" puis on choisi le CrackME. Dans la fenêtre qui apparait, on click sur le bouton "Sections".<br>
+</p><center><img src="Captures/Lord.gif" alt=""></center><p align="justify">
+Pour calculer la bonne adresse, on utilise la formule suivante:<br><br></p>
+<center><b>VA = Offset + ImageBase + Virtual Offset - Raw Offset</b></center><br><p align="justify">
+
+L'offset correspond à l'adresse récupérée dans <i>SmartCheck</i> soit: <b>0x00001D71</b>.<br>
+L'ImageBase apparait dans la première fenêtre de <i>LordPE</i>: <b>0x00400000</b>.<br>
+Le VOffset et le ROffset dépendent de la section dans laquelle se trouve notre adresse dans le fichier. Pour déterminer ça, on regarde les ROffset des sections.
+ La section .TEXT commence à l'offset 1000 et se termine à l'offset 3000. Notre adresse 1D71 est comprise entre les 2 et se trouve donc dans la section .TEXT.<br>
+On note donc les VOffset et ROffset de cette section: <b>0x00001000</b> et <b>0x00001000</b>.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalement, nous obtenons cette formlule:</p>
+<center><b>VA = 0x00001D71 + 0x00400000 + 0x00001000 - 0x00001000</b></center><br>
+<p align="justify">  
+Notre adresse est donc: <b>0x00401D71</b>. On va maintenant pouvoir la chercher sous <i>OllyDbg</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une alternative plus simple avec <i>LordPE</i> est de clicker sur le bouton "FLC", puis "Offset", entrer l'adresse 1D71, puis clicker sur "DO". Notre adresse calculée apparait alors dans le champ "VA".
+</p>
+</td></tr>
+
+<tr><td width="20%"><b>4 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On lance <i>OllyDbg</i> puis on charge le CrackMe. On va directement à l'adresse précédemment calculée en faisant <i>Ctrl+g</i>, puis en tapant 401D71. On arrive à l'adresse 0x00401D70 sur un appel de la fonction <i>vbaR8Str</i>.<br>
+En regardant en-dessous, on peut voir plusieurs choses intéressantes:<br>
+&nbsp;- L'instruction suivante en 0x00401D76 indique que le résultat de la fonction sera multiplié par un nombre.<br>
+
+&nbsp;- En 0x00401DF0, on voit une fonction qui teste l'égalité entre 2 valeurs.<br>
+&nbsp;- Suivi d'un saut conditionnel en 0x00401DFB qui nous envois vers l'affichage de la MsgBox "Recommence".<br>
+&nbsp;- Sinon, la chaine "Bravo..." est chargée en 0x00401E35 puis, la MsgBox est affichée en 0x00401E6D.
+</p>
+<center><img src="Captures/Olly01.gif" alt="">
+</center>
+<p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On pose donc un Point d'arrêt en 0x00401D70 en pressant <i>F2</i> puis on lance le programme en pressant <i>F9</i>. On entre notre code bidon (123456), puis on click sur "Verifier".
+ <i>OllyDbg</i> stope l'exécution du programme sur notre point d'arrêt. On va maintenant inspecter les registres.<br> 
+
+</p>
+<center><img src="Captures/Olly02.gif" alt="">
+</center>
+<p align="justify">
+On voit clairement que EAX contient l'adresse où est stocké notre code. On passe à l'instruction suivante en pressant <i>F8</i> et là 2 choses importantes apparaissent:<br>
+</p>
+<center><img src="Captures/Olly04.gif" alt="">
+</center><br>
+<center><img src="Captures/Olly03.gif" alt="">
+</center>
+<p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit que notre code, maintenant converti en nombre Réel, est stocké dans le registre ST0. 
+Dans la fenêtre d'information, on voit que le pointeur de l'instruction FMUL contient la valeur 666. En fait, cette valeur est là depuis le début du programme et on aurait pu la voir lors de l'étude préalable. Mais comme l'instruction <i>FMUL</i> utilise un pointeur et non une constante, cette valeur aurait pu changer au cours du programme. Il est donc préférable de la noter maintenant.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On avance encore d'une instruction en pressant <i>F8</i>. Le registre ST0 contient maintenant le résultat de la multiplication soit 82221696. L'instruction suivante place cette valeur dans le registre ST7.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On trace jusqu'en 0x00401DF0 pour voir ce que donne la fonction <i>vbaVarTstEq</i>. On l'exécute en pressant une fois de plus <i>F8</i>.
+</p>
+<center><img src="Captures/Olly05.gif" alt="">
+</center>
+<p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit toujours la valeur correspondante à notre code dans ST7 mais une nouvelle valeur est apparue dans ST6. Cette valeur doit être celle testée par la fonction <i>vbaVarTstEq</i>. On en conclut donc que notre code multiplié par 666 doit être égal à 596351718.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On sort la calculatrice, on tape 596351718 / 666, et on obtient: <b>895423</b>. On relance le CrackME, on tape ce code et la MsgBox nous félicite! :o)
+</p>
+</td></tr>
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+I'll never look into your eyes...again<br>
+Can you picture what will be, So limitless and free</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+How to Keygen Ellipse HTML Sidekick 2000 by ACiD BuRN [ECLiPSE / CiA]
+
+
+hi there again !!
+i am back for another tut , on a visual basic programme =)
+and , as usual , teaching you how to keygen it !!
+
+-------------------------------------------------------------------------------------------------
+description: VB
+Level : easy
+tools needed: Smart check 6 , delphi for the keygen
+url: http://surf.to/ellipsoft
+-------------------------------------------------------------------------------------------------
+
+I)Ready.. Go !!
+
+Fire up your smart check (i assume it is configured correctly) and open sidekick.exe
+Run it with smart check...
+now , the app is loaded , go in the help menu , and then : REGISTER =))
+i love this menu !! eheh
+well , now enter your name and serial (btw : this is not like usual shareware , it is a input
+box who ask u to enter your name and after your serial)
+i entered:
+
+Name : ACiD
+Serial: 1122
+
+this bitch say us : Invalid Registration code blablablabla !!!
+anyway , close this programme now...
+In smart check , u must see something like this : 
+sRegister_Click (this is the register's button name u pushed to register)
+
+so , click on it , you see : inputbox shit ...
+and few lines below , u see :
+
+
+Mid$(String:"ACiD",long:1,VARIANT:Integer:1)  -> take the 1st char 
+asc(String:"A") returns Integer:65            -> take this ascii value
+Str$(VARIANT:Integer:65)                      
+string("65")-->Double(65)                    -> ascii value of the char 
+Double("147")-->Double(147)                  -> fucking value 
+
+shit , what the heck is this "147" ?? where does it come from ??
+again , a brain is usefull !! , what about substracting this 2 values ?
+
+147 - 65 = 82
+ok , it is 82 , now let's see the other char!
+
+
+Mid$(String:"ACiD",long:2,VARIANT:Integer:1)  -> take the 1st char
+asc(String:"C") returns Integer:67            -> take this ascii value
+Str$(VARIANT:Integer:67)
+string("67")-->Double(67)                    -> ascii value of the char
+Double("149")-->Double(149)                  -> fucking value 
+
+hehe , lemme something :)
+
+149 - 67 = 82 ! wow , i think i know how this fucking value is 
+calculated !!
+
+i looked the other chars , and i am right!
+look this picture you see it is the same for all chars !
+
+</PRE>
+<center><img SRC="tut25a.jpg"></center>
+<PRE>
+
+scrool down a bit , and just under the last calcul on the char (D for ACiD) u see something 
+looking like this :
+
+Mid$(String:"78231",long:1,VARIANT:Integer:1)
+asc(String:"7") returns Integer:55
+Str$(VARIANT:Integer:55)
+string("55")-->Double(55) 
+Double("137")-->Double(137)
+
+
+heh, this looks similar for us !
+lets look if the add value is same :
+
+137 - 55 = 82
+good , it is the same , it take the ascii value , and add 82 to it (values are in hexadecimal)
+
+look the pic for the rest :
+
+</PRE>
+<center><img SRC="tut25b.jpg"></center>
+<PRE>
+well , now we don't see anything about the the value calculated above!
+so , click where u see the msgbox thing :
+
+Msgbox(VARIANT:String:"Invalid Registration code....",Integer:0 ...
+
+so , click on this , and click on : Show all events
+
+lemme comment what u must see now :
+
+__vbastrcat(String:"147149187150,String:"137138132133131")
+
+this function add string.
+exemple :
+
+__vbastrcat(String:"ABC", String:"000")
+this will add the string "ABC" to the string "000" so the result is : 000ABC
+
+
+so , for our programme : 
+
+__vbastrcat(String:"147149187150,String:"137138132133131")
+
+this add : 147149187150 to 137138132133131 and the result is : 137138132133131147149187150
+don't forget this values are strings ! so here "add" is not "+"
+
+well , 147149187150137138132133131  loos like a serial number !!
+run the app again , enter name : ACiD , and 137138132133131147149187150 as serial...
+
+Good , the msgbox : "Thank you for registering" appears !!
+
+heh , well if you look a little the values we get , you see for 147149187150
+
+147 149 187 150
+remember this ??
+
+this come from the name : ACiD
+
+ascii value of A = 65
+add ascii with 82:
+65 + 82 = 147
+
+ascii value of C = 67
+add ascii with 82:
+67 + 82 = 149
+
+ascii value of i = 105
+add ascii with 82:
+105 + 82 = 187
+
+ascii value of D = 68
+add ascii with 82:
+68 + 82 = 150
+
+so , it take ascii values in decimal , add to them 82 , and add each results
+as string:
+
+147 + 149 + 187 + 150 = 147149187150
+
+
+now , for the other value : 78231
+we obtain : 137138132133131
+
+
+ascii value of 7 = 55
+add ascii with 82:
+55 + 82 = 137
+
+ascii value of 8 = 56
+add ascii with 82:
+56 + 82 = 156
+
+ascii value of 2 = 50
+add ascii with 82:
+50 + 82 = 132
+
+ascii value of 3 = 51
+add ascii with 82:
+51 + 82 = 133
+
+ascii value of 1 = 49
+add ascii with 82:
+49 + 82 = 131
+
+
+so , it take ascii values in decimal from this code, add to them 82 , and add each results
+as string:
+
+
+137 + 138 + 132 + 133 + 131 = 137138132133131
+
+and then it add as string the value from the name to the value for the code :
+137138132133131 + 147149187150 =  137138132133131147149187150
+
+well , u know how to make a keygen now !!
+but i will tell u something about the "code" : 78321
+
+if you look the readme txt file you see:
+
+"To register, send a *Post Office Money order*, made out to Tim Boling.
+On a separate piece of paper, please include your First/Last name, 
+Product Name, ProductID code, which is 78231, and the name you
+would like this product registered to. *All envelopes MUST include
+a return address!*  You must also include a valid email address.
+This is where your Registration Key will be sent to."
+
+hmm : "ProductID code, which is 78231" nice !! so now this number is just
+the product ID !! btw , u must see it in about menu too !
+
+i looked other app by ellipse software , and the algo is similar , the 
+product ID change...
+
+if you want to train , try to keygen them ;p
+
+
+2)Source in delphi!
+
+like in all my keygening tuts , i allways show code of a working keygen
+this time , i coded it in delphi (nice to change a little)...
+
+
+********************************source in delphi*************************************************
+
+procedure TForm1.Button1Click(Sender: TObject);
+var i: integer;
+ascii,ascii2 : string;
+begin
+for i:=1 to length(edit1.text) do
+begin
+ascii:=ascii + inttostr((ord(edit1.text[i])+82));
+end;
+
+begin
+for i:=1 to length(edit3.text) do
+begin
+ascii2:=ascii2 + inttostr((ord(edit3.text[i])+82));
+end;
+edit2.text:=ascii2+ascii;
+
+end;
+end;
+
+*******************************************end of source*****************************************
+
+
+to make this work :
+
+- 1st create a new project
+- 2nd put 3 texts box (1 for name (edit1.text there), 1 for product ID (edit3.text there) , and
+  1 for the serial (edit2.text there)...
+- 3rd put one button
+
+double click on the button and past this code !!
+have fun , and enjoy it ...
+
+
+
+3)Ending....
+
+
+Well , this tut is finish , hope u understand all this piece of shit, but if you have a 
+comment or one question, mail me 
+you can found all my tuts at : 
+
+MAIL: ACiD_BuRN@nema.com
+Web page URL: http://acidburn2000.cjb.net/
+
+Enjoy!
+
+
+Greetings to my groups : ECLiPSE / CiA / ODT
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , Killer_3K
+TaMaMBoLo...
+
+
+if your name is not here sorry !!! too much ppls to greets !
+
+
+				ACiD BuRN [ECL/CiA]
+
+
+</PRE></left>
+</BODY>
+</HTML>

@@ -1,0 +1,408 @@
+<html>
+<head>
+<title>D&eacute;tection de SoftIce gr&acirc;ce au bit RF</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="6" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p align='justify'><font face="Fixedsys" size="2">SoftIce n'a pas 
+              d&ucirc; beaucoup m'aimer cette nuit l&agrave;. C'&eacute;tait pourtant 
+              une belle nuit d'a&ocirc;ut 2003... chaude, mais belle. Je cherchais 
+              une technique anti-trace en Ring3. SoftIce en perdait les p&eacute;dales. 
+              Le plus d&ucirc;r dans ces moments l&agrave; sont les longues attentes 
+              apr&egrave;s un beau crash syst&egrave;me.</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">SoftIce &eacute;tait 
+              bizarre. Il n'&eacute;tait pas comme d'habitude. J'ai essay&eacute; 
+              de parler avec lui, de le rassurer. C'est alors qu'il a bien voulu 
+              me livrer un peu de son intimit&eacute;...</font></p></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="80%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="6" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_lit.gif" width="101" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="100%" valign="middle"> <div align="center"> 
+                    <font color="#33CC33" size="6" face="Fixedsys">D&eacute;tection 
+                    de SoftIce</font><br>
+                    <font color="#33CC33"> -=&curren; bit RF du registre EFlags 
+                    &curren;=-<br>
+                    (All Windows) <br>
+                    </font>(version 1.02)<br>
+                    par YoLeJedi</div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_lit_et_trouve.gif" width="101" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p><font color="#33CC33" face="Fixedsys" size="2"><u>Le bit RF (Resume 
+              Flags) du registre EFlags</u> :</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">Lorsqu'il est valid&eacute; 
+              &agrave; 1, le bit RF du registre Eflags a pour effet d'ignorer 
+              (si elle a lieu) l'interruption 1 de type Faute sur la prochaine 
+              instruction. Si l'instruction r&eacute;ussit, le bit RF est automatiquement 
+              effac&eacute;. Ceci veut donc dire que les registres Debug ayant 
+              un contr&ocirc;le sur les ex&eacute;cutions d'instruction seront 
+              d&eacute;sactiv&eacute;s uniquement sur l'instruction suivante.</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">Pour SoftIce, les 
+              'bpm X' n'ont aucun effet sur des instructions ex&eacute;cut&eacute;es 
+              avec le bit RF de EFlags &agrave; 1.</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">L'instruction IRETD 
+              permet de modifier ce bit alors que POPFD n'a aucun effet sur lui.</font></p>
+            <p><font face="Fixedsys" size="2">Exemple :</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="6" bgcolor="#000000" width="100%">
+                    <tr align="left" valign="top"> 
+                      <td nowrap> <font face="Fixedsys" size="2">RF=0<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        <font color="#33CC33">RF=1</font> <br>
+                        RF=0<br>
+                        </font></td>
+                      <td nowrap align="left" valign="top"> <font face="Fixedsys" size="2">&nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        @@ :</font></td>
+                      <td nowrap><font face="Fixedsys" size="2">pushfd<br>
+                        bts dword ptr [esp], 10h<br>
+                        push cs<br>
+                        push @F<br>
+                        iretd<br>
+                        <br>
+                        <font color="#33CC33">push eax</font><br>
+                        pop &nbsp;eax</font></td>
+                      <td nowrap><font face="Fixedsys" size="2">&nbsp;<br>
+                        ; ---&gt; valide &agrave; 1 le bit RF du registre EFlags<br>
+                        &nbsp;<br>
+                        <br>
+                        &nbsp; &nbsp;<br>
+                        &nbsp;<br>
+                        <font color="#33CC33">; ---&gt;</font>&nbsp;<font color="#33CC33">un 
+                        bpm x&nbsp;&agrave; cette adresse sera ignor&eacute;</font><br>
+                        </font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p align="left"><font face="Fixedsys" color="#33CC33" size="2"><u>Le 
+              bit&nbsp;TF (Trap&nbsp;Flags)</u> :</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">Le bit TF permet 
+              aux outils de mise au point de suivre un programme instruction apr&egrave;s 
+              instruction (mode pas &agrave; pas). Lorsque le bit TF est valid&eacute; 
+              &agrave; 1, le mode pas &agrave; pas est activ&eacute;. Ceci &agrave; 
+              pour cons&eacute;quence de d&eacute;clencher une interruption 1 
+              apr&egrave;s chaque instruction ex&eacute;cut&eacute;e.<br>
+              </font></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p align="left"><font color="#33CC33" face="Fixedsys" size="2"><u>SoftIce 
+              et l'interruption 14 (Faute de page)</u> :</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">L'interruption 14 
+              est de type Faute. Elle g&egrave;re les exceptions de gestion de 
+              m&eacute;moire et de protection dans un mod&egrave;le pagin&eacute;. 
+              SoftIce hooke cette interruption dont voici le d&eacute;but de code.</font></p>
+            <p align="left"><font face="Fixedsys" size="2">Entr&eacute;e de la 
+              routine int 14 de SoftIce :</font></p>
+            <table border="0" cellspacing="0" cellpadding="0" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="1" cellpadding="6">
+                    <tr align="left" valign="top"> 
+                      <td nowrap align="center" bgcolor="#000000"><font face="Fixedsys" color="#33CC33" size="2">NTICE 
+                        (Win NT/2000/XP) </font></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td nowrap bgcolor="#000000"> <p><font color="#339999" face="Fixedsys" size="2">00032121 
+                          ; --------------------------------------------------------------------<br>
+                          00032121 <br>
+                          00032121 <font color="#33CC33">int_14:</font> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                          CODE XREF: .text:00035672j<br>
+                          00032121 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                          DATA XREF: sub_34656+BDo</font></p>
+                        <p><font face="Fixedsys" size="2">00032121 push 0Eh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                          n&deg; de l'interruption (ici int 14) <br>
+                          00032123 call <font color="#33CC33">Sauve_CONTEXT</font><br>
+                          00032128 lea esp, [esp+4]<br>
+                          <br>
+                          <font color="#339999">0003212C <br>
+                          0003212C ; &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar; 
+                          S U B R O U T I N E &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;<br>
+                          0003212C <br>
+                          0003212C <br>
+                          0003212C int_14_suite proc near<br>
+                          0003212C <br>
+                          0003212C EIP &nbsp;&nbsp;&nbsp;&nbsp;= dword ptr 4<br>
+                          0003212C reg_CS &nbsp;= dword ptr 8<br>
+                          0003212C EFlags &nbsp;= dword ptr 0Ch<br>
+                          0003212C reg_ESP = dword ptr 10h<br>
+                          0003212C reg_SS &nbsp;= dword ptr 14h<br>
+                          0003212C </font></font></p>
+                        <p><font color="#FFFF00" face="Fixedsys" size="2">0003212C 
+                          and [esp+EFlags], 0FFFEFFFFh ; Efface le bit RF du registre 
+                          EFlags !!!</font><font face="Fixedsys" size="2"><br>
+                          00032134 pushf<br>
+                          00032135 cmp cs:byte_DD92D, 1<br>
+                          <font color="#FFFFFF">0003213D jz </font></font><font color="#33CC33" face="Fixedsys" size="2">retour_vers_int14_de_windows</font></p>
+                        <p><font face="Fixedsys" size="2">etc...</font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><br>
+            </font> <table border="0" cellspacing="0" cellpadding="0" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="1" cellpadding="6">
+                    <tr align="left" valign="top"> 
+                      <td nowrap align="center" bgcolor="#000000"><font face="Fixedsys" color="#33CC33" size="2">WINICE 
+                        (Win 9x)</font></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td nowrap bgcolor="#000000"> <p align="left"><font color="#339999" face="Fixedsys" size="2">C000D652 
+                          ; ---------------------------------------------------------------------<br>
+                          C000D652 <br>
+                          C000D652 <font color="#33CC33">Int_14:</font><font color="#FFFF00"> 
+                          </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                          DATA XREF: sub_C00136B6+ABo</font></p>
+                        <p align="left"><font face="Fixedsys" size="2">C000D652 
+                          lea esp, [esp+4]</font></p>
+                        <p align="left"><font color="#339999" face="Fixedsys" size="2">C000D656 
+                          <br>
+                          C000D656 ; &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar; 
+                          S U B R O U T I N E &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;<br>
+                          C000D656 <br>
+                          C000D656 <br>
+                          C000D656 int_14_suite proc near<br>
+                          C000D656 <br>
+                          C000D656 EIP &nbsp;&nbsp;&nbsp;&nbsp;= dword ptr 4<br>
+                          C000D656 reg_CS &nbsp;= dword ptr 8<br>
+                          C000D656 EFlags &nbsp;= dword ptr 0Ch<br>
+                          C000D656 reg_ESP = dword ptr 10h<br>
+                          C000D656 reg_SS &nbsp;= dword ptr 14h<br>
+                          C000D656</font></p>
+                        <p align="left"><font color="#FFFF00" face="Fixedsys" size="2">C000D656 
+                          and [esp+EFlags], 0FFFEFFFFh ; Efface le bit RF du registre 
+                          EFlags !!!</font><font face="Fixedsys" size="2"><br>
+                          C000D65E pushf<br>
+                          C000D65F cmp cs:byte_C0061091, 1<br>
+                          C000D667 jz <font color="#33CC33">retour_vers_int14_de_windows</font></font></p>
+                        <p align="left"><font face="Fixedsys" size="2">etc...</font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="center" width="80%">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="6" bgcolor="#000000" width="100%">
+                    <tr> 
+                      <td> <p align='justify'><font face="Fixedsys" size="2">Nous 
+                          pouvons donc conclure que lorsqu'une interruption 14 
+                          est ex&eacute;cut&eacute;e, SoftIce efface le bit RF 
+                          du registre EFlags qu'il g&egrave;re l'interruption 
+                          ou pas.</font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font color="#000000" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p><font color="#33CC33" face="Fixedsys" size="2"><u>Comment d&eacute;clencher 
+              une interruption 14</u> :</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">Vous vous &ecirc;tes 
+              peut &ecirc;tre d&eacute;j&agrave; demand&eacute; pourquoi SoftIce 
+              indique certaines zones remplies de points d'interrogation ? Parce 
+              que moi oui...<br>
+              Et bien ce sont des pages qui ne sont pas en m&eacute;moire physique. 
+              Lorsqu'une page est cr&eacute;&eacute;e par windows, celle-ci est 
+              r&eacute;pertori&eacute;e dans une TABLE DE PAGES &agrave; partir 
+              de son emplacement sur le disque d&ucirc;r. Le premier acc&egrave;s 
+              &agrave; cette page en lecture, &eacute;criture ou ex&eacute;cution 
+              d&eacute;clenche une interruption 14 (type Faute). Le syst&egrave;me 
+              g&egrave;re alors l'information en pla&ccedil;ant la page en m&eacute;moire 
+              physique avant de reprendre l'ex&eacute;cution de l'instruction 
+              qui a g&eacute;n&eacute;r&eacute; l'interruption 14. Tout ceci est 
+              invisible et n'alt&egrave;re en rien l'ex&eacute;cution du programme.</font></p>
+            <p><font face="Fixedsys" size="2">Voici une routine qui d&eacute;clenche 
+              une interruption 14 sur une instruction voulu :</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="6" bgcolor="#000000">
+                    <tr align="left" valign="top"> 
+                      <td nowrap><font face="Fixedsys" size="2"> push PAGE_READWRITE<br>
+                        push MEM_COMMIT<br>
+                        push 1000h<br>
+                        push 0<br>
+                        call VirtualAlloc<br>
+                        ; ----------------&gt;</font></td>
+                      <td nowrap><font face="Fixedsys" size="2">&nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        &nbsp;<br>
+                        la page de base eax n'est pas encore en m&eacute;moire 
+                        physique &nbsp;</font></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2">inc 
+                        dword ptr [eax]</font></td>
+                      <td nowrap> <p><font face="Fixedsys" size="2"><font color="#33CC33">; 
+                          ---&gt; 1er acc&egrave;s &agrave; cette page<br>
+                          ; ---&gt;</font>&nbsp;<font color="#33CC33">d&eacute;clenche 
+                          une int 14<br>
+                          ; ---&gt; place la page de base eax en m&eacute;moire 
+                          physique<br>
+                          ; <br>
+                          </font></font><font face="Fixedsys" color="#33CC33" size="2">; 
+                          l'instruction INC peut &ecirc;tre remplac&eacute;e par 
+                          n'importe<br>
+                          ; quelle instruction lisant ou &eacute;crivant dans 
+                          la page<br>
+                          ; de base eax.</font></p></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td nowrap><font face="Fixedsys" size="2">push eax<br>
+                        call VirtualFree</font></td>
+                      <td nowrap>&nbsp;</td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font color="#000000" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p><font color="#33CC33" face="Fixedsys" size="2"><u>D&eacute;tection 
+              de SoftIce</u> :</font></p>
+            <p><font face="Fixedsys" size="2">Avec tous ces ingr&eacute;dients, 
+              il est possible de d&eacute;tecter SoftIce.</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">Ex&eacute;cuter 
+              une instruction qui d&eacute;clenche une interruption 14 avec le 
+              bit RF &agrave; 1 ne nous permet pas de voir directement la pr&eacute;sence 
+              de SoftIce puisque de toutes fa&ccedil;ons le bit RF est automatiquement 
+              effac&eacute;. Il faut donc une m&eacute;thode plus subtile car 
+              tout se passe AVANT...</font></p>
+            <p align='justify'><font face="Fixedsys" size="2">Regarder les cons&eacute;quences 
+              du bit RF plut&ocirc;t que RF lui m&ecirc;me est plus int&eacute;ressant. 
+              Voici un organigramme qui d&eacute;compose le r&ocirc;le du CPU, 
+              du syst&egrave;me (Windows) et de SoftIce (s'il est pr&eacute;sent 
+              bien s&ucirc;r) pendant l'ex&eacute;cution d'une instruction,</font></p>
+            <ul>
+              <li><font face="Fixedsys" size="2"> d&eacute;clenchant une interruption 
+                14</font></li>
+              <li> <font face="Fixedsys" size="2">ayant le bit RF de EFlags valid&eacute; 
+                &agrave; 1</font></li>
+              <li> <font face="Fixedsys" size="2">ayant le bit TF de EFlags valid&eacute; 
+                &agrave; 1</font></li>
+              <li><font face="Fixedsys" size="2"> et ayant un point d'arr&ecirc;t 
+                Local de type Faute (ex&eacute;cution) point&eacute;e sur elle</font></li>
+            </ul>
+            <p><font face="Fixedsys" size="2">Les exceptions g&eacute;n&eacute;r&eacute;es 
+              par l'ex&eacute;cution de cette instruction sont r&eacute;cup&eacute;r&eacute;es 
+              par un SEH cr&eacute;&eacute; pr&eacute;alablement. Cet organigramme 
+              permet de voir</font></p>
+            <ul>
+              <li><font face="Fixedsys" size="2"> l'ordre des interruptions g&eacute;n&eacute;r&eacute;es 
+                par le CPU</font></li>
+              <li><font face="Fixedsys" size="2"> et comment SoftIce se trahit. 
+                :)</font></li>
+            </ul>
+            <table border="0" cellspacing="4" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="20" height="1"></font></td>
+                <td nowrap><font color="#339999" face="Fixedsys" size="2">t&acirc;che 
+                  ex&eacute;cut&eacute;e par le CPU</font></td>
+              </tr>
+              <tr> 
+                <td bgcolor="#33CC33"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="20" height="1"></font></td>
+                <td nowrap><font color="#33CC33" face="Fixedsys" size="2">t&acirc;che 
+                  ex&eacute;cut&eacute;e par Windows</font></td>
+              </tr>
+              <tr> 
+                <td bgcolor="#FFFF00"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="20" height="1"></font></td>
+                <td nowrap><font color="#FFFF00" face="Fixedsys" size="2">t&acirc;che 
+                  ex&eacute;cut&eacute;e par SoftIce</font></td>
+              </tr>
+            </table>
+            <p align="center"><font face="Fixedsys" size="2"><img src="../../../image/rf_organi.gif" width="718" height="1215"></font></p>
+            <p>&nbsp;</p>
+            <p><font face="Fixedsys" size="2">Voici un petit exemple avec source 
+              : <a href="../../../telecharger/anti_cracking/detect_ice/rf_detect_ice.zip" onFocus="if(this.blur)this.blur()" target="_blank"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a> 
+              </font></p>
+            <div align="center"> 
+              <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr> 
+                  <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                </tr>
+              </table>
+              <font face="Fixedsys" size="2">Illustrations : Bill WATTERSON - 
+              &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" align="right" bgcolor="#339999">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" color="#33CC33" size="2">Le 
+                        08/11/2004 - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif"> 
+            </font></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<html>
+  <head>
+    <title>FlashGet 1.60 keygen</title>
+    <script language="JavaScript">
+      function generateKey() {
+        type = Math.round(Math.random());
+
+        chars = new Array();
+
+        for(i = 0x30; i <= 0x39; i++)
+          chars.push(i);
+
+        for(i = 0x61; i <= 0x7a; i++)
+          chars.push(i);
+
+        function randomChar() {
+          return Math.round(Math.random() * (chars.length - 1));
+        }
+
+        rc = new Array(4);
+
+        // DWORD 1
+        // -----------------------------------------------------------------------------
+        exit = false;
+
+        for(i = 0; i < 4; i++)
+          rc[i] = randomChar();
+
+        for(i = 0; i < chars.length; i++) {
+          char1 = chars[(rc[0] + i) % chars.length];
+
+          for(j = 0; j < chars.length; j++) {
+            char2 = chars[(rc[1] + j) % chars.length];
+
+            for(k = 0; k < chars.length; k++) {
+              char3 = chars[(rc[2] + k) % chars.length];
+
+              for(l = 0; l < chars.length; l++) {
+                char4 = chars[(rc[3] + l) % chars.length];
+
+                if(((char3 ^ char2) * char4 + char1) % 0x6B == 0) {
+                  dword1 = String.fromCharCode(char1) + String.fromCharCode(char2) + String.fromCharCode(char3) + String.fromCharCode(char4);
+
+                  exit = true;
+                }
+
+                if(exit)
+                  break;
+
+              }
+
+              if(exit)
+                break;
+
+            }
+
+            if(exit)
+              break;
+
+          }
+
+          if(exit)
+            break;
+
+        }
+        // -----------------------------------------------------------------------------
+
+
+        // DWORD 2
+        // -----------------------------------------------------------------------------
+        exit = false;
+
+        for(i = 0; i < 4; i++)
+          rc[i] = randomChar();
+
+        for(i = 0; i < chars.length; i++) {
+          char5 = chars[(rc[0] + i) % chars.length];
+
+          for(j = 0; j < chars.length; j++) {
+            char6 = chars[(rc[1] + j) % chars.length];
+
+            for(k = 0; k < chars.length; k++) {
+              char7 = chars[(rc[2] + k) % chars.length];
+
+              for(l = 0; l < chars.length; l++) {
+                char8 = chars[(rc[3] + l) % chars.length];
+
+                if(((char7 & char6) * char8 + char5) % 0x65 == 8) {
+                  dword2 = String.fromCharCode(char5) + String.fromCharCode(char6) + String.fromCharCode(char7) + String.fromCharCode(char8);
+
+                  exit = true;
+                }
+
+                if(exit)
+                  break;
+
+              }
+
+              if(exit)
+                break;
+
+            }
+
+            if(exit)
+              break;
+
+          }
+
+          if(exit)
+            break;
+
+        }
+        // -----------------------------------------------------------------------------
+
+
+        // DWORD 3
+        // -----------------------------------------------------------------------------
+        exit = false;
+
+        for(i = 0; i < 4; i++)
+          rc[i] = randomChar();
+
+        for(i = 0; i < chars.length; i++) {
+          char9 = chars[(rc[0] + i) % chars.length];
+
+          for(j = 0; j < chars.length; j++) {
+            char10 = chars[(rc[1] + j) % chars.length];
+
+            for(k = 0; k < chars.length; k++) {
+              char11 = chars[(rc[2] + k) % chars.length];
+
+              for(l = 0; l < chars.length; l++) {
+                char12 = chars[(rc[3] + l) % chars.length];
+
+                if((char9 + char10 * char11 + char12) % (type == 0 ? 0x76 : 0x69) == 0) {
+                  dword3 = String.fromCharCode(char9) + String.fromCharCode(char10) + String.fromCharCode(char11) + String.fromCharCode(char12);
+
+                  exit = true;
+                }
+
+                if(exit)
+                  break;
+
+              }
+
+              if(exit)
+                break;
+
+            }
+
+            if(exit)
+              break;
+
+          }
+
+          if(exit)
+            break;
+
+        }
+        // -----------------------------------------------------------------------------
+
+        // DWORD 4
+        // -----------------------------------------------------------------------------
+        exit = false;
+
+        for(i = 0; i < 4; i++)
+          rc[i] = randomChar();
+
+        for(i = 0; i < chars.length; i++) {
+          char13 = chars[(rc[0] + i) % chars.length];
+
+          for(j = 0; j < chars.length; j++) {
+            char14 = chars[(rc[1] + j) % chars.length];
+
+            for(k = 0; k < chars.length; k++) {
+              char15 = chars[(rc[2] + k) % chars.length];
+
+              for(l = 0; l < chars.length; l++) {
+                char16 = chars[(rc[3] + l) % chars.length];
+
+                if(((char15 | char14) * char16 + char13) % 0x69 == 0) {
+                  dword4 = String.fromCharCode(char13) + String.fromCharCode(char14) + String.fromCharCode(char15) + String.fromCharCode(char16);
+
+                  exit = true;
+                }
+
+                if(exit)
+                  break;
+
+              }
+
+              if(exit)
+                break;
+
+            }
+
+            if(exit)
+              break;
+
+          }
+
+          if(exit)
+            break;
+
+        }
+        // -----------------------------------------------------------------------------
+
+        serial = type == 0 ? "fgf-" : "fgc-";
+        serial += dword1;
+        serial += dword2;
+        serial += dword3;
+        serial += dword4;
+
+        for(i = 0; i < 24; i++)
+          serial += String.fromCharCode(chars[randomChar()]);
+
+        return serial;
+      }
+    </script>
+  </head>
+  <body>
+    <h1>FlashGet 1.60 keygen</h1>
+    <form action="">
+      <div>
+        <input type="text" value="Press Generate to make a valid key..." size="64" maxlength="44" readonly="readonly"/>
+        <input type="button" value="Generate" onclick="javascript:document.forms[0].elements[0].value = generateKey()"/>
+      </div>
+    </form>
+    <address>By Canter [NGEN] &lt;<a href="mailto:canterwood@altern.org">canterwood@altern.org</a>&gt;</address>
+  </body>
+</html>

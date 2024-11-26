@@ -1,0 +1,2 @@
+This keymaker uses the MD2 + XTEA routines to generate valid serials for CloneCD, BUT it seems that (according to different people on various boards) there is a hidden check that makes your CD burning fail in some cases (about 3%).
+However, I have found nothing, thus I release the source there; and if someone can give me extra information to finish the keygen, please contact me. :)

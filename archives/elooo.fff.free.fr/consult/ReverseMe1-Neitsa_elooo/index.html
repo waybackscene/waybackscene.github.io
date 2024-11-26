@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo*/
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+/*   font-family: "trebuchet ms", verdana, sans-serif; */
+	font-family: "Courier New";
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+	font-family: "trebuchet ms", verdana, sans-serif;
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+	font-family: "trebuchet ms", verdana, sans-serif;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover	
+  {
+  color: #990000;
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+	
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>ReverseMe1 de Neitsa - Solution d'elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+<p>Téléchargez la cible <a href="FCSearch_Revme.exe">ici !!</a></p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie avanc&eacute;</td><td>Ollydbg, un &eacute;diteur hexad&eacute;cimal et LordPe</td><td>elooo</td></tr>
+</table>
+
+
+  <h2 id="sommaire">Sommaire du dur labeur...</h2>
+<ul>
+	 <li><a href="index.html#intro">Allo allo ? Depannage Info Express, que puis-je faire pour vous ?</a></li>
+	 <li><a href="index.html#point0">Reversing bonus : privil&eacute;gier Mozilla plutôt que Firefox</a></li>	 
+	 <li><a href="index.html#point1">Parsing de keywords</a></li>
+	 <li><a href="index.html#point2">Le menu EXIT</a></li>
+	 <li><a href="index.html#point3">Message d'alerte en cas d'EditBox vide</a></li>	 	 
+	 <li><a href="index.html#point4">Activation du menu ABOUT</a></li> 	 
+	 <li><a href="index.html#point5">D&eacute;grisage du sous-menu ABOUT et peaufinage de la bestiole</a></li>	 	 
+	 <li><a href="index.html#point6">Compatibilit&eacute; de la recherche avec Internet Explorer</a></li>	
+	 <li><a href="index.html#point7">Debuggage du sous-menu SEARCH</a></li>
+	 <li><a href="index.html#point8">Activer l'affichage des GREETZ</a></li> 
+	 <li><a href="index.html#fin">Qui a droit &agrave; un coucou ? :p</a></li> 	 
+</ul>
+
+  <h2 id="intro">Allo allo ? Depannage Info Express, que puis-je faire pour vous ?</h2>
+<p>Neitsa, afin de nous occuper, coll&eacute;s au radiateur la bi&egrave;re &agrave; la main car il fait beaucoup trop froid pour passer
+ses journ&eacute;es dehors &agrave; s'&eacute;merveiller de la beaut&eacute; de la nature, a d&eacute;cid&eacute; de nous mettre &agrave; l'&eacute;preuve sur un sympathique 
+ReverseMe.<br />
+Je vous propose de d&eacute;couvrir les vraies raisons de cette mise &agrave; l'&eacute;preuve. Il s'av&egrave;re que la mission &eacute;tait &agrave; la base 
+plus interess&eacute;e que ludique ou &eacute;ducative (niark niark :P )<br />
+Voici donc ce qu'on y trouve dans le fameux fichier d'instructions :<br />
+<a href="Rules.txt">Lisez-Moi !!</a></p>
+<p>Bon, on n'a pas de temps &agrave; perdre, passons &agrave; l'attaque !</p>
+<p>Juste une chose &agrave; dire pour ceux qui ont encore du mal avec les modifications sans &eacute;diteur hexad&eacute;cimal, mais en 
+totalit&eacute; sous Ollydbg, la d&eacute;marche est tr&egrave;s simple :</p>
+<ul>
+<li class="liste">On s&eacute;lectionne dans la fenêtre de dump (la fenêtre en bas &agrave; gauche) la partie qu'on compte modifier, puis 
+on fait ctrl+E</li>
+<li class="liste">On modifie grace &agrave; la fenêtre d'&eacute;dition qui apparaît</li>
+<li class="liste">On sauvegarde les modifications en s&eacute;lectionnant dans la fenêtre de dump la partie qui a &eacute;t&eacute; chang&eacute;e, 
+puis en faisant un clique-droit sur la fenêtre de dump -> "Copie to executable file"</li>
+</ul>
+<p>Cette fois, on peut commencer &agrave; travailler :)</p>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point0">Reversing bonus : privil&eacute;gier Mozilla plutôt que Firefox</h2>
+	
+<p>Voici un screenshot de l'apparence du programme &agrave; l'origine.</p>
+
+<p style="text-align:center">
+<img src="1.PNG" alt="Image 1" />
+</p>
+
+<p>Cet outil a pour but normalement d'effectuer des
+recherches par mots clefs sur un certain forum. On constate qu'il est sens&eacute; être capable initialement d'effectuer ce
+travail en lançant Internet Explorer, ou FireFox.<br />
+N'utilisant pas FireFox mais Mozilla, j'ai d&eacute;cid&eacute; de l'adapter &agrave; ma situation pour commencer.</p>
+
+<p>ShellExecuteA va permettre d'executer un fichier. Cette fonction prend en param&egrave;tre six valeurs, dont une qui correspond
+au FileName, autrement dit un pointeur vers le nom du fichier &agrave; lancer.</p>
+
+<p style="text-align:center">
+<img src="2.PNG" alt="Image 2" />
+</p>
+
+<p>On voit que "FireFox" est stock&eacute; en 00403132, donc on s'y rend,et on va remplacer "FireFox" par "Mozilla" tout d'abord.</p>
+
+<p style="text-align:center">
+<img src="3.PNG" alt="Image 3" />
+</p>
+
+<p>Cette modification va permettre de lancer Mozilla au lieu de FireFox mais pour du travail propre, il serait pr&eacute;f&eacute;rable
+de modifier aussi FireFox par Mozilla sur l'interface graphique : en label du bouton check et dans le menu Browsers.</p>
+
+<p>On fait alt+M pour faire apparaître la Memory map, et on peut voir que la section ressources d&eacute;bute en 00404000.</p>
+
+<p style="text-align:center">
+<img src="4.PNG" alt="Image 4" />
+</p>
+
+<p>On se rend donc en 00404000 dans la fenêtre de dump (ctrl+G), et on y cherche "FireFox" :</p>
+
+<p style="text-align:center">
+<img src="5.PNG" alt="Image 5" />
+</p>
+
+<p>La premi&egrave;re occurence correspond &agrave; la string situ&eacute;e en label du bouton check. Hop, on modifie :</p>
+
+<p style="text-align:center">
+<img src="6.PNG" alt="Image 6" />
+</p>
+
+<p>On fait de même pour la deuxi&egrave;me occurence (le libell&eacute; dans le menu Browsers) :</p>
+
+<p style="text-align:center">
+<img src="7.PNG" alt="Image 7" />
+</p>
+
+<p>Et voil&agrave;, on obtient bien ce qu'on voulait :</p>
+
+<p style="text-align:center">
+<img src="8.PNG" alt="Image 8" />
+</p>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+<h2 id="point1">Parsing de keywords</h2> 
+
+<p>L'objectif ici est de faire en sorte que lorsqu'on rentre plus d'un mot-clef dans l'editbox, ils soient tous r&eacute;cup&eacute;r&eacute;s
+mais que l'espace qui permet de les s&eacute;parer soit remplacer par un '+'.<br />
+Au niveau du code, &agrave; peine plus bas que le GetDlgItemTextA, on peut voir :</p>
+
+<p style="text-align:center">
+<img src="9.PNG" alt="Image 9" />
+</p>
+
+<p>Il faudrait donc pouvoir rajouter avant le label StockChar, que si le caract&egrave;re courant est un espace (0x20), on
+mettra 0x2B ('+') dans al, avant de passer dans le code du label StockChar. <br />
+Par contre on voit bien qu'on n'a pas de place ici, il va donc falloir r&eacute;-&eacute;crire sur le code existant pour faire jumper
+l&agrave; où il y a de la place afin de rajouter du code.<br />
+Ici par exemple :</p>
+
+<blockquote>
+<pre>
+/*40127F*/  ASCII "Houla... ben y'a"
+/*40128F*/  ASCII " de place au cas"
+/*40129F*/  ASCII " ou... :-)",0
+/*4012AA*/  DB 00
+/*4012AB*/  DB 00
+/*4012AC*/  DB 00
+/*4012AD*/  DB 00
+/*4012AE*/  DB 00
+/*4012AF*/  DB 00
+/*4012B0*/  DB 00
+/*4012B1*/  DB 00
+</pre>
+</blockquote>
+
+<p>Au niveau des modifications, voil&agrave; ce que j'ai fait :</p>
+
+<p style="text-align:center">
+<img src="10.PNG" alt="Image 10" />
+</p>
+<p style="text-align:center">
+<img src="11.PNG" alt="Image 11" />
+</p>
+
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point2">Le menu EXIT</h2>
+	
+<p>Neitsa nous informe que le menu EXIT fonctionne mal. Hum apr&egrave;s test, je dirais même qu'il ne fonctionne pas du tout :)<br />
+L'enjeu ici est donc de le rendre efficient.</p>
+<p>Tout d'abord nous allons partir &agrave; la recherche de l'ID du sous-menu afin de voir si du code y est d&eacute;j&agrave; associ&eacute; dans la
+gestion des &eacute;v&egrave;nements.<br />
+Voici l'ID su sous-menu :</p>
+<p style="text-align:center">
+<img src="12.PNG" alt="Image 12" />
+</p>
+<p>Autrement dit, 0x2712. On voit que dans le code, il y a effectivement un test dessus sur la gestion des &eacute;v&egrave;nements :</p>
+<p style="text-align:center">
+<img src="13.PNG" alt="Image 13" />
+</p>
+<p>Marf, le sous-menu EXIT minimise la fenêtre mais ne ferme pas le programme !<br />
+Voici donc les modifications que j'ai faites :</p>
+<p style="text-align:center">
+<img src="14.PNG" alt="Image 14" />
+</p>
+<p>Pourquoi un call 00401480 ? Mais parce que le jmp ExitProcess s'y trouve &agrave; cette endroit dans l'IAT :)</p>
+<p style="text-align:center">
+<img src="15.PNG" alt="Image 15" />
+</p>
+	
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point3">Message d'alerte en cas d'EditBox vide</h2>
+
+<p>Neitsa aimerait qu'on fasse afficher une MessageBox si on clique sur le bouton Search ou sur le sous-menu Search sans
+avoir rentr&eacute; au pr&eacute;alable de mot-clef dans l'EditBox.<br />
+On va d&eacute;j&agrave; partir en quête du message &agrave; afficher. Apparemment le texte &agrave; afficher et la caption de la fenêtre ont d&eacute;j&agrave;
+&eacute;t&eacute; d&eacute;clar&eacute;s.<br />
+Effectivement on n'a pas &agrave; chercher longtemps :</p>
+<p style="text-align:center">
+<img src="16.PNG" alt="Image 16" />
+</p> 
+<p>La caption se situe en 004030D2 et le texte en 004030BA.</p>
+<p>Si on veut rajouter une MessageBox, il faut &eacute;galement chercher &agrave; quel moment on devra jumper vers le bout de code qu'on
+va rajouter.<br />
+Le contenu de l'EditBox est r&eacute;cup&eacute;r&eacute; grace &agrave; GetDlgItemTextA. Cette fonction d'api renvoit la longueur de la string entr&eacute;e dans l'EditBox,
+donc si la longueur est de 0, c'est l&agrave; qu'il faut jumper pour faire apparaître la MessageBox.</p>
+
+<p style="text-align:center">
+<img src="17.PNG" alt="Image 17" />
+</p> 	
+
+<p>Par contre, ô mis&eacute;ricorde, pas de trace de MessageBoxA dans l'IAT, il va falloir l'importer de nous-même...</p>
+<p style="text-align:center">
+<img src="18.PNG" alt="Image 18" />
+</p> 
+<p>M'&eacute;tant interdit d'utiliser LordPe pour rajouter l'import, on va voir comment s'y prendre pour le faire &agrave; la main.<br />
+On va tout de même utiliser LordPe pour voir facilement les infos sur les sections :</p>
+
+<p style="text-align:center">
+<img src="19.PNG" alt="Image 19" />
+</p> 
+
+<p>On peut d&eacute;j&agrave; hypoth&eacute;ser que l'Import Table se trouve dans la section .rdata. Enfin... allons voir concr&egrave;tement ce qu'il en est.<br />
+On cherche la signature "PE\00" dans l'&eacute;diteur hexad&eacute;cimal. On constate qu'elle se trouve en 0xD0.<br />
+On ajoute 0x80 &agrave; 0xD0 afin de r&eacute;cup&eacute;rer la RVA de l'Import Table. 0x80 + 0xD0 = 0x150. Dans l'&eacute;diteur hexa, &agrave; l'offset 0x150, le
+dword est 50200000, ce qui donne, une fois remis dans l'ordre, une RVA de l'Import Table = 0x2050.<br />
+On peut voir que la Virtual Address du d&eacute;but de la section rdata est de 0x2000 et qu'elle se termine en 0x3000. L'Import
+Table se trouve donc bien dans la section rdata.<br />
+L'offset de l'Import Table = 0x2050 - 0x2000 + 0xA00 = 0xA50<br />
+Si on se rend &agrave; l'offset 0xA50 dans l'&eacute;diteur hexa, on y voit :</p>
+
+<p style="text-align:center">
+<img src="20.PNG" alt="Image 20" />
+</p> 
+<p>Ce que j'ai volontairement noirci, c'est l'Image Import Descriptor. Je vais pas faire un cours sur le format PE, par contre
+pour ceux qui sont compl&egrave;tement paum&eacute;s l&agrave;, je vous encourage &agrave; vous documenter sur le PE Header et la table d'imports !<br />
+Les seules valeurs dont on a r&eacute;ellement besoin ici, se sont le dword Name (RVA de la string qui correspond au nom de la dll), et le FirstThunk
+(RVA du pointeur vers le nom de la premi&egrave;re fonction d'Api de la dll concern&eacute;e). Le reste peut être mis &agrave; z&eacute;ro sans souci (l&agrave; encore je ne
+vais pas rentrer dans les d&eacute;tails, si ça vous intrigue, documentez-vous !).</p>
+<p>Dans l'Image Import Descriptor, on voit donc 4 entr&eacute;es de 5 dwords, une entr&eacute;e pour chaque dll, puis ensuite 5 dwords nuls qui correspondent
+&agrave; la fin de l'Image Image Descriptor.<br />
+Voici un sch&eacute;ma de la structure de l'Image Import Descriptor :</p>
+
+<blockquote>
+<pre>
+typedef struct _IMAGE_IMPORT_DESCRIPTOR {
+  union { 
+      DWORD   Characteristics;    // 0 for terminating null import descriptor
+      DWORD   OriginalFirstThunk; // RVA to original unbound IAT (PIMAGE_THUNK_DATA)
+  };
+  DWORD   TimeDateStamp;          // 0 if not bound,
+                                  // -1 if bound, and real date\time stamp
+                                  //     in IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT (new BIND)
+                                  // O.W. date/time stamp of DLL bound to (Old BIND)
+        
+  DWORD   ForwarderChain;         // -1 if no forwarders
+  DWORD   Name; 
+  DWORD   FirstThunk;             // RVA to IAT (if bound this IAT has actual addresses)
+} IMAGE_IMPORT_DESCRIPTOR;
+typedef IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;
+</pre>
+</blockquote>
+
+<p>Ce qui se trouve en 0xA00 c'est l'Import Address Table, vers laquelle pointe les diff&eacute;rents FirstThunks.<br />
+L'Import Address Table contient des pointeurs vers toutes les strings des fonctions d'Api, pr&eacute;c&eacute;d&eacute;s par leur hint (le word
+qui pr&eacute;c&egrave;de le nom de la fonction d'Api).</p>
+<p>En a 0XAB4, c'est l'"Unbound" Import Table, &agrave; laquelle se r&eacute;f&egrave;rent les diff&eacute;rents OriginalFirstThunks.<br/>
+Les OriginalFirstThunks, on va les mettre &agrave; z&eacute;ro, donc toute cette "Unbound" Import Table, on va pouvoir l'effacer. Ce
+qui nous permettra de nous faire de la place pour rajouter notre import.</p>
+<p>Donc premier travail, on met les OriginalFirstThunks &agrave; z&eacute;ro et on efface l'"Unbound" Import Table :</p>
+
+<p style="text-align:center">
+<img src="21.PNG" alt="Image 21" />
+</p> 
+
+<p>On rajoute nos strings dans le tableau des strings : une pour le nom de la dll, l'autre pour le nom de la fonction :</p>
+
+<p style="text-align:center">
+<img src="22.PNG" alt="Image 22" />
+</p>
+
+<p>Et il va falloir d&eacute;caler nos Image Import Descriptor car du coup on a une nouvelle RVA &agrave; ajouter &agrave; l'Import Adress Table : celle
+du pointeur vers le hint de MessageBoxA (hint laiss&eacute; &agrave; z&eacute;ro : le hint est facultatif) : </p>
+
+<p style="text-align:center">
+<img src="23.PNG" alt="Image 23" />
+</p>
+<p>En rouge, on a le rajout dans l'Import Adress Table : 0x20EA - 0x2000 + 0xA00 = 0xAEA<br />
+Noirci, on peut voir nos Image Import Descriptor d&eacute;cal&eacute;s.</p>
+
+<p>Il nous reste &agrave; rajouter un Image Import Descriptor pour le nouvel user32.dll qu'on veut importer, et &agrave; changer la valeur
+du dword contenu en 0x150 &eacute;tant donn&eacute; que l'Import Table a &eacute;t&eacute; d&eacute;cal&eacute;e :</p>
+
+<p style="text-align:center">
+<img src="24.PNG" alt="Image 24" />
+</p>
+<p style="text-align:center">
+<img src="25.PNG" alt="Image 25" />
+</p>
+
+<p>On v&eacute;rifie notre travail :</p>
+
+<p style="text-align:center">
+<img src="26.PNG" alt="Image 26" />
+</p>
+
+<p>Eheh on va pouvoir commencer &agrave; s'amuser avec notre MessageBoxA :)<br />
+on va rajouter un jmp vers la RVA du pointeur du nom de la fonction d'Api.</p>
+
+<p style="text-align:center">
+<img src="27.PNG" alt="Image 27" />
+</p>
+
+<p>On est maintenant en mesure d'utiliser la fonction d'Api comme bon nous semble.<br />
+Mes modifications :</p>
+
+<p style="text-align:center">
+<img src="28.PNG" alt="Image 28" />
+</p>
+<p style="text-align:center">
+<img src="29.PNG" alt="Image 29" />
+</p>
+
+<p>Et ça marche :P :</p>
+<p style="text-align:center">
+<img src="30.PNG" alt="Image 30" />
+</p>
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+	  <h2 id="point4">Activation du menu ABOUT</h2>
+	
+<p>Voyons voir comment se pr&eacute;sente les menus dans le dump hexa :</p>
+<p style="text-align:center">
+<img src="31.PNG" alt="Image 31" />
+</p>
+<p>Le menu File est pr&eacute;c&eacute;d&eacute; par un byte &agrave; 0x26.<br />
+Le byte &agrave; 0x26 permet au menu File d'être accessible par ctrl+F (premi&egrave;re lettre du menu).<br />
+Le dword qui se situe encore avant contient l'identificateur, et le dword pr&eacute;c&eacute;dent est &agrave; 0</p>
+
+<p style="text-align:center">
+<img src="32.PNG" alt="Image 32" />
+</p>
+<p>Le menu Browsers n'est pas pr&eacute;c&eacute;d&eacute; par un byte &agrave; 0x26, donc ce menu n'est pas disponible en raccourci clavier ctrl.<br />
+On rep&egrave;re facilement son identificateur, et encore avant le dword &agrave; 0.</p>
+<p style="text-align:center">
+<img src="33.PNG" alt="Image 33" />
+</p>
+<p>Le menu About est pr&eacute;c&eacute;d&eacute; d'un byte &agrave; 0x26 : un raccourci clavier a donc &eacute;t&eacute; mis en place, par contre
+le dword pr&eacute;c&eacute;dant l'identificateur du menu est &agrave; 2.</p>
+
+<p>Mettons ce bit &agrave; 0 afin qu'il r&eacute;cup&egrave;re le même bit d'&eacute;tat que les autres menus : </p>
+
+<p style="text-align:center">
+<img src="34.PNG" alt="Image 34" />
+</p>
+
+<p>Mission accomplie, le menu About est accessible. Passons &agrave; la suite.</p>
+<p style="text-align:center">
+<img src="35.PNG" alt="Image 35" />
+</p>
+ 
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+<h2 id="point5">D&eacute;grisage du sous-menu ABOUT et peaufinage de la bestiole</h2>
+
+<h3>D&eacute;grisage du sous-menu ABOUT</h3>
+
+<p>On voit bien que le sous-menu ABOUT est gris&eacute;... il va donc falloir le d&eacute;griser.<br />
+Si on compare le sous-menu GREETZ avec le sous-menu ABOUT dans le dump hexa, on s'aperçoit que l&agrave; où pour le sous-menu
+GREETZ un bit est &agrave; 0, il est &agrave; 1 pour le sous-menu ABOUT :</p>
+
+<p style="text-align:center">
+<img src="36.PNG" alt="Image 36" />
+</p>
+
+<p>Donc mettons ce bit &agrave; 0 :</p>
+
+<p style="text-align:center">
+<img src="37.PNG" alt="Image 37" />
+</p>
+
+<p>On teste et c'est effectivement correctement d&eacute;gris&eacute; :</p>
+
+<p style="text-align:center">
+<img src="38.PNG" alt="Image 38" />
+</p>
+
+<h3>Peaufinage de la bestiole</h3>
+
+<p>Quand on clique sur le sous-menu ABOUT, ça fonctionne tr&egrave;s bien dor&eacute;navant mais qu'est-ce que c'est immonde !!</p>
+
+<p style="text-align:center">
+<img src="39.PNG" alt="Image 39" />
+</p>
+<p>Le texte est perdu au milieu des infos fournies dans le ShellAbout, la boîte de dialogue est &eacute;norme comparativement 
+au programme en lui-même, etc.<br />
+Ayant import&eacute; pr&eacute;c&eacute;dent la fonction d'Api MessageBoxA, je me suis dit que ça serait carr&eacute;ment plus joli de remplacer ce
+vilain ShellAbout par une MessageBox...</p>
+<p>Donc voici les modifications que j'y ai apport&eacute; :</p>
+<p style="text-align:center">
+<img src="40.PNG" alt="Image 40" />
+</p>
+
+<p style="text-align:center">
+<img src="41.PNG" alt="Image 41" />
+</p>
+
+<p>C'est plus joli comme ça je trouve :)</p>
+
+<p style="text-align:center">
+<img src="42.PNG" alt="Image 42" />
+</p>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point6">Compatibilit&eacute; de la recherche avec Internet Explorer</h2>
+	
+<p>Bon par contre il y a un souci majeur : la fonction Recherche avec Internet Explorer ne marche du tout :<br />
+il ouvre malgr&eacute; tout Mozilla (ou FireFox), et en plus ne passe pas les mots-clefs recherch&eacute;s dans l'url.<br />
+Quand on sait qu'Internet Explorer reste encore le navigateur le plus utilis&eacute;, on peut consid&eacute;rer cel&agrave; comme un 
+probl&egrave;me de taille...<br />
+Donc pas le choix, 'va falloir arranger ça !</p>
+
+<p>Au niveau du code, on voit ceci :</p>
+
+<p style="text-align:center">
+<img src="43.PNG" alt="Image 43" />
+</p>	
+<p>On comprend vite le probl&egrave;me :<br />
+Si IE est selectionn&eacute;, on s'aperçoit que la string qui contient l'url est celle d&eacute;pourvue des mots-clefs qui devraient
+lui être concat&eacute;n&eacute;s, et puis comme argument FileName on a toujours "Mozilla" et non "Iexplore" !</p>
+<p>Par contre on va avoir un souci au niveau de la place : en effet, il faudrait pouvoir remplacer, pour commencer :</p>
+<blockquote>
+<pre>
+004010D0   .  68 EE304000      PUSH 004030EE
+</pre>
+</blockquote>
+<p>Par</p>
+<blockquote>
+<pre>004010D0   .  FF35 54334000    PUSH DWORD PTR DS:[403354]
+</pre>
+</blockquote>
+<p>Ce qui nous demande un bit de plus... mais on n'a pas la place :)</p>
+<p>C'est rageant de devoir rediriger le code juste pour un bit... r&eacute;fl&eacute;chissons !</p>
+
+<p>On a un test inutile ici :</p>
+<blockquote>
+<pre>
+004010C7   .  83F8 01          CMP EAX, 1
+004010CA   .  75 1B            JNZ SHORT 004010E7                       ;  Test inutile
+</pre>
+</blockquote>
+<p>En effet, on ne peut pas ne pas s&eacute;lectionner de bouton radio, ce qui signifie que si le bouton radio "Mozilla" n'est pas
+choisi, c'est que forc&eacute;ment ça sera celui de "IE" qui sera s&eacute;lectionn&eacute;.<br />
+Donc on peut &eacute;craser le JNZ sans souci... et ça nous lib&egrave;re 2 bits ! On n'en voulait qu'un, mais ce n'est pas grave :)<br />
+Et ça donne, au niveau de mes modifications :</p>
+
+<p style="text-align:center">
+<img src="44.PNG" alt="Image 44" />
+</p>	
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point7">Debuggage du sous-menu SEARCH</h2>
+
+<p>Quand on clique sur le sous-menu SEARCH, il ne se passe rien, alors que l'effet devrait être le même qu'un appui
+sur le bouton SEARCH.<br />
+Cherchons dans le dump hexa l'identificateur de ce sous-menu, afin de voir si un &eacute;v&egrave;nement lui ait d&eacute;j&agrave; associ&eacute; :</p>
+
+<p style="text-align:center">
+<img src="45.PNG" alt="Image 45" />
+</p>	 
+
+<p>Son identificateur est 0x2716, et effectivement aucun code ne lui ait associ&eacute;, il va donc falloir s'en charger.</p>
+<p>Quand on clique sur le bouton SEARCH de la fenêtre principale, que se passe-t-il ?</p>
+
+<p style="text-align:center">
+<img src="46.PNG" alt="Image 46" />
+</p>
+
+<p>En fait, si le bouton a &eacute;t&eacute; cliqu&eacute;, on entre dans le call en 00401000.<br />
+Notre travail consiste donc &agrave; rajouter un test pour voir si le sous-menu SEARCH a &eacute;t&eacute; cliqu&eacute;, et si c'est le cas, on jumpe
+en 00401191 pour appeller le fameux call en 00401000.<br />
+Tout &agrave; l'heure en remplaçant notre ShellABout par une MessageBox, on s'est lib&eacute;r&eacute; de la place, on va donc pouvoir l'utiliser pour
+rajouter notre test :)</p>
+<p>Mes modifications :</p>
+
+<p style="text-align:center">
+<img src="47.PNG" alt="Image 47" />
+</p>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point8">Activer l'affichage des GREETZ</h2>
+
+<p>Il ne nous reste plus qu'&agrave; activer l'affichage des GREETZ.<br />
+L'identificateur du sous-menu GREETZ est 0x2718:</p>
+
+<p style="text-align:center">
+<img src="48.PNG" alt="Image 48" />
+</p>	
+
+<p>Et au niveau du code associ&eacute; on a :</p>
+
+<p style="text-align:center">
+<img src="49.PNG" alt="Image 49" />
+</p>	
+	
+<p>L&agrave; ça a le m&eacute;rite d'être clair, l'&eacute;venement associ&eacute; au click sur le sous-menu GREETZ est de ne rien faire...<br />
+On va donc rediriger vers un endroit ou on pourra rajouter du code.<br />
+Par contre y'a un souci : on a seulement 3 bits de libre pour faire un jmp :</p>
+<blockquote>
+<pre>
+00401232   .  90            NOP                 ;  si GREETZ clique, on ne fait rien !
+00401233   .  EB 3E         JMP SHORT 00401273
+</pre>
+</blockquote>
+<p>Si on fait un jmp long, on n'a pas assez de place... on a juste assez pour un jmp short (ça prend 2 bits seulement),
+et ça tombe bien, il nous reste encore de la place l&agrave; où on avait vir&eacute; le ShellAbout.<br />
+Donc on pourrait mettre un jmp short vers cet emplacement où on a encore des nops.<br />
+Par contre on n'aura toujours pas assez de place pour &eacute;crire le code complet ici... Donc &agrave; l'endroit où y'a des nops, on
+mettra un jmp long vers le code redirig&eacute; :) C'est une solution de secours, j'ai jamais dit que c'&eacute;tait propre ;)</p>
+
+<p>On sait comment on va s'y prendre, par contre Neitsa nous dit que le texte &agrave; afficher se trouve d&eacute;j&agrave; initialis&eacute; dans
+le programme. Il va falloir le trouver.<br />
+Donc on va se rendre dans la section data avec la fenêtre de dump, et hop, on tombe directement dessus :)</p>
+
+<p style="text-align:center">
+<img src="50.PNG" alt="Image 50" />
+</p>	
+
+<p>Maintenant on a tous les &eacute;l&eacute;ments n&eacute;cessaires ; voici mes modifications (j'ai choisi une MessageBox de nouveau, pour
+l'affichage des Greetz) :</p>
+
+<p style="text-align:center">
+<img src="51.PNG" alt="Image 51" />
+</p>	
+	
+<p style="text-align:center">
+<img src="52.PNG" alt="Image 52" />
+</p>	
+	
+<p>Voyons voir &agrave; quoi ça ressemble...</p>
+
+<p style="text-align:center">
+<img src="53.PNG" alt="Image 53" />
+</p>	
+<p>Mission accomplie :)</p>	
+<p>Le programme "reversé" est téléchargeable <a href="Reversed.exe">LA</a>.</p>
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="fin">Qui a droit &agrave; un coucou ? :p</h2>
+
+<blockquote>
+<p>Qui veut :)</p>
+<p>Cordialement,<br />
+elooo</p>
+</blockquote>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+</div>
+</body>
+</html>

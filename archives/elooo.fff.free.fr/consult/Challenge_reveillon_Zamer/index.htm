@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+/*   font-family: "trebuchet ms", verdana, sans-serif; */
+	font-family: "Courier New";
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+	font-family: "trebuchet ms", verdana, sans-serif;
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+	font-family: "trebuchet ms", verdana, sans-serif;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover	
+  {
+  color: #990000;
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+	
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>Challenge_reveillon de Zamer - Solution d'elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+<p><a href="roelofs">Télécharger la cible</a></p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie</td><td>Un editeur hexadecimal quelconque</td><td>elooo</td></tr>
+</table>
+
+
+  <h2 id="sommaire">Sommaire</h2>
+<ul>
+	 <li><a href="index.htm#intro">Introduction</a></li>
+	 <li><a href="index.htm#point0">Brefs résumés des entêtes de fichiers image</a></li>	 
+	 <li><a href="index.htm#point1">Corrections à apporter sur le fichier</a></li>
+	 <li><a href="index.htm#fin">Remerciements</a></li> 	 
+</ul>
+
+  <h2 id="intro">Introduction</h2>
+<p>Zamer est un tyran, et même durant les périodes de fête, il a décidé de nous faire bucher !! <br />
+Evidemment il faut jouer le jeu et faire ce challenge dans un état d'ebriété certain. Je vous propose donc d'aller chercher votre
+bouteille d'alcool préféré et de vous laisser aller à en boire quelques verres (pas trop non plus, 'faut que vous puissiez
+voir et lire les octets dans l'éditeur hexa quand même ensuite).</p>
+<ul class="liste">
+<li>Si vous avez l'impression d'être sur une mer en plein cyclone ou que vous avez le sentiment d'être assis sur un nuage, je vous encourage à réouvrir
+ce tutorial demain, et à penser à être plus raisonnable dans votre consommation d'alcool dorénavant. Je vous ai pas dit de vous murger non plus hein :p</li>
+<li>Si vous ne buvez pas, faites au moins semblant, videz la bouteille de champomy (juste pour l'ambiance ;))</li>
+<li>Si vous vous sentez détendu, prêt à lire des trucs inutiles qui ne vous serviront pas en société, mais qui vous feront passer un peu le temps, je
+pense que ça sera suffisant, vous pouvez passer au paragraphe suivant :)</li>
+</ul>
+<p>Première chose à faire : lire le <a href="readme">Readme</a> fourni dans l'archive.<br />
+Oui je sais c'est chi*nt, mais y'a quelques infos à en tirer :)<br />
+On y voit :</p>
+
+<blockquote>
+<pre>
+Vous devez trouver le moyen de lire l'image, pour trouver le mot de passe
+à me donner pour confirmer le challenge.
+
+C'est tres facile, y'a que 2 choses à faire, mais comme je pense que vous êtes
+tous déjà bourrés, j'ai choisi de ne pas faire compliqué.
+
+Bonne chance !</pre>
+</blockquote>
+
+<p>Pour ceux qui lisent un mot sur deux, il va falloir préciser les choses utiles dans ce court intitulé :</p>
+<ul class="liste">
+<li>Le fichier sur lequel on va devoir travailler est une image</li>
+<li>Il faut rendre l'image "visible"</li>
+<li>On a 2 choses à faire apparemment</li>
+</ul>
+<p>Zamer est un tyran, certes, mais peut-être pas au point d'avoir sorti de derrière les fagots un format d'image exotique,
+peu ou plus du tout utilisé (j'en connais un autre qui ne se serait pas géné, hein mimas ;))<br />
+On va donc faire une brève étude des formats de fichiers image les plus courants, histoire de comprendre un peu mieux leurs spécifications, 
+et plus précisément leurs entêtes.</p>
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point0">Brefs résumés des entêtes de fichiers image</h2>
+	
+	<h3>Le format GIF</h3>
+
+<p>Le format GIF de CompuServe semble être le plus complexe et, potentiellement, le plus interessant. Même si sa structure 
+en général n'interesse que les programmeurs ;)<br />
+GIF est un acronyme de "Graphics Interchange Format" (format d'échange d'images).</p>
+<p>Voilà à quoi correspond l'entête d'un fichier GIF :</p>
+
+<blockquote>	
+<pre>
+typedef struct _gifheader
+{
+	unsigned char	gif_signature[3];	/* GIF */
+	unsigned char	gif_version[3];		/* 87a ou 89a */
+	unsigned char	gif_width_lo;		/* Largeur Low-Byte */
+	unsigned char	gif_width_hi;		/*        High-Byte */
+	unsigned char	gif_height_lo;		/* Hauteur Low-Byte */
+	unsigned char	gif_height_hi;		/*        High-Byte */
+} GIFHEADER;
+</pre>
+</blockquote>
+
+<p>Ou pour ceux qui préfèrent les schémas :</p>
+
+<blockquote>
+<pre>
+        +-----------------------+
+        | +-------------------+ |
+        | |   GIF Signature   | |
+        | +-------------------+ |
+        | +-------------------+ |
+        | | Screen Descriptor | |
+        | +-------------------+ |
+        | +-------------------+ |
+        | | Global Color Map  | |
+        | +-------------------+ |
+        . . .               . . .
+        | +-------------------+ |    ---+   
+        | |  Image Descriptor | |       |   
+        | +-------------------+ |       |   
+        | +-------------------+ |       |  
+        | |  Local Color Map  | |       |-   Répété de 1 à n fois
+        | +-------------------+ |       |   
+        | +-------------------+ |       |   
+        | |    Raster Data    | |       |   
+        | +-------------------+ |    ---+   
+        . . .               . . .   
+        |-    GIF Terminator   -|   
+        +-----------------------+
+</pre>
+</blockquote>
+<p>La signature permet seulement d'identifier de quel fichier il s'agit. Ici si on voit GIF87a ou GIF89a 
+(ce qui donne en hexa "474946383761" ou "474946383961") en signature, on
+s'attendra ensuite à voir du data correspondant aux spécifications du format GIF.<br/>
+Je vais pas détailler tout le reste, là on veut juste avoir suffisamment d'info pour pouvoir identifier l'extension qu'il
+faudra attribuer au fichier fourni par Zamer.</p>
+<p>Par contre on peut parler aussi du GIF Terminator.<br />
+Un fichier GIF se terminera toujours par 0x3B (en ascii ça correspond à une virgule). C'est une convention, et c'est aussi
+ce qui marque les fins de blocs dans le fichier, mais il n'est pas utile ici, encore une fois, de rentrer dans les 
+détails.</p>
+
+
+	<h3>Le format PNG</h3>
+	
+<p>Le format PNG (Portable Network Graphics) a été mis au point en 1995 afin de fournir une alternative libre au 
+format GIF, format propriétaire dont les droits sont détenus par la société Unisys (propriétaire de l'algorithme de 
+compression LZW utilisé dans le format GIF). D'ailleurs PNG est également un acronyme pour PNG's Not Gif ;)<br />
+De plus la compression proposée par le format PNG est une compression sans perte (lossless compression) 5 à 25% meilleure que la 
+compression GIF, bref faites votre choix !!</p>
+
+<p>Tout comme le GIF vu précédemment, le fichier PNG contient une signature, qui correspond en notation hexadécimale à 
+89504E470D0A1A0A et qui correspond aux 8 premiers octets du fichier. <br />
+S'en suivent une série d'éléments appelés chunks, chunks aux-mêmes composés de 4 parties : la taille du chunk, le type de chunk 
+codé sur 4 octets, les données du chunk, et le CRC du chunk permettant de vérifier son intégrité.</p>
+<p>Les chunks peuvent être agencés dans n'importe quel ordre, par contre il faut obligatoirement que le 1er chunk soit
+IHDR (Image Header, chunk d'entête) et que le dernier soit IEND (Image Trailer, chunk de fin).</p>
+<p>Les principaux chunks (critical chuncks) sont :</p>
+<ul class="liste">
+<li>IHDR Image header</li>
+<li>PLTE Palette</li>
+<li>IDAT Image data</li>
+<li>IEND Image trailer</li>
+</ul>
+<p>Je ne parlerai pas des autres segments ici :)</p>
+
+<p>Pour ceux qui souhaiteraient la structure du PNG Header :</p>
+
+<blockquote>
+<pre>
+typedef struct _pngheader
+{
+	unsigned char	png_res1[1];		/* 0x89 */
+	unsigned char	png_signature[3];	/* PNG */
+	unsigned char	png_res2[12];		/* Reservé */
+	unsigned char	png_res3[2];		/* Reservé */
+	unsigned char	png_width_hi;		/* Largeur Low-Byte */
+	unsigned char	png_width_lo;		/*        High-Byte */
+	unsigned char	png_res4[2];		/* Reservé */
+	unsigned char	png_height_hi;		/* Hauteur Low-Byte */
+	unsigned char	png_height_lo;		/*        High-Byte */
+} PNGHEADER;
+</pre>
+</blockquote>
+
+
+
+	<h3>Le format JPEG</h3>
+	
+<p>Le format JPEG JFIF est communément référé au format JPEG.<br />
+Voici la structure du JFIF Header :</p>
+
+<blockquote>
+<pre>
+typedef struct _JFIFHeader
+{
+BYTE SOI[2]; /* 00h Start of Image Marker */
+BYTE APP0[2]; /* 02h Application Use Marker */
+BYTE Length[2]; /* 04h Length of APP0 Field */
+BYTE Identifier[5]; /* 06h "JFIF" (zero terminated) Id String */
+BYTE Version[2]; /* 0Bh JFIF Format Revision */
+BYTE Units; /* 0Dh Units used for Resolution */
+BYTE Xdensity[2]; /* 0Eh Horizontal Resolution */
+BYTE Ydensity[2]; /* 10h Vertical Resolution */
+BYTE XThumbnail; /* 12h Horizontal Pixel Count */
+BYTE YThumbnail; /* 13h Vertical Pixel Count */
+} JFIFHEAD; 
+</pre>
+</blockquote>
+<p>En fait l'entête débute avec FFD8FFE0 (FFD8 étant les 2 octets du SOI, etFFE0 les 2 octets de APP0), puis on a la longueur
+du segment JFIF sur 2 octets, la string "JFIF" terminé par un 0 (ça correspond à la signature du fichier JPEG JFIF. 
+Notation hexadécimale : 4A46494600) sur 5 octets,
+La version sur 2 octets, puis les champs relatifs à la résolution de l'image.</p>
+<p>Les données d'un fichier JPEG sont stockées sous forme de blocs et chaque bloc est identifié par un marqueur.</p>
+
+	
+	<h3>Le format TIFF</h3>	
+	
+<p>Le format TIFF (Tagged image file format) a été créé par Aldus (appartient à Adobe) et Microsoft.<br />
+Il a été conçu pour l'acquisition et la création d'images en vue de l'impression et peut être compressé ou non compressé.</p>
+<p>La structure de l'entête d'un fichier TIFF :</p>
+
+<blockquote>
+<pre>
+typedef struct _TiffHeader
+{
+    WORD  Identifier;  /* Byte-order Identifier */
+    WORD  Version;     /* TIFF version number (always 2Ah) */
+    DWORD IFDOffset;   /* Offset of the first Image File Directory*/
+} TIFHEAD;
+</pre>
+</blockquote>
+
+<p>L'Identifier contient toujours soit 4949 (II) soit 4D4D (MM) et signifie simplement que les données sont agencées en
+little-endian (format Intel) ou en big-endian (format motorola).<br />
+La signature d'un fichier TIFF se trouve toujours auniveau du 4eme byte du fichier, ce qui correspond à la version, et sera toujours
+42 (soit 0x2A). En fait il s'agit de la version et non de la signature à la base, mais le format TIFF n'ayant pas été revu,
+on y retrouvera toujours cette même valeur, qu'on peut par conséquent considéré comme une "signature".<br />
+En fonction de l'Identifier précisé on aura donc pour les 4 premiers bytes, soit 49492A00, soit 4D4D002A.</p>
+<p>Le principe du format TIFF consiste à définir des balises (tags, d'où le "Tagged Image File Format") 
+décrivant les caractéristiques de l'image, aussi bien les dimensions de l'image que le nombre de couleurs, le type de
+compression, etc.</p>
+	
+	<h3>Le format BMP</h3>	
+	
+
+<p>Un fichier BMP se compose de plusieurs parties :</p>
+<ul class="liste">
+<li>Entête du fichier</li>
+<li>Entête du bitmap</li>
+<li>Palette (optionnel)</li>
+<li>Corps de l'image</li> 
+</ul>
+
+<p>Comme pour les précédents, voici la structure de l'entête d'un fichier BMP :</p>
+
+<blockquote>
+<pre>
+typedef struct _BmpInfo     /* Offset   Description                      */
+{
+    WORD   Type;            /*  00h     File Type Identifier (4D42h)     */
+    DWORD  FileSize;        /*  02h     Size of File                     */
+    WORD   Reserved1;       /*  06h     Reserved (should be 0)           */
+    WORD   Reserved2;       /*  08h     Reserved (should be 0)           */
+    DWORD  Offset;          /*  0Ah     Offset to bitmap data            */
+} BMPINFO;	
+</pre>
+</blockquote>
+
+
+<p>Dans les 2 premiers octets du fichiers, on y trouve la signature, qui peut être :</p>
+<ul class="liste">
+<li>"BM"(424D) pour un BMP Windows</li>
+<li>"BA" pour un BMP OS/2</li>
+<li>"CI" pour une icone couleur OS/2</li>
+<li>"CP" pour un pointeur de couleur OS/2</li> 
+<li>"IC" pour une icone OS/2</li>
+<li>"PT" pour un pointeur OS/2</li> 
+</ul>
+<p>Ensuite on a la taille du fichier sur 4 octets, un champs réservé de 4 octets, puis l'offset dans le fichier vers les données data
+du bitmap.</p>
+
+
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point1">Corrections à apporter sur le fichier</h2>
+
+<p>Commencons par ouvrir le fichier cible (roelofs) dans l'éditeur hexadécimal :</p>
+
+<p style="text-align:center">
+<img src="1.PNG" alt="Image 1" />
+</p>
+	
+<p>Deux choses me sautent aux yeux, après avoir lu les différentes infos citées ci-dessus sur les formats de fichiers
+image : le IEND et le IDAT.<br />
+Il semblerait que ce soit des chunks d'un fichier PNG !<br />
+Par contre la signature (les 8 premiers octets du fichier) ne correspond pas du tout à la signature d'un fichier PNG...</p>
+<p>Si on descend tout à la fin du fichier dans l'éditeur hexa, on y voit également :</p>
+<p style="text-align:center">
+<img src="2.PNG" alt="Image 1" />
+</p>	
+<p>On remarquera assez rapidement la présence d'un chunk IHDR.</p>
+
+<p>Bref nul doûte qu'on se trouve en face d'un fichier PNG, il va donc falloir le remettre en forme afin qu'il s'affiche 
+correctement. Ainsi on sera en mesure de récupérer le fameux pass que Zamer nous demande.</p>
+
+<p>On a lu au-dessus que dans un fichier PNG les chunks pouvaient se trouver dans n'importe quel ordre, par contre il y
+avait quand même deux invariants à conserver : le chunk IEND comme dernier chunk et le chunk IHDR comme premier chunk.<br />
+On va donc commencer par remettre ça en ordre :</p>
+<p style="text-align:center">
+<img src="3.PNG" alt="Image 1" />
+</p>	
+<p style="text-align:center">
+<img src="4.PNG" alt="Image 1" />
+</p>	
+
+<p>Puis on passe à la signature, qu'on va également rétablir :</p>
+<p style="text-align:center">
+<img src="5.PNG" alt="Image 1" />
+</p>
+
+<p>On met une extension .png à notre nouveau fichier qu'on a sauvegardé, et on double-clique dessus :</p>
+<p style="text-align:center">
+<img src="6.PNG" alt="Image 1" />
+</p>
+
+<p>Waouh du grand art, Zamer est un graphiste né :><br />
+Bon ben je crois qu'on a fini le boulot là :) Vous pouvez vider votre cave maintenant, vous l'avez mérité !! (Je peux venir ? :p)</p>
+
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="fin">Remerciements</h2>
+
+<blockquote>
+<p>Qui veut :)</p>
+<p>Cordialement,<br />
+elooo.</p>
+</blockquote>
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+</div>
+</body>
+</html>

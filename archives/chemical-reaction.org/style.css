@@ -1,0 +1,219 @@
+
+body {
+	cursor: default;
+	color: #FFFFFF;
+	background: #2E2930;
+	font: normal normal normal 12px verdana, arial, helvetica, sans-serif;
+	padding: 0;
+	margin: 50px 5px 50px 5px;
+}
+
+a:link,
+a:visited,
+a:active {
+	color: #CCCCCC;
+	font: normal normal normal 12px verdana, arial, helvetica, sans-serif;
+	text-decoration: none;
+}
+
+form {
+	padding: 0;
+	margin: 0;
+}
+form label {
+	width: 100px;
+	float: left;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+}
+input,
+select,
+textarea {
+	color: #FFFFFF;
+	background: #8E8D79;
+	font: normal normal normal 12px verdana, arial, helvetica, sans-serif;
+	border: 1px solid #FFFFFF;
+	padding: 1px;
+	margin: 0;
+}
+
+div#site {
+	width: 800px;
+	background: #2E2930;
+	padding: 0;
+	margin: auto;
+}
+
+div#header {
+	position: relative;
+	height: 200px;
+	background: #2E2930 url('img/header.jpg') center no-repeat;
+	padding: 0;
+	margin: 0;
+}
+
+div#navi {
+	position: absolute;
+	top: 115px;
+	left: 117px;
+	width: 570px;
+	height: 33px;
+	padding: 0;
+	margin: 0;
+}
+div#navi a,
+div#bunny a {
+	display: block;
+	float: left;
+	padding: 0;
+}
+div#navi a span,
+div#bunny a span {
+	display: none;
+}
+div#navi a#news {
+	width: 96px;
+	height: 33px;
+	background: url('img/navi_news.gif');
+	margin-right: 11px;
+}
+div#navi a#news:hover {
+	background: url('img/navi_news_o.gif');
+}
+div#navi a#releases {
+	width: 154px;
+	height: 33px;
+	background: url('img/navi_releases.gif');
+	margin-right: 9px;
+}
+div#navi a#releases:hover {
+	background: url('img/navi_releases_o.gif');
+}
+div#navi a#members {
+	width: 147px;
+	height: 33px;
+	background: url('img/navi_members.gif');
+	margin-right: 6px;
+}
+div#navi a#members:hover {
+	background: url('img/navi_members_o.gif');
+}
+div#navi a#contact {
+	width: 141px;
+	height: 33px;
+	background: url('img/navi_contact.gif');
+}
+div#navi a#contact:hover {
+	background: url('img/navi_contact_o.gif');
+}
+
+div#bunny {
+	position: absolute;
+	top: 78px;
+	left: 688px;
+	width: 56px;
+	height: 46px;
+	padding: 0;
+	margin: 0;
+}
+div#bunny a {
+	width: 56px;
+	height: 46px;
+	background: url('img/navi_bunny.gif');
+}
+div#bunny a:hover {
+	background: url('img/navi_bunny_o.gif');
+}
+
+div#middle {
+	background: #2E2930 url('img/middle.jpg') center repeat-y;
+	padding: 0;
+	margin: 0;
+}
+
+div#content {
+	position: relative;
+	padding: 0 68px 0 68px;
+	margin-bottom: -100px;
+}
+div#content p.headline {
+	color: #000000;
+	font-size: 14px;
+	font-weight: bold;
+	padding-bottom: 16px;
+	margin: 0;
+}
+div#content p {
+	padding: 1px 0 1px 0;
+	margin: 0;
+}
+div#content p.hr {
+	border-bottom: 1px solid #2E2930;
+	padding: 0;
+	margin: 10px 0 10px;
+}
+div#content pre {
+	color: #000000;
+	font-size: 14px;
+	padding: 0;
+	margin: 0;
+}
+div#content img {
+	border: 1px solid #CCCCCC;
+}
+div#content .highlight {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+div#content div.row4cols {
+	position: relative;
+	float: left;
+	width: 166px;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}
+div#content div.row3cols {
+	position: relative;
+	float: left;
+	width: 220px;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}
+div#content div.row2cols {
+	position: relative;
+	float: left;
+	width: 330px;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}
+div#content .clear {
+	clear: both;
+}
+div#content .center {
+	text-align: center;
+}
+
+div#footer {
+	height: 260px;
+	background: #2E2930 url('img/footer.jpg') center no-repeat;
+	padding: 0;
+	margin: 0;
+}
+div#footer a {
+	position: relative;
+	display: block;
+	top: 186px;
+	left: 375px;
+	width: 35px;
+	height: 35px;
+	background: url('img/spider.gif') center no-repeat;
+	padding: 0;
+	margin: 0;
+}
+div#footer a:hover {
+	background: url('img/spider_o.gif') center no-repeat;
+}

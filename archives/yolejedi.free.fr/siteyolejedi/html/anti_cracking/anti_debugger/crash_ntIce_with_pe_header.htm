@@ -1,0 +1,612 @@
+<html>
+<head>
+<title>Crash Ntice with PE-Header</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p><font color="#339999" size="2" face="Fixedsys">- Mon p&egrave;re 
+              ! J'ai p&ecirc;ch&eacute;....honte &agrave; moi....j'ai p&ecirc;ch&eacute; 
+              mon p&egrave;re...</font><br>
+              - Qu'y a-t-il mon enfant ?<br>
+              <font color="#339999">- Voil&agrave; mon p&egrave;re... j'&eacute;prouve 
+              du plaisir lorsque je reverse...honte &agrave; moi....</font><br>
+              - HEIN ? QUOI ? Tu reverses mon enfant ?<br>
+              <font color="#339999">- Oui mon p&egrave;re...pardon mon p&egrave;re...</font><br>
+              - Et tu &eacute;prouves du plaisir ?<br>
+              <font color="#339999">- Oui mon p&egrave;re...<font size="1" face="Arial, Helvetica, sans-serif">c'est 
+              ce que je viens de te dire... t'es con ou quoi ?</font></font><font size="1" face="Arial, Helvetica, sans-serif"><br>
+              </font>- C'est pas bien ! c'est sale ! c'est caca ! pouuuah ...<br>
+              <font color="#339999">- ....???!!?!.....</font><br>
+              - Bon... tu vas me faire 1 CCA, 2 Shellcodes et 4 anti_debugs... 
+              <font size="1" face="Arial, Helvetica, sans-serif">et une p'tite 
+              g&acirc;terie mon enfant...tu te dois de respecter les traditions 
+              de l'&eacute;glise catholique.</font><br>
+              <font color="#339999">- Hein ? ... A&iuml;e ! mais l&acirc;chez 
+              moi ! mais qu'est-ce que vous faites ? .... A&iuml;e ! Mais lachmmmmmfff...mmfff...moi....mmmmf...mmmfff...</font></p></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_lit.gif" width="101" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="100%" valign="middle"> <div align="center"> 
+                    <font size="6" color="#33CC33" face="Fixedsys">Crash Ntice<br>
+                    <font size="4">en modifiant </font></font><font size="4" color="#33CC33" face="Fixedsys"> 
+                    le PE-Header<br>
+                    -WinNT/2k/XP only-</font><font face="Fixedsys" size="2"><u><br>
+                    <br>
+                    </u>(version 1.00)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_lit_et_trouve.gif" width="101" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="left">&nbsp;</p>
+            <p align="left"><u><font color="#33CC33" size="5">Etat des lieux:</font></u></p>
+            <p align="justify"><font face="Fixedsys" size="2">Lorsque l'on utilise 
+              SoftIce, on peut remarquer ce genre de message lors de l'ouverture 
+              et de la fermeture des process.</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="6">
+                    <tr align="left" valign="top"> 
+                      <td align="center" nowrap bgcolor="#000000"><p align="left"><font color="#339999" size="2" face="Fixedsys">NTICE: 
+                          Load32 START=70EE0000 SIZE=7000 &nbsp;KPEB=81B6E620 
+                          MOD=asfsipc<br>
+                          NTICE: Load32 START=60990000 SIZE=D000 &nbsp;KPEB=81B6E620 
+                          MOD=msisip<br>
+                          NTICE: Load32 START=74E10000 SIZE=10000 KPEB=81B6E620 
+                          MOD=wshext<br>
+                          NTICE: Load32 START=59000000 SIZE=E000 &nbsp;KPEB=81B6E620 
+                          MOD=wshfr<br>
+                          NTICE: Unload32 MOD=asfsipc<br>
+                          NTICE: Unload32 MOD=msisip<br>
+                          NTICE: Unload32 MOD=wshext<br>
+                          NTICE: Unload32 MOD=wshfr</font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">Pour pouvoir signaler qu'un module vient d'&ecirc;tre 
+              mapp&eacute; (NTICE: Load32), Softice, dans sa proc&eacute;dure 
+              d'initialisation, hooke la fonction <font color="#33CC33">_MiMapViewOfSection</font> 
+              de <font color="#33CC33">ntoskrnl.exe</font> en pla&ccedil;ant directement 
+              un breakpoint (int 3) dessus.<br>
+              Lors d'un appel, Softice laisse <font color="#33CC33">_MiMapViewOfSection</font> 
+              s'ex&eacute;cuter avant de traiter les informations sur le module 
+              qui vient d'&ecirc;tre mapp&eacute;. Le message <font color="#33CC33">&quot;NTICE: 
+              Load32...&quot;</font> est alors affich&eacute;.</p>
+            <p align="justify">Dans la routine de Softice qui g&egrave;re les 
+              messages <font color="#33CC33">NTICE: Load32</font>, il y a un petit 
+              bout de code tr&egrave;s &eacute;trange qui vaut le coup d'&ecirc;tre 
+              &eacute;tudi&eacute; :</p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td><table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td colspan="2" valign="top" nowrap bgcolor="#000000"> 
+                              <div align="left"> 
+                                <font color="#339999">Ntice System Load Module 
+                                proc near (Hook de _MiMapViewOfSection)<br>
+                                &nbsp; </font></div></td>
+                          </tr>
+                          <tr> 
+                            <td valign="top" nowrap bgcolor="#000000">&nbsp;</td>
+                            <td valign="top" nowrap bgcolor="#000000">:<br>
+                              :<br>
+                              :</td>
+                          </tr>
+                          <tr> 
+                            <td valign="top" nowrap bgcolor="#000000"><font color="#00FFFF">loc_A519E:</font></td>
+                            <td valign="top" nowrap bgcolor="#000000"><div align="center"><font color="#339999">-------------------------------------------------------------------</font></div></td>
+                          </tr>
+                          <tr> 
+                            <td nowrap bgcolor="#000000"> 
+                              <p>&nbsp;</p></td>
+                            <td valign="top" nowrap bgcolor="#000000"> sti <br>
+                              mov esi, ecx&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                              esi = Image Base<br>
+                              mov ax, [esi+<font color="#33CC33">IMAGE_DOS_HEADER.e_magic</font>]<br>
+                              cmp ax, <font color="#33CC33">'ZM'</font> <br>
+                              jnz loc_A5291 <br>
+                              mov edi, [esi+<font color="#33CC33">IMAGE_DOS_HEADER.e_lfanew</font>]<br>
+                              add edi, esi <br>
+                              mov ax, word ptr [edi+<font color="#33CC33">IMAGE_NT_HEADERS32.Signature</font>]<br>
+                              cmp ax, <font color="#33CC33">'EP'</font> <br>
+                              jnz loc_A5291 <br>
+                              movzx ecx, [edi+<font color="#33CC33">IMAGE_NT_HEADERS32.FileHeader.NumberOfSections</font>] 
+                              <br>
+                              or ecx, ecx <br>
+                              jz loc_A5291 <br>
+                              mov eax, [edi+<font color="#33CC33">IMAGE_NT_HEADERS32.OptionalHeader.NumberOfRvaAndSizes</font>]<br>
+                              lea edi, [edi+eax*8+<font color="#33CC33">IMAGE_NT_HEADERS32.OptionalHeader.DataDirectory</font>] 
+                              <br>
+                              mov eax, ecx<br>
+                              imul eax, 28h <br>
+                              <font color="#FFFF00">mov <font color="#33CC33">al</font>, 
+                              [eax+edi] ; &lt;--- lit le 1er byte qui succ&egrave;de<br>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aux 
+                              donn&eacute;es du header (?!?!)</font></td>
+                          </tr>
+                          <tr> 
+                            <td valign="top" nowrap bgcolor="#000000"><font color="#00FFFF">loc_A51DB:</font></td>
+                            <td valign="top" nowrap bgcolor="#000000"><div align="center"><font color="#339999">-------------------------------------------------------------------</font></div></td>
+                          </tr>
+                          <tr> 
+                            <td valign="top" nowrap bgcolor="#000000">&nbsp;</td>
+                            <td valign="top" nowrap bgcolor="#000000">cli<br> <font color="#FFFF00">call 
+                              sub_15B52&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                              conserve <font color="#33CC33">al</font> et ne le 
+                              traite pas</font>.<br>
+                              mov byte_ED2A9, 0<br>
+                              push eax<br>
+                              mov eax, dword_11E923<br>
+                              mov dr7, eax<br>
+                              pop eax<br>
+                              mov dword_EF398, esp<br>
+                              mov esp, offset unk_EE78B<br>
+                              and esp, 0FFFFFFFCh <br> <font color="#FFFF00">xor 
+                              al, al &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                              <font color="#33CC33">al</font> est effac&eacute;</font><br>
+                              :<br>
+                              :<br>
+                              :</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">On peut voir, dans ce bout de code, que Softice 
+              v&eacute;rifie la pr&eacute;sence des signatures 'MZ' et 'PE' afin 
+              de s'assurer de la pr&eacute;sence d'un module au format PE-Header. 
+              Pour l'instant, tout est normal.<br>
+              Mais ensuite Softice se positionne sur le 1er byte qui succ&egrave;de 
+              au header complet afin de le lire. <br>
+              ligne : <font color="#33CC33">mov al, [eax+edi]</font></p>
+            <p align="left">J'appelle <font color="#33CC33">HEADER COMPLET</font> 
+              ceci :</p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="1" cellpadding="6">
+                    <tr align="left" valign="top"> 
+                      <td align="center" nowrap bgcolor="#000000"><p><font color="#33CC33">HEADER 
+                          COMPLET</font></p></td>
+                    </tr>
+                    <tr align="left" valign="top"> 
+                      <td align="center" nowrap bgcolor="#000000"><table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                                <tr> 
+                                  <td align="center" valign="top"><font color="#339999">IMAGE_DOS_HEADER</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        <br> <table border="0" cellspacing="0" cellpadding="0" bgcolor="#339999" align="center">
+                          <tr> 
+                            <td> <table border="0" cellpadding="6" cellspacing="1">
+                                <tr align="left" valign="top"> 
+                                  <td align="center" nowrap bgcolor="#000000"><p><font color="#339999">IMAGE_NT_HEADERS</font></p></td>
+                                </tr>
+                                <tr align="left" valign="top"> 
+                                  <td align="center" nowrap bgcolor="#000000"><font color="#339999"> 
+                                    IMAGE_DATA_DIRECTORY_1<br>
+                                    IMAGE_DATA_DIRECTORY_2<br>
+                                    :<br>
+                                    :<br>
+                                    :</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        <br> <table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                                <tr> 
+                                  <td align="center" valign="top"><font color="#339999">IMAGE_SECTION_HEADER_1<br>
+                                    IMAGE_SECTION_HEADER_2<br>
+                                    :<br>
+                                    :<br>
+                                    :</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">La lecture de ce byte par Softice reste un myst&egrave;re 
+              pour moi. Il n'a pas l'air d'&ecirc;tre utilis&eacute; et puis m&ecirc;me.... 
+              &agrave; quoi pourrait-il servir ? Cet octet peut-&ecirc;tre tout 
+              et n'importe quoi puisqu'il ne donne pas sp&eacute;cialement le 
+              1er byte de la section suivante... <br>
+              Ceci est peut-&ecirc;tre un bout de code &quot;fossile&quot; datant 
+              des premi&egrave;res versions de Ntice. Un tout petit bout de code 
+              inutile perdu dans les sources de Softice qui doivent &ecirc;tre 
+              somme toute assez cons&eacute;quentes.<br>
+              <br>
+              Quoi qu'il en soit nous avons l&agrave; une opportunit&eacute; qu'il 
+              serait dommage de laisser passer. :)<br>
+              <br>
+              En effet, en modifiant directement le Pe-Header des ex&eacute;cutables, 
+              il est possible de les rendre violemment incompatibles avec Ntice. 
+              Mais avant d'aller plus loin, continuons un peut l'&eacute;tude 
+              de ce code.</p>
+            <p align="justify">Parlons un peu des 2 balises (<font color="#339999">loc_A519E 
+              et loc_A51DB</font>) qui enveloppent la premi&egrave;re partie du 
+              code.<br>
+              Afin de pouvoir filtrer les <font color="#33CC33">fautes de page 
+              (Page Fault)</font>, Softice, lors de son initialisation, hooke 
+              l'int 14 (0x0E). Ceci lui permet, entre autre, de prot&eacute;ger 
+              les zones sensibles de son code et &eacute;ventuellement de rattraper 
+              les fautes de page identifi&eacute;es.</p>
+            <p align="justify">Si nous regardons la routine qui g&egrave;re les 
+              fautes de page de Softice, nous y trouvons justement une partie 
+              qui v&eacute;rifie si la faute a eu lieu dans cette zone. Softice 
+              r&eacute;agit alors diff&eacute;remment suivant l'&eacute;tat de 
+              <font color="#339999">Faults on/off</font> (voir les commandes de 
+              Softice)</p>
+            <p align="justify">Pour vraiment sch&eacute;matiser :</p>
+            <p align="justify"> Si la faute de page a &eacute;t&eacute; d&eacute;clench&eacute;e 
+              par du code situ&eacute; dans la zone, Softice va soit</p>
+            <p align="justify">- prendre la main et pointer sur le code qui a 
+              d&eacute;clench&eacute; la faute (Faults on)<br>
+              - faire suivre l'interruption &agrave; la proc&eacute;dure originale 
+              du system (Faults off) -&gt; <font color="#00FFFF"><strong>&eacute;cran 
+              bleu de la mort&nbsp;!</strong></font></p>
+            <p align="justify"><font color="#33CC33">En aucun cas Softice ne rattrape 
+              une faute de page d&eacute;clench&eacute;e par le code que nous 
+              &eacute;tudions.</font></p>
+            <p align="justify">Le d&eacute;cor est pos&eacute;... Etablissons 
+              maintenant l'objectif et passons &agrave; la pratique. :)</p>
+            <p align="left"><font color="#33CC33" size="5"><u>A l'attaque :</u></font><br>
+              <br>
+              Le but sera de forcer Ntice &agrave; lire &agrave; une adresse invalide. 
+              Ce qui aboutira &agrave; un crash du syst&egrave;me. J'ai choisi 
+              l'adresse 0 mais n'importe quelle adresse invalide fait l'affaire.</p>
+            <p align="justify"> Regardons avant tout de quoi la ligne <font color="#33CC33">mov 
+              al, [eax+edi]</font> est le r&eacute;sultat :</p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="6">
+                    <tr align="left" valign="top"> 
+                      <td align="center" nowrap bgcolor="#000000"><p align="right"><font color="#339999">eax+edi 
+                          =<br>
+                          +<br>
+                          +<br>
+                          +<br>
+                          +<br>
+                          +<br>
+                          +</font></p></td>
+                      <td align="center" nowrap bgcolor="#000000"><div align="left"><font color="#339999">ImageBase<br>
+                          e_lfanew<br>
+                          SIZEOF Signature<br>
+                          SIZEOF IMAGE_FILE_HEADER<br>
+                          (SIZEOF MAGE_OPTIONAL_HEADER32) - (SIZEOF DataDirectory)<br>
+                          (NumberOfRvaAndSizes * SIZEOF DATA_DIRECTORY)<br>
+                          (NumberOfSections * SIZEOF SECTION_HEADER)</font></div></td>
+                      <td align="center" nowrap bgcolor="#000000"><div align="left"><font color="#33CC33">pointe 
+                          sur 'MZ'<br>
+                          offset de PE<br>
+                          4 bytes ('P','E',0,0)<br>
+                          0x14<br>
+                          0xE0-0x80=0x60<br>
+                          NumberOfRvaAndSizes * 8<br>
+                          NumberOfSections * 0x28</font></div></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">Nous voulons que Ntice lise &agrave; l'adresse 
+              0. Pour cela, posons l'&eacute;quation et d&eacute;finissons les 
+              constantes et les variables pour un module donn&eacute; :<br>
+              <font color="#33CC33"><br>
+              </font> <font color="#33CC33">ImageBase + e_lfanew + 4 + 0x14 + 
+              0x60 + (NumberOfRvaAndSizes * 8) + (NumberOfSections * 0x28) = 0</font></p>
+            <p align="justify">ce qui peut se simplifier ainsi :</p>
+            <p align="justify"><font color="#33CC33">ImageBase + e_lfanew + 0x78 
+              + (NumberOfRvaAndSizes * 8) + (NumberOfSections * 0x28) = 0</font></p>
+            <p align="justify">Pour un module donn&eacute;, nous avons en fait 
+              pour unique variable l'ImageBase. En effet, celle-ci peut varier 
+              en m&eacute;moire. Pour que l'ImageBase puisse &ecirc;tre consid&eacute;r&eacute;e 
+              comme constante, il devient imp&eacute;ratif que l'ex&eacute;cutable 
+              soit mapp&eacute; &agrave; l'ImageBase indiqu&eacute; dans le PE-Header. 
+              Sans quoi, le r&eacute;sultat recherch&eacute; (crash de Ntice) 
+              devient al&eacute;atoire. <br>
+              Les ex&eacute;cutables &quot;fixes&quot; (sans section reloc) semblent 
+              &ecirc;tre parfaits puisqu'ils ne fonctionnent que si les conditions 
+              que nous recherchons sont r&eacute;unies :) </p>
+            <p align="justify">Maintenant que nous avons uniquement des constantes, 
+              il faut &agrave; tout prix modifier une valeur pour que l'&eacute;quation 
+              soit juste car pour l'instant elle ne l'est pas. Il nous faut donc 
+              une inconnue...</p>
+            <p align="justify"><u><font color="#33CC33">NumberOfRvaAndSizes et 
+              son utilisation:</font></u></p>
+            <p align="justify"> Apr&egrave;s le mappage d'un module par ntoskrnl.exe, 
+              le syst&egrave;me doit l'initialiser. Dans cette phase d'initialisation 
+              le syst&egrave;me a besoin, entre autre, de lire les <font color="#33CC33">DATA_DIRECTORY</font>. 
+              Pour cela, il utilise la fonction <font color="#33CC33">RtlImageDirectoryEntryToData</font> 
+              que l'on trouve dans ntoskrnl.exe et dans ntdll.dll afin d'obtenir 
+              les entr&eacute;es des DATA voulues. C'est dans <font color="#33CC33">RtlImageDirectoryEntryToData</font> 
+              que <font color="#33CC33">NumberOfRvaAndSizes</font> est utilis&eacute; 
+              lors de l'initialisation.</p>
+            <p align="justify">Voici le code qui nous int&eacute;resse. Cette 
+              routine est celle de ntdll mais la m&ecirc;me routine se trouve 
+              dans ntoskrnl.exe et donc utilisable en Ring0 :<br>
+            </p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td><table border="0" align="center" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td><table border="0" align="center" cellpadding="0" cellspacing="0">
+                          <tr valign="top"> 
+                            <td colspan="2" nowrap bgcolor="#000000"> <p align="left"> 
+                                <font color="#339999">_RtlImageDirectoryEntryToData 
+                                proc near</font><br>
+                              </p></td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap bgcolor="#000000">&nbsp;</td>
+                            <td nowrap bgcolor="#000000"><div align="left"><br>
+                                push ebp<br>
+                                mov ebp, esp<br>
+                                movzx ecx, word ptr [ebp+<font color="#339999">Directory_Entry</font>]<br>
+                                mov eax, [ebp+<font color="#339999">Image_NT_Headers</font>]<br>
+                                <font color="#FFFF00">cmp ecx, [eax+IMAGE_NT_HEADERS32.OptionalHeader.</font><font color="#33CC33">NumberOfRvaAndSizes</font><font color="#FFFF00">]</font><br>
+                                <font color="#FFFF00">jnb loc_Directory_Entry_invalid</font><br>
+                                :<br>
+                                :<br>
+                                :</div></td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap bgcolor="#000000"> sortie:</td>
+                            <td nowrap bgcolor="#000000">&nbsp; </td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap bgcolor="#000000">&nbsp; </td>
+                            <td nowrap bgcolor="#000000"> pop ebp<br>
+                              retn 14h<br> </td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td colspan="2" nowrap bgcolor="#000000"><font color="#339999">_RtlImageDirectoryEntryToData 
+                              endp</font> </td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap bgcolor="#000000">&nbsp; </td>
+                            <td nowrap bgcolor="#000000"> :<br>
+                              :<br>
+                              :</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td colspan="2" nowrap bgcolor="#000000"> loc_Directory_Entry_invalid:</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap bgcolor="#000000">&nbsp; </td>
+                            <td nowrap bgcolor="#000000"> xor eax, eax&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;; 
+                              erreur !!! <br>
+                              jmp sortie</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify"> En tout premier lieu, il est v&eacute;rifi&eacute; 
+              que le DATA_DIRECTORY recherch&eacute; soit bien valide. Pour &ecirc;tre 
+              valide,<font color="#33CC33"> Directory_Entry</font> doit &ecirc;tre 
+              strictement plus petit (non sign&eacute;) que <font color="#33CC33">NumberOfRvaAndSizes</font>.</p>
+            <p align="justify"> Or si nous regardons dans <font color="#339999">WINNT.H</font> 
+              nous pouvons y trouver ceci :</p>
+            <table border="0" align="center" cellpadding="6" cellspacing="0" bgcolor="#000000">
+              <tr> 
+                <td colspan="2"><table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                    <tr> 
+                      <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                          <tr> 
+                            <td><font color="#33CC33">#define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 
+                              16</font></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table>
+                  <br> <table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                    <tr> 
+                      <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                          <tr> 
+                            <td colspan="2"><font color="#339999">//<br>
+                              // Optional header format.<br>
+                              //<br>
+                              <font color="#33CC33"><br>
+                              </font></font><font color="#33CC33">typedef struct 
+                              _IMAGE_OPTIONAL_HEADER {</font><font color="#339999"><br>
+                              <br>
+                              //<br>
+                              // Standard fields.<br>
+                              // </font></td>
+                          </tr>
+                          <tr> 
+                            <td><font color="#339999">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                            <td><font color="#339999">WORD Magic;<br>
+                              BYTE MajorLinkerVersion;<br>
+                              BYTE MinorLinkerVersion;<br>
+                              DWORD SizeOfCode;<br>
+                              DWORD SizeOfInitializedData;<br>
+                              DWORD SizeOfUninitializedData;<br>
+                              DWORD AddressOfEntryPoint;<br>
+                              DWORD BaseOfCode;<br>
+                              DWORD BaseOfData;</font></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><font color="#339999">//<br>
+                              // NT additional fields.<br>
+                              //</font></td>
+                          </tr>
+                          <tr> 
+                            <td><font color="#339999">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                            <td><font color="#339999">DWORD ImageBase;<br>
+                              DWORD SectionAlignment;<br>
+                              DWORD FileAlignment;<br>
+                              WORD MajorOperatingSystemVersion;<br>
+                              WORD MinorOperatingSystemVersion;<br>
+                              WORD MajorImageVersion;<br>
+                              WORD MinorImageVersion;<br>
+                              WORD MajorSubsystemVersion;<br>
+                              WORD MinorSubsystemVersion;<br>
+                              DWORD Win32VersionValue;<br>
+                              DWORD SizeOfImage;<br>
+                              DWORD SizeOfHeaders;<br>
+                              DWORD CheckSum;<br>
+                              WORD Subsystem;<br>
+                              WORD DllCharacteristics;<br>
+                              DWORD SizeOfStackReserve;<br>
+                              DWORD SizeOfStackCommit;<br>
+                              DWORD SizeOfHeapReserve;<br>
+                              DWORD SizeOfHeapCommit;<br>
+                              DWORD LoaderFlags;<br>
+                              </font><font color="#33CC33">DWORD NumberOfRvaAndSizes;</font><font color="#339999"><br>
+                              <font color="#33CC33">IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];</font></font></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><font color="#33CC33">} IMAGE_OPTIONAL_HEADER, 
+                              *PIMAGE_OPTIONAL_HEADER;</font></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table>
+                  <br> <table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                    <tr> 
+                      <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                          <tr> 
+                            <td colspan="2"><font color="#339999">typedef struct 
+                              _IMAGE_NT_HEADERS {</font></td>
+                          </tr>
+                          <tr> 
+                            <td><font color="#339999">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+                            <td><font color="#339999">DWORD Signature;<br>
+                              IMAGE_FILE_HEADER FileHeader;<br>
+                              <font color="#33CC33">IMAGE_OPTIONAL_HEADER OptionalHeader;</font></font></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><font color="#339999">} IMAGE_NT_HEADERS, 
+                              *PIMAGE_NT_HEADERS;</font></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">On peut lire diff&eacute;rentes choses sur le r&ocirc;le 
+              de <font color="#33CC33">NumberOfRvaAndSizes</font>. On peut lire 
+              qu'il sert &agrave; obtenir la longueur des DATA_DIRECTORY (ce que 
+              fait Softice). On peut lire aussi qu'il sert &agrave; v&eacute;rifier 
+              la pr&eacute;sence de tel ou tel DATA_DIRECTORY (ce que fait le 
+              syst&egrave;me)...</p>
+            <p align="justify"> Obtenir la longueur des DATA_DIRECTORY avec <font color="#33CC33">NumberOfRvaAndSizes</font> 
+              est assez &eacute;trange puisque dans WINNT.H le nombre de DATA_DIRECTORY 
+              est une constante d&eacute;finie &agrave; 16 (0x10). Et la structure 
+              <font color="#339999">IMAGE_OPTIONAL_HEADER</font> contient toujours 
+              16 <font color="#339999">DATA_DIRECTORY</font>. Donc la taille totale 
+              des DATA_DIRECTORY devrait toujours &ecirc;tre de 128 octets (16*8).</p>
+            <p align="justify">Peut-&ecirc;tre que <font color="#33CC33">NumberOfRvaAndSizes</font> 
+              est tout simplement l&agrave; pour permettre une &eacute;volution 
+              future des DATA_DIRECTORY...</p>
+            <p align="justify">Le r&ocirc;le de <font color="#33CC33">NumberOfRvaAndSizes</font> 
+              reste quand m&ecirc;me assez flou pour moi et pour ma part, je ne 
+              me souviens pas avoir rencontr&eacute; autre chose que <font color="#33CC33">NumberOfRvaAndSizes=0x10</font> 
+              dans les ex&eacute;cutables standards.</p>
+            <p align="justify">Quoi qu'il en soit, <font color="#33CC33">NumberOfRvaAndSizes</font> 
+              peut &ecirc;tre plus grand que 16 sans que cela ne semble poser 
+              probl&egrave;me au syst&egrave;me. Et c'est &ccedil;a qui nous int&eacute;resse. 
+              :)</p>
+            <p align="justify"><u><font color="#33CC33" size="5">Coup fatal:</font></u> 
+            </p>
+            <p align="justify"> Nous pouvons enfin r&eacute;soudre notre &eacute;quation 
+              :</p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="6">
+                    <tr align="left" valign="top"> 
+                      <td align="center" nowrap bgcolor="#000000"><p align="left"><font color="#33CC33">NumberOfRvaAndSizes 
+                          <font color="#339999">= [0xFFFFFFFF * (ImageBase + e_lfanew 
+                          + 0x78 + (NumberOfSections * 0x28))] / 8</font></font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">Je ne vais pas expliquer pourquoi mais avec cette 
+              &eacute;galit&eacute;, et dans les conditions d&eacute;crites plus 
+              haut, <font color="#33CC33">NumberOfRvaAndSizes</font> sera toujours 
+              plus grand que 16. Donc pas de souci pour le syst&egrave;me. :)</p>
+            <p align="justify">En appliquant ceci &agrave; <font color="#33CC33">NumberOfRvaAndSizes</font> 
+              directement dans le PE-Header, l'ex&eacute;cutable devient instantan&eacute;ment 
+              allergique &agrave; Softice. Pendant la phase de mappage du module, 
+              Softice fera tout crasher en lisant &agrave; l'adresse 0 . C'est 
+              un anti-softice radical qui ne laisse aucune place &agrave; la moindre 
+              sommation puisque tout crashe avant m&ecirc;me que le thread principal 
+              n'ait pu ex&eacute;cuter le moindre petit bout de code.</p>
+            <p align="justify">marrant, non ? :)</p>
+            <p align="justify">Voici un petit outil qui permet de modifier <font color="#33CC33">NumberOfRvaAndSizes</font> 
+              des ex&eacute;cutables afin de les rendre allergiques &agrave; Softice 
+              : <a href="../../../telecharger/anti_cracking/anti_debugger/allergic_to_ntice.zip" target="_blank" onFocus="if(this.blur)this.blur()"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <div align="center"> <font face="Fixedsys" size="2">Illustrations 
+              : Bill WATTERSON - &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 03/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+            </font> </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

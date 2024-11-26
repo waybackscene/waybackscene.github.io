@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>RED Arena</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script language="JavaScript" type="text/javascript" src="javascript/jquery-1.3.2.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="javascript/jquery.validate.js"></script>
+  <script>
+  $(document).ready(function(){
+    $("#logForm").validate();
+  });
+  </script>
+<link rel="shortcut icon" href="images/favicon.ico">
+<link href="images/styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<center><center><img src="images/banners/391192.png" alt="RED Arena" /></center>
+<div class="content"> 
+<div class="box"><h2>Login</h2>
+<div class="box-content">
+<center>Login to your account below.</center></br>
+   <p></p>
+<form action="#" method="post" name="logForm" id="logForm" >
+Username </br><input name="usr_email" type="text" class="required" id="txtbox" size="25"><br>
+Password </br><input name="pwd" type="password" class="required password" id="txtbox" size="25"><br><br>
+<input name="doLogin" type="submit" id="doLogin3" value="Login">&nbsp;<input name="remember" type="checkbox" id="remember" value="1"> Remember Me<br>
+<br />
+
+Not registered? <a href="register.html">Click here</a> to register an account.
+       
+      <div align="center"></div>
+        <p align="center">&nbsp; </p>
+    </form>
+</div>
+</div>
+</body>
+</html>

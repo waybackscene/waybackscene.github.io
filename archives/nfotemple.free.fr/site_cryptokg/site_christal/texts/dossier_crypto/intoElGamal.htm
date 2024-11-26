@@ -1,0 +1,61 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P><BR>
+</P>
+
+<P><BR>
+<B><FONT SIZE="5" COLOR="maroon" FACE="Arial">ElGamal</FONT></B></P>
+<P><B><FONT SIZE="2" FACE="Arial">(Contribution de Lutin Noir)</FONT></B></P>
+<P><B><FONT FACE="Arial">Br&egrave;ve pr&eacute;sentation du sch&eacute;ma de signature ElGamal&nbsp;:</FONT></B></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Je vais essayer d’expliquer au mieux comment fonctionne le sch&eacute;ma de chiffrement
+	ElGamal, dont les d&eacute;tails sont donn&eacute;s dans ElGamal: </FONT><A HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/dossier_crypto/elgamal.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/ElGamal/elgamal.htm"><FONT SIZE="2" FACE="Arial">Algorythmes
+	&agrave; cl&eacute;s puliques</FONT></A><FONT SIZE="2" FACE="Arial">:</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Tous d’abord voici comment fonctionne le syst&egrave;me de signature&nbsp;:</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Un utilisateur A veut signer un message M. Il choisit d’abord un nombre premier
+	p, puis deux nombres g et x inf&eacute;rieurs &agrave; p. Ensuite il doit calculer y&nbsp;:</FONT></P>
+	<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">y = g^x mod p (^ = puissance)</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">L’utilisateur A a maintenant ses cl&eacute;s publiques (p, g, y) et sa cl&eacute;
+	priv&eacute;e (x) qu’il ne doit pas diffuser. D&eacute;sormais, il est en mesure de signer un message M, et un
+	utilisateur B peut v&eacute;rifier que c’est bien A qui a sign&eacute; le message. Pour ce faire, A choisit un
+	nombre k tel que k et (p-1) soient premiers entre eux. Ensuite il calcule&nbsp;:</FONT></P>
+	<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">a = g ^ k mod p</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Puis il utilise l’algorithme d’Euclide pour r&eacute;soudre l’&eacute;quation suivante&nbsp;:</FONT></P>
+	<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">M = (x*a + k*b) mod (p-1)</FONT></P>
+	<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">Ou</FONT></P>
+	<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">b = ( k ^ (-1) ) * ( M – x*a) mod (p-1)</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Maintenant l’utilisateur A a la signature du message M, c’est le couple (a,b). B
+	peut maintenant v&eacute;rifier que c’est bien A qui a sign&eacute; M gr&acirc;ce aux cl&eacute;s publiques de
+	A. Pour ce faire il doit v&eacute;rifier que&nbsp;:</FONT></P>
+	<P ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">y^a * a^b mod p = g ^ M mod p</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Si les deux membres de l’&eacute;quation sont &eacute;gaux alors la signature est
+	valide et B sait que A a bien sign&eacute; le message M.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Supposons maintenant qu’un utilisateur C veuille se faire passer pour A et signer
+	le message M. Plusieurs possibilit&eacute;s se pr&eacute;sentent &agrave; lui (bien entendu dans la mesure o&ugrave;
+	ceci est r&eacute;alisable), il peut soit trouver la cl&eacute; priv&eacute;e de A, soit forger une signature qui
+	v&eacute;rifiera l’&eacute;quation</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Comment C peut-il trouver x&nbsp;? Et bien il lui suffit de r&eacute;soudre y =
+	g^x mod p&nbsp;: c’est le probl&egrave;me des logarithmes discrets (ou DLP).</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Comme je ne ma&icirc;trise pas encore assez bien ce domaine des math&eacute;matiques
+	pour l’expliquez correctement, je vous sugg&egrave;re de lire le chapitre 3 (p. 103) de Hanbook of Applied Cryptography
+	qui explique tr&egrave;s bien ce qu’est un DLP et comment il est possible de le r&eacute;soudre (enfin quand ceci
+	est le cas) et notamment gr&acirc;ce au l’algorithme de Pollard Rho.</FONT></P>
+
+	<P><FONT SIZE="2" FACE="Arial">Vous pouvez aussi lire le texte de </FONT><A HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/dossier_crypto/Logarithme.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/ElGamal/Logarithme.htm"><FONT FACE="Arial">Pierrick
+	Gaudry</FONT></A><FONT SIZE="2" FACE="Arial"> qui explique cela tr&egrave;s bien.</FONT>
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

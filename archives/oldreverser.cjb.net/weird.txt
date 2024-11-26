@@ -1,0 +1,313 @@
+The analyst's weird crackme.
+protection: Buffer overflow.
+date: 07/17/2001
+
+
+Hello all, here comes my solution for my little crackme.
+I didn't receive much answers, but i hope you will try it with this solution.
+
+
+tools used :
+
+- IDA mostly
+- Soft ice
+- hexeditor (optional)
+
+1) study of the crackme
+
+
+ok, i first ran it to see what appened:
+
+
+-- The analyst's weird crackme --
+---------------------------------
+enter your serial please:
+
+
+ok, alright, i enter a serial such as : IOWNU
+once you press Enter, nothing happens.If we press again, it closes for good.
+ok let's use IDA and disassemble our weird.exe.It takes a lil while and then we 
+see that :
+
+
+CODE:00401108                 push    ebp
+CODE:00401109                 mov     ebp, esp
+CODE:0040110B                 add     esp, 0FFFFFFB4h ; char
+CODE:0040110E                 push    offset aTheAnalystSWei ; __va_args
+CODE:00401113                 call    _printf					; print some text.
+CODE:00401118                 pop     ecx
+CODE:00401119                 push    offset asc_40C097 ; __va_args
+CODE:0040111E                 call    _printf					; same
+CODE:00401123                 pop     ecx
+CODE:00401124                 push    offset aEnterYourSeria ; __va_args
+CODE:00401129                 call    _printf					; same again
+CODE:0040112E                 pop     ecx
+CODE:0040112F                 lea     eax, [ebp+s]				; buffer
+CODE:00401132                 push    eax             ; s
+CODE:00401133                 call    _gets					; get entered serial
+CODE:00401138                 pop     ecx
+CODE:00401139                 nop
+CODE:0040113A                 lea     edx, [ebp+s]
+CODE:0040113D                 push    edx             ; s
+CODE:0040113E                 call    _strlen					; get his length
+CODE:00401143                 pop     ecx
+CODE:00401144                 mov     edx, eax
+CODE:00401146                 cmp     edx, 19h					; is it less than 25?
+CODE:00401149                 jl      short loc_401182				; yeah
+CODE:0040114B                 cmp     edx, 78h					; is it more than 120?
+CODE:0040114E                 jg      short loc_401182				; yeah
+CODE:00401150                 mov     eax, 1					; eax = 1 , initialise loop
+CODE:00401155                 cmp     edx, eax					; did all chars?
+CODE:00401157                 jl      short loc_40115E				; no let's jump
+CODE:00401159 
+CODE:00401159 loc_401159:                             ; CODE XREF: _main+54j
+CODE:00401159                 inc     eax					; eax = eax + 1
+CODE:0040115A                 cmp     edx, eax					; did all chars?
+CODE:0040115C                 jge     short loc_401159				; no let's loop
+CODE:0040115E 
+CODE:0040115E loc_40115E:                             ; CODE XREF: _main+4Fj
+CODE:0040115E                 mov     eax, 7A69h				; eax = 31337
+CODE:00401163                 test    eax, eax
+CODE:00401165                 jnz     short loc_401182				; jump quit
+CODE:00401167                 cmp     eax, 1388h
+CODE:0040116C                 jl      short loc_401182				; jump quit
+CODE:0040116E                 cmp     eax, 3A98h
+CODE:00401173                 jg      short loc_401182				; jump quit
+CODE:00401175                 jmp     short loc_401182				; jump quit
+CODE:00401177 ; ---------------------------------------------------------------------------
+CODE:00401177                 push    offset aWooCongrats ; __va_args		; good boy message
+CODE:0040117C                 call    _printf
+CODE:00401181                 pop     ecx
+CODE:00401182 
+CODE:00401182 loc_401182:                             ; CODE XREF: _main+41j
+CODE:00401182                                         ; _main+46j ...
+CODE:00401182                 call    _getch					; wait till a key is pressed
+CODE:00401187                 xor     eax, eax
+CODE:00401189                 mov     esp, ebp
+CODE:0040118B                 pop     ebp
+CODE:0040118C                 retn
+
+
+A quick look show us that there is NO x-ref to our good boy message, but rather some jumps that go directly to the
+end of the crackme.
+Quite weird, isn't it ? oh isn't it the name of my crackme? :)
+Let's have a look at the goal of that crackme to see what we have to do.
+lemme past my 1st post on the message board:
+
+
+"the goal is to enter a serial and to get the good boy message..
+however , it is not as easy as it seems 
+i never seen such a crackme, and i wonder how would you guys 
+use your reversing skill to complete that one 
+NO PATCH allowed "
+
+
+
+ok goal is to get the good boy message, without patching it:)
+just enter a serial. interesting, but how can we do it, without patching when there is no jump to the good
+boy message?
+
+
+i see no way except a nice buffer overflow ;-)
+wtf? this is pretty new, isn't it ? in crackme at least.
+ok, first, what is a buffer overflow ?
+
+A buffer overflow happens when the string that we enter is bigger than our buffer.
+so it overflows. the values that are over the buffer might get executed.
+If we put some random values, the program crashes, but if we put good ones then the code is executed!
+Once you have read that tutorial, i advise you to get your hand on some nice tutorials, such as 'smashing the stack',
+and other nice ones in phrack magazine.
+Phrack 55 has a nice tutorial about Win32 buffer overflow, that i advise you to read.
+ok let's continue now.
+
+2)overflowing the beast
+
+
+ok, First of all, we have to check if there is a buffer and its size.
+
+
+
+CODE:0040112E                 pop     ecx
+CODE:0040112F                 lea     eax, [ebp+s]				; buffer
+CODE:00401132                 push    eax             ; s
+CODE:00401133                 call    _gets					; get entered serial
+CODE:00401138                 pop     ecx
+CODE:00401139                 nop
+CODE:0040113A                 lea     edx, [ebp+s]
+CODE:0040113D                 push    edx             ; s
+
+
+ok, this is obvious.eax is pushed on the stack, just before a call to the 'gets' function.
+lemme put some C code to demonstrate it :)
+
+--------------------------------------------------------------------------------
+
+#include <stdio.h>
+#include <string.h>
+#include <conio.h>
+#include <iostream.h>
+
+int main(){
+
+    unsigned char name[50];
+
+    gets(name);
+
+--------------------------------------------------------------------------------
+
+As we can see, there is a buffer called 'name' which is 50 bytes long.
+then, we use 'gets'. our input goes into 'name'.
+We defined it as 50 chars long. but what happen if we type 100 chars in ? a nice overflow ;)
+I hope you are folloing me.
+
+
+let's continue.
+We have to check how big is our buffer.According to IDA it is 75 chars long.
+
+First, we look our stack parameters:
+
+CODE:00401108 s               = byte ptr -4Ch
+CODE:00401108 argc            = dword ptr  8
+CODE:00401108 argv            = dword ptr  0Ch
+CODE:00401108 envp            = dword ptr  10h
+CODE:00401108 arg_11          = dword ptr  19h
+
+see 's' ?
+run softice and do :
+? ~-4C
+it gives us 75 :o)
+
+For me it looks pretty much that the max size of the buffer is 75 chars.
+Let's test and enter something like 80 chars :
+
+-- The analyst's weird crackme --
+---------------------------------
+enter your serial please:
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+
+our program crashes nicely , no wonder ;-)
+we entered a string of 80 chars, which is 4 chars more than the max size of the buffer.
+Having a look at the registers, i can see that EBP=41414141.
+Interesting isn't it ? where are those 41h coming from ?
+41h is the hexadecimal ascii value of "A" ;))
+so we just overwrote EBP.. ok nice, but the best thing would be to overwrite EIP ;))
+Once EIP is overwritten, we can execute any code we want!
+ok, lets enter 84 chars to see what happens now :
+
+
+
+-- The analyst's weird crackme --
+---------------------------------
+enter your serial please:
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+ok now our app still crash, but we get :
+instruction at the address 41414141h uses the memory address at 41414141h. memory cannot be read.
+it in fact , tries to execute code at VA : 41414141h.
+ok now i *HOPE* you know what to do !
+
+what about replacing our return address with something different than 41414141h ?
+say, something like the good boy message location ?
+
+CODE:00401177                 push    offset aWooCongrats ; __va_args  ; good boy
+CODE:0040117C                 call    _printf
+
+
+hmm, ok we have to put '401177' as our return address and it will obvisously print it on our screen :)
+ok, just before to do that, let's try to enter a different serial such as :
+
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1234
+
+why ? just to see what is the return address now.we might have to reverse the byte's order.
+
+
+here we go, it crashes at address "34333231h". so we have to inverse our return address.
+now we have : 771140. this is "w@" in ascii
+
+let's try to enter it :
+
+C:\attente>weird
+-- The analyst's weird crackme --
+---------------------------------
+enter your serial please:
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAw^Q@
+
+wOO! congrats ;)
+
+
+
+WOO! it worked!
+note: there is still the pause that wait till we press a key, but when we press that key, EIP
+get executed and we land at the good boy message!
+
+here we go. :)
+as i said, it was not that difficult, but rather new for a crackme ;)
+i hope you learnt something from it, and i advise you to read some essays from phrack magazine.
+Such as "Smashing the stack", and the one on win32 buffer overflow (phrack 55).
+
+
+3) source of my lame weird crackme ;) (coded in 15 secondes)
+
+
+#include <stdio.h>
+#include <string.h>
+#include <conio.h>
+#include <iostream.h>
+
+int main(){
+    int i,len,temp;
+
+    unsigned char name[75];
+
+ 
+  
+
+
+    unsigned long check=0;
+
+    printf("-- The analyst's weird crackme --\n");
+    printf("---------------------------------\n");
+    printf("enter your serial please:\n");
+
+    gets(name);
+    asm{ nop};
+
+    len=strlen(name);
+    
+    //cout << len;
+    if (len < 25) goto theend;
+    if (len > 120 ) goto theend;
+    for (i=1; i <= len ; i++)
+    {
+       temp += name[i] ;    
+     }
+    
+    if (temp = 31337) goto theend;
+    if (temp < 5000) goto theend;
+    if (temp > 15000) goto theend;
+    
+    goto theend;
+
+          printf("wOO! congrats ;)\n");          
+
+    theend:
+    
+    getch();
+    return 0;
+}
+
+
+greetings go to :
+
+duelist,dimedrol,ivanopulo,nu,CrackZ,G-Rom,iceman,theowl,spath,frog's print,Warezpup,corn,tin,
+llama,quantico,carpathia,pain, yoshi,corn,amante.
+i just can't be arsed to type every goddamn nicks, so greetings to my pal in #cracking4newbies, #ol,#u*c.
+
+
+copyright pissed away, all right reversed
+
+ tHE ANALYST [ID/UCF/HERT]
+
+www.oldreverser.cjb.net
+www.immortaldescendants.org

@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>BeatriX - Reverse Engineering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="shortcut icon" href="images/icone.ico" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+
+</head>
+
+<body>
+<div id="fenetre">
+<div class="titre"></div>
+
+<div class="menu">
+<ul>
+<li><a href='index.html'>Home</a></li>
+<li><a href='articles.html'>Articles</a></li>
+<li><a href='tools.html'>Tools</a></li>
+<li><a href='minitools.html'>MiniTools</a></li>
+<li><a href='challenges.html'>Challenges</a></li>
+<li><a href='beatrix.xml'><img src="images/rss.png" title="RSS" alt="" /></a></li>
+</ul>
+</div>
+
+<div class="contenu">
+<p class="droite">  </p>
+<p class="droite">  </p>
+<div class="ligne"></div>
+
+<!-- ========================================================================================= -->
+<a id="lde64x64"></a>
+<div class="titre_tuto" >
+LDE64 x64 Length Disassembler Engine version 1.6
+</div>
+<div class="texte_tuto">
+<p>This Length Disassembler Engine is relocatable and uses _fastcall convention. Features are same as the previous LDE64-x86.(FPU, MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2 et VMX). Thanks to Av0id , cyberbob and lena151 for their advices and remarks.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="http://www.beaengine.org/downloads/LDE64-x64.rar">download LDE64-x64.rar</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================================================================= -->
+<a id="fulldisasm17"></a>
+<div class="titre_tuto" >
+Plugin OllyDbg et ImmDbg : FullDisasm 3
+</div>
+<div class="texte_tuto">
+<p>FullDisasm est un plugin pour OllyDbg 1.10 et Immunity Debugger 1.xx qui permet de remplacer la vieille routine de désassemblage de OllyDbg par une plus récente : BeaEngine 3.0. Avec FullDisasm, OllyDbg peut désormais lire les instructions FPU, MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2 et VMX. FullDisasm permet également d'utiliser deux nouvelles syntaxes : NASM , GOASM and GNU Assembler.</p>
+<div class="download">
+<ul>
+<li><a href="http://www.beaengine.org/downloads/FullDisasm_OllyDbg.zip">FullDisasm_OllyDbg.zip</a></li>
+<li><a href="http://www.beaengine.org/downloads/FullDisasm_ImmDbg.zip">FullDisasm_ImmDbg.zip</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+<a id="ldex6411"></a>
+<div class="titre_tuto" >
+LDE64 x86 Length Disassembler Engine version 1.2 
+</div>
+<div class="texte_tuto">
+<p>Voici donc un petit outil qui permet de connaître la taille d'une instruction intel en spécifiant l'adresse de l'instruction et l'archtecture désirée (32 bits ou 64 bits). Ce LDE est relogeable, ce qui signifie que vous pouvez le placer n'importe où dans votre binaire, il fonctionnera quand même. Il ne nécessite aucune initialisation puisqu'il n'est pas packé. Vous trouverez quelques détails d'utilisation dans le fichier LDE64.asm. LDE64 est capable de lire toutes les instructions intel vues dans les manuels de novembre 2006 et notamment, les FPU, MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2 et VMX. </p>
+<div class="download">
+<ul class="download">
+<li><a href="http://www.beaengine.org/downloads/LDE64-x86.rar">download LDE64-x86.rar</a></li>
+<li><a href="LDE64/LDE64_x86_sources.rar">download sources</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+<a id="fretdisassembly"></a>
+<div class="titre_tuto" >
+BeaEngine 4.0
+</div>
+<div class="texte_tuto">
+<p>BeaEngine est une librairie que j'ai écrite en C pour processeurs INTEL qui permet de désassembler du code en fournissant de nombreuses informations sur l'instruction analysée. Cette librairie est assez rapide et gère la totalité des opcodes INTEL. Cette lib est fournie avec les sources ainsi que quelques exemples d'utilisation. Elle est publiée sous licence LGPL3. </p>
+<div class="download">
+<ul>
+<li><a href="http://www.beaengine.org">BeaEngine website</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+
+<div class="titre_tuto" >
+NotePad topmost 1.1 - plugin OllyDebugger (asm only)
+</div>
+<div class="texte_tuto">
+<p>Ceci est un petit plugin codé en asm. Il est fourni avec les sources pour montrer qu'il est très aisé de mettre en place ce genre de petit outil. NotePad topmost permet d'ouvrir le bloc-notes avec la propriété TOPMOST et un effet de transparence contrôlable.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="notepad/NotePad.rar">download NotePad.rar</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Anti-tracing technic : using Macros generated with BeaJunker 1.0
+</div>
+<div class="texte_tuto">
+<p>Last month, I have coded a small tool to generate some junk code (BeaJunker 1.0). It generates a *.inc file which contains some macros you can introduce in your code. I give you here a set of macros you can use freely. </p>
+<p>Why using such macros ? It is a small technic to slow down a static analysis of your binary and also, cracker must spend some time to destroy these macros. I added some tricks to annoy attackers who want to trace your code. </p>
+<p>Be careful : it is not a good protection ! I repeat, the only aim is to slow down an attacker, not stopping him :) Good crackers will surely succeed in destroying those macros but newbies would have much more difficulty... ;) </p>
+<p>These macros (for this version) don't preserve registers and flags. If you want to see how to use these macros, download the packed sample. Enjoy :) </p>
+
+<div class="download">
+<ul>
+<li><a href="junkcode/junkcode.inc">look at junkcode.inc</a></li>
+<li><a href="junkcode/junkcode.rar">download junkcode.rar</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Decrypteur pour PESPin 1.1
+</div>
+<div class="texte_tuto">
+<p>Voici donc le decrypteur pour PESPin 1.1. Je me suis attardé cette fois sur les Marqueurs CRYPT et CLEAR. Mon decrypteur les détruit avec joie :) </p>
+
+<div class="download">
+<ul>
+<li><a href="unPESPIN11.rar">download unPESPIN11.rar</a></li>
+<li><a href="unPESpin1.1.asm">look at unPESPIN1.1.asm</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================================================================= -->
+
+
+<div class="titre_tuto" >
+BeaCryptor Pro 1.0 - DES Encryption
+</div>
+<div class="texte_tuto">
+<p>BeaCryptor Pro 1.0 est un crypteur de fichiers que j'ai codé en utilisant le système de cryptage DES. </p>
+
+<div class="download">
+<ul>
+<li><a href="BeaCrypt.exe">download BeaCrypt.exe</a></li>
+<li><a href="BeaCrypt.asm">look at BeaCrypt.asm</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+décrypteur pour PESpin 1.0
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici un décrypteur et sa source pour PESpin 1.0.</p>
+<div class="download">
+<ul>
+<li><a href="unPESpin1.exe">download unPESpin1.exe</a></li>
+<li><a href="unPESpin1.asm">look at unPESpin1.asm</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+	décrypteur pour PESpin 0.3
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici un décrypteur et sa source pour PESpin 0.3.</p>
+<div class="download">
+<ul>
+<li><a href="unPESpin.exe">download unPESpin.exe</a></li>
+<li><a href="unPESpin.asm">look at unPESpin.asm</a></li>
+</ul>
+</div>
+
+</div>
+
+
+
+<p class="griser"> Copyright (C)- BeatriX (2010)</p>
+
+
+<p class="w3c">
+<a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml11"
+        alt="Valid XHTML 1.1" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+TD {
+    color: white;
+    font-family: Arial;
+    font-size: 12pt}
+
+A {
+    FONT-WEIGHT: bold;
+    TEXT-DECORATION: none}
+
+A:hover {
+    TEXT-DECORATION: underline}

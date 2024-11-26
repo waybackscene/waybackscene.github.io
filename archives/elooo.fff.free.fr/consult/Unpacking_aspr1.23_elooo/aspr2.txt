@@ -1,0 +1,782 @@
+En forcant l'analyse du code par Olly :
+---------------------------------------
+
+
+01006AE0   .- E9 E02282FF   JMP 00828DC5      ; ***** VERITABLE OEP *****                  
+01006AE5      D4            DB D4
+01006AE6      2D            DB 2D                                    ;  CHAR '-'
+01006AE7      02            DB 02
+01006AE8      2E            DB 2E                                    ;  CHAR '.'
+01006AE9      92            DB 92
+01006AEA      1C            DB 1C
+01006AEB      A8            DB A8
+01006AEC      7B            DB 7B                                    ;  CHAR '{'
+01006AED      36            DB 36                                    ;  CHAR '6'
+01006AEE      5F            DB 5F                                    ;  CHAR '_'
+01006AEF      2B            DB 2B                                    ;  CHAR '+'
+01006AF0      40            DB 40                                    ;  CHAR '@'
+01006AF1      30            DB 30                                    ;  CHAR '0'
+01006AF2      D2            DB D2
+01006AF3      85            DB 85
+01006AF4      00            DB 00
+01006AF5      41            DB 41                                    ;  CHAR 'A'
+01006AF6      16            DB 16
+01006AF7      E1            DB E1
+01006AF8      54            DB 54                                    ;  CHAR 'T'
+01006AF9      13            DB 13
+01006AFA      99            DB 99
+01006AFB      00            DB 00
+01006AFC      95            DB 95
+01006AFD      A1            DB A1
+01006AFE      92            DB 92
+01006AFF      22            DB 22                                    ;  CHAR '"'
+01006B00      B8            DB B8
+01006B01      FE            DB FE
+01006B02      62            DB 62                                    ;  CHAR 'b'
+01006B03      61            DB 61                                    ;  CHAR 'a'
+01006B04      B8            DB B8
+01006B05      47            DB 47                                    ;  CHAR 'G'
+01006B06      82            DB 82
+01006B07      4A            DB 4A                                    ;  CHAR 'J'
+01006B08      39            DB 39                                    ;  CHAR '9'
+01006B09      F2            DB F2
+01006B0A      78            DB 78                                    ;  CHAR 'x'
+01006B0B      07            DB 07
+01006B0C      56            DB 56                                    ;  CHAR 'V'
+01006B0D      93            DB 93
+01006B0E      E9            DB E9
+01006B0F      BF            DB BF
+01006B10      59            DB 59                                    ;  CHAR 'Y'
+01006B11      09            DB 09
+01006B12      32            DB 32                                    ;  CHAR '2'
+01006B13      D9            DB D9
+01006B14      01            DB 01
+01006B15      A2            DB A2
+01006B16      64            DB 64                                    ;  CHAR 'd'
+01006B17      25            DB 25                                    ;  CHAR '%'
+01006B18      4E            DB 4E                                    ;  CHAR 'N'
+01006B19      B4            DB B4
+01006B1A      B8            DB B8
+01006B1B      2A            DB 2A                                    ;  CHAR '*'
+01006B1C      EF            DB EF
+01006B1D      8D            DB 8D
+01006B1E      AE            DB AE
+01006B1F      17            DB 17
+01006B20      D5            DB D5
+01006B21      D9            DB D9
+01006B22      7C            DB 7C                                    ;  CHAR '|'
+01006B23      02            DB 02
+01006B24      77            DB 77                                    ;  CHAR 'w'
+01006B25      D6            DB D6
+01006B26      86            DB 86
+01006B27      87            DB 87
+01006B28      D5            DB D5
+01006B29      F6            DB F6
+01006B2A      FA            DB FA
+01006B2B      F9            DB F9
+01006B2C      52            DB 52                                    ;  CHAR 'R'
+01006B2D      CE            DB CE
+01006B2E      D5            DB D5
+01006B2F      9B            DB 9B
+01006B30      CE            DB CE
+01006B31      5B            DB 5B                                    ;  CHAR '['
+01006B32      D3            DB D3
+01006B33      A8            DB A8
+01006B34      BD            DB BD
+01006B35      1A            DB 1A
+01006B36      33            DB 33                                    ;  CHAR '3'
+01006B37      21            DB 21                                    ;  CHAR '!'
+01006B38      19            DB 19
+01006B39      6C            DB 6C                                    ;  CHAR 'l'
+01006B3A      31            DB 31                                    ;  CHAR '1'
+01006B3B      9C            DB 9C
+01006B3C      5E            DB 5E                                    ;  CHAR '^'
+01006B3D      40            DB 40                                    ;  CHAR '@'
+01006B3E      AF            DB AF
+01006B3F      93            DB 93
+01006B40      FD            DB FD
+01006B41      01            DB 01
+01006B42      77            DB 77                                    ;  CHAR 'w'
+01006B43   .- E9 512A82FF   JMP 00829599
+01006B48   .  92            XCHG EAX,EDX
+01006B49   .- E9 512A82FF   JMP 0082959F
+01006B4E      9B            DB 9B
+01006B4F      86            DB 86
+01006B50      18            DB 18
+01006B51      D3            DB D3
+01006B52      85            DB 85
+01006B53      00            DB 00
+01006B54      16            DB 16
+01006B55      CE            DB CE
+01006B56      21            DB 21                                    ;  CHAR '!'
+01006B57      59            DB 59                                    ;  CHAR 'Y'
+01006B58      20            DB 20                                    ;  CHAR ' '
+01006B59      A6            DB A6
+01006B5A      F8            DB F8
+01006B5B      88            DB 88
+01006B5C      B9            DB B9
+01006B5D      5F            DB 5F                                    ;  CHAR '_'
+01006B5E      B8            DB B8
+01006B5F      B0            DB B0
+01006B60      98            DB 98
+01006B61      D1            DB D1
+01006B62      FD            DB FD
+01006B63      D1            DB D1
+01006B64      D1            DB D1
+01006B65      24            DB 24                                    ;  CHAR '$'
+01006B66      D3            DB D3
+01006B67      85            DB 85
+01006B68      00            DB 00
+01006B69      8E            DB 8E
+01006B6A      36            DB 36                                    ;  CHAR '6'
+01006B6B      FE            DB FE
+01006B6C      26            DB 26                                    ;  CHAR '&'
+01006B6D      B0            DB B0
+01006B6E      8D            DB 8D
+01006B6F      6E            DB 6E                                    ;  CHAR 'n'
+01006B70      B0            DB B0
+01006B71      FC            DB FC
+01006B72      DA            DB DA
+01006B73      30            DB 30                                    ;  CHAR '0'
+01006B74      D3            DB D3
+01006B75      85            DB 85
+01006B76      00            DB 00
+01006B77      F1            DB F1
+01006B78      FD            DB FD
+01006B79      D0            DB D0
+01006B7A      1C            DB 1C
+01006B7B   .  83D2 58       ADC EDX,58
+01006B7E   .  C3            RETN
+01006B7F      AE            DB AE
+01006B80      3C            DB 3C                                    ;  CHAR '<'
+01006B81      D3            DB D3
+01006B82      85            DB 85
+01006B83      00            DB 00
+01006B84      F0            DB F0
+01006B85      36            DB 36                                    ;  CHAR '6'
+01006B86      6D            DB 6D                                    ;  CHAR 'm'
+01006B87      97            DB 97
+01006B88      AA            DB AA
+01006B89      80            DB 80
+01006B8A      85            DB 85
+01006B8B      BD            DB BD
+01006B8C      1C            DB 1C
+01006B8D      AF            DB AF
+01006B8E      CD            DB CD
+01006B8F      62            DB 62                                    ;  CHAR 'b'
+01006B90      CF            DB CF
+01006B91      8B            DB 8B
+01006B92      40            DB 40                                    ;  CHAR '@'
+01006B93      9B            DB 9B
+01006B94      1A            DB 1A
+01006B95      DF            DB DF
+01006B96      81            DB 81
+01006B97      B5            DB B5
+01006B98      83            DB 83
+01006B99      5E            DB 5E                                    ;  CHAR '^'
+01006B9A      B9            DB B9
+01006B9B      89            DB 89
+01006B9C      6C            DB 6C                                    ;  CHAR 'l'
+01006B9D      5A            DB 5A                                    ;  CHAR 'Z'
+01006B9E      9E            DB 9E
+01006B9F      48            DB 48                                    ;  CHAR 'H'
+01006BA0      D3            DB D3
+01006BA1      85            DB 85
+01006BA2      00            DB 00
+01006BA3      0A            DB 0A
+01006BA4      CB            DB CB
+01006BA5      8F            DB 8F
+01006BA6      92            DB 92
+01006BA7      73            DB 73                                    ;  CHAR 's'
+01006BA8      27            DB 27                                    ;  CHAR '''
+01006BA9      CF            DB CF
+01006BAA      25            DB 25                                    ;  CHAR '%'
+01006BAB      69            DB 69                                    ;  CHAR 'i'
+01006BAC      6F            DB 6F                                    ;  CHAR 'o'
+01006BAD      39            DB 39                                    ;  CHAR '9'
+01006BAE      53            DB 53                                    ;  CHAR 'S'
+01006BAF      98            DB 98
+01006BB0      B2            DB B2
+01006BB1      4B            DB 4B                                    ;  CHAR 'K'
+01006BB2      86            DB 86
+01006BB3      28            DB 28                                    ;  CHAR '('
+01006BB4      24            DB 24                                    ;  CHAR '$'
+01006BB5      DC            DB DC
+01006BB6      D8            DB D8
+01006BB7      12            DB 12
+01006BB8      B5            DB B5
+01006BB9      C6            DB C6
+01006BBA      03            DB 03
+01006BBB      F6            DB F6
+01006BBC      3D            DB 3D                                    ;  CHAR '='
+01006BBD      58            DB 58                                    ;  CHAR 'X'
+01006BBE      E9            DB E9
+01006BBF      F7            DB F7
+01006BC0      90            NOP
+01006BC1      8D            DB 8D
+01006BC2      44            DB 44                                    ;  CHAR 'D'
+01006BC3      44            DB 44                                    ;  CHAR 'D'
+01006BC4      46            DB 46                                    ;  CHAR 'F'
+01006BC5      84            DB 84
+01006BC6      3F            DB 3F                                    ;  CHAR '?'
+01006BC7      5C            DB 5C                                    ;  CHAR '\'
+01006BC8      06            DB 06
+01006BC9      B7            DB B7
+01006BCA      12            DB 12
+01006BCB      52            DB 52                                    ;  CHAR 'R'
+01006BCC      90            NOP
+01006BCD      E0            DB E0
+01006BCE      E9            DB E9
+01006BCF      68            DB 68                                    ;  CHAR 'h'
+01006BD0      F2            DB F2
+01006BD1      A5            DB A5
+01006BD2      A1            DB A1
+01006BD3      E8            DB E8
+01006BD4      8B            DB 8B
+01006BD5      58            DB 58                                    ;  CHAR 'X'
+01006BD6      18            DB 18
+01006BD7      18            DB 18
+01006BD8      54            DB 54                                    ;  CHAR 'T'
+01006BD9      D3            DB D3
+01006BDA      85            DB 85
+01006BDB      00            DB 00
+01006BDC      F0            DB F0
+01006BDD      0A            DB 0A
+01006BDE      1C            DB 1C
+01006BDF      76            DB 76                                    ;  CHAR 'v'
+01006BE0      F6            DB F6
+01006BE1      E8            DB E8
+01006BE2      46            DB 46                                    ;  CHAR 'F'
+01006BE3      54            DB 54                                    ;  CHAR 'T'
+01006BE4      B7            DB B7
+01006BE5      2D            DB 2D                                    ;  CHAR '-'
+01006BE6      CB            DB CB
+01006BE7      75            DB 75                                    ;  CHAR 'u'
+01006BE8      D9            DB D9
+01006BE9      73            DB 73                                    ;  CHAR 's'
+01006BEA      5D            DB 5D                                    ;  CHAR ']'
+01006BEB      2B            DB 2B                                    ;  CHAR '+'
+01006BEC      E4            DB E4
+01006BED      03            DB 03
+01006BEE      31            DB 31                                    ;  CHAR '1'
+01006BEF      50            DB 50                                    ;  CHAR 'P'
+01006BF0      E1            DB E1
+01006BF1      87            DB 87
+01006BF2      60            DB 60                                    ;  CHAR '`'
+01006BF3      D3            DB D3
+01006BF4      85            DB 85
+01006BF5      00            DB 00
+01006BF6      85            DB 85
+01006BF7      7E            DB 7E                                    ;  CHAR '~'
+01006BF8      37            DB 37                                    ;  CHAR '7'
+01006BF9      17            DB 17
+01006BFA      CB            DB CB
+01006BFB   .  78 25         JS SHORT NOTEPAD_.01006C22
+01006BFD   .- E9 7C375676   JMP SHELL32.7756A37E
+01006C02      DB            DB DB
+01006C03      69            DB 69                                    ;  CHAR 'i'
+01006C04      EC            DB EC
+01006C05      E6            DB E6
+01006C06      E7            DB E7
+01006C07      87            DB 87
+01006C08      69            DB 69                                    ;  CHAR 'i'
+01006C09      44            DB 44                                    ;  CHAR 'D'
+01006C0A      2C            DB 2C                                    ;  CHAR ','
+01006C0B      0E            DB 0E
+01006C0C      C6            DB C6
+01006C0D      B9            DB B9
+01006C0E      9C            DB 9C
+01006C0F      EF            DB EF
+01006C10      81            DB 81
+01006C11      64            DB 64                                    ;  CHAR 'd'
+01006C12      FD            DB FD
+01006C13      E1            DB E1
+01006C14      2E            DB 2E                                    ;  CHAR '.'
+01006C15      FB            DB FB
+01006C16      B8            DB B8
+01006C17      9E            DB 9E
+01006C18      93            DB 93
+01006C19      01            DB 01
+01006C1A      14            DB 14
+01006C1B      3C            DB 3C                                    ;  CHAR '<'
+01006C1C      6E            DB 6E                                    ;  CHAR 'n'
+01006C1D      39            DB 39                                    ;  CHAR '9'
+01006C1E   .  2B2E          SUB EBP,DWORD PTR DS:[ESI]
+01006C20   .  4C            DEC ESP
+01006C21   .  A7            CMPS DWORD PTR DS:[ESI],DWORD PTR ES:[ED>
+01006C22   >  2998 255294FC SUB DWORD PTR DS:[EAX+FC945225],EBX
+01006C28   .  E8 B36885FF   CALL 0085D4E0
+01006C2D   .  6BF6 45       IMUL ESI,ESI,45
+01006C30   .  B4 01         MOV AH,1
+01006C32   .  74 11         JE SHORT NOTEPAD_.01006C45
+01006C34   .  0FB745 B8     MOVZX EAX,WORD PTR SS:[EBP-48]
+01006C38   .  EB 0E         JMP SHORT NOTEPAD_.01006C48
+01006C3A   .- E9 012782FF   JMP 00829340
+01006C3F      E8            DB E8
+01006C40      72            DB 72                                    ;  CHAR 'r'
+01006C41   .  0C 89         OR AL,89
+01006C43   .  3007          XOR BYTE PTR DS:[EDI],AL
+01006C45   >  6A 0A         PUSH 0A
+01006C47   .  58            POP EAX
+01006C48   >  50            PUSH EAX
+01006C49   .  56            PUSH ESI
+01006C4A   .  53            PUSH EBX
+01006C4B   .  53            PUSH EBX
+01006C4C   .  FFD7          CALL EDI
+01006C4E   .  50            PUSH EAX                                 ; |Arg1
+01006C4F   .  E8 ADBBFFFF   CALL NOTEPAD_.01002801                   ; \NOTEPAD_.01002801
+01006C54   .  8BF0          MOV ESI,EAX
+01006C56   .  8975 84       MOV DWORD PTR SS:[EBP-7C],ESI
+01006C59   .  395D E4       CMP DWORD PTR SS:[EBP-1C],EBX
+01006C5C   .  75 07         JNZ SHORT NOTEPAD_.01006C65
+01006C5E   .  56            PUSH ESI                                 ; /status
+01006C5F   .  FF15 54D58500 CALL DWORD PTR DS:[85D554]               ; \exit
+01006C65   >  FF15 60D58500 CALL DWORD PTR DS:[85D560]               ; [msvcrt._cexit
+01006C6B   .  EB 2D         JMP SHORT NOTEPAD_.01006C9A
+01006C6D   .  8B45 EC       MOV EAX,DWORD PTR SS:[EBP-14]
+01006C70   .  8B08          MOV ECX,DWORD PTR DS:[EAX]
+01006C72   .  8B09          MOV ECX,DWORD PTR DS:[ECX]
+01006C74   .  894D 80       MOV DWORD PTR SS:[EBP-80],ECX
+01006C77   .  50            PUSH EAX
+01006C78   .  51            PUSH ECX
+01006C79   .  E8 74000000   CALL NOTEPAD_.01006CF2                   ;  JMP to msvcrt._XcptFilter
+01006C7E   .  59            POP ECX
+01006C7F   .  59            POP ECX
+01006C80   .  C3            RETN
+01006C81   .  8B65 E8       MOV ESP,DWORD PTR SS:[EBP-18]
+01006C84   .  8B75 80       MOV ESI,DWORD PTR SS:[EBP-80]
+01006C87   .  837D E4 00    CMP DWORD PTR SS:[EBP-1C],0
+01006C8B   .  75 07         JNZ SHORT NOTEPAD_.01006C94
+01006C8D   .  56            PUSH ESI                                 ; /status
+01006C8E   .  FF15 6CD58500 CALL DWORD PTR DS:[85D56C]               ; \_exit
+01006C94   >  FF15 78D58500 CALL DWORD PTR DS:[85D578]               ; [msvcrt._c_exit
+01006C9A   >  834D FC FF    OR DWORD PTR SS:[EBP-4],FFFFFFFF
+01006C9E   .  8BC6          MOV EAX,ESI
+01006CA0   .  E8 3C000000   CALL NOTEPAD_.01006CE1
+01006CA5   .  C3            RETN
+01006CA6      CC            INT3
+01006CA7      CC            INT3
+01006CA8   $- E9 232882FF   JMP 008294D0
+01006CAD      B6            DB B6
+01006CAE      C8            DB C8
+01006CAF      9C            DB 9C
+01006CB0      C8            DB C8
+01006CB1      54            DB 54                                    ;  CHAR 'T'
+01006CB2      F9            DB F9
+01006CB3      18            DB 18
+01006CB4      71            DB 71                                    ;  CHAR 'q'
+01006CB5      2A            DB 2A                                    ;  CHAR '*'
+01006CB6      76            DB 76                                    ;  CHAR 'v'
+01006CB7      E6            DB E6
+01006CB8      D7            DB D7
+01006CB9      15            DB 15
+01006CBA      52            DB 52                                    ;  CHAR 'R'
+01006CBB      29            DB 29                                    ;  CHAR ')'
+01006CBC      E5            DB E5
+01006CBD      D9            DB D9
+01006CBE      3F            DB 3F                                    ;  CHAR '?'
+01006CBF      4A            DB 4A                                    ;  CHAR 'J'
+01006CC0      44            DB 44                                    ;  CHAR 'D'
+01006CC1      58            DB 58                                    ;  CHAR 'X'
+01006CC2      36            DB 36                                    ;  CHAR '6'
+01006CC3      CE            DB CE
+01006CC4      8C            DB 8C
+01006CC5   .  67 67 73 20 0>ASCII "ggs ",0
+01006CCA      CD            DB CD
+01006CCB      74            DB 74                                    ;  CHAR 't'
+01006CCC      A5            DB A5
+01006CCD      A9            DB A9
+01006CCE      F9            DB F9
+01006CCF      FA            DB FA
+01006CD0      71            DB 71                                    ;  CHAR 'q'
+01006CD1      50            DB 50                                    ;  CHAR 'P'
+01006CD2      F3            DB F3
+01006CD3      08            DB 08
+01006CD4      3C            DB 3C                                    ;  CHAR '<'
+01006CD5      F6            DB F6
+01006CD6      5D            DB 5D                                    ;  CHAR ']'
+01006CD7      60            DB 60                                    ;  CHAR '`'
+01006CD8      03            DB 03
+01006CD9      E4            DB E4
+01006CDA      10            DB 10
+01006CDB      50            DB 50                                    ;  CHAR 'P'
+01006CDC      F6            DB F6
+01006CDD      4B            DB 4B                                    ;  CHAR 'K'
+01006CDE      FD            DB FD
+01006CDF      48            DB 48                                    ;  CHAR 'H'
+01006CE0      BC            DB BC
+01006CE1  /$  8B4D F0       MOV ECX,DWORD PTR SS:[EBP-10]
+01006CE4  |.  64:890D 00000>MOV DWORD PTR FS:[0],ECX
+01006CEB  |.  59            POP ECX
+01006CEC  |.  5F            POP EDI
+01006CED  |.  5E            POP ESI
+01006CEE  |.  5B            POP EBX
+01006CEF  |.  C9            LEAVE
+01006CF0  |.  51            PUSH ECX
+01006CF1  \.  C3            RETN
+01006CF2   $- FF25 84D58500 JMP DWORD PTR DS:[85D584]                ;  msvcrt._XcptFilter
+01006CF8   .- FF25 90D58500 JMP DWORD PTR DS:[85D590]                ;  msvcrt._initterm
+01006CFE   .- E9 7E2782FF   JMP 00829481
+01006D03      06            DB 06
+01006D04      19            DB 19
+01006D05      8D            DB 8D
+01006D06      96            DB 96
+01006D07      43            DB 43                                    ;  CHAR 'C'
+01006D08      D2            DB D2
+01006D09      75            DB 75                                    ;  CHAR 'u'
+01006D0A      A7            DB A7
+01006D0B      23            DB 23                                    ;  CHAR '#'
+01006D0C      DB            DB DB
+01006D0D      EA            DB EA
+01006D0E      D1            DB D1
+01006D0F      B3            DB B3
+01006D10   .  33C0          XOR EAX,EAX  ; ***** PSEUDO-OEP(le code à rebuildé est au-dessus) *****  
+
+
+
+
+___________________________________________________________________________________________________
+
+
+En virant l'analyse du code forcé (on peut y voir de l'obfuscation en pagaille) :
+
+
+01006AE0  - E9 E02282FF     JMP 00828DC5      ; ***** VERITABLE OEP *****   
+01006AE5    D4 2D           AAM 2D
+01006AE7    022E            ADD CH,BYTE PTR DS:[ESI]
+01006AE9    92              XCHG EAX,EDX
+01006AEA    1C A8           SBB AL,0A8
+01006AEC    7B 36           JPO SHORT NOTEPAD_.01006B24
+01006AEE    5F              POP EDI
+01006AEF    2B40 30         SUB EAX,DWORD PTR DS:[EAX+30]
+01006AF2    D285 004116E1   ROL BYTE PTR SS:[EBP+E1164100],CL
+01006AF8    54              PUSH ESP
+01006AF9    1399 0095A192   ADC EBX,DWORD PTR DS:[ECX+92A19500]
+01006AFF    22B8 FE6261B8   AND BH,BYTE PTR DS:[EAX+B86162FE]
+01006B05    47              INC EDI
+01006B06    824A 39 F2      OR BYTE PTR DS:[EDX+39],FFFFFFF2
+01006B0A    78 07           JS SHORT NOTEPAD_.01006B13
+01006B0C    56              PUSH ESI
+01006B0D    93              XCHG EAX,EBX
+01006B0E  - E9 BF590932     JMP 3309C4D2
+01006B13    D901            FLD DWORD PTR DS:[ECX]
+01006B15    A2 64254EB4     MOV BYTE PTR DS:[B44E2564],AL
+01006B1A    B8 2AEF8DAE     MOV EAX,AE8DEF2A
+01006B1F    17              POP SS                                   ; Modification of segment register
+01006B20    D5 D9           AAD 0D9
+01006B22    7C 02           JL SHORT NOTEPAD_.01006B26
+01006B24  ^ 77 D6           JA SHORT NOTEPAD_.01006AFC
+01006B26    8687 D5F6FAF9   XCHG BYTE PTR DS:[EDI+F9FAF6D5],AL
+01006B2C    52              PUSH EDX
+01006B2D    CE              INTO
+01006B2E    D5 9B           AAD 9B
+01006B30    CE              INTO
+01006B31    5B              POP EBX
+01006B32    D3A8 BD1A3321   SHR DWORD PTR DS:[EAX+21331ABD],CL
+01006B38    196C31 9C       SBB DWORD PTR DS:[ECX+ESI-64],EBP
+01006B3C    5E              POP ESI
+01006B3D    40              INC EAX
+01006B3E    AF              SCAS DWORD PTR ES:[EDI]
+01006B3F    93              XCHG EAX,EBX
+01006B40    FD              STD
+01006B41    0177 E9         ADD DWORD PTR DS:[EDI-17],ESI
+01006B44    51              PUSH ECX
+01006B45    2A82 FF92E951   SUB AL,BYTE PTR DS:[EDX+51E992FF]
+01006B4B    2A82 FF9B8618   SUB AL,BYTE PTR DS:[EDX+18869BFF]
+01006B51    D385 0016CE21   ROL DWORD PTR SS:[EBP+21CE1600],CL
+01006B57    59              POP ECX
+01006B58    20A6 F888B95F   AND BYTE PTR DS:[ESI+5FB988F8],AH
+01006B5E    B8 B098D1FD     MOV EAX,FDD198B0
+01006B63    D1D1            RCL ECX,1
+01006B65    24 D3           AND AL,0D3
+01006B67    8500            TEST DWORD PTR DS:[EAX],EAX
+01006B69    8E36            MOV SEG?,WORD PTR DS:[ESI]               ; Undefined segment register
+01006B6B    FE              ???                                      ; Unknown command
+01006B6C    26:B0 8D        MOV AL,8D                                ; Superfluous prefix
+01006B6F    6E              OUTS DX,BYTE PTR ES:[EDI]                ; I/O command
+01006B70    B0 FC           MOV AL,0FC
+01006B72    DA30            FIDIV DWORD PTR DS:[EAX]
+01006B74    D385 00F1FDD0   ROL DWORD PTR SS:[EBP+D0FDF100],CL
+01006B7A    1C 83           SBB AL,83
+01006B7C    D258 C3         RCR BYTE PTR DS:[EAX-3D],CL
+01006B7F    AE              SCAS BYTE PTR ES:[EDI]
+01006B80    3C D3           CMP AL,0D3
+01006B82    8500            TEST DWORD PTR DS:[EAX],EAX
+01006B84    F0:36:6D        LOCK INS DWORD PTR ES:[EDI],DX           ; LOCK prefix is not allowed
+01006B87    97              XCHG EAX,EDI
+01006B88    AA              STOS BYTE PTR ES:[EDI]
+01006B89    8085 BD1CAFCD 6>ADD BYTE PTR SS:[EBP+CDAF1CBD],62
+01006B90    CF              IRETD
+01006B91    8B40 9B         MOV EAX,DWORD PTR DS:[EAX-65]
+01006B94    1ADF            SBB BL,BH
+01006B96    81B5 835EB989 6>XOR DWORD PTR SS:[EBP+89B95E83],489E5A6C
+01006BA0    D385 000ACB8F   ROL DWORD PTR SS:[EBP+8FCB0A00],CL
+01006BA6    92              XCHG EAX,EDX
+01006BA7    73 27           JNB SHORT NOTEPAD_.01006BD0
+01006BA9    CF              IRETD
+01006BAA    25 696F3953     AND EAX,53396F69
+01006BAF    98              CWDE
+01006BB0    B2 4B           MOV DL,4B
+01006BB2    8628            XCHG BYTE PTR DS:[EAX],CH
+01006BB4    24 DC           AND AL,0DC
+01006BB6    D812            FCOM DWORD PTR DS:[EDX]
+01006BB8    B5 C6           MOV CH,0C6
+01006BBA    03F6            ADD ESI,ESI
+01006BBC    3D 58E9F790     CMP EAX,90F7E958
+01006BC1    8D4444 46       LEA EAX,DWORD PTR SS:[ESP+EAX*2+46]
+01006BC5    843F            TEST BYTE PTR DS:[EDI],BH
+01006BC7    5C              POP ESP
+01006BC8    06              PUSH ES
+01006BC9    B7 12           MOV BH,12
+01006BCB    52              PUSH EDX
+01006BCC    90              NOP
+01006BCD  ^ E0 E9           LOOPDNE SHORT NOTEPAD_.01006BB8
+01006BCF    68 F2A5A1E8     PUSH E8A1A5F2
+01006BD4    8B58 18         MOV EBX,DWORD PTR DS:[EAX+18]
+01006BD7    1854D3 85       SBB BYTE PTR DS:[EBX+EDX*8-7B],DL
+01006BDB    00F0            ADD AL,DH
+01006BDD    0A1C76          OR BL,BYTE PTR DS:[ESI+ESI*2]
+01006BE0    F6E8            IMUL AL
+01006BE2    46              INC ESI
+01006BE3    54              PUSH ESP
+01006BE4    B7 2D           MOV BH,2D
+01006BE6    CB              RETF                                     ; Far return
+01006BE7  ^ 75 D9           JNZ SHORT NOTEPAD_.01006BC2
+01006BE9    73 5D           JNB SHORT NOTEPAD_.01006C48
+01006BEB    2BE4            SUB ESP,ESP
+01006BED    0331            ADD ESI,DWORD PTR DS:[ECX]
+01006BEF    50              PUSH EAX
+01006BF0  ^ E1 87           LOOPDE SHORT NOTEPAD_.01006B79
+01006BF2    60              PUSHAD
+01006BF3    D385 00857E37   ROL DWORD PTR SS:[EBP+377E8500],CL
+01006BF9    17              POP SS                                   ; Modification of segment register
+01006BFA    CB              RETF                                     ; Far return
+01006BFB    78 25           JS SHORT NOTEPAD_.01006C22
+01006BFD  - E9 7C375676     JMP SHELL32.7756A37E
+01006C02    DB69 EC         FLD TBYTE PTR DS:[ECX-14]
+01006C05    E6 E7           OUT 0E7,AL                               ; I/O command
+01006C07    8769 44         XCHG DWORD PTR DS:[ECX+44],EBP
+01006C0A    2C 0E           SUB AL,0E
+01006C0C    C6              ???                                      ; Unknown command
+01006C0D    B9 9CEF8164     MOV ECX,6481EF9C
+01006C12    FD              STD
+01006C13    E1 2E           LOOPDE SHORT NOTEPAD_.01006C43
+01006C15    FB              STI
+01006C16    B8 9E930114     MOV EAX,1401939E
+01006C1B    3C 6E           CMP AL,6E
+01006C1D    392B            CMP DWORD PTR DS:[EBX],EBP
+01006C1F    2E:4C           DEC ESP                                  ; Superfluous prefix
+01006C21    A7              CMPS DWORD PTR DS:[ESI],DWORD PTR ES:[ED>
+01006C22    2998 255294FC   SUB DWORD PTR DS:[EAX+FC945225],EBX
+01006C28    E8 B36885FF     CALL 0085D4E0
+01006C2D    6BF6 45         IMUL ESI,ESI,45
+01006C30    B4 01           MOV AH,1
+01006C32    74 11           JE SHORT NOTEPAD_.01006C45
+01006C34    0FB745 B8       MOVZX EAX,WORD PTR SS:[EBP-48]
+01006C38    EB 0E           JMP SHORT NOTEPAD_.01006C48
+01006C3A  - E9 012782FF     JMP 00829340
+01006C3F    E8 720C8930     CALL 318978B6
+01006C44    07              POP ES                                   ; Modification of segment register
+01006C45    6A 0A           PUSH 0A
+01006C47    58              POP EAX
+01006C48    50              PUSH EAX
+01006C49    56              PUSH ESI
+01006C4A    53              PUSH EBX
+01006C4B    53              PUSH EBX
+01006C4C    FFD7            CALL EDI
+01006C4E    50              PUSH EAX
+01006C4F    E8 ADBBFFFF     CALL NOTEPAD_.01002801
+01006C54    8BF0            MOV ESI,EAX
+01006C56    8975 84         MOV DWORD PTR SS:[EBP-7C],ESI
+01006C59    395D E4         CMP DWORD PTR SS:[EBP-1C],EBX
+01006C5C    75 07           JNZ SHORT NOTEPAD_.01006C65
+01006C5E    56              PUSH ESI
+01006C5F    FF15 54D58500   CALL DWORD PTR DS:[85D554]               ; msvcrt.exit
+01006C65    FF15 60D58500   CALL DWORD PTR DS:[85D560]               ; msvcrt._cexit
+01006C6B    EB 2D           JMP SHORT NOTEPAD_.01006C9A
+01006C6D    8B45 EC         MOV EAX,DWORD PTR SS:[EBP-14]
+01006C70    8B08            MOV ECX,DWORD PTR DS:[EAX]
+01006C72    8B09            MOV ECX,DWORD PTR DS:[ECX]
+01006C74    894D 80         MOV DWORD PTR SS:[EBP-80],ECX
+01006C77    50              PUSH EAX
+01006C78    51              PUSH ECX
+01006C79    E8 74000000     CALL NOTEPAD_.01006CF2                   ; JMP to msvcrt._XcptFilter
+01006C7E    59              POP ECX
+01006C7F    59              POP ECX
+01006C80    C3              RETN
+01006C81    8B65 E8         MOV ESP,DWORD PTR SS:[EBP-18]
+01006C84    8B75 80         MOV ESI,DWORD PTR SS:[EBP-80]
+01006C87    837D E4 00      CMP DWORD PTR SS:[EBP-1C],0
+01006C8B    75 07           JNZ SHORT NOTEPAD_.01006C94
+01006C8D    56              PUSH ESI
+01006C8E    FF15 6CD58500   CALL DWORD PTR DS:[85D56C]               ; msvcrt._exit
+01006C94    FF15 78D58500   CALL DWORD PTR DS:[85D578]               ; msvcrt._c_exit
+01006C9A    834D FC FF      OR DWORD PTR SS:[EBP-4],FFFFFFFF
+01006C9E    8BC6            MOV EAX,ESI
+01006CA0    E8 3C000000     CALL NOTEPAD_.01006CE1
+01006CA5    C3              RETN
+01006CA6    CC              INT3
+01006CA7    CC              INT3
+01006CA8  - E9 232882FF     JMP 008294D0
+01006CAD    B6 C8           MOV DH,0C8
+01006CAF    9C              PUSHFD
+01006CB0    C8 54F918       ENTER 0F954,18
+01006CB4    71 2A           JNO SHORT NOTEPAD_.01006CE0
+01006CB6  ^ 76 E6           JBE SHORT NOTEPAD_.01006C9E
+01006CB8    D7              XLAT BYTE PTR DS:[EBX+AL]
+01006CB9    15 5229E5D9     ADC EAX,D9E52952
+01006CBE    3F              AAS
+01006CBF    4A              DEC EDX
+01006CC0    44              INC ESP
+01006CC1    58              POP EAX
+01006CC2    36:CE           INTO                                     ; Superfluous prefix
+01006CC4    8C67 67         MOV WORD PTR DS:[EDI+67],FS
+01006CC7    73 20           JNB SHORT NOTEPAD_.01006CE9
+01006CC9    00CD            ADD CH,CL
+01006CCB  ^ 74 A5           JE SHORT NOTEPAD_.01006C72
+01006CCD    A9 F9FA7150     TEST EAX,5071FAF9
+01006CD2    F3:             PREFIX REP:                              ; Superfluous prefix
+01006CD3    083CF6          OR BYTE PTR DS:[ESI+ESI*8],BH
+01006CD6    5D              POP EBP
+01006CD7    60              PUSHAD
+01006CD8    03E4            ADD ESP,ESP
+01006CDA    1050 F6         ADC BYTE PTR DS:[EAX-A],DL
+01006CDD    4B              DEC EBX
+01006CDE    FD              STD
+01006CDF    48              DEC EAX
+01006CE0    BC 8B4DF064     MOV ESP,64F04D8B
+01006CE5    890D 00000000   MOV DWORD PTR DS:[0],ECX
+01006CEB    59              POP ECX
+01006CEC    5F              POP EDI
+01006CED    5E              POP ESI
+01006CEE    5B              POP EBX
+01006CEF    C9              LEAVE
+01006CF0    51              PUSH ECX
+01006CF1    C3              RETN
+01006CF2  - FF25 84D58500   JMP DWORD PTR DS:[85D584]                ; msvcrt._XcptFilter
+01006CF8  - FF25 90D58500   JMP DWORD PTR DS:[85D590]                ; msvcrt._initterm
+01006CFE  - E9 7E2782FF     JMP 00829481
+01006D03    06              PUSH ES
+01006D04    198D 9643D275   SBB DWORD PTR SS:[EBP+75D24396],ECX
+01006D0A    A7              CMPS DWORD PTR DS:[ESI],DWORD PTR ES:[ED>
+01006D0B    23DB            AND EBX,EBX
+01006D0D    EA D1B333C0 C3C>JMP FAR CCC3:C033B3D1                    ; Far jump
+					; ***** PSEUDO-OEP(le code à rebuildé est au-dessus) ***** 
+01006D14  - FF25 9CD58500   JMP DWORD PTR DS:[85D59C]                ; msvcrt._except_handler3
+
+______________________________________________________________________________
+
+Code original du notepad non asprotecté:
+
+
+01006AE0 > $  6A 70         PUSH 70           ; ***** VERITABLE OEP *****   
+01006AE2   .  68 88180001   PUSH NOTEPAD.01001888
+01006AE7   .  E8 BC010000   CALL NOTEPAD.01006CA8
+01006AEC   .  33DB          XOR EBX,EBX
+01006AEE   .  53            PUSH EBX                                 ; /pModule => NULL
+01006AEF   .  8B3D 4C110001 MOV EDI,DWORD PTR DS:[<&KERNEL32.GetModu>; |kernel32.GetModuleHandleA
+01006AF5   .  FFD7          CALL EDI                                 ; \GetModuleHandleA
+01006AF7   .  66:8138 4D5A  CMP WORD PTR DS:[EAX],5A4D
+01006AFC   .  75 1F         JNZ SHORT NOTEPAD.01006B1D
+01006AFE   .  8B48 3C       MOV ECX,DWORD PTR DS:[EAX+3C]
+01006B01   .  03C8          ADD ECX,EAX
+01006B03   .  8139 50450000 CMP DWORD PTR DS:[ECX],4550
+01006B09   .  75 12         JNZ SHORT NOTEPAD.01006B1D
+01006B0B   .  0FB741 18     MOVZX EAX,WORD PTR DS:[ECX+18]
+01006B0F   .  3D 0B010000   CMP EAX,10B
+01006B14   .  74 1F         JE SHORT NOTEPAD.01006B35
+01006B16   .  3D 0B020000   CMP EAX,20B
+01006B1B   .  74 05         JE SHORT NOTEPAD.01006B22
+01006B1D   >  895D E4       MOV DWORD PTR SS:[EBP-1C],EBX
+01006B20   .  EB 27         JMP SHORT NOTEPAD.01006B49
+01006B22   >  83B9 84000000>CMP DWORD PTR DS:[ECX+84],0E
+01006B29   .^ 76 F2         JBE SHORT NOTEPAD.01006B1D
+01006B2B   .  33C0          XOR EAX,EAX
+01006B2D   .  3999 F8000000 CMP DWORD PTR DS:[ECX+F8],EBX
+01006B33   .  EB 0E         JMP SHORT NOTEPAD.01006B43
+01006B35   >  8379 74 0E    CMP DWORD PTR DS:[ECX+74],0E
+01006B39   .^ 76 E2         JBE SHORT NOTEPAD.01006B1D
+01006B3B   .  33C0          XOR EAX,EAX
+01006B3D   .  3999 E8000000 CMP DWORD PTR DS:[ECX+E8],EBX
+01006B43   >  0F95C0        SETNE AL
+01006B46   .  8945 E4       MOV DWORD PTR SS:[EBP-1C],EAX
+01006B49   >  895D FC       MOV DWORD PTR SS:[EBP-4],EBX
+01006B4C   .  6A 02         PUSH 2
+01006B4E   .  FF15 10130001 CALL DWORD PTR DS:[<&msvcrt.__set_app_ty>;  msvcrt.__set_app_type
+01006B54   .  59            POP ECX
+01006B55   .  830D 9C9B0001>OR DWORD PTR DS:[1009B9C],FFFFFFFF
+01006B5C   .  830D A09B0001>OR DWORD PTR DS:[1009BA0],FFFFFFFF
+01006B63   .  FF15 0C130001 CALL DWORD PTR DS:[<&msvcrt.__p__fmode>] ;  msvcrt.__p__fmode
+01006B69   .  8B0D A08A0001 MOV ECX,DWORD PTR DS:[1008AA0]
+01006B6F   .  8908          MOV DWORD PTR DS:[EAX],ECX
+01006B71   .  FF15 08130001 CALL DWORD PTR DS:[<&msvcrt.__p__commode>;  msvcrt.__p__commode
+01006B77   .  8B0D 9C8A0001 MOV ECX,DWORD PTR DS:[1008A9C]
+01006B7D   .  8908          MOV DWORD PTR DS:[EAX],ECX
+01006B7F   .  A1 04130001   MOV EAX,DWORD PTR DS:[<&msvcrt._adjust_f>
+01006B84   .  8B00          MOV EAX,DWORD PTR DS:[EAX]
+01006B86   .  A3 A49B0001   MOV DWORD PTR DS:[1009BA4],EAX
+01006B8B   .  E8 80010000   CALL NOTEPAD.01006D10
+01006B90   .  391D E8850001 CMP DWORD PTR DS:[10085E8],EBX
+01006B96   .  75 0C         JNZ SHORT NOTEPAD.01006BA4
+01006B98   .  68 106D0001   PUSH NOTEPAD.01006D10                    ;  Entry address
+01006B9D   .  FF15 00130001 CALL DWORD PTR DS:[<&msvcrt.__setusermat>;  msvcrt.__setusermatherr
+01006BA3   .  59            POP ECX
+01006BA4   >  E8 55010000   CALL NOTEPAD.01006CFE
+01006BA9   .  68 30130001   PUSH NOTEPAD.01001330
+01006BAE   .  68 2C130001   PUSH NOTEPAD.0100132C
+01006BB3   .  E8 40010000   CALL <JMP.&msvcrt._initterm>
+01006BB8   .  A1 988A0001   MOV EAX,DWORD PTR DS:[1008A98]
+01006BBD   .  8945 E0       MOV DWORD PTR SS:[EBP-20],EAX
+01006BC0   .  8D45 E0       LEA EAX,DWORD PTR SS:[EBP-20]
+01006BC3   .  50            PUSH EAX
+01006BC4   .  FF35 948A0001 PUSH DWORD PTR DS:[1008A94]
+01006BCA   .  8D45 DC       LEA EAX,DWORD PTR SS:[EBP-24]
+01006BCD   .  50            PUSH EAX
+01006BCE   .  8D45 D8       LEA EAX,DWORD PTR SS:[EBP-28]
+01006BD1   .  50            PUSH EAX
+01006BD2   .  8D45 D4       LEA EAX,DWORD PTR SS:[EBP-2C]
+01006BD5   .  50            PUSH EAX
+01006BD6   .  FF15 F8120001 CALL DWORD PTR DS:[<&msvcrt.__getmainarg>;  msvcrt.__getmainargs
+01006BDC   .  8945 D0       MOV DWORD PTR SS:[EBP-30],EAX
+01006BDF   .  68 28130001   PUSH NOTEPAD.01001328
+01006BE4   .  68 24130001   PUSH NOTEPAD.01001324
+01006BE9   .  E8 0A010000   CALL <JMP.&msvcrt._initterm>
+01006BEE   .  83C4 24       ADD ESP,24
+01006BF1   .  A1 F4120001   MOV EAX,DWORD PTR DS:[<&msvcrt._acmdln>]
+01006BF6   .  8B30          MOV ESI,DWORD PTR DS:[EAX]
+01006BF8   .  8975 CC       MOV DWORD PTR SS:[EBP-34],ESI
+01006BFB   .  803E 22       CMP BYTE PTR DS:[ESI],22
+01006BFE   .  75 3A         JNZ SHORT NOTEPAD.01006C3A
+01006C00   >  46            INC ESI
+01006C01   .  8975 CC       MOV DWORD PTR SS:[EBP-34],ESI
+01006C04   .  8A06          MOV AL,BYTE PTR DS:[ESI]
+01006C06   .  3AC3          CMP AL,BL
+01006C08   .  74 04         JE SHORT NOTEPAD.01006C0E
+01006C0A   .  3C 22         CMP AL,22
+01006C0C   .^ 75 F2         JNZ SHORT NOTEPAD.01006C00
+01006C0E   >  803E 22       CMP BYTE PTR DS:[ESI],22
+01006C11   .  75 04         JNZ SHORT NOTEPAD.01006C17
+01006C13   >  46            INC ESI
+01006C14   .  8975 CC       MOV DWORD PTR SS:[EBP-34],ESI
+01006C17   >  8A06          MOV AL,BYTE PTR DS:[ESI]
+01006C19   .  3AC3          CMP AL,BL
+01006C1B   .  74 04         JE SHORT NOTEPAD.01006C21
+01006C1D   .  3C 20         CMP AL,20
+01006C1F   .^ 76 F2         JBE SHORT NOTEPAD.01006C13
+01006C21   >  895D B4       MOV DWORD PTR SS:[EBP-4C],EBX
+01006C24   .  8D45 88       LEA EAX,DWORD PTR SS:[EBP-78]
+01006C27   .  50            PUSH EAX                                 ; /pStartupinfo
+01006C28   .  FF15 D0100001 CALL DWORD PTR DS:[<&KERNEL32.GetStartup>; \GetStartupInfoA
+01006C2E   .  F645 B4 01    TEST BYTE PTR SS:[EBP-4C],1
+01006C32   .  74 11         JE SHORT NOTEPAD.01006C45
+01006C34   .  0FB745 B8     MOVZX EAX,WORD PTR SS:[EBP-48]
+01006C38   .  EB 0E         JMP SHORT NOTEPAD.01006C48
+01006C3A   >  803E 20       CMP BYTE PTR DS:[ESI],20
+01006C3D   .^ 76 D8         JBE SHORT NOTEPAD.01006C17
+01006C3F   .  46            INC ESI
+01006C40   .  8975 CC       MOV DWORD PTR SS:[EBP-34],ESI
+01006C43   .^ EB F5         JMP SHORT NOTEPAD.01006C3A
+01006C45   >  6A 0A         PUSH 0A
+01006C47   .  58            POP EAX
+01006C48   >  50            PUSH EAX
+

@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center"> 
+                    <p><font color="#339999" size="5">S&eacute;curit&eacute; des 
+                      r&eacute;seaux<br>
+                      Peer-to-Peer (P2P)</font><br>
+                      -=&curren; Patrick MARLIER &curren;=-</p>
+                    <p><table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                      <tr> 
+                        <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                            <tr> 
+                              <td><a href="../../download/Securite_des_reseaux_P2P.pdf" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table></p>					  
+                  </div></td>
+                <td width="1"> <div align="right"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>
+			<br>
+            <table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td> <p align="justify">Le P2P est aujourd'hui tr&egrave;s 
+                          d&eacute;velopp&eacute;. Son succ&egrave;s est en particulier 
+                          d&ucirc; &agrave; ses possibilit&eacute;s tr&egrave;s 
+                          larges de t&eacute;l&eacute;chargement. En effet, dans 
+                          le monde du P2P, le principe est simple : n'importe 
+                          qui peut s&#8217;inviter chez l&#8217;autre pour t&eacute;l&eacute;charger.<br>
+                          Le probl&egrave;me est qu&#8217;un syst&egrave;me, bas&eacute; 
+                          sur ce principe, doit se montrer ouvert au monde ext&eacute;rieur. 
+                          Ceci engendre in&eacute;vitablement certains probl&egrave;mes 
+                          de s&eacute;curit&eacute;.</p>
+                        <p align="justify">Ce rapport explique le fonctionnement 
+                          du P2P ainsi que deux protocoles, eDonkey et BitTorrent. 
+                          Il donne des &eacute;l&eacute;ments de s&eacute;curit&eacute; 
+                          ainsi que quelques exemples d&#8217;attaques sp&eacute;cifiques 
+                          aux r&eacute;seaux P2P. </p>
+                        <p><br>
+                          Tous les commentaires sont bienvenus sur le <a href="http://www.labo-asso.com/forum" target="_blank">forum</a><br>
+                        </p>
+                        <p align="right">Avril 2007</p>
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                          <tr> 
+                            <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                                <tr> 
+                                  <td nowrap>Patrick MARLIER</td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        &nbsp;</td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>           
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="secu_p2p.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+ 			
+                  </td>
+              </tr>
+            </table></td>
+        </tr>
+      </table>
+</body>
+</html>

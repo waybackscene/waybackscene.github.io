@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+	<title> Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" href="includes/style.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="titre">
+	<div class="barre_bleue"></div>
+	<div class="barre_bleue2"></div>
+	<div id="fretsdn"><a href="http://binary-reverser.org"></a></div>
+	<div class="menu"><ul>
+    <li><a href='structure1.php.html'>&#62; see in English version</a></li>
+    </ul></div>
+</div>
+
+<div id="menu">
+	<div class="barre_bleue3"></div>
+	<div class="barre_grise"></div>
+		<ul>
+	<li><a href="index.php.html">Accueil</a></li>
+	<li><a href="download.php.html">Téléchargements</a></li>
+	<li> <a href="screenshots.php.html">Screenshots</a></li>
+	<li> <a href="links.php.html">Documentations</a></li>
+	<li><a href="support.php.html">Support</a></li>
+	</ul>
+	<p><strong>BeaEngine documentation</strong></p>
+	<ul>
+	<li> <a href="fonction.php.html">fonction Disasm</a></li>
+	<li><a href="structure.php.html">structure _Disasm</a></li>
+	<li><a href="constants.php.html">Constantes</a></li>
+	<li><a href="exemples.php.html">Exemples</a></li>
+	<li><a href="licence.php.html">Licence</a></li>
+	</ul>
+ 
+</div>
+
+<div id="contenu">
+	<div class="barre_bleue">Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </div>
+<h1>Disasm Structure</h1>
+<p>
+La structure envoyée à la fonction Disasm stocke en retour le mnémonic ainsi que les opérandes sources et destination. Il est nécessaire de spécifier en entrée l'adresse de lecture.
+</p>
+<pre>
+struct _Disasm {
+   long long EIP;
+   long long VirtualAddr;
+   long SecurityBlock;
+   char CompleteInstr[64];
+   long Archi;
+   long Options;
+   INSTRTYPE Instruction;
+   ARGTYPE Argument1;
+   ARGTYPE Argument2;
+   ARGTYPE Argument3;
+   PREFIXINFO Prefix;
+};
+</pre>
+<p>Membres</p>
+<p class="champ"><strong>EIP</strong></p>
+<p class="explanation">[in] L'adresse où la routine va réaliser le désassemblage.</p>
+
+<p class="champ"><strong>VirtualAddr</strong></p>
+<p class="explanation">[in] optionnel - (Pour les instruction CALL - JMP - JMP conditionnel - LOOP) Par défaut, cette valeur vaut 0 (disable). Le désassembleur calcule l'adresse de destination du saut non pas à partir de EIP mais à partir de VirtualAddr. Cette adresse peut être de 64 bits. Cette option permet de désassembler du code situé n'importe où en mémoire tout en gardant au moment de l'affichage les adresses théoriques comme si le code était à sa place d'origine.</p>
+
+<p class="champ"><strong>CompleteInstr</strong></p>
+<p class="explanation">[out] Chaine qui stockera l'instruction désassemblée.</p>
+
+<p class="champ"><strong>SecurityBlock</strong></p>
+<p class="explanation">[in] Par défaut, cette valeur vaut 0. (option désactivée). Si elle est non nulle, elle correspond au nombre de bytes que la fonction Disasm a le droit de lire à partir de EIP. Ceci permet de réaliser un bloc de lecture pour éviter d'éventuels Access violation. Il est à noter cependant qu'une instruction sur les processeurs INTEL (en mode IA-32 ou intel 64) ne dépasse jamais <strong>15 bytes</strong>. Un SecurityBlock au delà de cette valeur est donc inutile.</p>
+
+<p class="champ"><strong>Archi</strong></p>
+<p class="explanation">[in] Ce champ vous permet de spécifier le type d'architecture utilisé. S'il vaut 0, l'architecture utilisée est IA-32. S'il vaut 64 (0x40), l'architecture utilisée est Intel 64.</p>
+
+<p class="champ"><strong>Options</strong></p>
+<p class="explanation">[in] Ce champ vous permet de spécifier une option d'affichage. Vous pouvez ainsi demander une syntaxe masm32, nasm ,goasm ou AT&T. Vous pouvez également spécifier le format de numération de type préfixé ou suffixé. Pour plus de clareté, vous pouvez demander une tabulation entre le mnémonic et le premier argument. Enfin, vous pouvez afficher les registres de segment sur les opérandes mémoire. Les constantes à utiliser sont les suivantes :</p>
+<pre>
+  NoTabulation = 0x0,
+  Tabulation = 0x1,
+  MasmSyntax = 0x000,
+  GoAsmSyntax = 0x100,
+  NasmSyntax = 0x200,
+  ATSyntax = 0x400,
+  PrefixedNumeral = 0x10000,
+  SuffixedNumeral = 0x00000,
+  ShowSegmentRegs = 0x01000000
+</pre>
+
+
+<p class="champ"><strong>Instruction</strong></p>
+<p class="explanation">[out] Structure de type <a href="instrtype.php.html">INSTRTYPE</a> .</p>
+
+<p class="champ"><strong>Argument1</strong></p>
+<p class="explanation">[out] Structure de type <a href="argtype.php.html">ARGTYPE</a> qui concerne le premier argument de l'instruction .</p>
+
+<p class="champ"><strong>Argument2</strong></p>
+<p class="explanation">[out] Structure de type <a href="argtype.php.html">ARGTYPE</a> qui concerne le second argument de l'instruction .</p>
+
+<p class="champ"><strong>Argument3</strong></p>
+<p class="explanation">[out] Structure de type <a href="argtype.php.html">ARGTYPE</a> qui concerne le troisième argument de l'instruction .</p>
+
+<p class="champ"><strong>Prefix</strong></p>
+<p class="explanation">[out] Structure de type <a href="prefixinfo.php.html">PREFIXINFO</a> qui permet d'avoir une liste complète des préfixes utilisés.</p>
+
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<HTML>
+<HEADER>
+<TITLE>fleur.web site - articles::adding compiled code to an executable</TITLE>
+<LINK REL=StyleSheet HREF="fleur.css" tppabs="http://www.effervescence.com/fleur/fleur.css" TYPE="text/css">
+</HEADER>
+<BODY CLASS=text>
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 CLASS=text WIDTH=80%>
+<TR><TD><DIV CLASS=text ALIGN=justify>
+
+<SPAN CLASS=title>adding compiled code to an executable</SPAN><BR><BR>
+<B>informations</B><BR>
+i' ve coded a nfo and diz file viewer for the purpose of this reversing. since most of the nfo and diz files use an oem
+font, we' ll have to change the default font, and we' ll add a commandline parser, to load the selected files. the aim of
+this lesson is to get how the import table works, and how we can directly use and modify it to call the imported apis and
+to add new ones. we' ll see how to add code to our target, by compiling our code with an assembler, and then
+copying it into the target.<BR><BR>
+
+<B>required files</B><BR>
+<A HREF="tutadding.zip" tppabs="http://www.effervescence.com/fleur/archive/files/articles/tutadding.zip">tutorial files</A> - all the needed files for this tutorial<BR><BR>
+
+<B>tools used</B><BR>
+hex workshop<BR>
+masm<BR>
+procdump<BR>
+softice<BR>
+symantec resourcestudio<BR><BR>
+
+<B>tutorial</B><BR><BR>
+
+<B>I.</B> <SPAN CLASS=title>adding some free space for our code</SPAN><BR>
+load procdump, click on the 'pe editor' button and open our target, then click on the 'sections' button. you see this :
+
+<PRE>name     vSize     vOffset   rSize     rOffset   characteristics
+.text    00000368h 00001000h 00000400h 00000400h 60000020h
+.rdata   000002ceh 00002000h 00000400h 00000800h 40000040h
+.data    00000218h 00003000h 00000400h 00000c00h c0000040h
+.rsrc    000004a8h 00004000h 00000600h 00001000h 40000040h
+</PRE>
+
+so we' ll extend the .rsrc section, we' ll add some bytes, so we' re sure we' ll have enough space. so edit the .rsrc
+section and change the vSize and rSize to 1100, then change the characteristics to e0000060h. so our code is located at
+offset 1600h.<BR><BR>
+
+<B>II.</B> <SPAN CLASS=title>the import table</SPAN><BR>
+let' s examine the import table of this target. the import tables are often located in the .idata or .rdata sections, so
+go at offset 800h. you see this :
+
+<PRE>000007FC 00000000 66210000 4A210000 58210000 B2210000 74210000 88210000 ....f!..J!..X!...!..t!...!..
+00000818 96210000 A4210000 00000000 DE210000 3A220000 CC210000 48220000 .!...!.......!..:"...!..H"..
+00000834 F0210000 04220000 12220000 20220000 2C220000 7E220000 5A220000 .!..."...".. "..,"..~"..Z"..
+00000850 6E220000 B2220000 90220000 9E220000 00000000 28210000 00000000 n"..."..."..."......(!......
+0000086C 20210000 00000000 00000000 3C210000 64200000 BC200000 00000000  !..........&lt;!..d ... ......
+00000888 00000000 BE210000 00200000 E0200000 00000000 00000000 C2220000 .....!... ... ..........."..
+000008A4 24200000 00000000 00000000 00000000 00000000 00000000 66210000 $ ......................f!..
+000008C0 4A210000 58210000 B2210000 74210000 88210000 96210000 A4210000 J!..X!...!..t!...!...!...!..
+000008DC 00000000 DE210000 3A220000 CC210000 48220000 F0210000 04220000 .....!..:"...!..H"...!..."..
+000008F8 12220000 20220000 2C220000 7E220000 5A220000 6E220000 B2220000 .".. "..,"..~"..Z"..n"..."..
+00000914 90220000 9E220000 00000000 28210000 00000000 09004765 744F7065 ."..."......(!........GetOpe
+00000930 6E46696C 654E616D 65410000 636F6D64 6C673332 2E646C6C 00001900 nFileNameA..comdlg32.dll....
+0000094C 436C6F73 6548616E 646C6500 32004372 65617465 46696C65 41007500 CloseHandle.2.CreateFileA.u.
+00000968 45786974 50726F63 65737300 11014765 744D6F64 756C6548 616E646C ExitProcess...GetModuleHandl
+00000984 65410000 6801476C 6F62616C 416C6C6F 63006F01 476C6F62 616C4672 eA..h.GlobalAlloc.o.GlobalFr
+000009A0 65650000 7301476C 6F62616C 4C6F636B 0000FD01 52656164 46696C65 ee..s.GlobalLock....ReadFile
+000009BC 00004B45 524E454C 33322E64 6C6C0000 58004372 65617465 57696E64 ..KERNEL32.dll..X.CreateWind
+000009D8 6F774578 41008300 44656657 696E646F 7750726F 63410000 94004469 owExA...DefWindowProcA....Di
+000009F4 73706174 63684D65 73736167 65410000 28014765 744D6573 73616765 spatchMessageA..(.GetMessage
+00000A10 41009701 4C6F6164 43757273 6F724100 9B014C6F 61644963 6F6E4100 A...LoadCursorA...LoadIconA.
+00000A2C BB014D65 73736167 65426F78 4100C601 4D6F7665 57696E64 6F770000 ..MessageBoxA...MoveWindow..
+00000A48 DD01506F 73745175 69744D65 73736167 6500EF01 52656769 73746572 ..PostQuitMessage...Register
+00000A64 436C6173 73457841 00001002 53656E64 4D657373 61676541 00005902 ClassExA....SendMessageA..Y.
+00000A80 53657457 696E646F 77546578 74410000 65025368 6F775769 6E646F77 SetWindowTextA..e.ShowWindow
+00000A9C 00007D02 5472616E 736C6174 654D6573 73616765 00008B02 55706461 ..}.TranslateMessage....Upda
+00000AB8 74655769 6E646F77 00005553 45523332 2E646C6C 00000000 00000000 teWindow..USER32.dll........
+</PRE>
+
+go at the start of the file, localize the 'pe',0,0 signature, it' s at offset c8h, so go at offset c8h + 80h = 148h.
+the dword at 148h is 6c200000h, it' s the rva to the import table. so look in the sections. the dword in correct order
+is 0000206ch, so it' s in the .rdata section, because 2000h &lt; 206ch &lt; 3000h, and it' s at offset 206ch - 2000h + 800h = 86ch.<BR>
+let' s look at the scheme of an import table :
+
+<PRE>[image import descriptor (dll 1)]
+[image import descriptor (dll 2)]
+....
+[null image import descriptor (end of table)]
+
+[firstthunk (dll1, api1)]
+[firstthunk (dll1, api2)]
+....
+[null firstthunk]
+
+[firstthunk (dll2, api1)]
+[firstthunk (dll2, api2)]
+....
+[null firstthunk]
+
+[dll name]
+[hint|api name]
+[hint|api name]
+[dll name]
+[hint|api name]
+[hint|api name]
+
+[IMAGE_IMPORT_DESCRIPTOR (originalfirstthunk:dword, timedatestamp:dword, forwarderchain:dword, name:dword, firstthunk:dword)]
+only 2 elements will interest us :
+name : contains the rva of a zero-terminated string containing the name of the dll
+firstthunk : contains the rva of a firstthunk table
+
+firstthunk table : list of rvas (dwords) of the imported functions names. when the program is started, the rvas are
+replaced by the address of the api.
+</PRE>
+
+so go at offset 86ch, where there is the image import descriptors. you see this :
+
+<PRE>0000086C 20210000 00000000 00000000 3C210000 64200000 BC200000 00000000  !..........&lt;!..d ... ......
+00000888 00000000 BE210000 00200000 E0200000 00000000 00000000 C2220000 .....!... ... ..........."..
+000008A4 24200000 00000000 00000000 00000000 00000000 00000000 66210000 $ ......................f!..
+</PRE>
+
+that means :
+
+<PRE>[first dll]
+rva of name : 0000213ch (offset 93ch, 'comdlg32.dll')
+FirstThunk : 00002064h (offset 864h)
+
+[second dll]
+rva of name : 000021beh (offset 9beh, 'kernel32.dll')
+FirstThunk : 00002000h (offset 800h)
+
+[third dll]
+rva of name : 000022c2h (offset ac2h, 'user32.dll')
+FirstThunk : 00002024h (offset 824h)
+</PRE>
+
+then there is a null entry, indicating the end of the image import descriptors directory. so we can check each
+firstthunk tables, and make the list of the function names.
+
+<PRE>[dll: comdlg32.dll]
+rva		offset		name of api		rva of address
+00002128	928h		GetOpenFileNameA	00002064h
+
+[dll: kernel32.dll]
+rva		offset		name of api		rva of address
+00002166	966h		ExitProcess		00002000h
+0000214a	94ah		CloseHandle		00002004h
+00002158	958h		CreateFileA		00002008h
+000021b2	9b2h		ReadFile		0000200ch
+00002174	974h		GetModuleHandleA	00002010h
+00002188	988h		GlobalAlloc		00002014h
+00002196	996h		GlobalFree		00002018h
+000021a4	9a4h		GlobalLock		0000201ch
+
+[dll: user32.dll]
+rva		offset		name of api		rva of address
+000021de	9deh		DefWindowProcA		00002024h
+0000223a	a3ah		MoveWindow		00002028h
+000021cc	9cch		CreateWindowExA		0000202ch
+00002248	a48h		PostQuitMessage		00002030h
+000021f0	9f0h		DispatchMessageA	00002034h
+00002204	a04h		GetMessageA		00002038h
+00002212	a12h		LoadCursorA		0000203ch
+00002220	a20h		LoadIconA		00002040h
+0000222c	a2ch		MessageBoxA		00002044h
+0000227e	a7eh		SetWindowTextA		00002048h
+0000225a	a5ah		RegisterClassExA	0000204ch
+0000226e	a6eh		SendMessageA		00002050h
+000022b2	ab2h		UpdateWindow		00002054h
+00002290	a90h		ShowWindow		00002058h
+0000229e	a9eh		TranslateMessage	0000205ch
+</PRE>
+
+if we want to add imports, we' ll just have to copy the image import descriptors table to our section and to create new
+entries, and then to create new firstthunk tables and dll name and hint/name tables for our new
+entries. then we' ll just have to change the rva of the import table in the pe header to the new one. if we want to call
+an api, we just have to call the dword at the rva of address. for example, to call the getopenfilenamea api, we would
+call the dword at 00402064h.<BR><BR>
+
+<B>III.</B> <SPAN CLASS=title>adding compiled code</SPAN><BR>
+to change the font, we' ll need getstockobject, wich is from gdi32.dll. we' ll also need to import getcommandlinea,
+from kernel32.dll. we could just copy the firstthunk table of kernel32.dll to our section and modify it, but it will
+be too messy. so we' ll add two new image import directories. all the datas and the code will be written in an asm file,
+and then compiled and pasted in the file. we' ll also compile the asm bytes for the jump from the target to our code.<BR>
+so let' s create a new basic asm file, that should look like this :
+
+<PRE>.386
+.model flat,stdcall
+
+			include	\masm32\include\windows.inc
+
+.const
+
+.code
+
+mkCodeStart		db	'- code starts here -'
+
+start:
+
+; data
+
+; code
+
+mkCodeEnd		db	'- code ends here -'
+
+			end	start
+</PRE>
+
+the markers are here to localize the code easily when we' ll copy and paste in an hex editor. we' ll have to add the
+datas and the code between mkcodestart and mkcodeend. first, we' ll add the image import directories, so add this
+just beneath the data comment :
+
+<PRE>dtDirectory		dd	2120h,0h,0h,213ch,2064h,			; comdlg32.dll
+			dd	20bch,0h,0h,21beh,2000h,			; kernel32.dll
+			dd	20e0h,0h,0h,22c2h,2024h,			; user32.dll
+			dd	0h,0h,0h,NAME,THUNK,				; added gdi32.dll
+			dd	0h,0h,0h,21beh,THUNK,				; added kernel32.dll
+			dd	0h,0h,0h,0h,0h					; null entry
+
+dtGdi32Thunk:
+dtGetStockObject	dd	RVAGETSTOCKOBJECT
+			dd	0
+
+dtKernel32Thunk:
+dtGetCommandLineA	dd	RVAGETCOMMANDLINEA
+			dd	0
+
+szGdi32			db	'gdi32.dll',0
+
+dtHNGetStockObject	dw	0
+			db	'GetStockObject',0
+
+dtHNGetCommandLineA	dw	0
+			db	'GetCommandLineA',0
+</PRE>
+
+for our added kernel32.dll directory, we use the name rva of the first kernel32.dll directory, so we don' t have to
+add a string in our datas.<BR>
+we' ll have to change the THUNK, NAME, RVAGETSTOCKOBJECT and RVAGETCOMMANDLINEA to the right rvas. but there' s a problem,
+we can' t just put the address of the strings in our code, because it will change when we' ll paste the code in the target.
+so we need to make some address conversion. remember that we' ll add our code at offset 1600h, that is rva 4600h. so the
+rva of dtGdi32Thunk, for example, will be 4600h + offset dtGdi32Thunk - offset start. so change the datas to :
+
+<PRE>			dd	0h,0h,0h,[4600h + szGdi32 - start],		; added gdi32.dll
+				[4600h + dtGdi32Thunk - start]
+			dd	0h,0h,0h,21beh,					; added kernel32.dll
+				[4600h + dtKernel32Thunk - start]
+
+dtGdi32Thunk:
+dtGetStockObject	dd	[4600h + dtHNGetStockObject - start]
+			dd	0
+
+dtKernel32Thunk:
+dtGetCommandLineA	dd	[4600h + dtHNGetCommandLineA - start]
+			dd	0
+</PRE>
+
+now go at offset 148h, and change the dword that is the image import directory rva to 4600h, that is 00460000.
+you can compile the asm file, open it and copy the bytes from the end of mkCodeStart to the start of mkCodeEnd, open the
+target, go at offset 1600h, and copy them. if you launch the target, it works.<BR><BR>
+
+<B>IV.</B> <SPAN CLASS=title>reversing the target</SPAN><BR>
+first, we' ll change the font of the edit control when it' ll create it. so bpx createwindowexa and launch the programs,
+look at the address pointed by the second push before the call, it' s the main window, so look at the second push before
+the second createwindowexa, it' s the edit control. so after this createwindowexa, you see this :
+
+<PRE>0040110D E8FC010000              call user32!createwindowexa
+00401112 A308324000              mov dword ptr [00403208], eax		; stores the handle of the edit window
+00401117 FF7514                  push [ebp+14]
+0040111A FF75B0                  push [ebp-50]				; handle of main window
+0040111D E834020000              call user32!showwindow
+00401122 FF7514                  push [ebp+14]
+00401125 FF3508324000            push dword ptr [00403208]		; handle of edit window
+0040112B E826020000              call user32!showwindow
+</PRE>
+
+so the mov is 5 bytes long, we can replace it by a jump to our code.
+masm doesn' t compile the jumps the right way, so we' ll use the macros i' ve written to generate good jumps, so before
+the .const line, add this :
+
+<PRE>
+fjmpb		macro	ptDestinationV
+		local	jmpstart
+
+jmpstart	db	0e9h
+		dd	ptDestinationV - (VIRTUALADDRESS + (jmpstart - start) + 5)
+
+endm
+
+fjmpf		macro	ptDestination,ptStartV
+
+		db	0e9h
+		dd	(VIRTUALADDRESS + (ptDestination - start)) - ptStartV - 5
+
+endm
+</PRE>
+
+in the .const part, add this :
+
+<PRE>VIRTUALADDRESS		equ	04600h
+</PRE>
+fjmpb stands for far jump back, it' s to jump from our code to the target, ptDestinationV is the va of the destination.
+fjmpf stands for far jump forward, it' s to jump from the target to our code, ptDestination is the label in our code to
+wich it should jump, and ptStartV is the va of the jump start.
+
+so before the mkCodeStart marker, add this :
+
+<PRE>mkJump1		db	'- jump1 -'
+			fjmpf	codesnippet1,01112h
+</PRE>
+
+so we have to write the codesnippet1 code. we' ll have to execute the jump that we overwritten. to have the right addresses
+when executing pushs, movs, ... we' ll have to use a method that comes from the virus programmation, it' s called delta
+offsets. to compute a delta offset, that is the difference between the current offset in our compiled code and in the code
+in the target, we' ll use the macro i have written that is getdelta. so after the other macros, add this :
+
+<PRE>getdelta	macro
+		local	computedelta
+
+		call	computedelta
+
+computedelta:	pop	ebp
+		sub	ebp,computedelta
+
+endm
+</PRE>
+
+after this macro is executed, ebp contains the delta offset. but since we change ebp, and we might change the other registers
+in our code snippets, we always better begin with a pushad and ends with a popad. so write this after the code label :
+
+<PRE>codesnippet1:	pushad
+			getdelta
+
+			mov	dword ptr [ebp + start - VIRTUALADDRESS + 3208h],eax
+
+			popad
+			fjmpb	01117h
+</PRE>
+
+go at offset 1112h - vaCodeSection + ofCodeSection = 1112h - 1000h + 400h = 512h, and replace the 5 bytes with the 5 bytes
+of the jump that we compiled, then overwrite the bytes starting from offset 1600h with the bytes of the code. launch the
+target. it works.<BR>
+now we' ll change the font of the edit control. after the mov in codesnippet1, add this :
+
+<PRE>			push	OEM_FIXED_FONT						; (10h)
+			call	dword ptr [ebp + dtGetStockObject]			; getstockobject
+
+			push	0
+			push	eax
+			push	WM_SETFONT						; (30h)
+			push	dword ptr [ebp + start - VIRTUALADDRESS + 3208h]	; handle of edit control
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 2050h]	; sendmessagea
+</PRE>
+
+compile the code, and replace the code at offset 1600h. launch the target, it works.<BR>
+now we can treat the commandline, we can even do it in the same snippet. to show how we can use the datas in our code,
+we' ll add that in our datas (remember that the image import directory must be the first line after the start label, since
+we changed the import table rva in the pe header to point to this address) :
+
+<PRE>dtBytes			dd	0
+hFile			dd	0
+hMem			dd	0
+ptMem			dd	0
+</PRE>
+
+and we' ll add this in our code, after the call to sendmessagea :
+
+<PRE>			call	dword ptr [ebp + dtGetCommandLineA]			; getcommandlinea
+
+			lea	edi,[eax+1]
+			mov	al,'"'
+			mov	ecx,-1
+
+			repnz	scasb
+
+			inc	edi
+
+			cmp	byte ptr [edi],0
+			jz	nofile
+
+			push	10000h
+			push	GHND							; (42h)
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 2014h]	; globalalloc
+			mov	dword ptr [ebp + hMem],eax				; store the allocated space handle
+
+			push	eax							; handle
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 201ch]	; globallock
+			mov	dword ptr [ebp + ptMem],eax				; store the allocated space address
+
+			push	0
+			push	FILE_ATTRIBUTE_NORMAL					; (00000080h)
+			push	OPEN_EXISTING						; (3h)
+			push	0
+			push	0
+			push	GENERIC_READ						; (80000000h)
+			push	edi							; filename address
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 2008h]	; createfilea
+			mov	dword ptr [ebp + hFile],eax				; store the file handle
+
+			cmp	eax,-1							; the file has been opened ?
+			jz	@f							; no, free the allocated space
+
+			push	0
+			lea	edx,[ebp + dtBytes]
+			push	edx							; push the address of dtBytes
+			push	0ffffh
+			push	dword ptr [ebp + ptMem]					; allocated space address
+			push	eax							; handle of file
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 200ch]	; readfile
+
+			mov	eax,dword ptr [ebp + ptMem]				; allocated space address
+			add	eax,dword ptr [ebp + dtBytes]				; add the number of read bytes
+			and	byte ptr [eax],0					; add a zero byte after the file
+
+			push	dword ptr [ebp + hFile]					; handle of file
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 2004h]	; closehandle
+
+			push	dword ptr [ebp + ptMem]					; address of allocated space
+			push	dword ptr [ebp + start - VIRTUALADDRESS + 3208h]	; handle of the edit control
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 2048h]	; setwindowtexta
+
+@@:			push	dword ptr [ebp + hMem]
+			call	dword ptr [ebp + start - VIRTUALADDRESS + 2018h]	; globalfree
+
+nofile:			popad
+			fjmpb	01117h
+</PRE>
+
+now compile the code, change the jump at offset 512h, and add the code. launch the target, it works.<BR>
+i' ve noticed a bug, when the program loads a file, it does not add a zero byte at the end of the read file, as we
+did in the code we just added. so we' ll correct this bug.<BR>
+bpx createfilea and open a file. you see this :
+
+<PRE>00401254 6A00                    push 00000000
+00401256 6880000000              push 00000080
+0040125B 6A03                    push 00000003
+0040125D 6A00                    push 00000000
+0040125F 6A00                    push 00000000
+00401261 6800000080              push 80000000
+00401266 6800304000              push 00403000
+0040126B E874000000              call kernel32!createfilea		; open the file
+00401270 83F8FF                  cmp eax, FFFFFFFF
+00401273 0F8473FFFFFF            je 004011EC
+00401279 50                      push eax
+0040127A 6A00                    push 00000000
+0040127C 6804314000              push 00403104				; address of dtBytes
+00401281 68FFFF0000              push 0000FFFF
+00401286 FF3514324000            push dword ptr [00403214]		; address of ptMem
+0040128C 50                      push eax
+0040128D E876000000              call kernel32!readfile			; read it
+00401292 58                      pop eax
+00401293 50                      push eax
+00401294 E845000000              call kernel32!closehandle
+00401299 FF3514324000            push dword ptr [00403214]		; we could replace this instruction
+0040129F FF3508324000            push dword ptr [00403208]
+004012A5 E8A6000000              call user32!setwindowtexta
+004012AA E93DFFFFFF              jmp 004011EC				; return to the dialogproc
+</PRE>
+
+so we' ll make a jump from 00401299h to our code, and then we' ll return to 0040129fh. so add this after the first jump :
+
+<PRE>mkJump2			db	'- jump2 -'
+			fjmpf	codesnippet2,01299h
+</PRE>
+
+and add this after the first code snippet :
+
+<PRE>codesnippet2:		push	ebp
+
+			getdelta
+
+			mov	eax,dword ptr [ebp + start - VIRTUALADDRESS + 3214h]	; ptMem
+			add	eax,dword ptr [ebp + start - VIRTUALADDRESS + 3104h]	; dtBytes
+			and	byte ptr [eax],0
+
+			mov	eax,dword ptr [ebp + start - VIRTUALADDRESS + 3214h]
+
+			pop	ebp
+
+			push	eax
+
+			fjmpb	0129fh
+</PRE>
+
+compile the code and replace the 5 bytes at 699h by the bytes of the second jump, then add the code at offset 1600h. launch
+the target, it works.<BR><BR>
+
+<B>IV.</B> <SPAN CLASS=title>final words</SPAN><BR>
+now it' s easy to write your own patcher in asm that will automatize the task of adding the code to the executable. you can
+always use the sources of the fleur patcher.<BR><BR><BR>
+
+<DIV ALIGN=right>main::<A HREF="index.htm" tppabs="http://www.effervescence.com/fleur/index.htm">fleur</A><BR>
+comment::<A HREF="mailto:blair@effervescence.com">roy</A></DIV>
+
+</DIV></TD><TD WIDTH=20%></TD></TR></TABLE><BR><BR><BR><BR>
+</BODY>
+</HTML>

@@ -1,0 +1,68 @@
+A:hover {
+	FONT-WEIGHT: normal; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #00ffff; 
+	LINE-HEIGHT: normal; 
+	FONT-STYLE: normal; 
+	FONT-FAMILY: Fixedsys; 
+	FONT-VARIANT: normal; 
+	TEXT-DECORATION: none
+}
+A {
+	FONT-WEIGHT: normal; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #33cc33; 
+	LINE-HEIGHT: normal; 
+	FONT-STYLE: normal; 
+	FONT-FAMILY: Fixedsys; 
+	BACKGROUND-COLOR: #000000; 
+	FONT-VARIANT: normal; 
+	TEXT-DECORATION: none
+}
+BODY {
+	SCROLLBAR-FACE-COLOR: #000000; 
+	FONT-WEIGHT: normal; 
+	SCROLLBAR-HIGHLIGHT-COLOR: #006600; 
+	TEXT-TRANSFORM: none; 
+	SCROLLBAR-SHADOW-COLOR: #000000; 
+	COLOR: #339999; 
+	SCROLLBAR-3DLIGHT-COLOR: #000000; 
+	LINE-HEIGHT: normal; 
+	SCROLLBAR-ARROW-COLOR: #ffffff; 
+	SCROLLBAR-TRACK-COLOR: #000000; 
+	FONT-STYLE: normal; 
+	FONT-FAMILY: Fixedsys; 
+	SCROLLBAR-DARKSHADOW-COLOR: #006600; 
+	BACKGROUND-COLOR: #000000; 
+	FONT-VARIANT: normal; 
+	TEXT-DECORATION: none
+}
+textarea {
+	font-family: Fixedsys;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #339999;
+	text-decoration: none;
+	background-color: #000000;
+	border: 1px solid #33CC33;
+	margin: 5px;
+	padding: 5px;
+}
+input {
+	font-family: Fixedsys;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #339999;
+	text-decoration: none;
+	background-color: #000000;
+	border: 1px solid #33CC33;
+	margin-right: 5px;
+	margin-left: 5px;
+
+}

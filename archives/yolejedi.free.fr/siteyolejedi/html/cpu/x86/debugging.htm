@@ -1,0 +1,945 @@
+<html>
+<head>
+<title>Les Registres Mise au Point, int1 et int3 des x86 et Pentium.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p align='justify'><font face="Fixedsys" size="2">Les microprocesseurs 
+              (CPU) x86 et Pentium offrent la possibilit&eacute; &agrave; des 
+              outils de mise au point de suivre ce qui se passe dans leurs entrailles 
+              (CPU). Des instructions machine ainsi que des registres sp&eacute;ciaux 
+              appel&eacute;s 'registres de mise au point' permettent de placer 
+              des points d'arr&ecirc;t qui donnent la possibilit&eacute; :</font></p>
+            <ol>
+              <li><font face="Fixedsys" size="2">d'arr&ecirc;ter un programme 
+                &agrave; un endroit voulu,</font></li>
+              <li><font face="Fixedsys" size="2"> de regarder l'&eacute;tat du 
+                CPU et du syst&egrave;me,</font></li>
+              <li><font face="Fixedsys" size="2"> de les modifier,</font></li>
+              <li><font face="Fixedsys" size="2">de reprendre l'ex&eacute;cution 
+                du programme.</font></li>
+            </ol>
+            <p><font face="Fixedsys" size="2">Pourquoi s'en priver ? :)</font></p></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_orateur.gif" width="113" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="95%"> <div align="center"><font size="6" color="#33CC33" face="Fixedsys">Interruptions 
+                    1 et 3<br>
+                    &amp;<br>
+                    Les&nbsp;registres&nbsp;de&nbsp;MiSe Au PoInT</font><font face="Fixedsys" size="2"><u><br>
+                    </u>(version 1.02)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_orateur.gif" width="113" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p align="center">&nbsp;</p>
+            <p align="left"><font color="#33CC33" size="2" face="Fixedsys"><u>I) Les Interruptions 
+              (d&eacute;finition rapide)</u> :</font></p>
+            <p align="left"><font face="Fixedsys" size="2">Au d&eacute;marrage, 
+              le syst&egrave;me construit en m&eacute;moire une table appel&eacute;e 
+              IDT (Interrupt Descriptor Table). Cette table d&eacute;crit des 
+              fonctions d'interruption et sert de relais de communication entre 
+              le syst&egrave;me et le CPU. Le CPU ne peut g&eacute;rer que 256 
+              interruptions (de 0 &agrave; 255). Certaines sont d&eacute;di&eacute;es 
+              ; les autres restent disponibles au syst&egrave;me qui peut donc 
+              en faire ce qu'il veut. Les interruptions peuvent &ecirc;tre de 
+              diff&eacute;rents types mais 2 seulement nous int&eacute;ressent 
+              : le type Faute et le type Trap.</font></p>
+            <p align="left"><font face="Fixedsys" size="2">L'interruption de type 
+              Faute est d&eacute;tect&eacute;e et g&eacute;r&eacute;e avant l'ex&eacute;cution 
+              de l'instruction alors que l'interruption de type trap est report&eacute;e 
+              imm&eacute;diatement apr&egrave;s l'ex&eacute;cution de l'instruction 
+              qui l'a d&eacute;clench&eacute;e.</font></p>
+            <p align="left"><font face="Fixedsys" size="2">Parmi les interruptions 
+              d&eacute;di&eacute;es, nous avons les interruptions 1 et 3 qui permettent 
+              de suivre le d&eacute;roulement des programmes. Voici ou je voulais 
+              en venir...</font></p>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="5%">&nbsp;</td>
+                <td> <p align="left"><font face="Fixedsys" size="2" color="#33CC33"><u>Interruption 
+                    3</u> :</font></p>
+                  <p align="left"><font face="Fixedsys" size="2">L'interruption 
+                    3 est de type Trap. Elle est d&eacute;clench&eacute;e &agrave; 
+                    la rencontre de l'instruction machine 'int&nbsp;3'. 'int&nbsp;3' 
+                    est une instruction repr&eacute;sent&eacute;e par l'opcode 
+                    de 1 byte : 0xCC. Ce code est &agrave; mettre &agrave; la 
+                    place du 1er byte de l'instruction sur laquelle nous voulons 
+                    nous arr&ecirc;ter. Il faudra prendre la peine de remplacer 
+                    0xCC par le byte original avant de reprendre l'ex&eacute;cution.</font></p>
+                  <p align="left"><font face="Fixedsys" size="2">En th&eacute;orie, 
+                    il n'y a aucune restriction sur le nombre de point d'arr&ecirc;t 
+                    de ce type. Pourtant, les outils de mise au point limitent 
+                    souvent leur nombre. En effet, un point d'arr&ecirc;t de ce 
+                    type demande la sauvegarde du code d'origine, de son emplacement, 
+                    de son appartenance &agrave; une t&acirc;che,...<br>
+                    Un grand nombre demandera beaucoup de m&eacute;moire pour 
+                    la sauvegarde des donn&eacute;es. De plus, l'outil de mise 
+                    au point aura une longue recherche &agrave; faire sur le point 
+                    d'arr&ecirc;t rencontr&eacute; afin de l'identifier et de 
+                    pouvoir reconstituer le code d'origine.</font></p>
+                  <p align="left"><font color="#33CC33" size="2" face="Fixedsys"><u>Interruption 
+                    1</u> :</font></p>
+                  <p align="left"><font face="Fixedsys" size="2">L'interruption&nbsp;1 
+                    peut &ecirc;tre d&eacute;clench&eacute;e de diff&eacute;rentes 
+                    mani&egrave;res.</font></p>
+                  <table width="80%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#FFFFFF">
+                    <tr> 
+                      <td> <table width="100%" border="0" cellspacing="1" cellpadding="2">
+                          <tr bgcolor="#000000"> 
+                            <td align="center"> <font color="#33CC33" face="Fixedsys" size="2">diff&eacute;rentes 
+                              causes de l'interruption&nbsp;1</font></td>
+                            <td valign="middle" align="center"><font color="#33CC33" face="Fixedsys" size="2">Type</font></td>
+                          </tr>
+                          <tr bgcolor="#000000"> 
+                            <td><font face="Fixedsys" size="2"> la validation 
+                              d'un des registres point d'arr&ecirc;t (DR0-DR3)</font></td>
+                            <td align="center"><font face="Fixedsys" size="2"> 
+                              Faute<br>
+                              Trap </font></td>
+                          </tr>
+                          <tr bgcolor="#000000"> 
+                            <td><font face="Fixedsys" size="2"> l'acc&egrave;s 
+                              &agrave; un registre point d'arr&ecirc;t (DR0-DR3) 
+                              avec le bit&nbsp;GD (Guard&nbsp;Debug) du registre 
+                              DR7 valid&eacute;&nbsp;&agrave;&nbsp;1</font></td>
+                            <td align="center"><font face="Fixedsys" size="2"> 
+                              Faute</font></td>
+                          </tr>
+                          <tr bgcolor="#000000"> 
+                            <td><font face="Fixedsys" size="2"> l'ex&eacute;cution 
+                              d'instruction si le bit TF du registre EFlag est 
+                              valid&eacute; &agrave;&nbsp;1 (mode pas-&agrave;-pas)</font></td>
+                            <td align="center"><font face="Fixedsys" size="2"> 
+                              Trap</font></td>
+                          </tr>
+                          <tr bgcolor="#000000"> 
+                            <td><font face="Fixedsys" size="2"> une commutation 
+                              de t&acirc;che avec le bit&nbsp;T (Trap&nbsp;Debug) 
+                              valid&eacute;&nbsp;&agrave;&nbsp;1 dans le TSS (Task&nbsp;State&nbsp;Segment)</font></td>
+                            <td align="center"><font face="Fixedsys" size="2">Trap(?)</font></td>
+                          </tr>
+                          <tr bgcolor="#000000"> 
+                            <td><font face="Fixedsys" size="2"> l'instruction 
+                              machine 'int&nbsp;1'<br>
+                              opcode --&gt; 0xCD01 (2 bytes)</font></td>
+                            <td align="center"><font face="Fixedsys" size="2"> 
+                              Trap</font></td>
+                          </tr>
+                          <tr bgcolor="#000000"> 
+                            <td> <p><font face="Fixedsys" size="2">l'instruction 
+                                machine 'int&nbsp;1'<br>
+                                opcode --&gt; 0xF1 (1 byte)<br>
+                                (instruction x86 non document&eacute;e Intel) 
+                                </font></p></td>
+                            <td align="center"><font face="Fixedsys" size="2"> 
+                              Trap</font></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p align="left"><font color="#33CC33" face="Fixedsys" size="2">II) 
+              <u>Les Registres de mise au point</u> :</font></p>
+            <table border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#339999">
+              <tr> 
+                <td> <table border="0" cellspacing="2" cellpadding="1">
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        31</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        30</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        29</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        28</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        27</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        26</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        25</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        24</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        23</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        22</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        21</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        20</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        19</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        18</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        17</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        16</font></td>
+                      <td nowrap bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2"> 
+                        15</font></td>
+                      <td nowrap bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2"> 
+                        14</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        13</font></td>
+                      <td nowrap bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2"> 
+                        12</font></td>
+                      <td nowrap bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2"> 
+                        11</font></td>
+                      <td nowrap bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2"> 
+                        10</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        9</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        8</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        7</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        6</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        5</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        4</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        3</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        2</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        0</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        Bits</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> LEN<br>
+                        3</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> R/W<br>
+                        3</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> LEN<br>
+                        2</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> R/W<br>
+                        2</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> LEN<br>
+                        1</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> R/W<br>
+                        1</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> LEN<br>
+                        0</font></td>
+                      <td colspan="2" nowrap><font face="Fixedsys" size="2"> R/W<br>
+                        0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        0</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> GD</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> GE</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> LE</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> G3</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> L3</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> G2</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> L2</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> G1</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> L1</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> G0</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> L0</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR7</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> BT</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> BS</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> BD</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2"> 
+                        1</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> B3</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> B2</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> B1</font></td>
+                      <td nowrap><font face="Fixedsys" size="2"> B0</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR6</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="32" nowrap bgcolor="#333333"><font face="Fixedsys" size="2">R&eacute;serv&eacute;</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR5</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="32" nowrap bgcolor="#333333"><font face="Fixedsys" size="2">R&eacute;serv&eacute;</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR4</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="32" nowrap><font face="Fixedsys" size="2">Adresse 
+                        lin&eacute;aire : point d'arr&ecirc;t 3</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR3</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="32" nowrap><font face="Fixedsys" size="2">Adresse 
+                        lin&eacute;aire : point d'arr&ecirc;t 2</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR2</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="32" nowrap><font face="Fixedsys" size="2">Adresse 
+                        lin&eacute;aire : point d'arr&ecirc;t 1</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR1</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="32" nowrap><font face="Fixedsys" size="2">Adresse 
+                        lin&eacute;aire : point d'arr&ecirc;t 0</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        registre<br>
+                        DR0</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="left"><font face="Fixedsys" size="2">Les registres de mise 
+              au point permettent de placer et de g&eacute;rer des points d'arr&ecirc;t 
+              sur l'ex&eacute;cution d'une fonction, l'acc&egrave;s&nbsp;&agrave; 
+              une donn&eacute;e(m&eacute;moire), ou sur l'acc&egrave;s&nbsp;&agrave; 
+              un port d'entr&eacute;e/sortie. La validation d'un de ces points 
+              d'arr&ecirc;t se manifeste par une interruption 1.</font></p>
+            <p align="justify"><font face="Fixedsys" size="2">Les registres de 
+              mise au point se composent de 8 registres de type dword (32 bits). 
+              Pour y acc&eacute;der, les instructions 'MOV&nbsp;DRn,&nbsp;registre' 
+              et 'MOV&nbsp;registre,&nbsp;DRn' (avec n=0 &agrave; 7) sont &agrave; 
+              notre disposition. Ces instructions sont privil&eacute;gi&eacute;es 
+              et demande donc que le CPL soit &eacute;gal &agrave;&nbsp;0&nbsp;:&nbsp;Ring0.</font></p>
+            <table width="0%" border="0" cellspacing="0" cellpadding="0">
+              <tr align="left" valign="top"> 
+                <td><font face="Fixedsys" size="2">exemple&nbsp;:&nbsp;</font></td>
+                <td><font face="Fixedsys" size="2"> mov eax, 00401000<br>
+                  mov dr0, eax<br>
+                  mov ebx,dr7<br>
+                  etc...</font></td>
+                <td><font face="Fixedsys" size="2">&nbsp;|&nbsp;CPL=0.<br>
+                  &nbsp;|<br>
+                  &nbsp;|<br>
+                  &nbsp;| </font></td>
+              </tr>
+            </table>
+            <p><font face="Fixedsys" size="2"><u>Ce que proposent les registres 
+              de mise au point peut &ecirc;tre simplifi&eacute; ainsi</u> :</font></p>
+            <p align='justify'><font face="Fixedsys" size="2"> L'acc&egrave;s 
+              aux donn&eacute;es point&eacute;es par les registres point d'arr&ecirc;t 
+              actifs d&eacute;clenchera une interruption&nbsp;1 si les conditions 
+              pr&eacute;cis&eacute;es dans le registre de contr&ocirc;le (DR7) 
+              sont r&eacute;unies.</font></p>
+            <p align='justify'><font face="Fixedsys" size="2"> et plus encore...&nbsp;<br>
+              </font></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="5%">&nbsp;</td>
+                <td> <p align='justify'><font face="Fixedsys" color="#33CC33" size="2"><u>Registres 
+                    point d'arr&ecirc;t : DR3, DR2, DR1 et DR0</u></font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Ces registres 
+                    permettent de valider en tout 4 points d'arr&ecirc;t diff&eacute;rents 
+                    (he, oui... ce sont des radins chez intel ;). Les adresses 
+                    plac&eacute;es dans ces registres sont des adresses lin&eacute;aires 
+                    de type dword (32 bits). Ces adresses lin&eacute;aires pointent 
+                    sur des donn&eacute;es qui peuvent &ecirc;tre en m&eacute;moire 
+                    morte (ROM) ou vive (DRAM).</font></p>
+                  <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+                    <tr> 
+                      <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                  </table>
+                  <p align='justify'><font face="Fixedsys" color="#33CC33" size="2"><u>Registre 
+                    de contr&ocirc;le : DR7</u></font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Ce registre 
+                    permet de donner des pr&eacute;cisions sur les conditions 
+                    de validation des points d'arr&ecirc;t.</font></p>
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td width="5%">&nbsp;</td>
+                      <td> <p><font face="Fixedsys" color="#33CC33" size="2"><u>Les 
+                          champs des points d'arr&ecirc;t : bits LEN 0, LEN 1, 
+                          LEN 2 et LEN 3</u></font></p>
+                        <p align='justify'><font face="Fixedsys" size="2">Les 
+                          adresses lin&eacute;aires des registres DR0-DR3 pointent 
+                          sur des donn&eacute;es qui peuvent &ecirc;tre sur 1, 
+                          2 ou 4 octets. Les bits LEN permettent de pr&eacute;ciser 
+                          le champ de ces donn&eacute;es.</font></p>
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#FFFFFF">
+                          <tr> 
+                            <td> <table border="0" cellspacing="1" cellpadding="0">
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font color="#33CC33" face="Fixedsys" size="2"> 
+                                    bits LEN (2 bits) </font></td>
+                                  <td nowrap rowspan="6" width="1"><font color="#33CC33" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td nowrap bgcolor="#000000"><font color="#33CC33" face="Fixedsys" size="2">Champs 
+                                    de la donn&eacute;e point&eacute;e par<br>
+                                    le point d'arr&ecirc;t</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">00</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">1 
+                                    octet</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2"> 
+                                    01</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">2 
+                                    octets</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2"> 
+                                    10</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">ind&eacute;fini</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000" height="2"><font face="Fixedsys" size="2"> 
+                                    11</font></td>
+                                  <td nowrap bgcolor="#000000" height="2"><font face="Fixedsys" size="2">4 
+                                    octets</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        <p><font face="Fixedsys" color="#33CC33" size="2"><u>Les 
+                          types des points d'arr&ecirc;t : bits RW 0, RW 1, RW 
+                          2 et RW 3</u></font></p>
+                        <p align='justify'><font face="Fixedsys" size="2">Les 
+                          bits RW permettent de sp&eacute;cifier les conditions 
+                          de d&eacute;clenchement des points d'arr&ecirc;t. Ces 
+                          bits d&eacute;pendent du bit DE (Debugging Extensions) 
+                          du registre CR4. Le bit DE permet d'activer (DE=1) ou 
+                          de d&eacute;sactiver (DE=0) les points d'arr&ecirc;t 
+                          sur les ports d'entr&eacute;e/sortie.</font></p>
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#FFFFFF">
+                          <tr> 
+                            <td> <table border="0" cellspacing="1" cellpadding="0">
+                                <tr align="center"> 
+                                  <td bgcolor="#000000" align="center" valign="middle"><font color="#33CC33" face="Fixedsys" size="2"> 
+                                    bits RW (2 bits) </font></td>
+                                  <td rowspan="6" width="1" align="center" valign="middle"><font color="#33CC33" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td bgcolor="#000000" align="center" valign="middle"><font color="#33CC33" face="Fixedsys" size="2">Type 
+                                    de point d'arr&ecirc;t</font></td>
+                                  <td bgcolor="#FFFFFF" align="center" valign="middle" rowspan="6"><font color="#33CC33" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td bgcolor="#000000" align="center" valign="middle"><font color="#33CC33" face="Fixedsys" size="2">Type 
+                                    d'interruption 1</font></td>
+                                  <td bgcolor="#FFFFFF" align="center" valign="middle" rowspan="6"><font color="#33CC33" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td bgcolor="#000000" align="center" valign="middle"><font color="#33CC33" face="Fixedsys" size="2">bit 
+                                    DE=0</font></td>
+                                  <td bgcolor="#FFFFFF" align="center" valign="middle" rowspan="6"><font color="#33CC33" face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif"></font></td>
+                                  <td bgcolor="#000000" align="center" valign="middle"><font color="#33CC33" face="Fixedsys" size="2">bit 
+                                    DE=1</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                  <td nowrap><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000" align="center"><font face="Fixedsys" size="2">00</font></td>
+                                  <td bgcolor="#000000" align="center"><font face="Fixedsys" size="2"> 
+                                    ex&eacute;cution d'instruction uniquement</font></td>
+                                  <td nowrap bgcolor="#000000" align="center"><font face="Fixedsys" size="2">Faute</font></td>
+                                  <td nowrap bgcolor="#000000" align="center"><font face="Fixedsys" size="2">actif</font></td>
+                                  <td nowrap bgcolor="#000000" align="center"><font face="Fixedsys" size="2">actif</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2"> 
+                                    01</font></td>
+                                  <td bgcolor="#000000"><font face="Fixedsys" size="2">&eacute;criture 
+                                    d'une donn&eacute;e</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">Trap</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">actif</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">actif</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2"> 
+                                    10</font></td>
+                                  <td bgcolor="#000000"><font face="Fixedsys" size="2">&eacute;criture 
+                                    ou lecture d'un port d'entr&eacute;e/sortie</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">Trap</font></td>
+                                  <td nowrap bgcolor="#999999"><font face="Fixedsys" size="2">inactif</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">actif</font></td>
+                                </tr>
+                                <tr align="center"> 
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2"> 
+                                    11</font></td>
+                                  <td bgcolor="#000000"><font face="Fixedsys" size="2">lecture 
+                                    ou &eacute;criture d'une donn&eacute;e</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">Trap</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">actif</font></td>
+                                  <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">actif</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        <p><font face="Fixedsys" color="#33CC33" size="2"><u>Protection 
+                          des registres de point d'arr&ecirc;t : bit GD</u></font></p>
+                        <p align='justify'><font face="Fixedsys" size="2">Le bit 
+                          GD (Guard Debug) valid&eacute; &agrave; 1 oblige le 
+                          CPU &agrave; d&eacute;clencher une interruption&nbsp;1 
+                          de type Faute si une tentative d'&eacute;criture est 
+                          effectu&eacute;e sur les registres DR0-DR3.<br>
+                          Ce bit est g&eacute;n&eacute;ralement utilis&eacute; 
+                          par les outils de mise au point afin de garder tout 
+                          pouvoir sur les points d'arr&ecirc;ts. </font></p>
+                        <p><font face="Fixedsys" color="#33CC33" size="2"><u>Activation 
+                          des points d'arr&ecirc;t : bit GE (Global Exact)/LE 
+                          (Local Exact)</u></font></p>
+                        <p align='justify'><font face="Fixedsys" size="2">Les 
+                          bits GE (Global Exact) et LE (Local Exact) permettent 
+                          d'activer (=1) ou de d&eacute;sactiver (=0) les points 
+                          d'arr&ecirc;t. Lorsque l'un de ces bits est valid&eacute; 
+                          &agrave; 1, le CPU v&eacute;rifie sur chaque instruction 
+                          si un point d'arr&ecirc;t est &agrave; d&eacute;clencher. 
+                          Ceci a pour effet de ralentir l'ex&eacute;cution du 
+                          pipeline interne du CPU.</font></p>
+                        <p align='justify'><font face="Fixedsys" size="2">- Le 
+                          bit GE active les points d'arr&ecirc;t pour toutes les 
+                          t&acirc;ches. Les points d'arr&ecirc;t ont donc une 
+                          port&eacute;e g&eacute;n&eacute;rale.<br>
+                          - Le bit LE active les points d'arr&ecirc;t uniquement 
+                          pour la t&acirc;che en cours.</font></p>
+                        <p align='justify'><font face="Fixedsys" size="2"> Apr&egrave;s 
+                          une commutation de t&acirc;che, le bit LE est automatiquement 
+                          effac&eacute; alors que le bit GE garde sa valeur.</font></p>
+                        <p><font face="Fixedsys" color="#33CC33" size="2"><u>points 
+                          d'arr&ecirc;t Uni-t&acirc;che/Multi-t&acirc;ches : bits 
+                          G0/L0 G1/L1 G2/L2 G3/L3</u></font></p>
+                        <p align='justify'><font face="Fixedsys" size="2">Ces 
+                          bits pr&eacute;cisent si les points d'arr&ecirc;t appartiennent 
+                          &agrave; la t&acirc;che en cours (Local) ou &agrave; 
+                          toutes les t&acirc;ches (Global).<br>
+                          Apr&egrave;s une commutation de t&acirc;che, les bits 
+                          L0-L3 sont effac&eacute;s et les bits G0-G3 gardent 
+                          leurs valeurs.</font></p></td>
+                    </tr>
+                  </table>
+                  <font face="Fixedsys" size="2">&nbsp;<br>
+                  </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+                    <tr> 
+                      <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                  </table>
+                  <p align='justify'><font face="Fixedsys" color="#33CC33" size="2"><u>Registre 
+                    d'&eacute;tat : DR6</u></font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Lorsque la 
+                    routine d'interruption&nbsp;1 est sollicit&eacute;e, celle-ci 
+                    utilise le registre DR6 afin d'identifier la cause de l'interruption. 
+                    Au retour de la routine, le registre DR6 doit &ecirc;tre effac&eacute; 
+                    sous peine de faire des mauvaises interpr&eacute;tations de 
+                    DR6 sur les interruptions 1 suivantes.</font></p>
+                  <p align='justify'><font face="Fixedsys" size="2"><u>Interpr&eacute;tation 
+                    du registre DR6</u> :</font></p>
+                  <table width="80%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#FFFFFF">
+                    <tr> 
+                      <td> <table border="0" cellspacing="0" cellpadding="4">
+                          <tr valign="top" bgcolor="#000000"> 
+                            <td nowrap align="right"><font color="#33CC33" face="Fixedsys" size="2"> 
+                              B0/B1/B2/B3&nbsp;:&nbsp;</font></td>
+                            <td><font face="Fixedsys" size="2"> Un de ces bits 
+                              valid&eacute; &agrave;&nbsp;1 indique que l'interruption&nbsp;1 
+                              a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;e 
+                              par la validation du point d'arr&ecirc;t correspondant.</font></td>
+                          </tr>
+                          <tr valign="top" bgcolor="#000000"> 
+                            <td nowrap align="right"><font color="#33CC33" face="Fixedsys" size="2"> 
+                              BD&nbsp;:&nbsp;</font></td>
+                            <td><font face="Fixedsys" size="2"> Ce bit est valid&eacute; 
+                              &agrave; 1 si le bit&nbsp;GD (Guard&nbsp;Debug) 
+                              du registre DR7 est aussi valid&eacute; &agrave;&nbsp;1. 
+                              Ceci indique une tentative d'acc&egrave;s aux registres 
+                              point d'arr&ecirc;t.</font></td>
+                          </tr>
+                          <tr valign="top" bgcolor="#000000"> 
+                            <td nowrap align="right"><font color="#33CC33" face="Fixedsys" size="2"> 
+                              BS&nbsp;:&nbsp;</font></td>
+                            <td><font face="Fixedsys" size="2"> Ce bit est valid&eacute; 
+                              &agrave;&nbsp;1 si le bit TF (Trap&nbsp;Flags) du 
+                              registre EFlag est aussi valid&eacute; &agrave; 
+                              1. Ceci indique l'ex&eacute;cution d'une fonction 
+                              en mode pas &agrave; pas.</font></td>
+                          </tr>
+                          <tr valign="top" bgcolor="#000000"> 
+                            <td nowrap align="right"><font color="#33CC33" face="Fixedsys" size="2"> 
+                              BT&nbsp;:&nbsp;</font></td>
+                            <td><font face="Fixedsys" size="2"> Ce bit valid&eacute; 
+                              &agrave;&nbsp;1 indique qu'une commutation de t&acirc;che 
+                              se fait avec le bit T (Trap Debug) valid&eacute; 
+                              &agrave; 1 dans son TSS.</font></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table>
+                  <p align='justify'><font face="Fixedsys" size="2"><u>Cas des 
+                    instructions machine d&eacute;clenchant une interruption&nbsp;1</u> 
+                    :</font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Les instructions 
+                    machine 'int&nbsp;1' ne modifient pas le registre DR6. Il 
+                    est cependant possible d'identifier ce cas en v&eacute;rifiant 
+                    la pr&eacute;sence de l'instruction dans le code. L'interruption 
+                    1 d&eacute;clench&eacute;e par 'int&nbsp;1' est de type Trap. 
+                    C'est &agrave; dire que la routine d'interruption ne prend 
+                    la main qu'apr&egrave;s l'ex&eacute;cution de l'instruction.</font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Le bout de 
+                    code v&eacute;rifiant l'instruction 'int&nbsp;1' pourrait 
+                    ressembler &agrave; ceci&nbsp;:</font></p>
+                  <table width="0%" border="0" cellspacing="0" cellpadding="0">
+                    <tr valign="top"> 
+                      <td> <p><font face="Fixedsys" size="2">mov eax,dr6<br>
+                          and eax, 11111111111111110001111111110000b<br>
+                          jne int1_rep&eacute;r&eacute;_dans_DR6<br>
+                          <br>
+                          mov eax, _Eip<br>
+                          dec eax<br>
+                          cmp byte ptr [eax], 0F1h<br>
+                          je int1_software_trouv&eacute;e<br>
+                          &nbsp; <br>
+                          dec eax<br>
+                          cmp word ptr [eax], 0CD01h<br>
+                          je int1_software_trouv&eacute;e<br>
+                          &nbsp; <br>
+                          -&gt; int1_non_identifi&eacute;e</font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p align='justify'><font color="#33CC33" face="Fixedsys" size="2">III)&nbsp;<u>Les 
+              bit TF et RF du registre d'&eacute;tat : EFlag</u></font></p>
+            <p align='justify'>&nbsp;</p>
+            <table border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#339999">
+              <tr> 
+                <td> <table border="0" cellspacing="2" cellpadding="1">
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">31</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">30</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">29</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">28</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">27</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">26</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">25</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">24</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">23</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">22</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">21</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">20</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">19</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">18</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">17</font></td>
+                      <td nowrap width="16"><font color="#33CC33" face="Fixedsys" size="2">16</font></td>
+                      <td nowrap bgcolor="#333333" width="16"><font color="#33CC33" face="Fixedsys" size="2">15</font></td>
+                      <td nowrap bgcolor="#333333" width="16"><font color="#33CC33" face="Fixedsys" size="2">14</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">13</font></td>
+                      <td nowrap bgcolor="#333333" width="16"><font color="#33CC33" face="Fixedsys" size="2">12</font></td>
+                      <td nowrap bgcolor="#333333" width="16"><font color="#33CC33" face="Fixedsys" size="2">11</font></td>
+                      <td nowrap bgcolor="#333333" width="16"><font color="#33CC33" face="Fixedsys" size="2">10</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">9</font></td>
+                      <td nowrap width="16" bgcolor="#000000"><font color="#33CC33" face="Fixedsys" size="2">8</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">7</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">6</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">5</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">4</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">3</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">2</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">1</font></td>
+                      <td nowrap width="16" bgcolor="#333333"><font color="#33CC33" face="Fixedsys" size="2">0</font></td>
+                      <td nowrap><font color="#33CC33" face="Fixedsys" size="2"> 
+                        Bits</font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td colspan="33" nowrap> <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                    </tr>
+                    <tr bgcolor="#000000" valign="middle" align="center"> 
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">I<br>
+                        D</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">V<br>
+                        I<br>
+                        P</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">V<br>
+                        I<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">A<br>
+                        C</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">V<br>
+                        M</font></td>
+                      <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">R<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">N<br>
+                        T</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">I<br>
+                        O<br>
+                        P<br>
+                        L</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">I<br>
+                        O<br>
+                        P<br>
+                        L</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">O<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">D<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">I<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#000000"><font face="Fixedsys" size="2">T<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">S<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">Z<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">A<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">0</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">P<br>
+                        F</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">1</font></td>
+                      <td nowrap bgcolor="#333333"><font face="Fixedsys" size="2">C<br>
+                        F</font></td>
+                      <td nowrap> <font color="#33CC33" face="Fixedsys" size="2">registre<br>
+                        EFlags</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p>&nbsp;</p>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="5%">&nbsp;</td>
+                <td> <p align='justify'><font face="Fixedsys" color="#33CC33" size="2"><u>Le 
+                    bit&nbsp;RF (Resume&nbsp;Flags) :</u></font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Lorsqu'il 
+                    est valid&eacute; &agrave; 1, le bit RF du registre Eflags 
+                    a pour effet d'ignorer (si elle a lieu) l'interruption 1 de 
+                    type Faute sur la prochaine instruction.<br>
+                    Si l'instruction r&eacute;ussit, le bit RF est automatiquement 
+                    effac&eacute; sauf si l'instruction qui vient d'&ecirc;tre 
+                    ex&eacute;cut&eacute;e a le pouvoir de modifier le bit RF 
+                    ou s'il y a une commutation de t&acirc;che.<br>
+                    &nbsp;<br>
+                    Ceci veut donc dire que les registres de mise au point ayant 
+                    un contr&ocirc;le sur les ex&eacute;cutions d'instruction 
+                    seront d&eacute;sactiv&eacute;s uniquement sur l'instruction 
+                    suivante.</font></p>
+                  <p align='justify'><font face="Fixedsys" color="#33CC33" size="2"><u>Le 
+                    bit&nbsp;TF (Trap&nbsp;Flags) :</u></font></p>
+                  <p align='justify'><font face="Fixedsys" size="2">Le bit TF 
+                    permet aux outils de mise au point de suivre un programme 
+                    instruction apr&egrave;s instruction (mode pas &agrave; pas). 
+                    Lorsque le bit TF est valid&eacute; &agrave; 1, le mode pas 
+                    &agrave; pas est activ&eacute;. Ceci &agrave; pour cons&eacute;quence 
+                    de d&eacute;clencher une interruption 1 apr&egrave;s chaque 
+                    instruction ex&eacute;cut&eacute;e.<br>
+                    En mode pas &agrave; pas, la routine d'interruption 1 re&ccedil;oit 
+                    une sauvegarde du registre Eflags avec le bit TF. J'ai pu 
+                    lire que le CPU efface automatiquement le bit TF. Pourtant 
+                    mes tests m'ont montr&eacute; que TF garde sa valeur &agrave; 
+                    l'entr&eacute;e de la routine d'interruption 1. </font></p></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2">&nbsp;<br>
+            </font> <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <p align='justify'><font face="Fixedsys" size="2" color="#33CC33"><u>Windows 
+              et les applications g&eacute;rant des Interruptions</u></font> :<br>
+              <br>
+              Ce texte parle du service de mise au point propos&eacute;e par les 
+              microprocesseurs x86 et pentium. L'interpr&eacute;tation de ces 
+              informations n'est donc valable qu'au niveau du CPU.<br>
+              Il est possible, sous Windows d'avoir &agrave; g&eacute;rer des 
+              interruptions. Windows propose pour cela diff&eacute;rentes fonctions 
+              (Api's Debug, SEH,...) qui permettent d'avoir la main sur certaines 
+              (malheureusement pas toutes) exceptions ou interruptions. Windows 
+              reste l'interm&eacute;diaire entre les interruptions du CPU et notre 
+              application. Les messages renvoy&eacute;s par windows ne sont que 
+              des interpr&eacute;tations et peuvent donc diff&eacute;rer des interruptions 
+              originales.&nbsp;Pour avoir tout pouvoir, il faut donc &eacute;viter 
+              les interm&eacute;diaires. Le mieux est de discuter directement 
+              avec le boss CPU en hookant l'IDT.<br>
+              </font></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <div align="center"><font face="Fixedsys" size="2">Illustrations : 
+              Bill WATTERSON - &quot;Calvin et Hobbes&quot;</font> </div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 08/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+            </font> </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

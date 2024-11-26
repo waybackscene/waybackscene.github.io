@@ -1,0 +1,61 @@
+//***************************************
+// Script pour nettoyer le cca du Crackme4 de Kaine
+// par Kharneth
+//***************************************
+
+
+var x
+var deb
+var fin
+
+	mov deb, eip				// Sauvegarde l'adresse de début
+	mov fin, deb				
+	add fin, 5000				// Calcule l'adresse de fin
+	
+//*********************************
+// Recherche de la 1ère macro d'obfuscation
+//*********************************
+
+	
+loopM1:	
+	find eip, #E8010000#			// Recherche du début du CCA 01
+	mov x, $RESULT				// Sauvegarde de l'adresse
+	cmp x, 0					// Si la signature n'a pas été trouvée,	
+	je Fin01					// sortie de la boucle
+	add x, 5					// Instruction suivante
+	cmp [x], 0002E8E8			// 2ème vérification
+	jne nextM1					// Sinon nouvelle recherche
+		add x, 12				// x = adresse de fin du CCA 01
+		fill x, 1, 90				// Supprime l'instruction inutile
+		inc x					// x = adresse de l'instruction utile
+		bp x					// Place un BP pour une meilleure visibilité
+nextM1:	
+	mov eip, x					// Place le curseur sur la nouvelle adresse
+	cmp eip, fin					// Vérifie que la fin n'est pas atteinte
+	jb loopM1					// Nouvelle recherche 
+Fin01:	
+	mov eip, deb				// Restaure le curseur sur l'adresse de début
+
+//*********************************
+// Recherche de la 2ème macro d'obfuscation
+//*********************************
+
+loopM2:	
+	find eip, #60669C33#
+	mov x, $RESULT
+	cmp x, 0
+	je Fin02
+	add x, 19	
+	cmp [x], 03C605C7
+	jne nextM2
+		fill x, 2, 90
+		add x, 8
+		bp x
+nextM2:	
+	mov eip, x
+	cmp eip, fin
+	jb loopM2	
+Fin02:	
+	mov eip, deb		
+
+	ret						// Fin du script

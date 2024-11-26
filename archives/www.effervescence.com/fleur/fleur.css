@@ -1,0 +1,9 @@
+body{background:FFFFFF;scrollbar-face-color:#BBBBBB; scrollbar-highlight-color:#BBBBBB; scrollbar-shadow-color:#BBBBBB; scrollbar-3dlight-color:#999999; scrollbar-arrow-color: #000000; scrollbar-track-color:#DDDDDD; scrollbar-darkshadow-color:#999999}
+.text{font-family:Georgia,Arial,Verdana,sans-serif;font-size:12px}
+.title{font-family:Georgia,Arial,Verdana,sans-serif;font-size:12px;font-weight:bold;color:880000}
+.hl{color:FF8C00}
+.date{font-family:Georgia,Arial,Verdana,sans-serif;font-size:10px;color:BBBBBB}
+.flat{border-style:solid;border-width:1;border-color:black;font-family:Arial,Verdana,sans-serif;font-size:13px}
+a{text-decoration:none;color:0000BB}
+a:hover{color:000000}
+pre{font-family:Fixedsys,System,Courier New}

@@ -1,0 +1,393 @@
+/*
+ * Très fortement inspiré (pour ne pas dire pompé) de la feuille de style de
+ * OpenWeb Group: http://openweb.eu.org/
+*/
+
+/* Définitions générales */
+body {
+	background-color: #369;
+	color: #fff;
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	font-size: small;
+	margin: 1em 1%;
+	padding: 0;
+}
+
+acronym.premier {
+	cursor: help;
+	border-bottom: 1px dotted #369;
+}
+
+code, pre {
+	color: #297700;
+	background-color: transparent;
+	font-family: "Courier New", Courier, Monospace;
+	font-size: 12px;
+}
+
+pre {
+	border-left: 5px solid #a2c2e1;
+	padding: 0.5em 1em;
+	margin-left: 2em;
+}
+
+blockquote, q {
+	font-style: italic;
+	color: #369;
+	background-color: transparent;
+	quotes: '\0000ab\0000a0' '\0000a0\0000bb' '\00201c\0000a0' '\0000a0\00201d';
+}
+
+table {
+	margin-top: 1em;
+}
+
+table, td {
+	border-collapse: collapse;
+	border: 1px solid #a2c2e1;
+	padding: 0.2em;
+}
+
+input, textarea {
+	border: 1px solid #4A7DAD;
+}
+
+input {
+	background-color: #FFFFFF;
+	color: #4A7DAD;
+}
+
+input:focus, textarea:focus {
+	background-color: #B9D8F6;
+}
+
+#page {
+	color: #000;
+	background-color: #fff;
+	background-position: top right;
+	background-repeat: no-repeat;
+	border: 2px solid #000;
+	min-height: 600px;
+}
+
+#logo {
+	margin: 3em 0 0 5%;
+}
+
+#logo img {
+	border: 0;
+}
+
+#logo a {
+	color: #000;
+	background-color: transparent;
+}
+
+#shoutbox {
+	position: absolute;
+	right: 5%;
+	top: 4.9em;
+	text-align: right;
+}
+
+#shoutbox img {
+	border: 0;
+}
+
+#menu {
+	left: 3%;
+	position: absolute;
+	top: 13em;
+	width: 15%;
+}
+
+#menu ul {
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #d6e1ec;
+	padding: 0;
+	margin: 0;
+}
+
+#menu li {
+	border-bottom: 1px solid #d6e1ec;
+	list-style: none;
+}
+
+#menu ul.dernier {
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	font-size: 80%;
+	text-align: right;
+	border-width: 0;
+}
+
+#menu li.dernier {
+	border-bottom: none;
+}
+
+#menu a {
+	display: block;
+	text-decoration: none;
+	color: #369;
+	background-color: #fff;
+	padding-left: 1em;
+}
+
+#menu a:hover {
+	display: inherit;
+	background-color: #eff4fa;
+	color: #036;
+}
+
+#validator {
+	left: 3%;
+	position: absolute;
+	top: 28em;
+	width: 15%;
+}
+
+#validator p {
+	text-align: center;
+}
+
+#validator img {
+	border: none;
+}
+
+#quicklinks {
+	color: #036;
+	text-align: right;
+	font-size: 12px;
+	background-color: transparent;
+	margin: 0 3% 0 21%;
+	padding: 0 0 1em 0;
+}
+
+#quicklinks img {
+	border: none;
+}
+
+#quicklinks ul {
+	margin-left: 0;
+	padding-left: 0;
+}
+
+#quicklinks li {
+	border-right: 1px solid #036;
+	display: inline;
+	margin: 0 0.5em 0 0;
+	padding: 0 0.5em 0 0;
+}
+
+#quicklinks li.dernier {
+	border: 0;
+}
+
+#quicklinks a {
+	background-color: transparent;
+	text-decoration: none;
+	color: #f60;
+}
+
+#quicklinks a:hover {
+	background-color: #eff4fa;
+	color: #369;
+	text-decoration: none;
+}
+
+#texte {
+	color: #000;
+	background-color: #f5f8fc;
+	border: 1px solid #69c;
+	line-height: 150%;
+	margin: 0 3% 2em 21%;
+	padding: 0 2% 3em 2%;
+}
+
+#texte .paragraphe {
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	text-align: justify;
+	background-image: none;
+	color: #333;
+	margin: 0;
+	padding: 0 1em;
+	display: block;
+}
+
+#texte .abstract {
+	background-color: #fff;
+	background-image: none;
+	border: 1px dotted #69c;
+	color: #333;
+	margin: 0;
+	padding: 0 1em;
+	display: block;
+}
+
+#texte .abstract em {
+	font-weight: 700;
+	font-style: normal;
+	color: #690;
+	background-color: transparent;
+}
+
+#texte .abstract hr {
+	display: block;
+	clear: both;
+	visibility: hidden;
+}
+
+#texte .auteur {
+	margin: 1em 0 0 0;
+	float: right;
+	display: block;
+}
+
+#texte .auteur ul {
+	color: #000;
+	background-color: transparent;
+	margin: 0 0 0 0.5em;
+	padding: 0 1em;
+	border-left: 1px solid #69c;
+}
+
+#texte .auteur li {
+	font-family: Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	font-size: 80%;
+	border-bottom: 1px dotted #69c;
+	list-style: none;
+	color: #369;
+	background-color: transparent;
+}
+
+#texte .auteur li.dernier {
+	border-bottom: 0;
+}
+
+#texte .auteur strong {
+	background-color: transparent;
+	color: #690;
+}
+
+#texte hr {
+	display: none;
+}
+
+#texte li {
+	list-style: none;
+}
+
+#texte li.description {
+	list-style-type: none;
+}
+
+#texte ul ul li {
+	list-style-type: circle;
+}
+
+#texte ol li {
+	list-style-type: decimal;
+}
+
+#texte h2, #texte h3 {
+	font-family: Georgia, "Times New Roman", Times, Serif;
+}
+
+#texte h2 {
+	background-color: transparent;
+	color: #369;
+	font-size: 130%;
+}
+
+#texte h3 code {
+	color: inherit;
+	background-color: transparent;
+}
+
+#texte h3 {
+	background-color: transparent;
+	color: #369;
+	font-size: small;
+	margin: 2em 0 0 0;
+	line-height: 110%;
+}
+
+#texte h4 {
+	font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, Sans-Serif;
+	background-color: transparent;
+	color: #69c;
+	font-weight: 700;
+	font-size: small;
+	border-bottom: 1px dotted #a1c2e1;
+}
+
+#texte h4 a {
+	text-decoration: none;
+}
+
+#texte h5 {
+	color: #69c;
+	background-color: transparent;
+	font-weight: 500;
+	font-size: small;
+}
+
+#texte img.liste {
+	border: none;
+	vertical-align: sub;
+}
+
+#texte img.liste:hover {
+	vertical-align: top;
+}
+
+#texte a {
+	color: #369;
+	background-color: transparent;
+}
+
+#texte a:hover {
+	color: #369;
+	background-color: transparent;
+	text-decoration: none;
+}
+
+#texte a:visited {
+	color: #369;
+	background-color: transparent;
+}
+
+#texte div.bouton {
+	text-align: right;
+}
+
+#texte div.bouton a {
+	background-color: #f5f8fc;
+	border: 1px solid #6699cc;
+	color: #000;
+	font-weight: 500;
+	padding: 0.2em;
+	text-decoration: none;
+}
+
+#texte div.bouton a:hover {
+	border: 1px solid #000;
+	background-color: #6699cc;
+	color: #f5f8fc;
+}
+
+.bleu {
+	color: #0039B6;
+}
+
+.rouge {
+	color: #C41200;
+}
+
+.orange {
+	color: #F3C518;
+}
+
+.vert {
+	color: #30A72F;
+}

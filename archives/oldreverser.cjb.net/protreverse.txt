@@ -1,0 +1,829 @@
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
+    ²²    ____                     __       __           ²²ßÛ
+    ²²   /  _/_ _  __ _  ___  ____/ /____ _/ /           ²² ÛßÛ
+    ²²  _/ //  ' \/  ' \/ _ \/ __/ __/ _ `/ /            ²² Û Û
+    ²² /___/_/_/_/_/_/_/\___/_/  \__/\_,_/_/             ²² Û Û
+    ²²   ____                          __          __    ²² Û Û
+    ²²  / __ \___ ___ _______ ___  ___/ /__ ____  / /____²² Û Û
+    ²² / /_/ / -_|_-</ __/ -_) _ \/ _  / _ `/ _ \/ __(_-<²² Û Û
+    ²²/_____/\__/___/\__/\__/_//_/\_,_/\_,_/_//_/\__/___/²² Û Û
+    ²²                                                   ²² Û Û
+    ²²      Web: http://www.immortaldescendants.org      ²² Û Û
+    ²²           EFnet: #immortaldescendants             ²² Û Û
+    ²²               Author: tHE ANALYST                 ²² Û Û
+    ²²                  Date: 01/20/01                   ²² Û Û
+    ²²         Topic: Java reversing: reversing          ²² Û Û
+    ²²                a web chat protocol                ²² Û Û
+    ²²               Level: Intermediate                 ²² Û Û
+    ²²                                                   ²² Û Û
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²² Û Û
+      ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ Û
+        ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ
+
+- How to reverse the hell out of a web chat protocol -
+           -Reversing a web Chat protocol -
+
+===============================================================
+0)Tools of the trade:
+===============================================================
+- a java decompiler: JAD
+  http://www.geocities.com/SiliconValley/Bridge/8617/jad/winnt/jadnt157.zip
+
+- Some coding knowledge
+
+- Some Zen feeling
+
+===============================================================
+1)Introductions:
+===============================================================
+Ok.. I bet you are wondering what the heck this tutorial is?
+I've never seen an essay like this, so it's kinda new reading 
+for you reversers.
+
+In this essay I will teach you how to reverse the hell outta a 
+WEB CHAT protocol, and how to code your OWN CLIENT to chat with.
+Also how to find undocumented features like: Private chan (heh! 
+wanna see your friends doing cybersex?! *roflmao* Ok! so keep 
+reading ;)
+
+===============================================================
+2)Let's go:
+===============================================================
+Our target: www.aufeminin.com (it is in French, but hell, we 
+don't wanna chat, we just wanna learn!) It is a nice looking 
+web chat, coded in java. It is based on another web chat I 
+hacked several months ago. This chat is *NOT* IRC, it has it's 
+OWN protocol, so you can't use mIRC or whatever client to chat 
+on it. 
+
+"Damn, that sucks.. how can I chat from my own program? 
+I don't wanna use a slow browser!" No problem, let's reverse 
+it ;)
+
+How did i start? Well, I just created an account, then I logged 
+on and started to study it. It is a BIG java applet with some 
+stuff like: text color, text size, send text, list of chan 
+members, talk in private, ignore... Well many options for our c
+hat convenience.. so we wanna edit the source of that file and 
+look around to see what can help us.
+
+First problem! How the heck can we edit the source? well, we 
+just need the class file, but some info in the HTML loader can
+provide us some nice information. Looking my browser window, I 
+saw a small black bar around the java applet, which fit the 
+whole broswer window. Let's right click around it and w00t, we 
+can now edit the source. Editing it, I saw:
+
+-----------------------start of html source---------------------------
+<html>
+<head>
+<title>auFeminin.com - Dialogue en direct.</title>
+</head>
+<body><center>
+<APPLET codebase="http://chatfeminin2.caramail.com"
+archive="CaraNewChat.jar" code="CaraNewChat.class"
+height="99%" width="100%">
+<PARAM name="cabbase" value="CaraNewChat.cab">
+<PARAM name="port" value="6666">
+<PARAM name="id" value="HNXYKFGW5XXXEMW9N1ZKU5XXXXXXZCXPBW77GO18BFZD9">
+<PARAM name="pseudo"
+value="HNKNMEXRXXQ7AX1HP56D4D0AAOHUZEC2BVTHPXF0X79IAYCC2BVT53Y7NPHBIS">
+<PARAM name="tempid" value="23">
+<PARAM name="room0" value="accueil">
+<PARAM name="age" value="32">
+<PARAM name="sex" value="1">
+
+// I cut some shit in here like text in French
+
+</APPLET>
+</center>
+</body>
+</html>
+---------------------------end of html source ------------------------
+
+From this source, we have learned alot of things! I hope you 
+see the important things there :) Lemme show you the 
+IMPORTANT stuff:
+
+- <APPLET codebase="http://chatfeminin2.caramail.com" archive=
+"CaraNewChat.jar" code="CaraNewChat.class" height="99%" width="100%">
+
+This loads the java applet named caranewchat.class, from the 
+url: chataufeminin2.caramail.com.
+
+We also see an archive: Caranewchat.jar... All these files 
+can be found in "Temporary internet files", but 'tis better 
+to know everything about the chat... so we can download the 
+class file from here: 
+http://chatfeminin2.caramail.com/CaraNewChat.class.
+
+- <PARAM name="cabbase" value="CaraNewChat.cab">
+
+Nothing really important for reversing...
+
+- <PARAM name="port" value="6666">
+
+Hehe! That sounds pretty interesting ;) Looks like this chat 
+uses port '6666'
+
+- <PARAM name="id" 
+value="HNXXXXXEMLH6IW9N1ZKU5ZXXXXCXPBW7XXXXXXXXXXXXXX4FD9">
+
+This is an IDENTIFIER (ie: ID) which is encrypted. With 
+some decryption, we can break it, as i did some time ago, but
+that isn't the subject of this essay. NOTE: The X's are some
+letters or numbers I erased, I don't want people loggin on 
+with my nick.
+
+- <PARAM name="pseudo" value="HNKNMETHPXXXX2BVTXXXXXXNWO1AF0XXXXXXBIS">
+
+It is the pseudo we use, but also encrypted with the same algo
+as the IDENTIFIER. Nothing more to say about that, although we 
+will use those values later...
+
+- <PARAM name="tempid" value= "23">
+
+(TempID stands for temporary identifier I think..)
+
+- <PARAM name="room0" value="couple">
+
+This is the channel name where we gonna go on loading.
+The name says it all..
+
+- <PARAM name="age" value="32">
+
+Our age...
+
+- <PARAM name="sex" value="1">
+
+Our sex...
+
+1 = man
+0 = girly
+-1 = sexless
+
+Ok, ok, now let's have a deeper look.
+
+I)Decompiling the applet:
+
+We will use the JAD java decompiler..
+
+How to use JAD:
+
+To decompile a single JAVA class file 'example1.class' type the
+following:
+
+  jad example1.class
+
+This command creates the file 'example1.jad' in the current 
+directory.  If such a file already exists, JAD asks whether you 
+want to overwrite it or not.
+
+Here we go :)
+
+so: jad CaraNewChat.class
+
+Now open your jad file with your favorite text editor and now 
+the funbegins =)
+
+What the heck do we see?!:
+
+------------------ start of jad file : ----------------
+	// Decompiled by Jad v1.5.7f. Copyright 2000 Pavel Kouznetsov.
+	// Decompiler options: packimports(3)
+	// Source File Name:   CaraNewChat.java
+
+	import java.applet.Applet;
+	import java.awt.*;
+	import java.io.*;
+	import java.net.*;
+	import java.util.*;
+
+	public class CaraNewChat extends Applet
+	implements Runnable
+	{
+
+	   public CaraNewChat()
+    {
+	        a72 = 4096;
+	        a73 = "";
+	        a79 = "";
+	        a80 = "";
+	        a81 = "";
+		a94 = false;
+		a95 = false;
+                run = true;
+	        a97 = false;
+		a98 = false;
+
+	------ cut to save some space ------
+
+		a233 = new TextField();
+		a234 = new Choice();
+		a235 = new Choice();
+		a236 = new Choice();
+		a237 = new Choice();
+		}
+------------------ end of jad file : ----------------
+
+Ok, here we have some crap.. nothing important yet..
+Let's go on:
+
+------------------------ IMPORTANT STUFF: ----------------------------
+I'm gonna comment the following lines coz it is pretty interesting...
+It gets some important PARAMs from the html file..
+
+private void a238()
+{
+if((a77 = getParameter("id")) == null) // look in the html loader for
+				       // the PARAM'ID' and take the
+				       // value from it.
+
+a77 = "*";
+  if((a78 = getParameter("pseudo")) == null) // same as above, it gets
+					     // the 'pseudo'..
+      return;
+   if((a83 = getParameter("room0")) == null)  // get the room ..
+    {
+       if((a83 = getParameter("room1")) == null) // nothing important
+        {
+        a83 = "divers";
+         a103 = 0;
+     } else
+      {
+          a103 = 1;
+     }
+    } else
+      {
+          a103 = 0;
+      }
+      if((a84 = getParameter("tempid")) == null)  // it gets the
+					          // TempID ...
+          return;
+      String s;
+  if((s = getParameter("caraadmin")) != null) // wtf ? :) well if
+					      // caraadmin = true then
+					      // we have admin's commands.
+
+      a94 = s.toUpperCase().equals("TRUE");   // they are not working tho
+      if((s = getParameter("proxy")) != null) // do we use a proxy ?
+                                              // if the param = true yes
+
+          a95 = s.toUpperCase().equals("TRUE");
+      if((s = getParameter("port")) == null)  // Here is the port of
+					      // the chat.. it compares
+					      // port to '6666'..
+
+          a70 = 6666;
+        else
+
+------------ some code has been cut coz it ain't important -----------
+
+if((s = getParameter("AGE")) != null && !s.trim().equals(""))
+					   // gets our age
+            a74 = s;
+        else
+            a74 = "?";
+        if((s = getParameter("SEX")) != null && !s.trim().equals(""))
+                                       		  //  our sex
+            a75 = s;
+        else
+            a75 = "?";
+        if((s = getParameter("CITY")) != null && !s.trim().equals(""))
+						 // our city
+            a76 = s;
+        else
+            a76 = "?";
+        if((s = getParameter("domain")) != null)
+			// I don't know exactly, it is weird..
+            a111 = s.toLowerCase();
+        else
+            a111 = "com";
+    }
+
+This part gets the param's value from the html file which loads
+our java applet... Nothing much to say. It gets age, city , sex, 
+room, ID, pseudo and stuff.
+
+Now we are looking for the real protocol of the chat :) Here, 
+we gotta use our brain a little to understand what's going on ;)
+After the code above, we see some canvas (drawing).
+I mean, it is the java code to draw the chat interface, such
+as text, buttons and other stuff. We don't really care about this.
+Let's move on:
+
+Scrolling down a lot (skiping all thedrawing crap), we see this:
+
+        try
+        {
+            a99 = new Socket(getCodeBase().getHost(), i);
+            in = a99.getInputStream();
+            out = new PrintStream(a99.getOutputStream(), true);
+            out.flush();
+            a93 = false;
+            return true;
+
+------------------------------- some crap there ----------------------
+
+{
+if(a95)
+  s = "http://" + getCodeBase().getHost() + "/" + a280() + 
+URLEncoder.encode("cmd" +
+  (!a94 ? "1" : "201") + "\t" + a77 + "\t" + a78 + "\t" + a84);
+
+   else
+    s = "http://" + getCodeBase().getHost() + "/" + a280() + 
+URLEncoder.encode("cmd" +
+(!a94 ? "0" : "200") + "\t" + a77 + "\t" + a78 + "\t" + a84);
+
+    } else
+     {
+       s = "http://" + getCodeBase().getHost() + "/" + a280() + "id" + a79 + 
+"jid" + a80;
+     }
+        while(flag)
+     {
+       try
+     {
+        URL url = new URL(s);
+        URLConnection urlconnection = url.openConnection();
+        urlconnection.setAllowUserInteraction(false);
+        urlconnection.setUseCaches(false);
+        urlconnection.setRequestProperty("Cache-control", "no-cache");
+        in = urlconnection.getInputStream();
+        a93 = true;
+        return true;
+
+        -------------- some crap there ----------------
+
+        -------------- some crap there ----------------
+
+    private boolean a297()
+    {
+        if(a288(a70) && !a95)
+            if(a291(a70))
+            {
+                a283((!a94 ? "0" : "200") + "\t" + a77 + "\t" + a78 + "\t" + 
+a84);
+                return true;
+            } else
+            {
+                return false;
+            }
+        return a292();
+    }
+
+We are near the connection routine..
+(well we are already in it, but we don't know what is sent yet)
+
+     private boolean a297()
+    {
+      if(a288(a70) && !a95)
+         if(a291(a70))
+          {
+           a283((!a94 ? "0" : "200") + "\t" + a77 + "\t" + a78 + "\t" + 
+a84);  // looks nice
+                return true;
+            } else
+            {
+                return false;
+            }
+        return a292();
+    }
+
+As i told you before, we need some zen feeling! this looks really nice.. 
+why? Because of the a77, a78, a84!!
+What is this crap? Well if you don't remember look at:
+
+############################################################################################
+# if((a77 = getParameter("id")) == null) // look in the html loader for the PARAM'ID' and  #
+# 											   #
+# if((a78 = getParameter("pseudo")) == null) ; same as above, it gets the 'pseudo'..       #
+# if((a84 = getParameter("tempid")) ==   null) ; it gets the TempID ...                    #
+# so a77 = ID , a78 = Pseudo and a84 =  TempID                                             #
+############################################################################################
+
+Looks like it sends the 'ID' + the 'pseudo' + the 'tempID'
+
+(!a94 ? "0" : "200") + "\t" + a77 + "\t" + a78 + "\t" + a84)
+
+"0" and "200" are some constants..
+
+What does '/t' mean? It means the TAB key on your keyboard.
+To connect it sends:
+
+0	ID	pseudo	tempID   (where the spaces are TABs)
+200	ID	pseudo	tempid   (where the spaces are TABs)
+
+Ok, but you probably have some questions, don't you? :)
+Where does this "0" and "200" come from? piss easy!
+I told you we need some ZEN feeling..
+Look a little more, don't you see (!a94 ? "0" : "200")?
+I'm sure you do ;p so we have to look for the a94 ..
+
+############################################################################################
+if((s = getParameter("caraadmin")) != null) // wtf ? :) well if caraadmin = true then we
+                                            // have admin's commands.
+  a94 = s.toUpperCase().equals("TRUE");     // they are not working tho..
+
+I assume that if we are not admin we send "0" and if we are admin, we send "200" to connect.
+(because of the (!a94) which means (NOT a94)
+############################################################################################
+
+Hmmm ok! What about trying to connect to the server? :)
+Yeah! that'd rock! Since we don't have a client yet, we will use Telnet.exe :)
+Fire it up and then:
+
+host: put what you see when you edited the HTML page ( i.e. 
+chatfeminin2.caramail.com)
+port: 6666 (we saw it in both HTML and JAVA source) click on connect and 
+we see this:
+
+100     CaraChat v1.0 by A.L (arnaud@caramail.com) (C) 1999 CaraMail SA.
+
+Ok.. now we have to login! Remember the protocol?
+(ie : 0	+ TAB + ID + TAB + pseudo + TAB + tempID)
+
+0	HNXXXXXXXXXRL17YKF9V9CDGW5XXXEMLH6IW9N1ZKU5XXXZCXPBW77GO18BFZV575RZ8BFZVKQO40ESXHWK4FD9
+	HNKNMERXXQ7AX1HP56D4D0AAPXXXX2BVTXXXX3NWO0X7XYCC2Y7NLXXXXXX4GJC2BVTET4GJ0H5USD8AD0PHBIS
+	23
+
+
+1E ANALYST	.8::121:45691:0	176
+
+Woha, we logged in :))))
+If, before sending the good info, we try to enter fake crap, we are 
+disconnected... if we just send some ramdom ascii, the conection
+will be closed!
+
+By the way, if you don't remember where these values come from, 
+just check the start of the tutorial :)
+
+Before continuing, what about starting to code our client?
+Why? Because telnet sucks ;) For this, i'm gonna use Delphi..
+I could have used VB, c++ or whatever I wanted, except java coz
+if I learned one thing by reversing java, 'tis not to use, slow 
+shitty java again! I'm gonna use the TSocketClient component.
+This is not a tut on Delphi, so i will just paste some source code 
+in here..
+
+--------------------------------------------------------------------------------------------
+senddata('0' + chr(9)
++ 
+'HNXXXRL17YKF9V9CDGW5XXXEM6IW9N1ZKU5XXZCXPBW77GO18BFZV575RZ8BFZVKQO40ESXHWK4FD9'
++ chr(9)
++ 
+'HNKNMEXRXXQ7AX1HP56D4D0AAOHUZE3NWO1AF0X7XXXX9IAYCC2BVT53Y7NLXXXXXX4GJCJ0H5USD8AD0PHBIS'
++ chr(9) + '23' + chr(10));
+--------------------------------------------------------------------------------------------
+
+Lemme explain a lil more now:
+chr(9) means TAB (coz the ascii of TAB is 9).
+chr(10) is not in the protocol, but we have to use it so the 
+server receives and interprets our commands. 10 means line feed.
+
+Senddata is a procedure which looks like this :
+
+---------------------------------------------
+procedure Tform1.SendData(textmsg:String);
+begin
+ClientSocket1.Socket.SendText(textmsg);
+End;
+---------------------------------------------
+
+You also have to put one memo in order to receive the server's 
+answers.. Here's a lame implementation ;)
+Put a timer on your project and then use that code in it:
+
+ClientSocket1.OnRead := clientsocketread;
+
+Of course, clientsocketread is a procedure, which lookes like:
+
+----------------------------------------------------------------------------------
+procedure Tform1.ClientSocketRead(Sender: TObject; Socket: 
+TCustomWinSocket);
+
+begin
+   Memo1.Lines.Add(Socket.ReceiveText);
+end;
+----------------------------------------------------------------------------------
+
+Well, I ain't gonna provide a 100% working client, just because 
+many lamers visit my site, and since they are French too, they 
+might code LAME BOTS or even FLOODERS with the information
+provided here. This tut has been done to understand the main 
+idea. 
+
+Once we are connected to the server, we have to find the 
+commands to send (i.e. join chan, talk in  chan, private 
+chans, list of users, number connected)... it would take ages 
+to reverse the entire protocol (like I did), but I found 
+another fast and cool way - using a web sniffer ;-)
+
+There is a nice one, but it ain't working on WIN NT. Winsock 
+Packet Editor. Using it while chatting, we can understand all 
+the protocol in no time!
+
+Now, I'm going to show you how to find 1 or 2 commands, still
+with the java code, then I will provide a list of all the 
+commands.. you will have to practice on it by your self.
+
+-------------- LITTLE SNIPPET----------------
+            if(a103 == 0)
+                a283("20\t" + a83);
+            else
+                a283("22\t" + a83);
+            a283("80\t" + a74 + "\t" + a75 + "\t" + a76);
+            if(a75.compareTo("0") == 0)
+                a75 = "F";
+            else
+            if(a75.compareTo("1") == 0)
+                a75 = "H";
+            else
+                a75 = "X";
+            if(a94)
+            {
+                a283("14\t0");
+                a183.enable();
+                a183.setState(false);
+            }
+            a130.repaint();
+            break;
+-------------- END OF LITTLE SNIPET----------------
+
+Seeing this code, we see that it uses '20 + tab + one variable' and 
+the same with 22.. so with my new client, i tried to send this to 
+the server:
+
+senddata('20' + chr(9) + 'test' + chr(10));
+
+We enter that in our client and then log in, and try that new command.
+Hmm, looks like it created a channel.. so then I tested with a channel 
+full of dudes 'accueil' and it worked fine!
+
+Guess what? Now I can see people talking in the chan.. of course it 
+looks very weird, because it has the ID of the user in front of his 
+nickname, plus some others crap. To make it more readable, we gotta 
+make some loops to clean up the received text.
+
+I won't give source, because it is nothing related to the protocol..
+Ok, but now what about '22'? I tried the same crap:
+
+senddata('22' + chr(9) + 'test' + chr(10));
+
+That worked as well. After some tests, I figured that '22' is used to 
+create/enter private channels! Heh.. now we can ident on the server, 
+join public and private rooms.. what about talking in them now?
+This part was not that easy, coz the java source is decompiled, all  
+the variables have weird names... It would have been alot easier to 
+use Winsock Packet Editor..
+
+But heck, we are Reversers, aren't we? ;)
+
+------------- 8<----------------
+
+            if(!a149.getState())
+            {
+                s5 = s5 + "70\t";
+            } else
+            {
+                s5 = s5 + "72\t";
+                s5 = s5 + a81 + "\t";
+            }
+            switch(a151.getSelectedIndex())
+            {
+            case 0:
+                s5 = s5 + "01";
+                break;
+
+            case 1:
+                s5 = s5 + "00";
+                break;
+
+            case  2:
+                s5 = s5 + "02";
+                break;
+            }
+
+            switch(a150.getSelectedIndex())
+            {
+            case 0:
+                s5 = s5 + "00";
+                break;
+
+            case 1:
+                s5 = s5 + "01";
+                break;
+
+........ cut to save space ..........
+
+           case 10:
+                 s5 = s5 + "10";
+                 break;
+           }
+              s5 = s5 + "00" + s4;
+
+-------------- 8< ----------------
+
+As I told before, it really looks weird ;)
+But since we are reversers, we don't *pheer* Let's analyse that 
+crap:
+
+s5 = s5 + "70\t";      // 70 is used to talk in public.
+  } else
+  {
+   s5 = s5 + "72\t";   // 72 is used to talk in private with one person.
+
+Looks like before :
+20 -> enter public ; 22 -> enter private ; 70 -> talk public ; 72 -> talk 
+private.
+We now know that '2' means private ;)
+
+Let's continue:
+
+switch(a151.getSelectedIndex())
+{
+case 0:
+s5 = s5 + "01";  // normal talk
+break;
+
+case 1:
+s5 = s5 + "00";  // whisper
+break;
+
+case  2:
+s5 = s5 + "02";  // Scream
+break;
+}
+
+Ok, what the heck can that be? Ahem.. it is probably some 
+parameters for how our text will look. If we fire up a chat with 
+their site, we see 3 interesting things:
+
+1- one combo: color choice
+2- one combo: kind of talk (ie : whisper, talk, scream)
+3- one textfield: here you gotta type your text!
+
+Ok, so that part was used to know how the user is gonna talk 
+(normal, scream..)
+
+so s5 = s5 + "70\t"; =>  S5 = 70 + TAB;
+
+Imagine that the user uses normal talk:
+
+so s5 = s5 + "01"; =>  S5 = 70 + TAB + 01;
+
+After that comes the color:
+
+switch(a150.getSelectedIndex())
+{
+case 0:
+s5 = s5 + "00";  --> black
+break;
+
+case 1:
+s5 = s5 + "01";  --> red or whatever color it is.
+break;
+
+        ........ cut to save space ..........
+
+case 10:
+s5 = s5 + "10";  --> green or whatever color it is.
+break;
+}
+
+At this place, depending on what color the user chooses, it adds
+the number corresponding to that color to s5.exemple:
+
+s5 = s5 + "00" + s4;
+
+Using some Zen feeling, we assume that s4 = the text field where 
+the user types his text. Also notice the "00" that means string 
+is gonna start. So how does a line look? When the user wants to 
+send the text "hello world" in black with BIG FONT (screaming)?
+
+70 + TAB + 020100hello world
+
+Easy isn't it? ;-) Now we can code it into our client like this:
+
+senddata('70' + chr(9) + '020100hello world' + chr(10));
+
+Then you have to make a client like in the chat:
+Put one combobox for color and another for the size. it might
+look something like this:
+
+senddata('70' + chr(9) + combo1.text + combo2.text + '00' + edit1.text + 
+chr(10));
+
+You'll have to play with that.. I hope you get it.
+The aim of this tutorial is to get the general idea of reversing this 
+chat :) Now I will just give you the value of some commands, and if you 
+want, you can finish the reversing ;)
+
+-------------- start of command listing: -------------- 
+
+555   ---->  Kick (only works once your admin)
+199   ---->  Show us how many peeps are online.
+90    ---->  Give us a list of public channels
+94    ---->  Give us a list of permanent channels
+85    ---->  Refresh
+80    ---->  AST (age , sex , town)
+54    ---->  some search
+14    ---->  Invisible (only if admin)
+--------------- end of command listing: --------------- 
+
+And many other commands 8-) So, now you gotta practice and reverse the 
+hell out of 'em :P
+
+                REVERSER FEELING:
+
+Hey man, we are reversers, aren't we?
+Yeah, so why not use some ZEN!
+Remember when I told you that we can enter PRIVATE channels?
+There is NO *Documented* feature that has a list of them hehe..
+
+90    ---->  Give us a list of public channels
+94    ---->  Give us a list of permanent channels
+
+90 = public.
+94 = permantents.
+
+But where the fuck is 92?!
+Guess what 92 does? haha, you got it! Sending 92 to the server 
+makes it give us a nice list of all private channels..
+Now you can enjoy seeing your friends doing some cybersex..
+hahaha how funny! I really enjoyed watching those lamers having 
+cybersex, thinking they were in private. Since I found a security 
+hole on their site, I can choose the nickname I want, without even
+encrypting it ;o) And more interesting, I also have the password 
+of their SQL databases ;P But that is another story =p
+
+===============================================================
+3)Conclusion:
+===============================================================
+I now use my own client to chat! I have some friends on this 
+chatroom, but I could not live with their lame, slow java 
+client. Mine is not slow, no more wasted time, it loads pretty 
+fast. I hope you learned something from this tutorial.
+
+As you can see, being a reverser allows us to reverse programs, 
+life, or what ever we encounter.. If it can be done, we can do
+it. I've never seen a tut quite like this, so if you liked it, 
+feel free to mail me: acid2600@hotmail.com
+
+Signing off,
+
+tHE ANALYST [ID / uCF ]
+wwww.oldreverser.cjb.net
+
+===============================================================
+4)Greetings go to:
+===============================================================
+CrackZ: Hello master zen.. I'm still impressed by your 
+        dongle-hunting skill ;-) keep hunting!
+
+tHE EGOISTE: Thx friend, for all your help. I'm finishing my 
+             keygen for Armadillo 1.84 now ;P
+             (protection: blowfish)
+
+Dimedrol: Woah.. Elliptic curves keygenned.. I'm impressed man. 
+          keep owning ;)
+
+Ivanopulo: Heh, thx for answering my questions! keep up the 
+           good work too !
+
+Recca: Nice work on RSA 1024 man!
+
+Volatility: I promised some work from me.. here you go :)
+
+Neural Noise: Hey :p come on, get ur ass to France u leeto 
+              'talian
+
+Duelist: Hey brother.. I'm still impressed with all your 
+         amazing work.. u really kick ass ;)
+
+Cblade: I can't wait for your leet VB5 pcode decompiler !
+
+Titi: You bloody bird ;) what are you waiting for sending 
+      those goddamn docs..
+
+TAM: Excuse me for everything bro, and thx for showing me 
+     the light..
+
+Corn: analwh0re vs Corn soup :P
+
+_pain: you're evil.. :p
+
+tin: 'I social engineer my mum every day' haha ;)
+
+spath, FP, seifer, tscube and all my others friends..
+
+www.leelouonline.com: thx for hosting my website ;)
+
+Sorry if I forgot someone, but I can't list all my friends..
+it would be longer than the tut itself, he he!
+
+I also greet all my friends in #immortaldescendants, 
+#cracking4newbies, #o......s, #ucf2000, #crack.fr...
+
+This tutorial is dedicated to my love.. Celine.

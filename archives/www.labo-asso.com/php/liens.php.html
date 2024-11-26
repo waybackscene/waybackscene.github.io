@@ -1,0 +1,871 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+    	<td width="1">
+			<div align="left"> <img src="../images/logo_labo_skopia.gif"> 
+      </div>
+		</td>
+        <td nowrap>
+			<div align="center"> <font color="#33FFFF" size="7">Labo Skopia</font></font> 
+      </div>
+		</td>
+        <td width="1">
+			<div align="right"> <img src="../images/logo_labo_skopia.gif">  
+      </div>
+		</td>
+    </tr>
+</table>			<br>
+			<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+  <tr> 
+	<td><table width="100%" border="0" cellpadding="5" cellspacing="2">
+		<tr bgcolor="#000000"> 		  
+		  <td> <div align="center"><a href="travaux.php.html">Travaux</a></div></td>
+		  <td> <div align="center"><a href="outils.php.html">Outils</a></div></td>
+		  <td> <div align="center"><a href="challenges.php.html">Challenges</a></div></td>
+		  <td> <div align="center"><a href="vulnerabilities.php.html">Vuln&eacute;rabilités</a></div></td>
+		  <td> <div align="center"><a href="http://www.labo-asso.com/forum/index.php" target="_blank">Forum</a></div></td>
+		  <td> <div align="center"><a href="liens.php.html">Liens</a></div></td>
+		  <td> <div align="center"><a href="contact.php.html">Contact</a></div></td>
+		</tr>
+	  </table></td>
+  </tr>
+</table>			<p align="center"><font size="7">Liens</font></p> 		  
+		  
+            <table width="90%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="5" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Site 
+                          FR</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.arcanapercipio.com" target="_blank">Arcana 
+                          Percipio</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td width="100%" valign="top"> <p align="justify">Vulgarisation 
+                          Informatique. Site tr&egrave;s p&eacute;dagogique et 
+                          interactif avec beaucoup d'humour de la part de l'auteur 
+                          :)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://jardinezchezjb.free.fr/" target="_blank">jB</a></td>
+                      <td valign="top" nowrap> <div align="center"><font color="#00FFFF">FR</font></div></td>
+                      <td valign="top"><div align="justify">Le petit jardin secret 
+                          de jB. Si vous cherchez des travaux concrets en cryptographie, 
+                          c'est chez jB qu'il faut aller :)</div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.ivanlef0u.tuxfamily.org/" target="_blank">Ivanlef0u's 
+                          blog</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Le blog d'ivanlefOu.</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://baboon.rce.free.fr/" target="_blank">Baboon's 
+                          Blog</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Le blog de Baboon.</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://squallsurf.blogspot.com/" target="_blank">Une 
+                          petite vague</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Le blog de Squallsurf.</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://yolejedi.free.fr" target="_blank">LaBoRaToiRe</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">LABO...la gen&egrave;se... 
+                          ;)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://mimasgpc.free.fr" target="_blank">mimas</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Le wiki + blog de mimas</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://systemaddict.tuxfamily.org/" target="_blank">System 
+                          Addict</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Magazine d'informatique 
+                          traitant de l'administration et de la programmation 
+                          informatique.</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://virtualabs.org/" target="_blank">Le 
+                          Hangar Virtualabs</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Le site perso de Virtualabs, 
+                          un des 2 r&eacute;dacteurs en chef du magazine System 
+                          Addict.</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://defisfc.free.fr/" target="_blank">D&eacute;fisFC</a></td>
+                      <td valign="top" nowrap> <div align="center"><font color="#00FFFF">FR</font></div></td>
+                      <td valign="top"><div align="justify">Une banque de donn&eacute;es 
+                          qui regroupe une multitude de d&eacute;fis en tout genre. 
+                          Ce site a &eacute;t&eacute; fait enti&egrave;rement 
+                          par HolyView (avec l'aide de ++MEAT) et a demand&eacute; 
+                          2 mois de travail !<br>
+                          Le but &eacute;tant que ce lieu soit autog&eacute;r&eacute;, 
+                          tout le monde est invit&eacute; &agrave; aller poster 
+                          ses d&eacute;fis. <br>
+                          Si vous vous ennuyez, allez chez D&eacute;fisFC plut&ocirc;t 
+                          que de vous faire encore un Sudoku vautr&eacute; dans 
+                          le fauteuil ;p</div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://holyview.site.free.fr/" target="_blank">HolyView</a></td>
+                      <td valign="top" nowrap> <div align="center"><font color="#00FFFF">FR</font></div></td>
+                      <td valign="top">Le site perso de HolyView (orient&eacute; 
+                        Delphi)</td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Site 
+                          perso ENG</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.cs.cmu.edu/afs/cs.cmu.edu/user/ralf/pub/WWW/ralf-home.html" target="_blank">R.Brown</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">la page de Ralf Brown.<br>
+                          on y trouve sont c&eacute;l&egrave;bre &quot;x86 Interrupt 
+                          List&quot; :)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.jorgon.freeserve.co.uk" target="_blank">J.Gordon</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Le site de Jeremy Gordon</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.wheaty.net" target="_blank">M.Pietrek</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">La page de Matt Pietrek.</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.smidgeonsoft.com" target="_blank">SmidgeonSoft</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Le site de Russell 
+                          Osterlund. On y trouve son petit bijou de d&eacute;bugger 
+                          :)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Hardware 
+                          - OS</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="left">&nbsp;&nbsp;&nbsp;&nbsp;-&gt;G&eacute;n&eacute;ral</div></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.ctyme.com/rbrown.htm" target="_blank">Ralf 
+                          Brown's Interrupt List</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">En HTML</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.cs.nyu.edu/%7Eyap/classes/machineOrg/helppc" target="_blank">HelpPC</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">L'incontournable HelpPC 
+                          de David Jurgens</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.qzx.com/pc-gpe" target="_blank">PC-GPE</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Mark Feldman's PC Game 
+                          Programmer's Encyclopedia</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.arl.wustl.edu/%7Elockwood/class/cse306-s04/resources" target="_blank">CSE</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">les ressources du Department 
+                          of Computer Science and Engineering dirig&eacute; par 
+                          J. W. Lockwood</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.nondot.org/sabre/os/articles" target="_blank">The 
+                          Operating System</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">The Operating System 
+                          resource center</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.osdever.net/" target="_blank">BonaFide 
+                          OS Development</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">plein de docs et autres...</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="left">&nbsp;&nbsp;&nbsp;&nbsp;-&gt;CPU</div></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.x86-secret.com" target="_blank">x86-secret</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">plein d'infos sur les 
+                          CPU x86</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.irisa.fr/caps/projects/TechnologicalSurvey" target="_blank">Projets 
+                          CAPS</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">INRA de Rennes, Projets 
+                          CAPS (Compiler and Architecture for Superscalar and 
+                          embedded Processors)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.x86.org" target="_blank">x86</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">plein d'infos sur les 
+                          CPU x86</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://sandpile.org" target="_blank">sandpile</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">plein d'infos sur les 
+                          CPU x86</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Syst&egrave;me 
+                          et programmation syst&egrave;me</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://www.codeproject.com/KB/system/" target="_blank">Code 
+                        Project</a></td>
+                      <td valign="top" nowrap> <div align="center"><font color="#00FFFF">ENG</font></div></td>
+                      <td valign="top">de tr&egrave;s bonnes sources :)</td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://www.i.u-tokyo.ac.jp/edu/training/ss/lecture" target="_blank">Windows 
+                        Kernel Internals</a></td>
+                      <td valign="top" nowrap> <div align="center"><font color="#00FFFF">JAP/ENG</font></div></td>
+                      <td valign="top">Professional Programme for Strategie Software. 
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.osronline.com/" target="_blank">OSR 
+                          Online </a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">&quot;Everything&nbsp;Windows&nbsp;Driver&nbsp;Development&quot;<br>
+                          De la doc sympa et en particulier le DDK Online</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.sysinternals.com" target="_blank">Sysinternals</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Des outils et de la 
+                          doc. incontournable ! </p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.ntkernel.com" target="_blank">ntkernel</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">de la doc et des sources</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://www.cmkrnl.com" target="_blank">Kernel 
+                        Mode Systems</a></td>
+                      <td valign="top" nowrap> <div align="center"><font color="#00FFFF">ENG</font></div></td>
+                      <td valign="top"> <div align="justify">le site de Jamie&nbsp;E.&nbsp;Hanrahan 
+                          sur la programmation de driver.</div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.freewebs.com/four-f" target="_blank">four-f</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">le site de four-f (programmation 
+                          de driver en asm)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://neitsabes.online.fr/ASM/KMD/KMDindex.htm" target="_blank">four-f 
+                          - version FR</a> </p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">four-f -&gt; Traduction 
+                          fran&ccedil;aise de Neitsa</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.reactos.org/" target="_blank">reactos</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR/ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Tr&egrave;s gros projet 
+                          ! respect :) </p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap><a href="http://www.openrce.org/" target="_blank">OpenRCE</a></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ALL</font></p></td>
+                      <td valign="top"><div align="justify">Un lieu qui centralise 
+                          &eacute;norm&eacute;ment de travaux de Reverse Engineering 
+                          de tr&egrave;s grandes qualit&eacute;s.</div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Assembleur</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://webster.cs.ucr.edu" target="_blank">The 
+                          Art of ASSEMBLY<br>
+                          LANGUAGE PROGRAMMING</a></p></td>
+                      <td valign="middle" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">de Randall Hyde</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.wasm.ru/docs/3/ArtOfDisassembly.zip" target="_blank">Art 
+                          Of Disassembly</a></p></td>
+                      <td valign="middle" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Travail tr&egrave;s 
+                          illustr&eacute; par des petits outils. J'adore&nbsp;!&nbsp;:) 
+                        </p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Reverse 
+                          Engineering </font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.apihooks.com/EliCZ/" target="_blank">EliCZ</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Impossible de rater 
+                          cela !</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.windowsitlibrary.com/Documents/Book.cfm?DocumentID=356" target="_blank">Undocumented 
+                          Windows NT</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify"> Que du bon :)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.rootkit.com" target="_blank">Rootkit</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Des rootkit en veux-tu 
+                          en voil&agrave; :)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.phrack.org" target="_blank">phrack</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Articles en tout genre 
+                          (tr&egrave;s riche !)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Outil</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://programmerstools.org/" target="_blank">programmerstools</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td valign="top"> <p align="justify">Tout est l&agrave; 
+                          :)</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Enseignement 
+                          - Institution</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.ift.ulaval.ca/%7Emarchand/ift17583" target="_blank">P. 
+                          Marchand - cour 1</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Structure interne des 
+                          ordinateurs</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top" nowrap><table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#339999">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.ift.ulaval.ca/%7Emarchand/ift17584" target="_blank">P. 
+                          Marchand - cour 2</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">FR</font></p></td>
+                      <td valign="top"> <p align="justify">Programmation syst&egrave;me</p></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" nowrap> <div align="center"><strong><font color="#00FFFF">Autre</font></strong></div></td>
+                    </tr>
+                    <tr> 
+                      <td colspan="3" valign="top"> <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                          <tr> 
+                            <td><img src="../images/pixel_transp.gif" width="1" height="1"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://www.wotsit.org" target="_blank">wotsit</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">ENG</font></p></td>
+                      <td rowspan="2" align="left" valign="middle"> <p align="justify">Une 
+                          multitude d'info sur les formats de fichier.</p></td>
+                    </tr>
+                    <tr> 
+                      <td valign="top" nowrap> <p><a href="http://mediasrv.ns.ac.yu/extra/fileformat/" target="_blank">File 
+                          Format Encyclopedia (ai_lab)</a></p></td>
+                      <td valign="top" nowrap> <p align="center"><font color="#00FFFF">???</font></p></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <br>  
+  <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="liens.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+ 						
+		</td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

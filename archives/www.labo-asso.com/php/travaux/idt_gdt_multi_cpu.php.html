@@ -1,0 +1,781 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center"> 
+                    <p><font color="#339999" size="5">Comment obtenir les IDT 
+                      et GDT<br>
+                      sur syst&egrave;me multi-processeurs ?<br>
+                      </font> -=¤ Lionel d'Hauenens ¤=-</p>
+                  </div></td>
+                <td width="1"> <div align="right"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>
+            <br> <table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td colspan="2"><div align="justify"> 
+                          <p>Quelle surprise la premi&egrave;re fois que l'on 
+                            &quot;titille&quot; l'IDT sur un syst&egrave;me multi-processeurs. 
+                            Le crash que l'on se prend dans les dents est assez 
+                            violent. Soit... mais &ccedil;a a au moins le m&eacute;rite 
+                            d'exposer le probl&egrave;me assez rapidement. ;p 
+                            <br>
+                            En effet, chaque micro-processeur (cpu) travaille 
+                            avec son propre jeu de registres et son propre environnement. 
+                            Dans un environnement multi-processeurs, il est bien 
+                            sur possible de jouer avec les interruptions sans 
+                            &ecirc;tre emb&ecirc;t&eacute;. Il faudra juste prendre 
+                            la peine de sonder ou modifier tous les environnements 
+                            des cpu pr&eacute;sents.</p>
+                          <p>Le but de ce texte est simplement d'exposer 4 techniques 
+                            qui permettent d'obtenir les pointeurs et/ou les tailles 
+                            des tables IDT et GDT propres &agrave; chaque processeur 
+                            pr&eacute;sent.</p>
+                          <p>Le principe des deux premiers exemples consiste simplement 
+                            &agrave; soutirer nos informations &agrave; l'aide 
+                            des instructions assembleurs sidt et sgdt. Dans une 
+                            boucle, bas&eacute;e sur le nombre de cpu pr&eacute;sent, 
+                            nos instructions sont ex&eacute;cut&eacute;es dans 
+                            un thread que l'on force &agrave; fonctionner dans 
+                            chaque cpu. Ceci permet de r&eacute;cup&eacute;rer 
+                            les valeurs des registres idtr et gdtr de chaque cpu 
+                            et donc nos tables. :)</p>
+                          <p><a href="idt_gdt_multi_cpu.php.html#methode_1">Le premier exemple</a> expose 
+                            une routine fonctionnant en mode utilisateur. Alors 
+                            que <a href="idt_gdt_multi_cpu.php.html#methode_2">le deuxi&egrave;me exemple</a> 
+                            expose une routine bas&eacute;e sur le m&ecirc;me 
+                            principe mais fonctionnant en mode kernel. L'inconv&eacute;nient 
+                            majeur de cette technique est le temps d'ex&eacute;cution. 
+                            Le passage d'un thread vers un autre cpu demande du 
+                            temps. </p>
+                          <p>En mode kernel, le niveau de priorit&eacute; du code 
+                            ex&eacute;cut&eacute; (irql) ne permet pas tout le 
+                            temps d'utiliser les API Native. <a href="idt_gdt_multi_cpu.php.html#methode_2">Le 
+                            troisi&egrave;me exemple</a> essaye de palier &agrave; 
+                            ce probl&egrave;me en proposant une m&eacute;thode 
+                            bas&eacute;e sur la recherche et le scan de la table 
+                            HalpProcessorPCR pr&eacute;sente dans hal.dll. Cette 
+                            table contient les pointeurs des objets PCR (Processor 
+                            Control Region) propre &agrave; chaque cpu. Ces objets 
+                            d&eacute;finissent les environnements courants des 
+                            cpu. Cette m&eacute;thode, utilis&eacute; par Softice, 
+                            ex&eacute;cute une recherche m&eacute;moire par signature 
+                            afin de trouver en premier lieu la routine HalInitializeProcessor. 
+                            Malheureusement, depuis Windows Server 2003 SP1, les 
+                            signatures changent. Cette m&eacute;thode a donc ses 
+                            limites et il devient de plus en plus difficile de 
+                            d&eacute;velopper quelque chose de g&eacute;n&eacute;rique.</p>
+                          <p>Pour palier &agrave; ce probl&egrave;me, j'ai d&eacute;velopper 
+                            <a href="idt_gdt_multi_cpu.php.html#methode_4">une quatri&egrave;me m&eacute;thode</a> 
+                            permmettant de ne pas tenir compte du syst&egrave;me 
+                            h&ocirc;te. Elle est donc (&agrave; ce jour) g&eacute;n&eacute;rique. 
+                            Cette derni&egrave;re m&eacute;thode recherche directement 
+                            les diff&eacute;rents KPCR pr&eacute;sents en m&eacute;moire. 
+                            La recherche est cette fois bas&eacute;e sur des r&eacute;gles 
+                            simples d&eacute;coulant directement de l'architecture 
+                            des syst&egrave;mes Windows.</p>
+                          <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p align="center"><font color="#00FFFF" size="5"><a name="methode_1"></a>User 
+                            Mode<br>
+                            </font><font color="#00FFFF">m&eacute;thode 1</font></p>
+                          <p> 
+                          <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                            <tr> 
+                              <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                                  <tr> 
+                                    <td><a href="../../download/user_mode_save_all_idt_gdt_multi_cpu.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table></p>
+                          <p>Cette technique utilise des API document&eacute;s 
+                            et fonctionne en mode utilisateur. Ces caract&eacute;ristiques 
+                            la rendent s&ucirc;re et fiable. Cependant, il est 
+                            &agrave; noter qu'elle ne fonctionne pas dans un environnement 
+                            de type Machine Virtuelle.</p>
+                          <p> Pour obtenir ce que l'on d&eacute;sire, il nous 
+                            faut seulement 2 ingr&eacute;dients.</p>
+                        </div>
+                        <ol>
+                          <li>Trouver combien de processeurs sont pr&eacute;sents 
+                            sur la machine. 
+                            <ul>
+                              <li> Cette information peut &ecirc;tre obtenue tr&egrave;s 
+                                simplement en piochant dans la structure PEB (Process 
+                                Environment Bloc) la valeur NumberOfProcessors. 
+                              </li>
+                              <li> Il est aussi possible d'utiliser l'API NtQuerySystemInformation 
+                                propos&eacute; par ntdll.dll (voir SDK).</li>
+                            </ul>
+                          <li> Ensuite, il faut pouvoir forcer le thread courant 
+                            &agrave; fonctionner uniquement dans un seul cpu. 
+                            <ul>
+                              <li>L'API SetThreadAffinityMask permet justement 
+                                cela. :) </li>
+                            </ul>
+                          </li>
+                        </ol>
+                        <div align="justify"> 
+                          <table width="00100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p align="center"><font color="#00FFFF" size="5"><a name="methode_2"></a>Kernel 
+                            Mode</font><br>
+                            <font color="#00FFFF">m&eacute;thode 2</font> </p>
+                          <p> 
+                          <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                            <tr> 
+                              <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                                  <tr> 
+                                    <td><a href="../../download/passive_level_save_all_idt_gdt.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table></p>
+                          <p><font color="#00FFFF" size="4">PASSIVE_LEVEL (IRQL=0)</font></p>
+                          <p>Une technique similaire &agrave; celle du mode utilisateur 
+                            est aussi r&eacute;alisable en mode kernel. Il ne 
+                            faut pour cela pas avoir peur d'utiliser des API heuuu... 
+                            plus ou moins document&eacute;es. ;) </p>
+                          <p>Toutes les API et data system propos&eacute;s dans 
+                            cette technique sont directement export&eacute;s par 
+                            ntoskrnl.exe.</p>
+                          <p>Pour conna&icirc;tre le nombre de cpu pr&eacute;sents, 
+                            il est possible d'utiliser le data KeNumberProcessors. 
+                            Ce data est global au syst&egrave;me. Il est aussi 
+                            possible d'utiliser les API NtQuerySystemInformation 
+                            ou ZWQuerySystemInformation (plus ou moins document&eacute;s). 
+                            Le nombre de cpu se trouve dans la structure SYSTEM_BASIC_INFORMATION. 
+                            Cette structure s'obtient en donnant System_Basic_Information 
+                            (valeur:0) au param&egrave;tre SYSTEM_INFORMATION_CLASS.</p>
+                          <p> Etant non document&eacute;e, il est difficile de 
+                            dire &agrave; quel irql la routine KeSetAffinityThread 
+                            peut &ecirc;tre ex&eacute;cut&eacute;e. Il est donc 
+                            raisonnable de s'imposer l'irql le plus bas (PASSIVE_LEVEL) 
+                            pour assurer son ex&eacute;cution. Ceci dit, il est 
+                            s&ucirc;rement possible de l'ex&eacute;cuter 1 ou 
+                            2 crans plus haut. c'est &agrave; vous de voir... 
+                            ;p<br>
+                            Quoi qu'il en soit, cette API ne peut pas &ecirc;tre 
+                            ex&eacute;cut&eacute; &agrave; tous les niveaux de 
+                            priorit&eacute;. Cela pose donc le probl&egrave;me 
+                            de la r&eacute;cup&eacute;ration des tables idt et 
+                            gdt &agrave; un niveau de priorit&eacute; &eacute;lev&eacute;. 
+                            La derni&egrave;re technique proposera une solution 
+                            &agrave; ce probl&egrave;me.</p>
+                          <p>En regardant la routine KeSetAffinityThread de plus 
+                            pr&egrave;s, nous pouvons voir qu'elle m&egrave;ne 
+                            tout droit au crash dans 2 cas :</p>
+                        </div>
+                        <ol>
+                          <li> 
+                            <div align="justify">Si le mask d'affinit&eacute; 
+                              du process (KPROCESS-&gt;Affinity) ne permet pas 
+                              de valider le processeur demand&eacute;.</div>
+                          </li>
+                          <li> 
+                            <div align="justify"> Si le mask pass&eacute; est 
+                              &eacute;gale &agrave; 0.</div>
+                          </li>
+                        </ol>
+                        <div align="justify"> 
+                          <p> Il faudra donc faire correctement ces v&eacute;rifications 
+                            avant d'utiliser KeSetAffinityThread. <br>
+                            <br>
+                            Cette proc&eacute;dure fonctionne tr&egrave;s bien 
+                            dans la routine d'initialisation d'un driver puisque 
+                            celle-ci est ex&eacute;cut&eacute;e en PASSIVE_LEVEL.</p>
+                          <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p align="center"><font color="#00FFFF" size="5"><a name="methode_3"></a>Kernel 
+                            Mode</font><br>
+                            <font color="#00FFFF">m&eacute;thode 3</font></p>
+                          <p> 
+                          <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                            <tr> 
+                              <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                                  <tr> 
+                                    <td><a href="../../download/passive_level_save_all_idt_gdt.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table></p>
+                          <p align="justify"><font color="#00FFFF" size="4">ALL_LEVEL 
+                            (IRQL=0 &agrave; 31)</font></p>
+                          <p align="justify">Cette derni&egrave;re technique permet 
+                            d'obtenir ce que l'on d&eacute;sire sans d&eacute;pendre 
+                            de l'irql courant. Elle est directement inspir&eacute;e 
+                            de celle utilis&eacute;e par Softice pour soutirer 
+                            les informations dont il a besoin. C'est celle que 
+                            je pr&eacute;f&egrave;re :)</p>
+                          <p align="justify">Dans un syst&egrave;me NT, la couche 
+                            la plus basse se nomme HAL. C'est la couche d'abstraction 
+                            mat&eacute;rielle. Cette couche communique directement 
+                            avec le mat&eacute;riel (hardware). Il n'y a donc 
+                            rien d'&eacute;tonnant &agrave; trouver les routines 
+                            d'initialisation des cpu &agrave; cet endroit :)</p>
+                          <p align="justify">Chaque CPU est d&eacute;finie par 
+                            un objet nomm&eacute; PCR (Processor Control Region). 
+                            C'est dans cette r&eacute;gion que l'on trouve tout 
+                            l'environnement courant du cpu. Et c'est donc dans 
+                            cette r&eacute;gion que l'on trouve les tables IDT 
+                            et GDT propres au cpu. :)</p>
+                          <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#33CC33">
+                            <tr> 
+                              <td> <table border="0" cellpadding="10" cellspacing="0" bgcolor="#000000">
+                                  <tr> 
+                                    <td>lkd&gt; dt _kpcr<br>
+                                      nt!_KPCR<br>
+                                      +0x000 NtTib : _NT_TIB<br>
+                                      +0x01c SelfPcr : Ptr32 _KPCR<br>
+                                      +0x020 Prcb : Ptr32 _KPRCB<br>
+                                      +0x024 Irql : UChar<br>
+                                      +0x028 IRR : Uint4B<br>
+                                      +0x02c IrrActive : Uint4B<br>
+                                      +0x030 IDR : Uint4B<br>
+                                      +0x034 KdVersionBlock : Ptr32 Void<br> <font color="#00FFFF">+0x038 
+                                      IDT : Ptr32 _KIDTENTRY<br>
+                                      +0x03c GDT : Ptr32 _KGDTENTRY</font><br>
+                                      +0x040 TSS : Ptr32 _KTSS<br>
+                                      +0x044 MajorVersion : Uint2B<br>
+                                      +0x046 MinorVersion : Uint2B<br>
+                                      +0x048 SetMember : Uint4B<br>
+                                      +0x04c StallScaleFactor : Uint4B<br>
+                                      +0x050 DebugActive : UChar<br>
+                                      +0x051 Number : UChar<br>
+                                      +0x052 Spare0 : UChar<br>
+                                      +0x053 SecondLevelCacheAssociativity : UChar<br>
+                                      +0x054 VdmAlert : Uint4B<br>
+                                      +0x058 KernelReserved : [14] Uint4B<br>
+                                      +0x090 SecondLevelCacheSize : Uint4B<br>
+                                      +0x094 HalReserved : [16] Uint4B<br>
+                                      +0x0d4 InterruptMode : Uint4B<br>
+                                      +0x0d8 Spare1 : UChar<br>
+                                      +0x0dc KernelReserved2 : [17] Uint4B<br>
+                                      +0x120 PrcbData : _KPRCB</td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table>
+                          <p align="justify">Lorsque les objets PCR sont cr&eacute;&eacute;s, 
+                            ntoskrnl appelle la routine HalInitializeProcessor 
+                            afin d'initialiser chaque cpu et permettre &agrave; 
+                            tout ce beau monde de fonctionner ensemble. Cette 
+                            routine se trouve dans hal.dll. C'est HalInitializeProcessor 
+                            qui a la charge de stocker les pointeurs de tous les 
+                            objets PCR. Pour cela, elle a &agrave; sa disposition 
+                            la table nomm&eacute;e HalpProcessorPCR. Sympa la 
+                            table ! :)<br>
+                            Si nous avons acc&egrave;s &agrave; cette table, nous 
+                            pouvons ais&eacute;ment faire notre r&eacute;colte 
+                            :) <br>
+                            Malheureusement cette table n'est pas export&eacute;e. 
+                            Pour l'identifier clairement il nous faut donc les 
+                            symbols de hal.dll.<br>
+                            Sans les symbols, impossible d'identifier le pointeur 
+                            de la table H<font size="5">a</font>LpP<font size="5">r</font>0cES<font size="5">s</font>0rPcR<font color="#00FFFF"> 
+                            </font><font size="5">! Hein ? Quoi ?</font><br>
+                            <br>
+                            Oulaaaaa..... pas si vite ! Il faudrait peut &ecirc;tre 
+                            voir aussi comment l'on peut interpr&eacute;ter &quot;identifier 
+                            clairement&quot;. Personnellement, j'ai tendance &agrave; 
+                            &ecirc;tre plut&ocirc;t large... :p</p>
+                          <p align="justify"> Commen&ccedil;ons d&eacute;j&agrave; 
+                            par une petite recherche sur notre table HalpProcessorPCR 
+                            :</p>
+                          <table width="92" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#33cc33">
+                            <tr> 
+                              <td><table width="33%%" border="0" align="center" cellpadding="0" cellspacing="4" bgcolor="#000000">
+                                  <tr> 
+                                    <td nowrap>8001907C </td>
+                                    <td nowrap>&nbsp;&nbsp;<font color="#00FFFF">_HalpProcessorPCR</font> 
+                                      dd 20h dup(0) </td>
+                                    <td nowrap>&nbsp;&nbsp;; DATA XREF:<font color="#00FFFF"> 
+                                      HalInitializeProcessor(x,x)</font>+1Dw</td>
+                                  </tr>
+                                  <tr> 
+                                    <td nowrap>&nbsp; </td>
+                                    <td nowrap>&nbsp;</td>
+                                    <td nowrap>&nbsp;&nbsp;; <font color="#00FFFF">HalpResetAllProcessors()</font>:loc_80017F39r</td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table>
+                          <br>
+                          <p align="justify">Cette table a une capacit&eacute; 
+                            de 32 pointeurs d'objet PCR. Ceci illustre tout simplement 
+                            le fait que les syst&egrave;mes NT supportent jusqu'&agrave; 
+                            32 CPU maximum (20h).</p>
+                          <p align="justify">En regardant les infos de droite, 
+                            nous pouvons voir que seulement deux endroits font 
+                            r&eacute;f&eacute;rence &agrave; la table : dans les 
+                            routines HalInitializeProcessor<font color="#00FFFF"> 
+                            </font>et HalpResetAllProcessors.</p>
+                          <p align="justify">La routine HalpResetAllProcessors 
+                            n'est accessible qu'avec les symbols.... Bon, on est 
+                            pas plus avanc&eacute;... Par contre HalInitializeProcessor 
+                            est bel et bien PUBLIC et export&eacute;e par hal.dll. 
+                            C'est mieux d&eacute;j&agrave; :) </p>
+                          <p align="left">Maintenant regardons de plus pr&eacute;s 
+                            cette fameuse routine sous les principaux syst&egrave;mes 
+                            NT :</p>
+                          <table width="92" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#33cc33">
+                            <tr> 
+                              <td><table border="0" cellpadding="5" cellspacing="0" bgcolor="#000000">
+                                  <tr valign="top"> 
+                                    <td colspan="3" nowrap> <div align="center"> 
+                                        <br>
+                                        <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                                          <tr> 
+                                            <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                                          </tr>
+                                        </table>
+                                        <p><font color="#00FFFF">Windows 2000 
+                                          - Sp4</font></p>
+                                        <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                                          <tr> 
+                                            <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                                          </tr>
+                                        </table>
+                                        <br>
+                                      </div></td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>&nbsp;</td>
+                                    <td colspan="2" nowrap>; &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar; 
+                                      S U B R O U T I N E &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;<br>
+                                      ; __stdcall HalInitializeProcessor(x,x)</td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>&nbsp;</td>
+                                    <td nowrap> <p>&nbsp;</p></td>
+                                    <td nowrap>public _HalInitializeProcessor@8<br>
+                                      _HalInitializeProcessor@8 proc near<br> 
+                                      <br>
+                                      arg_0 = byte ptr 4<br>
+                                      arg_4 = dword ptr 8<br> &nbsp; </td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap> 80011FC4&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                      80011FCE<br>
+                                      80011FD3<br>
+                                      80011FD8<br>
+                                      80011FDE<br>
+                                      80011FE5<br>
+                                      80011FEF<br>
+                                      80011FF7<br>
+                                      80011FF9<br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                    <td nowrap> C7 05 30 F0 DF FF FF FF+&nbsp;&nbsp; 
+                                      <br>
+                                      0F B6 44 24 04<br>
+                                      A2 94 F0 DF FF <br>
+                                      8B 0D 1C F0 DF FF <br> <font color="#33CC33">89 
+                                      0C 85 </font><font color="#00FFFF">C8 7F 
+                                      01 80</font> <br>
+                                      C7 05 4C F0 DF FF 64 00+ <br>
+                                      F0 0F AB 05 20 9D 01 80 <br>
+                                      8B D0 <br>
+                                      A1 58 8B 01 80 <br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                    <td nowrap> mov dword ptr ds:0FFDFF030h, 0FFFFFFFFh<br>
+                                      movzx eax, [esp+arg_0]<br>
+                                      mov ds:0FFDFF094h, al<br>
+                                      mov ecx, ds:0FFDFF01Ch<br> <font color="#33CC33">mov 
+                                      ds:</font><font color="#00FFFF">_HalpProcessorPCR</font><font color="#33CC33">[eax*4], 
+                                      ecx</font><br>
+                                      mov dword ptr ds:0FFDFF04Ch, 64h<br>
+                                      lock bts ds:_HalpActiveProcessors, eax<br>
+                                      mov edx, eax<br>
+                                      mov eax, ds:_HalpDefaultInterruptAffinity<br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td colspan="3" nowrap> <div align="center"> 
+                                        <br>
+                                        <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                                          <tr> 
+                                            <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                                          </tr>
+                                        </table>
+                                        <p><font color="#00FFFF">Windows XP - 
+                                          Sp2</font></p>
+                                        <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                                          <tr> 
+                                            <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                                          </tr>
+                                        </table>
+                                        <br>
+                                      </div></td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>&nbsp;</td>
+                                    <td colspan="2" nowrap>; &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar; 
+                                      S U B R O U T I N E &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;<br>
+                                      ; __stdcall HalInitializeProcessor(x,x)</td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>&nbsp;</td>
+                                    <td nowrap>&nbsp; </td>
+                                    <td nowrap>public _HalInitializeProcessor@8<br>
+                                      _HalInitializeProcessor@8 proc near<br> 
+                                      <br>
+                                      arg_0 = byte ptr 4<br>
+                                      arg_4 = dword ptr 8<br> &nbsp; </td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>80011760<br>
+                                      8001176B<br>
+                                      80011770<br>
+                                      80011776<br>
+                                      8001177D <br>
+                                      80011784 <br>
+                                      8001178F<br>
+                                      80011797<br>
+                                      80011799<br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                    <td nowrap>64 C7 05 30 00 00 00 FF+ <br>
+                                      0F B6 44 24 04 <br>
+                                      64 A2 94 00 00 00 <br>
+                                      64 8B 0D 1C 00 00 00 <br> <font color="#33CC33">89 
+                                      0C 85</font> <font color="#00FFFF">7C 90 
+                                      01 80 </font><br>
+                                      64 C7 05 4C 00 00 00 64+ <br>
+                                      F0 0F AB 05 00 32 02 80 <br>
+                                      8B D0 <br>
+                                      A1 6C DA 01 80 <br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                    <td nowrap>mov large dword ptr fs:30h, 0FFFFFFFFh<br>
+                                      movzx eax, [esp+arg_0]<br>
+                                      mov large fs:94h, al<br>
+                                      mov ecx, large fs:1Ch<br> <font color="#33CC33">mov 
+                                      ds:</font><font color="#00FFFF">_HalpProcessorPCR</font><font color="#33CC33">[eax*4], 
+                                      ecx</font><br>
+                                      mov large dword ptr fs:4Ch, 64h<br>
+                                      lock bts ds:_HalpActiveProcessors, eax<br>
+                                      mov edx, eax<br>
+                                      mov eax, ds:_HalpDefaultInterruptAffinity<br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td colspan="3" nowrap> <br> <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                                        <tr> 
+                                          <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                                        </tr>
+                                      </table>
+                                      <p align="center"><font color="#00FFFF">Windows 
+                                        Server 2003 Entreprise SP0</font></p>
+                                      <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                                        <tr> 
+                                          <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                                        </tr>
+                                      </table>
+                                      <br> &nbsp;</td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>&nbsp;</td>
+                                    <td colspan="2" nowrap>; &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar; 
+                                      S U B R O U T I N E &brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;&brvbar;<br>
+                                      ; __stdcall HalInitializeProcessor(x,x)</td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>&nbsp;</td>
+                                    <td nowrap>&nbsp;</td>
+                                    <td nowrap>public _HalInitializeProcessor@8<br>
+                                      _HalInitializeProcessor@8 proc near<br> 
+                                      <br>
+                                      arg_0= byte ptr 4<br>
+                                      arg_4= dword ptr 8<br> &nbsp; </td>
+                                  </tr>
+                                  <tr valign="top"> 
+                                    <td nowrap>80012F10 <br>
+                                      80012F1B <br>
+                                      80012F20 <br>
+                                      80012F26 <br>
+                                      80012F2D <br>
+                                      80012F34<br>
+                                      80012F3F <br>
+                                      80012F47<br>
+                                      80012F49 <br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                    <td nowrap>64 C7 05 30 00 00 00 FF+ <br>
+                                      0F B6 44 24 04<br>
+                                      64 A2 94 00 00 00 <br>
+                                      64 8B 0D 1C 00 00 00 <br> <font color="#33CC33">89 
+                                      0C 85 </font><font color="#00FFFF">80 A0 
+                                      01 80 </font><br>
+                                      64 C7 05 4C 00 00 00 64+<br>
+                                      F0 0F AB 05 20 4D 02 80 <br>
+                                      8B D0 <br>
+                                      A1 BC EC 01 80 <br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                    <td nowrap>mov large dword ptr fs:30h, 0FFFFFFFFh<br>
+                                      movzx eax, [esp+arg_0]<br>
+                                      mov large fs:94h, al<br>
+                                      mov ecx, large fs:1Ch<br> <font color="#33CC33">mov 
+                                      ds:</font><font color="#00FFFF">_HalpProcessorPCR</font><font color="#33CC33">[eax*4], 
+                                      ecx</font><br>
+                                      mov large dword ptr fs:4Ch, 64h<br>
+                                      lock bts ds:_HalpActiveProcessors, eax<br>
+                                      mov edx, eax<br>
+                                      mov eax, ds:_HalpDefaultInterruptAffinity<br>
+                                      .<br>
+                                      .<br>
+                                      .</td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table>
+                          <p align="justify">Nous pouvons voir quelques diff&eacute;rences 
+                            entre win2k et XP/Server 2003. Les adresses du PCR 
+                            courant sont en brut pour win2k. Alors que sous XP 
+                            et Server 2003, le PCR courant est manipul&eacute; 
+                            en passant par le segment fs.</p>
+                          <p align="justify">Mais il faut surtout relever que 
+                            l'opcode utilis&eacute; pour remplir la table garde 
+                            la m&ecirc;me signature pour les trois syst&egrave;mes.<br>
+                            signature : <font color="#33CC33">0x89,0x0C,0x85</font> 
+                            + <font color="#00FFFF">p_HalpProcessorPCR</font> 
+                          </p>
+                          <p align="justify">Voil&agrave; :) Tout est l&agrave; 
+                            !</p>
+                          <p align="justify">Il n'y a plus qu'&agrave; faire ses 
+                            courses tranquillement. Pas besoin d'API, aucune d&eacute;pendance 
+                            &agrave; l'irql courant, rapide et ouverte... </p>
+                          <p align="justify">Elle est bien sur limit&eacute;e 
+                            aux syst&egrave;mes &eacute;tudi&eacute;s pour ce 
+                            texte et demande donc quelques modifications pour 
+                            pouvoir fonctionner sur d'autres versions de windows. 
+                            Car depuis Windows Server 2003 SP1 les signatures 
+                            changent.</p>
+                          <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p align="center"><font color="#00FFFF" size="5"><a name="methode_4"></a>Kernel 
+                            Mode</font><br>
+                            <font color="#00FFFF">m&eacute;thode 4 (g&eacute;n&eacute;rique)</font></p>
+                          <p> 
+                          <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                            <tr> 
+                              <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                                  <tr> 
+                                    <td><a href="../../download/scan_memory_pcr.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table></p>
+                          <p><font color="#00FFFF" size="4">ALL_LEVEL (IRQL=0 
+                            &agrave; 31)</font></p>
+                          <p>Cette m&eacute;thode n'utilise pas d'API et pas de 
+                            structure en brut. Elle travaille sur une gestion 
+                            du scan de la m&eacute;moire qui &eacute;vite les 
+                            fautes de pages. Elle n'est donc pas d&eacute;pendante 
+                            de l'IRQL courant. </p>
+                          <p>C'est pour l'instant la m&eacute;thode la plus g&eacute;n&eacute;rique 
+                            que j'ai pu trouver. Le principe est simple : scanner 
+                            la m&eacute;moire du noyau &agrave; la recherche des 
+                            KPCR.</p>
+                          <p>Pour cela, quelques r&egrave;gles simples sont utilis&eacute;es 
+                            pour retrouver sans ambigu&iuml;t&eacute; tous les 
+                            KPCR : </p>
+                        </div>
+                        <ul>
+                          <li> 
+                            <div align="justify"> Les KPCR sont toujours align&eacute;s 
+                              sur une page m&eacute;moire. Ceci permet un scan 
+                              quasi instantan&eacute; de toute la m&eacute;moire 
+                              du noyau.</div>
+                          </li>
+                          <li> 
+                            <div align="justify"> Chaque KPCR a un pointeur vers 
+                              lui-m&ecirc;me dans son champ SelfPcr.</div>
+                          </li>
+                          <li> 
+                            <div align="justify"> Chaque KPCR donne (dans son 
+                              champ GDT) un pointeur vers la table GDT propre 
+                              au processeur qu'il repr&eacute;sente. Le s&eacute;lecteur 
+                              de segment 0x30 dans la GDT d&eacute;finie le segment 
+                              FS qui n'est rien d'autre que le KPCR lui-m&ecirc;me. 
+                              En d'autres mots, en mode kernel, le descripteur 
+                              de segment du s&eacute;lecteur de segment 0x30 a 
+                              comme base m&eacute;moire le KPCR du processeur 
+                              repr&eacute;sent&eacute;.</div>
+                          </li>
+                        </ul>
+                        <div align="justify"> 
+                          <p>Cette m&eacute;thode est vraiment g&eacute;n&eacute;rique 
+                            car, contrairement &agrave; d&#8217;autres m&eacute;thodes, 
+                            les offsets des champs de la structure KPCR ne sont 
+                            pas utilis&eacute;s en brut. Ils sont d&eacute;duits 
+                            en m&eacute;moire. Tout &ccedil;a en fait une m&eacute;thode 
+                            que je pense assez efficace. <br>
+                          </p>
+                          <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#00FFFF">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p align="justify">That's all folks ! </p>
+                        </div>
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                          <tr> 
+                            <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                                <tr> 
+                                  <td nowrap><font color="#339999" size="2" face="Fixedsys">Lionel 
+                                    d'Hauenens</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        &nbsp;</td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="idt_gdt_multi_cpu.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+</td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

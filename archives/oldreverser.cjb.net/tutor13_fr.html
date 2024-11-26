@@ -1,0 +1,141 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="ACiD BuRN">
+   <meta name="GENERATOR" content="Mozilla/4.6 [fr] (Win98; I) [Netscape]">
+   <title>Tutor #13 by Acid Burn</title>
+</head>
+<BODY text="#FF0000" bgcolor="#000000">
+<center>Coment cracker ORGANIZE! Your collection apps v5.18 by
+<br><img SRC="burn.jpg" ></center>
+
+<center><pre>Translation by: Secret Agent James Bond 007</pre></center>
+
+<pre></pre>
+
+<pre>
+Salut! =)
+Aujourd'hui je vais vous apprendre comment cracker des prog VB avec 3 negs
+et un timelimit!!
+Je suis s&ucirc;r que vous allez dire "putain c'est dur!"
+hehehe !! j'&eacute;tais en train de tracer avec SI quand j'ai eu une
+id&eacute;e...
+Je vais vous expliquer en quoi &ccedil;&agrave; consiste...
+
+
+1) Tools required : - Smart-check 6
+                    - Hex editor
+                    - un cerveau =)
+
+
+
+2) Comment cracker les nags !!
+
+
+Bon pour cela on utilisera SC !
+Chargez Oyc avec SC et ex&eacute;cutez le. Clicker sur le nag, attendez
+que le bouton OK soit activ&eacute; et ensuite quittez cette app...
+Dans SC double clickez sur : frmOYCMain_load et regardez jusqu'&agrave;
+ce que vous trouviez le ".show" ... dans SC vous verrez:
+</pre>
+
+<center><img SRC="show.jpg" ></center>
+
+<pre>
+
+Donc, dans ce cas la chose importante est frmstart.show
+A droite de SC vous voyez l'offset o&ugrave; il est situ&eacute; et le fichier.
+Pour ce nag, nous voyons qu'il est dans OYC.EXE @ 000FDA4D
+Ok!
+Je suppose que vous pensez que c'est ce que je voulais vous montrer !!!
+Maintenant j'utilise mon cerveau pour virer le nag, parce que je sais
+que le nag peut &ecirc;tre appel&eacute; par un call, donc je pense pourquoi n'irions
+nous pas &agrave; cet offset et regarder le premier call pr&egrave;s de l&agrave;?
+Prenez votre HEXEDITEUR et allez &agrave; l'offset 000FDA4D.
+Ok, maintenant vous savez que ce call commence avec : E8h et sa
+longueur est de 5 octets...
+Apr&egrave;s avoir fait une recherche de ce E8h vous trouvez:
+E8986FF0FF :)
+Remplacez le par des NOP (90)... ce qui vous donne:
+9090909090
+Sauvez (faites un backup on ne sait jamais) et r&eacute;ex&eacute;cutez le programme...
+Comme par magie le premier Nag a &eacute;t&eacute; vir&eacute;!!!!!!!
+Bien!! hehe
+Maintenant on va passer au suivant!
+Vous voyez sur la figure ci-dessus qu'il y a un autre ".show"
+Proc&eacute;dez de la m&ecirc;me fa&ccedil;on et vous virerez ainsi le timer et le nag!!
+Je ne vais pas vous montrer la valeur &agrave; remplacer parce que c'est
+exactement la m&ecirc;me que dans le premier nag. Et puis c'est bien
+d'avoir des ex. d'application :)
+
+Ok... bon maintenant le dernier nag mais ce sera moins facile que les
+autres...
+Dans SC, double click sur : "mnuFExit_click" (vous le trouverez
+&agrave; la fin du rapport de SC)
+Ensuite double click sur "frmOYCMain_Unload" et descendez jusqu'&agrave;
+ce que vous voyez: "frmEnd.Show". Regardez &agrave; droite et prenez
+l'offset : 1001A1
+Ok, maintenant vous vous dites, on va faire pareil qu'avec les deux autres,
+et &ccedil;a va &ecirc;tre ok!
+Eh bien non! Ca ne marchera pas!
+Ok... j'ai r&eacute;fl&eacute;chi un peu et je me suis rem&eacute;mor&eacute; que vous pouvez
+chercher un jump pour virer le nag, et dans les apps VB, je jump
+toujours comme &ccedil;&agrave;: 0F85 or 0F84 =)
+Donc utilisez votre hex&eacute;diteur et allez &agrave; l'offset : 1001A1.
+Faites une recherche de "OF" vers le haut. Et nous trouvons:
+0F849A000000 ... remplacez le par 0F859A000000 (je => jne) et sauvegardez!
+
+Maintenant, ex&eacute;cutez &agrave; nouveau!!
+Plus de nag! plus de timelimit!
+Parfait!
+
+
+3) Notes:
+
+J'ai &eacute;cris ce tut pour montrer comment on peut patcher les apps VB et que
+parfois un cerveau est plus utile que le tra&ccedil;age avec SI (j'ai bien dit : parfois).
+Donc, cette fa&ccedil;on de cracker les nags VB ne marche pas &agrave; tout les coups, mais j'ai
+r&eacute;ussi &agrave; cracker plusieurs apps VB comme &ccedil;&agrave; donc faites pas chier! :)
+Si vous voyez que l'offset est dans un DLL genre MSVBVM50 ou MSVBVM60, faites
+juste une copie et placez le dans le r&eacute;pertoire du programme et patchez le.
+De cette mani&egrave;re, le prog utilisera la DLL qui est dans son r&eacute;pertoire et pas
+celle du WINDOWS\SYSTEM.
+Vous n'aurez comme &ccedil;&agrave; pas de probl&egrave;me avec d'autres applications qui utilisent
+les DLL... !!!
+
+
+J'esp&egrave;re que ce tutorial n'&eacute;tait pas trop chiant et d&eacute;sol&eacute; pour mon mauvais
+anglais...
+Si vous avez des questions:
+mail :&nbsp;ACiD_BuRN@nema.com ou acid2600@hotmail.com
+
+Si vous crackez une app un jour avec cette m&eacute;thode, dites-le moi! :)</pre>
+
+<pre>
+
+
+
+
+Greetings to :&nbsp;
+
+
+ALl ReFLeXZ TeaM , All ECLiPSE TeaM , ALL PWA team , ALL Toxic TeaM and all CrossOver
+Team coz i am member in this cool groups !!
+
+
+Also greets to : tKC , BuLLeT , Duelist , Eternal Bliss , HarvestR,
+Parker, Agora , duelist , R!SC , Lucifer48 , tC&nbsp; , Pozeidon ...&nbsp;
+if i forget to put ur name here , sorry coz too many people to greets !!
+and Maybe you can found me on IRC on Effnet under this channel : #c.i.a , #cracking4newbies ...
+
+
+                                ACiD BuRN
+
+
+
+EMAIL DU TRADUCTEUR: <a href="mailto:snipernet_1@yahoo.com?subject=Traduction tut #13 d'ACiD BuRN">snipernet_1@yahoo.com</a>
+</pre>
+
+</BODY>
+</html>

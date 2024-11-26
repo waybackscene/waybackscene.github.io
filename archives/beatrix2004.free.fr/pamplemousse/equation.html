@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+<head>
+<title>Pamplemousse - Analyse de BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="titre"></div>
+<div id="menu">
+	<ul>
+	<li> <a href="intro.html">1. Intro</a></li>
+	<li><a href="schema.html">2. Schéma</a></li>
+	<li><a href="tricks.html">3. Tricks du keygen</a></li>
+	<li><a href="equation.html">4. Résoudre l'équation</a></li>
+	<li><a href="keygen.html">5. Créer le keygen</a></li>
+	<li><a href="greetz.html">6. Greetz</a></li>
+	</ul>
+</div>
+
+<div id="contenu">
+<h1> 4.RESOUDRE L'EQUATION.</h1>
+<p>La situation est complexe : Le serial est un nombre composite de la forme num1-num2. Les deux valeurs num1 et num2 sont testées indépendamment l'une de l'autre. La première , num1, nécessite un sha-1 sur le NOM. La seconde, num2, n'a besoin que du NOM lui-même. </p>
+<h2> 4.1 Fonction de hashage : SHA-1.</h2>
+<p> A la base, la cryptographie fût inventée afin de "crypter" des messages pour qu'il ne puissent être lus que par des personnes abilitées. Dans le monde des protections logicielles, l'une des techniques la plus utilisée est celle des fonctions de hashage.</p>
+<div class="definition"><strong>Fonction de hashage :</strong>
+C'est une fonction qui prend comme entrée une chaine d'octets quelconque (chaine de chars, fichier, nom etc...) pour générer une chaine d'octets d'une longueur fixe définie à l'avance. ( f(message) = hash ) Cette fonction est parfois appelée "message digest" et la chaine produite est appelée "hash" ou "digest". 
+</div>
+<p>
+La fonction de hashage est choisie de façon à ne pas être inversible, ou à défaut, à être difficilement inversible. Autrement dit, si nous disposons d'un hash h, il ne doit pas être possible dans un temps raisonnable de trouver un message m tel que f(m) =h. Cependant, comme elle peut prend en entrée un nombre infini de chaines et qu'elle propose en sortie un nombre fini de chaines, elle est forcément non injective, c'est à dire qu'il existe plusieurs messages qui ont le même hash.( f(m) = f(m') = h ) La fonction doit donc être "resistante" à ce qu'on appelle des <strong>collisions</strong>, c'est à dire qu'il doit être difficile de trouver deux messages dans un temps raisonnable qui ont le même hash.</p>
+<p>Dans notre situation, nous sommes confrontés à l'utilisation d'une des fonctions de hashage les plus courantes : le SHA-1. On peut détecter sa présence dans le binaire en utilisant PEID et son plugin "Krypto ANALyser" comme vous pouvez le voir ci-dessous.</p>
+<h6><img class ="noborder" src = "images/KANAL1.jpg" alt="" /></h6>
+<h6><img class ="noborder" src = "images/KANAL2.jpg" alt="" /></h6>
+
+
+
+
+
+<p>Conçu par le NSA, SHA-1 (Secure Hash Algorithm) est une fonction de hashage de 160 bits (5 DWORDs, soit 20 octets). Elle donne donc pour chaque message une chaine de 20 octets. A ce jour, SHA-1 n'a pas de failles connues et se trouve donc être l'une des fonctions de hashage les plus sûres.</p>
+<p> Pamplemousse utilise le SHA-1 en prenant comme entrée le NOM saisi. Le digest obtenu est alors utilisé dans l'équation pour tester la validité du serial. Ceci signifie qu'au moment de l'implementation du keygen, il y aura une difficulté supplémentaire puisque nous serons forcés de calculer le SHA-1 du NOM. Par contre, pour ce qui est de la compréhension de l'algorithme et de son reversing théorique, les fonctions de hashage ne posent en soi aucune difficulté.</p>
+
+<h2> 4.2 Déterminer Num1 : Etude théorique.</h2>
+<p> La routine qui vérifie la valeur num1 est bien trop longue pour apparaître désassemblée ici. Voici néanmoins un aperçu du début de celle-ci (vous remarquerez la phase de création des bignums) :</p>
+<h6><img class ="noborder" src = "images/num12.jpg" alt="" /></h6>
+
+<p> Commençons donc le travail pour calculer la première partie du serial.A toute fin utile,je rappelle l'équation qu'il faut résoudre. Si nous appelons X la valeur de Num1, nous obtenons donc l'équation (1):</p>
+<div class="definition">
+<h6><img class ="noborder" src = "images/membre1.gif" alt="" /></h6>
+<h6><img class ="noborder" src = "images/equal.gif" alt="" /></h6>
+<h6><img class ="noborder" src = "images/membre2.gif" alt="" /></h6>
+</div>
+<p> Les valeurs a,b,c,d,e,f,g sont fixées dans le binaire et valent (en décimal):</p>
+<pre>
+a = 12804348580793685654912532613241037593020279611257382400876269601574457213193643600884093533047568949932
+7039615143671236821225 
+b = 10780621683367775385651185060492079067357008334308685202528017228752081818347567422628680014295659856641 
+6789699619346519131157489 
+c = 126374750002268624037501633220404518782674114480658933505173173047 
+d = 1248310966923498661164204883260437277137373139593887776277032788073 
+e = 3208758980294089871636889325639601519765013105042818745876534106523 
+f = 4109509431769244994089516623957980949881759417131294476885470163057 
+g = 65793 
+</pre>
+
+<p> Pour résoudre une telle équation, nous devons décomposer le travail en trois étapes. Par un simple jeu de substitution, nous pouvons scinder cette équation en trois équations simples : une équation linéaire de degré 1, un logarithme discret et une racine nième. Voici comment procéder :</p>
+<h2> 4.2.1.EQUATION LINEAIRE</h2>
+
+<p> Effectuons une simple substitution :</p>
+<pre>
+<img class ="noborder" src = "images/subst.gif" alt="" />
+</pre>
+<p> L'équation (1) devient alors une simple équation linéaire de degré 1 modulaire de la forme :</p>
+<pre>
+<img class ="noborder" src = "images/eq_lin.gif" alt="" />
+</pre>
+<p> On la résoud aisément en calculant des inverses et des opposés (on ne s'inquiète pas de l'existence de telles valeurs, on se doute a priori qu'elles existent :) ) ce qui nous donne comme solution :</p>
+<pre>
+<img class ="noborder" src = "images/soluce.gif" alt="" />
+</pre>
+<h2> 4.2.2.PROBLEME DU LOGARITHME DISCRET (DLP)</h2>
+<p> Maintenant que nous connaissons X, nous devons trouver Y dans l'équation :</p>
+<pre>
+<img class ="noborder" src = "images/log_disc.gif" alt="" />
+</pre>
+<p> Trouver la valeur de Y connaissant d dans l'ensemble Z/eZ* (e étant un nombre premier) s'appelle un <strong>problème de logarithme discret</strong> (DLP pour les anglophones). Si le modulo <strong>e</strong> est très grand (2000 bits voire 4000 bits, c'est à dire 125 DWORDs !), le problème devient complètement insoluble dans l'état de nos connaissances actuelles.(Ce principe fût utilisé pour la première fois dans le protocole Diffie-Hellmann). En ce qui nous concerne, le modulo <strong>e</strong> n'est pas très grand puisqu'il n'a que 221 bits.</p>
+<pre>
+e = 3208758980294089871636889325639601519765013105042818745876534106523
+</pre>
+<p> Je signale au passage que <strong>e</strong> est bien un nombre premier, il suffit de tester sa primalité à l'aide d'un tool de calcul, par exemple, la BigCalto de Bigbang, que vous pouvez obtenir moyennant un petit clic <a href="BigCalto.exe">ICI</a>.</p>
+<p> Le seul moyen d'obtenir ce Y reste donc de bruteforcer en testant les valeurs de Y les unes après les autres. Néanmoins, une étude exhaustive naïve risque de prendre des semaines ! Heureusement pour nous, il existe des algorithmes qui permettent de bruteforcer un logarithme discret de façon intelligente et rapide. (si <strong>e</strong> est petit bien sûr !!). Je vais utiliser une implémentation proposée par MIRACL lui-même de la méthode de <strong>pohlig-Hellman</strong>.</p>
+<h3> Méthode de Pohlig-Hellman</h3>
+<p> Cette méthode s'avère être rapide dans le cas particulier où l'ordre du groupe Z/eZ* se décompose en facteurs premiers de petite taille. Ces nombres sont appelés nombres friables (smooth numbers). (On dit qu'un nombre est y-friable si ses facteurs sont inférieurs à y).</p> 
+<p> La routine proposée nécessite donc au préalable une décomposition en facteurs premiers de e-1 (ordre de Z/eZ*). Dans notre cas, la décomposition nous amène à ceci :</p>
+<pre>
+e-1 = 3208758980294089871636889325639601519765013105042818745876534106522
+e-1 = 2 × 5751247 × 81514567 × 273749507 × 2255442769 × 85717369999 × 254289208463 × 254289209159
+</pre>
+<p>Les facteurs premiers obtenus sont de petite taille et tous distincts. La routine calcule ensuite les xi = x mod [pi] en utilisant la <strong>méthode Rho de Pollard</strong> sur les groupes Z/piZ*. Pour finir, elle calcule x en utilisant le théorème des restes chinois (CRT) sur les xi/pi (implémentée grâce à l'agorithme de Gauss). Pour les détails techniques, je vous renvoie au HoAC (Handbook of Applied Cryptography by A. Menezes, P. van Oorschot and S. Vanstone. - Chapitre 3 - 3.6.4 - page 107 ).</p>
+
+
+
+<h2> 4.2.3.Racine nième modulaire : protocole à clé publique RSA.</h2>
+<p> Maintenant que nous disposons de Y, il ne nous reste plus qu'à trouver notre fameux Num1, qui sera représenté par Z dans l'équation :</p>
+<pre>
+<img class ="noborder" src = "images/racine_n.gif" alt="" />
+</pre>
+<p>avec :</p>
+<pre>
+f = 4109509431769244994089516623957980949881759417131294476885470163057
+g = 65793
+</pre>
+<p> De prime abord, l'idée la plus simple qui vienne à l'esprit est de trouver n, inverse de 65793 ce qui nous permet de trouver Z tout de suite :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq1.gif" alt="" />
+donc
+<img class ="noborder" src = "images/eq2.gif" alt="" />
+donc 
+<img class ="noborder" src = "images/eq3.gif" alt="" />
+</pre>
+
+<p> Nous sommes en fait dans une situation très connue puisque nous sommes en présence du protocole à clés publiques RSA. Heureusement pour nous, le RSA est inviolable si f est très grand (2048 bits par exemple soit 256 chiffres) or ici, f ne fait que 222 bits soit 28 chiffres.</p>
+
+<h3> Attaquer un RSA 222 :</h3>
+<p> Voici donc comment résoudre un problème type RSA, c'est à dire comment trouver Z dans l'équation :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq1.gif" alt="" />
+</pre>
+
+
+<p> L'idée de départ est donc de trouver n et t tels que :</p>
+
+<pre>
+n x 65793 = 1 modulo t
+</pre>
+
+
+<p> Dans ce cas, nous avons presque notre Z :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq2.gif" alt="" />
+donc<img class ="noborder" src = "images/eq4.gif" alt="" />
+donc<img class ="noborder" src = "images/eq5.gif" alt="" />
+donc<img class ="noborder" src = "images/eq6.gif" alt="" />
+</pre>
+
+
+<p> Si nous voulons Z, nous devons nous débarrasser du Z à la puissance t, c'est à dire que nous devons avoir une condition sur t :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq7.gif" alt="" /> (*)
+</pre>
+
+
+<h4> Déterminer t : factoriser f</h4>
+<p>L'équation précédente ressemble fort à celle annoncée par le petit théorème de Fermat. Malheureusement, ce dernier ne nous propose que ceci :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq8.gif" alt="" /> pour p premier et pgcd(x,p)=1
+</pre>
+
+
+<p> Or,ici, f n'est pas premier (test de primalité avec BigCalto). En réalité, on peut se sortir de ce mauvais pas en factorisant f. C'est là que l'idée du RSA est géniale : Si f est trop grand, la factorisation ne pourra pas se faire dans un temps humainement raisonnable. Pour notre f (222 bits), j'ai utilisé PARI/GP et il m'a fallu une heure de bruteforce pour trouver le résultat suivant :</p>
+<pre>
+f = 4109509431769244994089516623957980949881759417131294476885470163057
+f = 1964194606471413210463812049765307 x 2092210933799371772034926685453251
+f = p1 x p2
+</pre>
+ 
+<p> A partir de là, tout devient clair, l'équation (*) implique :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq9.gif" alt="" />
+et
+<img class ="noborder" src = "images/eq10.gif" alt="" />
+</pre>
+
+
+<p> Or , d'après le petit théorème de Fermat, l'ordre de tout nombre de Z/p1Z et Z/p2Z et respectivement p1-1 et p2-1 :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq11.gif" alt="" />
+<img class ="noborder" src = "images/eq12.gif" alt="" />
+</pre>
+
+
+<p> donc, p1-1 et p2-1 divisent t. Nous n'avons alors que l'embarras du choix pour t. Prenons la plus petit valeur possible, soit le ppcm(p1-1,p2-2). En utilisant <a href="http://wims.unice.fr/wims/en_tool~algebra~factor.en.phtml">FACTORIS</a>, on obtient :</p>
+<pre>
+p1-1 = 196419460647141321046381204976530<strong>6</strong>
+p2-1=  209221093379937177203492668545325<strong>0</strong>
+t = ppcm (p1-1,p2-1) = 2054754715884622497044758311978988446738109573173155989073367472250
+</pre>
+<h4> Déterminer n</h4>
+<p> Il ne nous reste plus qu'à trouver n dans l'équation :</p>
+
+<pre>
+n x 65793 = 1 modulo t
+</pre>
+
+<p> Il suffit donc de trouver (L'existence est facile à déterminer puisqu'il est facile de voir que pgcd(65793,t)=1) l'inverse de 65793 modulo t. . On exhibe cette valeur grâce à la BigCalto :</p>
+<pre>
+inv = 1938701814751868903212309238562151988937449697899016678578381173907
+</pre>
+
+<h4>Calculer Z</h4>
+<p> Pour finir :</p>
+
+<pre>
+<img class ="noborder" src = "images/eq13.gif" alt="" />
+</pre>
+<p> Si nous prenons comme nom <strong>BeatriX</strong>, la valeur pour Z (i.e num1) sera :</p>
+
+<pre>
+Z = 2744153565088908422105028384264788029708588008084322414280384448738
+</pre>
+<p> Notre serial est donc de la forme 2744153565088908422105028384264788029708588008084322414280384448738-num2.</p>
+
+<h2> 4.3. Calculer Num2 </h2>
+<p> Le binaire teste aussi la valeur num2. On peut voir le début de la routine en 401378 :</p>
+<pre>
+unpacked:00401378 loc_401378:                         
+unpacked:00401378             mov     ecx, ds:dword_414B40
+unpacked:0040137E             movsx   edx, al
+unpacked:00401381             push    ecx
+unpacked:00401382             push    edx
+unpacked:00401383             push    ecx
+unpacked:00401384             call    _premult
+unpacked:00401389             mov     al, [edi+1]
+unpacked:0040138C             add     esp, 0Ch
+unpacked:0040138F             inc     edi
+unpacked:00401390             test    al, al
+unpacked:00401392             jnz     short loc_401378
+</pre>
+<p> Le NOM est donc récupéré lettre par lettre et les valeurs ascii hexa de celles-ci sont multipliées entre elles. Par exemple, pour BeatriX, on obtient le calcul suivant :</p>
+<pre>
+num2 (base 16) = 42h x 65h x 61h x 74h x 72h x 69h x 58h = 47DB844F3D80h
+num2 (base 9)  = 340662740253330
+</pre>
+<p> Le binaire fait ce travail en base 9, le SERIAL pour BeatriX sera donc :</p>
+
+
+<div class="definition">
+<strong>2744153565088908422105028384264788029708588008084322414280384448738-340662740253330</strong>
+</div>
+<div class="page_suivante">
+<a href="keygen.html"><img class ="noborder" src = "images/hand.jpg" alt="Page suivante" title="Page suivante" /></a>
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+
+</div>
+</body>
+</html>

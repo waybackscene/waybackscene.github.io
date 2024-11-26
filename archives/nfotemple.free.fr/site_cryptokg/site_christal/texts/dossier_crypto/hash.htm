@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial"><BR>
+One-way Hash Function</FONT></B></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Une fonction one-way hash est une fonction math&eacute;matique qui utilise un texte
+	de longueur variable et le converti en une s&eacute;quence binaire de taille fix&eacute;e. Une telle s&eacute;quence
+	est difficile a reverser, c'est &agrave; dire retrouver le texte qui a &quot;hash&eacute;&quot; une s&eacute;quence
+	pr&eacute;cise (d'ou le nom </FONT><B><FONT SIZE="2" FACE="Arial">one-way</FONT></B><FONT SIZE="2" FACE="Arial">.)
+	Une bonne hash function doit faire en sorte qu'il est extr&egrave;mement rare de pouvoir trouver deux textes qui
+	puissent produire une m&ecirc;me valeur de hash. Tous les algorithmes de hash r&eacute;cents produisent des valeurs
+	de hash de 128 bits et plus. Le plus petit changement dans le texte de d&eacute;part va modifier radicalement le
+	hash. Cela s'appelle un </FONT><B><FONT SIZE="2" FACE="Arial">avalanche effect</FONT></B><FONT SIZE="2" FACE="Arial">.
+	Comme il est infaisable de g&eacute;n&eacute;rer un texte qui donnera un hash particulier ou de trouver deux documents
+	qui donneraient un hash identique, les hash des documents peuvent servir comme &eacute;quivalent cryptographique.
+	En produisant une signature digitale pour un document, il n'est plus utile de l'encrypter en totalit&eacute; avec
+	une cl&eacute; priv&eacute;e (ce qui pourrait &ecirc;tre extr&egrave;mement long).</FONT></P>
+
+	<P><B><FONT COLOR="maroon" FACE="Arial">Hash Algorithms</FONT></B><FONT COLOR="maroon" FACE="Arial"> </FONT><FONT
+	SIZE="2" FACE="Arial">Le Microsoft cryptographic providers supporte trois algorithmes hash: MD4, MD5 et SHA.</FONT></P>
+
+	<P><B><U><FONT SIZE="2" FACE="Arial">MD4 &amp; MD5</FONT></U></B><FONT SIZE="2" FACE="Arial"> MD4 et MD5 furent
+	invent&eacute; par </FONT><A HREF="md5.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/md5.htm"><FONT SIZE="2" FACE="Arial">Ron Rivest</FONT></A><FONT SIZE="2" FACE="Arial">.
+	Les deux algorithmes produisent des hashs de 128 bits. MD5 est une version &eacute;volu&eacute;e de MD4</FONT></P>
+
+	<P><FONT SIZE="2" FACE="Arial">Il est cependant possible de trouver le text d'origine, si celui ci ne comprend
+	que quelques caract&egrave;res .</FONT><A HREF="MD5.exe" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/programmes/MD5.exe"><FONT SIZE="2" FACE="Arial">MD5 hasher</FONT></A><FONT
+	SIZE="2" FACE="Arial"> permet aussi bien de g&eacute;n&eacute;rer un hash &agrave; partir d'un texte que d'en retrouver
+	le texte d'origine si celui ci est compos&eacute; uniquement de chiffres allant de 0 &agrave; 2.576.980.377, ou
+	de caract&egrave;res alpha-num&eacute;riques ne d&eacute;passant pas 8 bits. Au del&agrave;, le temps de recherche
+	devient proprement pharaonique!</FONT></P>
+
+	<P><B><U><FONT SIZE="2" FACE="Arial">SHA</FONT></U></B><FONT SIZE="2" FACE="Arial"> SHA veut dire Secure Hash Algorithm.
+	Il fut con&ccedil;u par NIST et NSA. SHA produit des hash de 160 bits, pus long que MD4 et MD5. SHA est g&eacute;n&eacute;ralement
+	consid&eacute;r&eacute; comme plus sure que d'autres algorithmes.</FONT>
+</BLOCKQUOTE>
+
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="4" CELLSPACING="0" WIDTH="13%">
+	<TR>
+		<TD WIDTH="52%" VALIGN="TOP">
+			<P ALIGN="RIGHT"><A HREF="publicKey.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/publicKey.htm"><IMG SRC="left.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/left.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A>
+		</TD>
+		<TD WIDTH="48%" VALIGN="TOP"><A HREF="securite.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/securite.htm"><IMG SRC="right.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/right.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A></TD>
+	</TR>
+</TABLE>
+
+</CENTER>
+
+</BODY>
+
+</HTML>

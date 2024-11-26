@@ -1,0 +1,40 @@
+a:hover { 
+		font-family: Fixedsys;
+		color: #00FFFF; 
+		text-decoration: none; 
+		font-style: normal; 
+		line-height: normal; 
+		font-weight: normal; 
+		font-variant: normal; 
+		text-transform: none;
+		}
+a 		{
+	  	font-family: Fixedsys;
+		font-style: normal; 	
+		line-height: normal; 
+		font-weight: normal; 
+		font-variant: normal; 
+		text-transform: none; 
+		color: #33CC33; 
+		text-decoration: none; 
+		background-color: #000000;
+		}
+body 	{
+		font-family: Fixedsys; 
+		font-style: normal; 
+		line-height: normal; 
+		font-weight: normal; 
+		font-variant: normal; 
+		text-transform: none; 
+		color: #FFFFFF; 
+		background-color: #000000;
+		text-decoration: none;
+		
+		SCROLLBAR-FACE-COLOR: #000000; 
+		SCROLLBAR-HIGHLIGHT-COLOR: #006600; 
+		SCROLLBAR-SHADOW-COLOR: #000000; 
+		SCROLLBAR-3DLIGHT-COLOR: #000000; 
+		SCROLLBAR-ARROW-COLOR: #ffffff; 
+		SCROLLBAR-TRACK-COLOR: #000000; 
+		SCROLLBAR-DARKSHADOW-COLOR: #006600;	
+		}

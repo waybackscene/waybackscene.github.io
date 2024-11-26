@@ -1,0 +1,142 @@
+
+body { 
+	background-color:#000;
+}
+
+img {
+	border:0;
+}
+
+
+
+p {
+	text-align:justify;
+	text-indent:40px;
+	font-size:12px;
+	font-family:verdana;		
+	color:#AAA;		
+}
+
+#mail {
+	font-size:12px;
+	font-family:verdana;		
+	color:#900;	
+}
+
+#BMenu {
+	position:fixed;
+	top:0px;
+	left:-60px;
+	background:url(Images/Menu.png) no-repeat top left;
+	width:330px;
+	height:542px;
+	text-align:center;
+}
+
+#BMenu ul {
+	list-style:none;
+  margin:340px 0 0 -50px;
+}
+
+#Main {
+	position:absolute;
+	width:680px;
+	left:280px;	
+	margin: 100px 0 15px 0;
+	padding: 10px 10px 50px 10px;
+	background-color:#000;
+	border-left:1px solid #900;
+	border-right:1px solid #900;	
+	font-size:12px;
+	font-family:verdana;		
+  color:#AAA;			
+}
+
+#Main ul {
+  list-style-image:url('Images/puce.png');
+  list-style-position:inside;
+}
+
+#Main li {
+  margin-bottom:10px;
+}
+
+#Main li:first-line {
+  font-weight:bold;
+  color:#900;			
+}
+
+#Main a:visited, a:active, a:link {
+  color:#555;
+}
+
+#Main a:hover {
+  color:#900;
+	text-decoration:none;
+}
+
+#BarB {
+	position:fixed;
+	bottom:0;
+	left:280px;
+	width:710px;
+	height:27px;	
+	background:#000 url(Images/Bar.png) no-repeat top center;  
+	text-align:center;
+}
+
+#BarB span {
+  background-color:#000;
+	padding:5px 10px 5px 10px;
+	font-size:10px;
+	vertical-align:middle;	
+}
+
+#BarH {
+	position:fixed;
+	top:70px;
+	left:280px;
+	width:710px;
+	height:27px;	
+	background:#000 url(Images/Bar.png) no-repeat top center;  
+}
+
+#Titre {
+	position:fixed;
+	top:0;
+	left:280px;
+	width:702px;
+	height:70px;	
+}
+
+#links li {
+  margin-bottom:5px;
+}
+
+
+/* For IE 5+ PC */
+
+* html #Titre {
+	position:absolute;
+}
+
+* html #BarH {
+	position:absolute;
+}
+
+* html #BMenu {
+	position:absolute;
+}
+
+* html #BarB {
+  position:absolute;
+	left:-5px;
+}
+
+* html #BMenu ul {
+  margin:340px 0 0 -10px;
+}
+
+
+
+

@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.0//DE">
+
+<html>
+
+<head>
+
+<meta name="description" content="PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - Amiga - PC)">
+<meta name="author" content="Pha-Q/Paradox">
+<meta name="keywords" content="Paradox, PDX, Playstation, PSX, PC, Amiga, N64, Nintendo, Warez, CD, Cracking, Hacking, Phreaking, Patch, Trainer, Software, Hardware">
+<meta name="robots" content="nofollow">
+<meta name="revisit-after" content="07 days">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="de">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="pragma" content="no-cache">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" href="../javascript/paradox.css" type="text/css">
+<link rel="FONTDEF" src="http://www.truedoc.com/pfrs/PosterBodoni.pfr">
+<script type="text/javascript" language="JavaScript" src="http://www.truedoc.com/activex/tdserver.js">
+</script>
+<link>
+<title>PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - GBC - Amiga - PC)</title>
+<script type="text/javascript" language="JavaScript">
+<!--
+function changeBack(newImage) {
+    document ['Back'].src = eval(newImage + ".src");
+}
+function changeSource(newImage) {
+    document ['Source'].src = eval(newImage + ".src");
+}
+
+    src0 = new Image();
+    src0.src  = "../buttons/but_dldi.png";
+    src1 = new Image();
+    src1.src  = "../buttons/but_dldj.png";
+    src2 = new Image();
+    src2.src  = "../buttons/but_dldk.png";
+    bak0 = new Image();
+    bak0.src  = "../buttons/but_back.png";
+    bak1 = new Image();
+    bak1.src  = "../buttons/but_bacl.png";
+// -->
+</script>
+<script type="text/javascript" language="JavaScript" src="../javascript/pdx_fade.js">
+</script>
+</head>
+
+<body bgcolor="#000000" text="#F0F0F0" link="#BB8866" alink="#FF0000" vlink="#DFDFDF" onload="window.status=('Tips &amp; Tricks');">
+
+<script type="text/javascript" language="JavaScript">
+<!--
+fadein();
+// -->
+</script>
+
+<table width="540" align="CENTER" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td align="CENTER" bgcolor="#191919"><img src="../buttons/but_htip.png" alt="Tips &amp; Tricks" width="142" height="70"></td>
+  </tr>
+  <tr>
+    <td height="10">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="CENTER" bgcolor="#191919"><font color="#555555" face="PosterBodoni BT">P</font><font color="#5C5C5C" face="PosterBodoni BT">a</font><font color="#636363" face="PosterBodoni BT">r</font><font color="#6A6A6A" face="PosterBodoni BT">a</font><font color="#717171" face="PosterBodoni BT">d</font><font color="#787878" face="PosterBodoni BT">o</font><font color="#7F7F7F" face="PosterBodoni BT">x</font>&nbsp;
+      <font color="#868686" face="PosterBodoni BT">C</font><font color="#8D8D8D" face="PosterBodoni BT">o</font><font color="#949494" face="PosterBodoni BT">d</font><font color="#9B9B9B" face="PosterBodoni BT">i</font><font color="#A2A2A2" face="PosterBodoni BT">n</font><font color="#A9A9A9" face="PosterBodoni BT">g</font>&nbsp;<font color="#B0B0B0" face="PosterBodoni BT">R</font><font color="#B7B7B7" face="PosterBodoni BT">e</font><font color="#BEBEBE" face="PosterBodoni BT">p</font><font color="#C5C5C5" face="PosterBodoni BT">o</font><font color="#CCCCCC" face="PosterBodoni
+        BT">r</font><font color="#D3D3D3" face="PosterBodoni BT">t</font></td>
+  </tr>
+  <tr>
+    <td bgcolor="#191919" align="CENTER"><font face="PosterBodoni BT" size="5">Libcrypt Protection</font></td>
+  </tr>
+  <tr>
+    <td bgcolor="#333333">
+      <div align="CENTER">
+        by B.A.D/Paradox Console
+      </div>
+      <p>With this document I hope to be able to satisfy the curiosity of all those people that have written to me asking for information on the new protections
+      for PSX and on the methods used to get around them; it clearly doesn't constitute a complete guide to the cracking, but I hope it can be useful however to
+      those people with a basic knowledge of the subject and who wish to tackle this type of job.
+      <p>&nbsp;
+      <div style="background: #191919; text-align: center;">
+        <font face="PosterBodoni BT" size="5">Introduction</font>
+      </div>
+      <p>From here on in a good knowledge of the R3000 assembly language will be required, CPU of the Playstation: Anyone who already has experience of the
+      Amiga should not encounter any serious difficulties, it will be sufficient to know the operation of a RISC cpu ;<br>
+      <br>
+      If you are experienced with X86 assembler instead, you may have a few more difficulties</p>
+      <p>A series of essential tools are required: assemblers, disassemblers, debuggers, etc... as well as some info relating to the PSX hardware. All the
+      documentation and the tools That I used are available at the sites pointed out at the end of this document.
+      <p>&nbsp;
+      <div style="background: #191919; text-align: center;">
+        <font face="PosterBodoni BT" size="5">How Libcrypt works</font>
+      </div>
+      <p>As with any other type of protection, LibCrypt is composed of two separate routines:
+      <p>the first one performs a control check on the disk to discover if it is a copy, the second, based on the result of the first one, decrypts a block of
+      data and crashes the PSX in the case of an incorrect result. Although based on the same code, the two routines have been altered a few times, to the point
+      that in the last evolution (LC3) they have very little in common with the initial basic code.
+      <p>This code is all written in pure assembler, and uses the registers of the PSX directly.<br>
+      hardware of the PSX: there is not any call to the standard system and every precaution has been taken to prevent the program from being traced and
+      therefore understood.<br>
+      The routine that performs the check on the disk uses the hardware registers of the CD-ROM(1F80180X) directly and it memorizes the temporary data in the
+      scratchpad memory (1F800000-1F8003FF). It then calculates a 16bit number with a recursive algorithm (<b>magic word</b>!). This magic word is used as a
+      parameter for the subroutines, the value is stored in some register of the COP0 (coprocessor of system), leaving it in the low part of the BPC register
+      until the program finishes.
+      <p>Obviously the BPC will have a different value if the CD is not <b>the</b> original!
+      <p>This peculiar use of the hardware makes PSX emulators fail at this routine since at the moment none of them support low level access of the CD-ROM, but,
+      more importantly, the use of the registers of COP0 prevents the Action Replay from tracing the program step by step , and it also prevents some of the
+      normal operations of the A.R. because it uses the scratchpad memory to preserve the actual state of the PSX and therefore it alters the data contained in
+      this area of memory.<br>
+      <br>
+      Those of you that have a Pro Action Replay, with ram, are immune to the problem of scratchpad memory sharing as it always foresees a routine that stops
+      the PSX as soon as the P.A.R. is activated; this last routine is the only one to have remained unchanged up until now.<br>
+      To complicate things further from (revision)LC2 onwards an autocheck was introduced on this routine that reveals whether or not it has been altered.<br>
+      <br>
+      The second routine, that that checks the presence of the MagicWord in the BPC, is implemented in different ways in the various games that use it: some
+      perform the check immediately (FF8 for example), others wait until a certain level (Spyro2), others perform the check cyclically during some CD loading (SoulReaver).
+      Or at specific moments (Mulan).
+      <p>&nbsp;
+      <div style="background: #191919; text-align: center;">
+        <font face="PosterBodoni BT" size="5">How to bypass LibCrypt</font>
+      </div>
+      <p>The simplest solution would seem to be to look for the second routine and to force it to operate as if the BPC contained the MagicWord.
+      <p>This routine is almost always easily found within the main program, and it is easy to localize because the PSX has locked up.
+      <p>Unfortunately there may be a number of routines within a game at various points throughout, in SoulReaver I have counted 3 of them and I cannot be sure
+      that there are not any others as I haven't reached the last level! The best thing to do is to alter the first routine in such a way so that program thinks
+      The CD is an original. Unfortunately a 'normal' copy doesn't contain some of the data present in the original CD. I have not found any system to force
+      this routine to produce the MagicWord without the presence of this 'missing' data.
+      <p>The best system developed up to now consists simply of picking up the games MagicWord while a CD is in operation. This also has the advantage of
+      minimizing the alteration to the programs original form, i.e. just enough is changed to insert the one correct value in the BPC at the end of the first
+      routine.
+      <p>There are clearly there some disadvantages: you must have an original CD that works, and since generally the MagicWords of the games are different from
+      one country to the next, it is not possible to develop 'universal' cracks. Each new game has a different approach to the protection, Therefore every time
+      you want to develop a crack it is necessary to trace through the program (with a debugger) to search for the points where the routine first reads and then
+      forces the MagicWord. This process is further complicated by the fact that now (revision(LC3)) every subroutine is encrypted (xor) and invisible in the
+      main program;<br>
+      once an appropriate point to read the MagicWord has been discovered, it is necessary to force it to be written in one some location of memory rather than
+      in the BPC register because it obviously can not be read directly from the BPC using the A.R.<br>
+      <p>&nbsp;
+      <div style="background: #191919; text-align: center;">
+        <font face="PosterBodoni BT" size="5">A practical example</font>
+      </div>
+      <p>I have taken as my example the routine that stops the PSX in presence of an A.R. because its removal is necessary first of all, and also because it is
+      the only routine that has remained unchanged up until now (even if it has been encrypted).
+      <p>This is the routine we are presented with in the executable of Mulan:<br>
+      <code>01) 8003a054 lui v0,0x1f00 ;</code> lui == load upper immediate<br>
+      <code>02) 8003a058 mtc0 v0,BPC&amp;#9 ;</code>BPC == BreakPoint on execute address
+      <p><code>03) 8003a05c lui v0,0x1ffc</code><br>
+      <code>04) 8003a&lt; mtc0 v0,BPCM ;</code> BPCM&lt; == BreakPoint on execute address Mask<br>
+      <code>05) 8003a064 mtc0 v0,BDA ;</code> BDA == BreakPoint on dates access address
+      <p><code>06) 8003a068 lui v0,0x8004</code><br>
+      <code>07) 8003a06c addiu v0,v0,0xa084 ;</code> addiu == add immediate unsigned word<br>
+      <code>08) 8003a070 mtc0 v0,BDAM ;</code> BDAM == BreakPoint on dates access address Mask
+      <p><code>09) 8003a074 lui v0,0xe180</code><br>
+      <code>10) 8003a078 mtc0 v0,DCIC ;</code> DCIC == BreakPoint on control register<br>
+      <code>11) 8003a07c jr ra ;</code> jr == jump to register(ra == return address(register 31))<br>
+      <code>12) 8003a080 nop</code>
+      <p>(01)(02) - load $1f000000 into the BPC, the initial value for the MagicWord is zero (the low part of the BPC)<br>
+      (03)(04)(05) - load $1ffc0000 into BPCM and BDA<br>
+      <br>
+      (06)(07)(08) - load the address $80035f7c in BDAM<br>
+      (09)(10) - load $e1800000 into DCIC and finally<br>
+      (11)(12) - cause the rentry from the subroutine.
+      <p>The values loaded in BPC and BPCM enable you to verify an exception if it executes any instruction present in the first 256k of memory, to leave from
+      the address $1f000000, where the EEPROM of the A.R is positioned. The values inserted in BDA and BDAM vary, since they will be subsequently used as if
+      they were normal registers, in fact the value loaded in DCIC<br>
+      only actives the BreakPoint on execute and it doesn't activate the BreakPoint on it &quot;dates access.&quot;
+      <p>To avoid the A.R. crashing the PSX, we will need to prevent a breakpoint from being activated in this area of memory: considering that you cannot alter
+      the values inserted in BPC and BPCM because they will be used later , the solution is simple, it consists of removing (and replacing with nop) the
+      instruction (10), in this way no register is altered, but the BreakPoint is not activated.
+      <p>(You could also have put $e080 in place of $e180, but a nop is easier:) This small patch of the code is necessary to allow the use of the A.R., it is
+      better if you don't insert this code in the final patch, because the less original code you change the better, him you/he/she can never know, once arrived
+      even to the if when you reach the final level of the game, the program verifies the value contained in the register DCIC:)</td>
+  </tr>
+  <tr>
+    <td height="10">&nbsp;</td>
+  </tr>
+  <tr>
+    <td bgcolor="#191919" align="CENTER"><img src="../buttons/but_back.png" name="Back" border="0" usemap="#Back" width="117" height="56"><map name="Back">
+      <area shape="rect" alt="Back" coords="37,12,68,42" href="javascript:history.back();" onmouseover="changeBack('bak1');self.status='Back';return true" onmouseout="changeBack('bak0');self.status='';return true"></map></td>
+  </tr>
+</table>
+
+</body>
+
+</html>

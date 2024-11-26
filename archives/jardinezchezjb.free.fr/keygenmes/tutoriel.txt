@@ -1,0 +1,436 @@
+Solution du KeygenMe 1 de jB.
+Protection: RSA 160 + RipeMD 128
+par The Analyst - 03/07/2003
+---------------------------------
+
+
+
+
+
+
+
+Introduction superflue:
+-----------------------
+
+Le but ici est d'écrire un keygen, nous allons donc voir comment reconnaitre les 
+differents algos utilisés, étudier la protection, et pour finir, écrire un keygen.
+Je ne rentrerai pas dans les détails inutiles, je présume que le lecteur sait se servir
+de ses outils, et a déja cracké un minimum.
+
+
+
+
+Analyse de la protection:
+-------------------------
+
+Le plus simple pour comprendre ce crackme est de lire le désassemblage
+commenté si dessous :
+
+
+
+CODE:0040334F                 push    32h
+CODE:00403351                 push    offset NOM
+CODE:00403356                 call    RtlZeroMemory
+CODE:0040335B                 push    32h
+CODE:0040335D                 push    offset NOM      		; buffer du nom
+CODE:00403362                 push    3E8h
+CODE:00403367                 push    [ebp+hDlg]      		
+CODE:0040336A                 call    GetDlgItemTextA 		; récupération du nom
+CODE:0040336F                 cmp     eax, 2          		; taille nom < 2 ?
+CODE:00403372                 jb      bad_boy         		; oui.. au revoir
+
+
+Le crackme récupère le nom et vérifie si la taille du nom est inférieure à 2 caractères.
+Si c'est le cas, on arrête tout.
+
+
+CODE:00403378                 push    eax             		; Taille nom
+CODE:00403379                 push    offset NOM
+CODE:0040337E                 call    RIPEMD128       		; Calcule le RIPEMD128 du nom tapé.
+
+
+Ensuite, il calcule le RIPEMD128 de notre nom. Comment déterminer l'algo employé?
+Il suffit de regarder la routine et on trouve ceci:
+
+
+CODE:00401000 Ripemd_init     proc near               ; CODE XREF: RIPEMD128+4p
+CODE:00401000                 mov     ds:dword_404524, 67452301h
+CODE:0040100A                 mov     ds:dword_404528, 0EFCDAB89h
+CODE:00401014                 mov     ds:dword_40452C, 98BADCFEh
+CODE:0040101E                 mov     ds:dword_404530, 10325476h
+CODE:00401028                 retn
+CODE:00401028 Ripemd_init     endp
+
+Ceci est typique d'un HASH. Les constantes ne nous indiquent pas l'algo utilisé, mais nous
+savons qu'un hash va être employé.
+
+Avec l'habitude (c'est donc une question d'expérience), on reconnait rapidement les algos.
+on trouve ceci à un moment:
+
+CODE:0040112D                 mov     edx, ds:dword_404540
+CODE:00401133                 xor     eax, ecx
+CODE:00401135                 xor     eax, edx
+CODE:00401137                 add     eax, ds:dword_404534
+CODE:0040113D                 add     eax, [edi]
+CODE:0040113F                 rol     eax, 11
+
+
+FF(aa, bb, cc, dd, X[ 0], 11);
+
+
+CODE:00401142                 mov     ds:dword_404534, eax
+CODE:00401147                 mov     eax, ds:dword_404534
+CODE:0040114C                 mov     ecx, ds:dword_404538
+CODE:00401152                 mov     edx, ds:dword_40453C
+CODE:00401158                 xor     eax, ecx
+CODE:0040115A                 xor     eax, edx
+CODE:0040115C                 add     eax, ds:dword_404540
+CODE:00401162                 add     eax, [edi+4]
+CODE:00401165                 rol     eax, 14
+
+
+FF(dd, aa, bb, cc, X[ 1], 14);
+
+
+CODE:00401168                 mov     ds:dword_404540, eax
+CODE:0040116D                 mov     eax, ds:dword_404540
+CODE:00401172                 mov     ecx, ds:dword_404534
+CODE:00401178                 mov     edx, ds:dword_404538
+CODE:0040117E                 xor     eax, ecx
+CODE:00401180                 xor     eax, edx
+CODE:00401182                 add     eax, ds:dword_40453C
+CODE:00401188                 add     eax, [edi+8]
+CODE:0040118B                 rol     eax, 15
+
+
+FF(cc, dd, aa, bb, X[ 2], 15);
+
+Etc..
+
+
+C'est typique RIPEMD. (MD5 utilise une routine differente, avec des constantes differentes.)
+Nous savons qu'il s'agit d'un RipeMD, mais nous ne savons pas combien de bits encore.
+Continuons l'analyse du code.
+
+
+CODE:00403383                 mov     ecx, 16         		; 16 * 8 = 128 :)
+CODE:00403388                 mov     esi, eax
+CODE:0040338A                 mov     edi, offset HASH_ASCII
+CODE:0040338F                 call    hex2ascii       		; Le convertit de l'Hexa vers l'ASCII
+
+La routine de conversion hexa2ascii prends en paramétre ECX = 16 caracteres.
+Ce qui fait 16 * 8 = 128 bits. Nous pouvons vérifier à l'aide d'un outil tel que cryptool
+de christal. En générerant un hash pour notre nom, on s'apperçoit que le hash généré par
+l'outil et le meme que celui en sortie de cette routine.
+Il s'agit bien d'un RIPMD128. Continuons.
+
+
+CODE:00403394                 push    32h
+CODE:00403396                 push    offset SERIAL_INPUT_ASCII
+CODE:0040339B                 call    RtlZeroMemory   		; Remet à zero le buffer Serial à zero
+
+
+Mise à zéro du buffer SERIAL
+
+
+CODE:004033A0                 push    32h
+CODE:004033A2                 push    offset SERIAL_INPUT_ASCII ; buffer du Serial
+CODE:004033A7                 push    3E9h
+CODE:004033AC                 push    [ebp+hDlg]
+CODE:004033AF                 call    GetDlgItemTextA 		; Récupère le Serial tapé
+
+
+Récuperation du sérial entré.
+
+
+CODE:004033B4                 mov     esi, offset SERIAL_INPUT_ASCII
+CODE:004033B9                 mov     edi, offset SERIAL_HEXA
+CODE:004033BE                 call    Ascii2Hex       		; Convertit le Serial de l'ascii vers l'hexa
+
+
+Conversion du Serial entré (Ascii) vers l'Hexa. 
+Cette routine prépare le serial pour la suite.
+
+
+CODE:004033C3                 push    edx
+CODE:004033C4                 push    offset Resultat_RSA_Crypt_Hex
+CODE:004033C9                 push    offset SERIAL_HEXA
+CODE:004033CE                 push    offset N
+CODE:004033D3                 push    offset E
+CODE:004033D8                 call    RSA_Crypt       		; RSA_Crypt(Serial_entré);
+
+
+Nous sommes en présence de RSA_Crypt. Comment déterminer qu'il s'agit de RSA?
+
+Premiere chose, en regardant les parametres, on s'appercoit qu'on passe un grand nombre:
+
+
+DATA:00404487 N               db  0Ah ;               ; DATA XREF: DialogFunc+10Bo
+DATA:00404488                 db    0 ;  
+DATA:00404489                 db  86h ; å
+DATA:0040448A                 db 0ADh ; ¡
+DATA:0040448B                 db 0BCh ; +
+DATA:0040448C                 db 0FBh ; ¹
+DATA:0040448D                 db 0C2h ; -
+DATA:0040448E                 db  3Ah ; :
+DATA:0040448F                 db  91h ; æ
+DATA:00404490                 db  65h ; e
+DATA:00404491                 db  3Fh ; ?
+DATA:00404492                 db    4 ;  
+DATA:00404493                 db  8Bh ; ï
+DATA:00404494                 db  24h ; $
+DATA:00404495                 db 0A6h ; ª
+DATA:00404496                 db  4Ah ; J
+DATA:00404497                 db  20h ;  
+DATA:00404498                 db 0BEh ; ¥
+DATA:00404499                 db    4 ;  
+DATA:0040449A                 db  18h ;  
+DATA:0040449B                 db 0E2h ; Ô
+DATA:0040449C                 db  79h ; y
+
+
+Soit: 86ADBCFBC23A91653F048B24A64A20BE0418E279
+
+Il est stocké au format BigNum. le premier Mot contient la taille divisé par 16.
+Donc (0xA) 10 * 16 = 160 bit.
+
+
+Le second paramètre, un peu plus petit:
+
+
+DATA:0040447F E               db    2 ;               ; DATA XREF: DialogFunc+110o
+DATA:00404480                 db    0 ;  
+DATA:00404481                 db 0DAh ; +
+DATA:00404482                 db  20h ;  
+DATA:00404483                 db  2Ch ; ,
+DATA:00404484                 db  91h ; æ
+DATA:00404485                 db    0 ;  
+
+Soit: DA202C91
+
+(2 * 16 = 32 bit. un simple dword ici)
+
+Un des paramètres, est le serial en hexa ce qui laisse imaginer que la routine va travailler
+sur celui ci. On pourrait examiner la routine, et rechercher par exemple, des conversions
+en Bignums etc. J'ai reconnu la routine RSA pour l'avoir déja rencontrée dans le KeygenME de TMG,
+mais l'intuition suffit amplement.
+Un grand nombre, un nombre un peu plus petit, et le serial entré. Il n'y qu'un pas pour imaginer
+que l'operation effectuée par la routine est Serial ^ E mod N.
+Ou N est le grand nombre, et E le petit.
+
+
+D'ailleur en fouillant un peu la routine on trouve diverses routines travaillant sur les BigNums.
+
+
+Gardons cette hypothèse et continuons:
+
+
+CODE:004033DD                 mov     ecx, 10h
+CODE:004033E2                 mov     esi, offset Resultat_RSA_Crypt_Hex_plus2
+CODE:004033E7                 mov     edi, offset Resultat_RSA_Crypt_Ascii
+CODE:004033EC                 call    hex2ascii       		; Conversion Résultat RSAcrypt de l'hexa vers l'ascii
+
+
+Le resultat de RSA_Crypt est stocké dans un buffer passé en paramètre auparavant.
+Ici ce résultat est converti de l'hexa vers l'ascii.
+
+
+CODE:004033F1                 push    offset Resultat_RSA_Crypt_Ascii
+CODE:004033F6                 push    offset HASH_ASCII
+CODE:004033FB                 call    lstrcmpA        		; Comparaison HASH(nom) au resultat RSA_Crypt
+CODE:00403400                 test    eax, eax
+CODE:00403402                 jnz     bad_boy         		; Si different, alors bad boy..
+
+
+On voit ici clairement, que le résultat du RSA_Crypt est comparé au HASH du nom.
+Donc en gros: 
+
+Si RSA_Crypt(Serial) = HASH(nom) alors Bon Serial Sinon Bad_boy.
+
+CODE:00403408                 push    offset aCEstLeBonSeria 
+CODE:0040340D                 push    0               
+CODE:0040340F                 push    0Ch             
+CODE:00403411                 push    3E9h            
+CODE:00403416                 push    [ebp+hDlg]      
+CODE:00403419                 call    SendDlgItemMessageA
+
+On affiche le message de réussite si on a tapé le bon serial.
+
+
+
+
+
+Calcul d'un serial valide:
+--------------------------
+
+Pour que RSA_Crypt(Serial) = HASH(nom) il suffit de faire RSA_Decrypt(Hash) pour obtenir
+un serial valide.
+
+Nous utilisons RSATOOL pour Factoriser N et donc retrouver P et Q.
+Ensuite, grace à l'exposant public, nous pouvons calculer l'exposant privé.
+RSATOOL permet ceci sans problemes.
+
+On obtient:
+
+N=86ADBCFBC23A91653F048B24A64A20BE0418E279
+e=DA202C91
+P=9160F55BCC6C601B62CB
+Q=ED28756D64BFEF1DB34B
+D=37D67D6CAA868623693056BC2412AFF40C741451
+
+Nous avons tout ce qu'il nous fait pour calculer des serials valides.
+
+
+
+Programmation du Keygen:
+------------------------
+
+
+Il est possible de programmer un keygen sans problème maintenant.
+Il existe nombreuses librairies permetant d'utiliser RSA, tel que Miracl pour le C++, Fgint
+pour delphi etc.
+Pour ma part, je me suis contenté de ripper la routine RSA_Crypt (RSA_Decrypt est la meme, seul les parametres
+changent) à l'aide d'IDA et je l'ai introduite dans mon keygen.
+Pour le RipeMD 128 j'aurai pu faire de meme, mais une petite recherche sur internet nous permet
+de trouver une routine en assembleur pour calculer celui ci. Lucifer48 à publié des sources de HASH
+en assembleur. On s'appercoit d'ailleurs qu'il s'agit de celle utilisée dans le keygenme :)
+
+
+Il suffit de remplacer E par D (Au format BigNum) et de passer en paramètre le HASH du nom
+en hexa et d'appeler RSA_Decrypt. Le résultat, une fois converti en Ascii est notre serial final.
+
+Je me suis pas fatigué, j'ai juste rippé le code, j'aurai pu améliorer ca, mais cela ne présente
+que trés peu d'intérêt. Les deux conversions servent juste à récuperer la taille du message (M)
+dans EDX, j'ai juste copié collé le code pour ne pas perdre du temps sur des détails inutiles.
+Donc voici des extraits du keygen:
+
+Tout d'abord les datas avec N et E au format BigNum. (j'ai copié collé deux fois N et remplacé
+les valeurs hexa directement à partir du rip d'IDA pour pas perdre de temps :P)
+
+
+
+n_param		db  0Ah	;		; DATA XREF: DialogFunc+10Bo
+		db    0	;  
+		db  86h	; †
+		db 0ADh	; ­
+		db 0BCh	; ¼
+		db 0FBh	; û
+		db 0C2h	; Â
+		db  3Ah	; :
+		db  91h	; ‘
+		db  65h	; e
+		db  3Fh	; ?
+		db    4	;  
+		db  8Bh	; ‹
+		db  24h	; $
+		db 0A6h	; ¦
+		db  4Ah	; J
+		db  20h	;  
+		db 0BEh	; ¾
+		db    4	;  
+		db  18h	;  
+		db 0E2h	; â
+		db  79h	; y
+
+d_param		db  0Ah	;		; DATA XREF: DialogFunc+10Bo
+		db    0	;  
+		db  37h	; †
+		db 0D6h	; ­
+		db  7Dh	; ¼
+		db 06Ch	; û
+		db 0AAh	; Â
+		db  86h	; :
+		db  86h	; ‘
+		db 023h	; e
+		db  69h	; ?
+		db  30h 	;  
+		db  56h	; ‹
+		db 0BCh	; $
+		db 024h	; ¦
+		db 012h	; J
+		db 0AFh	;  
+		db 0F4h	; ¾
+		db  0Ch 	;  
+		db 074h	;  
+		db 014h	; â
+		db 051h	; y
+
+
+
+
+le Code:
+
+		call	RIPEMD128_Compute, offset nom, eax
+
+                mov     ecx, 10h
+                mov     esi, eax
+                mov     edi, offset HASH
+                call    convert			; convertit le hash en ascii
+
+		mov     esi, offset HASH
+                mov     edi, offset HASH_ready
+		call    sub_40324D              ; convertit le hash en hexa.
+					        ; Aucun intérêt, c'est juste pour récuprer la taille dans edx
+
+
+                push    edx                     ; contient la taille du hash
+                push    offset resultat         ; le résultat de RSA_Decrypt sera placé ici
+                push    offset HASH_ready       ; HASH du nom en hexa
+                push    offset n_param          ; N au format BigNum
+                push    offset d_param          ; D au format BigNum
+                call    sub_40282B              ; RSA_Decrypt
+
+		mov     ecx, 16h
+                mov     esi, offset resultat+2  ; Resultat RSA_Decrypt+2 car le premier mot sert pour le bignum
+                mov     edi, offset calc_bufor  ; Résultat final en Ascii ici
+                call    convert                 ; Conversion!
+
+		call	SendMessageA, hWndSer, WM_SETTEXT, 0, offset calc_bufor   ; on affiche le serial.
+
+
+
+Pour ripper une routine via IDA, il suffit tout simplement de sélectionner le code a ripper
+et ensuite de faire File->Produce->Create ASM file et de sauvegarder le résultat dans une fichier rsa.asm.
+Exemple:
+
+sub_40282B	proc near		; CODE XREF: DialogFunc+115p
+
+var_28		= dword	ptr -28h
+var_24		= dword	ptr -24h
+var_20		= dword	ptr -20h
+var_1C		= dword	ptr -1Ch
+var_18		= dword	ptr -18h
+var_14		= dword	ptr -14h
+var_10		= dword	ptr -10h
+var_C		= dword	ptr -0Ch
+var_8		= dword	ptr -8
+lpAddress	= dword	ptr -4
+arg_0		= dword	ptr  8
+arg_4		= dword	ptr  0Ch
+arg_8		= dword	ptr  10h
+arg_C		= dword	ptr  14h
+arg_10		= dword	ptr  18h
+
+		enter	28h, 0
+		push	ebx
+		push	esi
+		push	edi
+		and	[ebp+var_28], 0
+		mov	esi, [ebp+arg_0]
+		cmp	word ptr [esi],	0
+		[...]
+
+
+Ceci est compilable sans probleme. Il faut pas oublier de déclarer les API utilisées par la routine RSA et c'est
+términé.
+
+
+Nom/Serial:
+
+tHE ANALYST
+147116859CA3A93BF09B98567097AAF1D31BF6C9
+
+
+--
+Analyst - 2003
+

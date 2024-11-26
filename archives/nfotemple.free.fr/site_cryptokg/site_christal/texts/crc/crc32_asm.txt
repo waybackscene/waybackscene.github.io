@@ -1,0 +1,703 @@
+;Copyright (c) 1998,1999 by Anarchriz. All rights reserved.
+; You may use parts of the code or the whole code if you credit me for it.
+; There lies some hard work in it. One of the reasons I released it.
+;Last modified: 09/01/99
+
+.model tiny
+.stack 100h
+
+poly            equ 0edb88320h   ;reflected 0x04c11db7h
+STEPSIZE        equ 1024
+
+.data
+
+;Messages
+beginMsg        db 'Patcher 0.9 - Copyright (c) 1998,1999 by Anarchriz.',10,13,'$'
+helpMsg         db ' Help:',10,13
+                db '  usage: patch [offset] [file1] [file2]',10,13
+                db '   offset - the offset where to patch',10,13
+                db '   file1  - the file to patch',10,13
+                db '   file2  - the file to use while patching',10,13
+                db '  when called with no parameters this help is displayed.',10,13,'$'
+invalidOffsetMsg db 'ERROR: the offset is no number or to long',10,13,'$'
+needFilesMsg    db 'ERROR: I need the filenames',10,13,'$'
+errorHelpMsg    db '> For help run the program with no parameters.',10,13,'$'
+closeErrorMsg   db 'ERROR: Error on closing ???',10,13,'$'
+file1notfoundMsg db 'ERROR: file1 not found',10,13,'$'
+file2notfoundMsg db 'ERROR: file2 not found',10,13,'$'
+file1OpenErrorMsg db 'ERROR: Error on opening file1',10,13,'$'
+file2OpenErrorMsg db 'ERROR: Error on opening file2',10,13,'$'
+file1ReadErrorMsg db 'ERROR: Error while reading file1',10,13,'$'
+file2ReadErrorMsg db 'ERROR: Error while reading file2',10,13,'$'
+filesizeErrorMsg db 'ERROR: Overflow in combination of filesizes and offset',10,13,'$'
+moveFileErrorMsg db 'ERROR: Error while moving filepointer',10,13,'$'
+writeFileErrorMSg db 'ERROR: Error while writing to file1',10,13,'$'
+
+;Variables
+parameterLen    db (?)
+parameterPos    dw 81h
+filehandle1     dw (0)
+filehandle2     dw (0)
+implantOffset   dd (?)
+crc32           dd 0ffffffffh
+filesize1       dd (?)
+filesize2       dd (?)
+bufferOffset    dw (?)
+basecrc         dd (?)
+originalEndCrc  dd (?)
+newEndCrc       dd (?)
+indexValues     dd (?)
+xorSequence     db 8 dup (0)
+parameterBuffer db 128 dup (?)
+crctable        dd 256 dup (?)
+readbuffer      db STEPSIZE dup (?)
+dta             db 128 dup (?)
+
+.code
+.386
+start:
+        mov     ax, @data
+        mov     ds, ax
+
+        call   InitTable
+
+        mov     ah, 1ah
+        mov     dx, offset dta
+        int     21h             ;set dta address
+
+        mov     dx, offset beginMsg
+        call   PrintMsg
+
+        ;lees offset parameter uit
+        mov     al,[es:80h]     ;TO-DO : Check (if to big)
+        mov     [parameterLen],al
+
+        call   GetNextParameter
+        cmp     ax, 0ffffh
+        je     printHelp
+
+        call   ExtractOffset    ;extract 32 bit offset
+        cmp     eax, 0ffffffffh
+        je     invalidOffset
+        mov     [implantOffset],eax
+
+        call   GetNextParameter ;get first filename
+        cmp     ax, 0ffffh
+        je     noMoreParameters
+
+        mov     dx, offset parameterbuffer
+        call   FindFile
+        cmp     ax, 0ffffh
+        je     file1notfound     ;file1 not found
+
+        mov     eax, dword ptr[dta+1ah]
+        mov     [filesize1], eax
+
+        mov     dx, offset parameterbuffer
+        call   OpenFile
+        cmp     ax, 0ffffh
+        je     file1OpenError             ;error on opening file 1
+
+        mov     [filehandle1], ax
+
+        call   GetNextParameter ;get second filename
+        cmp     ax, 0ffffh
+        je     noMoreParameters
+
+        mov     dx, offset parameterbuffer
+        call   FindFile
+        cmp     ax, 0ffffh
+        je     file2notfound     ;file2 not found
+
+        mov     eax, dword ptr[dta+1ah]
+        mov     [filesize2], eax
+
+        mov     dx, offset parameterbuffer
+        call   OpenFile
+        cmp     ax, 0ffffh
+        je     file2OpenError             ;error on opening file 2
+
+        mov     [filehandle2], ax
+
+        ;check if parameter info is right
+        mov     eax, [filesize2]
+        add     eax, 4                  ;correction for 4 xtra 'special' bytes
+        mov     ecx, [implantOffset]
+        add     eax, ecx
+        jc     filesizeError
+
+        cmp     eax, [filesize1]
+        ja     filesizeError
+
+        xor     eax, eax
+        xor     bx, bx
+        mov     si, offset filehandle1
+        mov     dx, offset readbuffer
+        ;ecx=offset
+        cmp     ecx, 0
+        je     noNeedForCompute
+        call   ComputeCRC32
+        cmp     ax, 0ffffh
+        je     readErrorCRC
+
+ noNeedForCompute:
+        push    dword ptr[crc32]
+        pop     dword ptr[basecrc]
+
+        mov     eax, [implantOffset]
+        mov     si, offset filehandle1   ;si is nog wel goed eigenlijk
+        call   MoveFile                 ;set file pointer back to implant offset
+        cmp     eax, 0ffffffffh
+        je     moveFileErrorMain
+
+        mov     ecx, [filesize2]
+        add     ecx, 4                  ;correction for 4 xtra 'special' bytes
+        mov     si, offset filehandle1  ;si is nog wel goed eigenlijk
+        ;dx still pointer to readbuffer
+        call   ComputeCRC32            ;**************** move file
+        cmp     ax, 0ffffh
+        je     readErrorCRC
+
+        push    dword ptr[crc32]
+        pop     dword ptr[originalEndCrc]
+
+        push    dword ptr[basecrc]
+        pop     dword ptr[crc32]
+
+        mov     ecx, [filesize2]
+        mov     si, offset filehandle2
+        ;dx still points to readbuffer
+        call   ComputeCRC32             ;first time I read in file2
+        cmp     ax, 0ffffh
+        je     readErrorCRC
+
+        push    dword ptr[crc32]
+        pop     dword ptr[newEndCrc]
+
+ ;*** And now the most important part: The Reverse Algorithm ***
+
+        call   ComputeReverse
+
+        mov     eax, [implantOffset]
+        mov     si, offset filehandle1
+        call   MoveFile
+        cmp     eax, 0ffffffffh
+        je     moveFileErrorMain
+
+        xor     eax, eax
+        mov     si, offset filehandle2
+        call   MoveFile
+        cmp     eax, 0ffffffffh
+        je     moveFileErrorMain
+
+        mov     dx, offset readbuffer
+ bigWriteLoop:
+        mov     si, offset filehandle2
+        call   ReadFile
+        cmp     ax,0ffffh
+        je     readFileError
+
+        mov     si, offset filehandle1
+        ;ax is bytes to write
+        call   WriteFile
+        cmp     ax, 0ffffh
+        je     writeFileError
+
+        cmp     ax, STEPSIZE
+        je     bigWriteLoop
+
+        mov     dx, offset xorSequence
+        mov     ax, 4
+        call   WriteFile
+        cmp     ax, 0ffffh
+        je     writeFileError
+
+closeFiles:
+        mov     si, offset filehandle1
+        call   CloseFile
+        cmp     ax, 0ffffh
+        je     closeError
+
+        mov     si, offset filehandle2
+        call   CloseFile
+        cmp     ax, 0ffffh
+        je     closeError
+
+exit:
+        mov     ax, 4c00h
+        int     21h
+
+printHelp:
+        mov     dx, offset helpMsg
+        call   PrintMsg
+        jmp    exit
+
+invalidOffset:
+        mov     dx, offset invalidOffsetMsg
+        call   PrintMsg
+        jmp    errorExit
+
+noMoreParameters:
+        mov     dx, offset needFilesMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+file1notfound:
+        mov     dx, offset file1notfoundMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+file2notfound:
+        mov     dx, offset file2notfoundMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+file1OpenError:
+        mov     dx, offset file1OpenErrorMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+file2OpenError:
+        mov     dx, offset file2OpenErrorMsg
+        call   PrintMsg
+        jmp    closeFIles
+
+filesizeError:
+        mov     dx, offset filesizeErrorMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+readErrorCrc:
+        mov     dx, offset file1ReadErrorMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+readFileError:
+        mov     dx, offset file2ReadErrorMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+moveFileErrorMain:
+        mov     dx, offset moveFileErrorMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+writeFileError:
+        mov     dx, offset writeFileErrorMsg
+        call   PrintMsg
+        jmp    closeFiles
+
+closeError:
+        mov     dx, offset closeErrorMsg
+        call   PrintMsg
+        jmp    exit
+        
+
+errorExit:
+        mov     dx, offset errorHelpMsg
+        call   PrintMsg
+        jmp    exit
+
+
+;********************************
+;*** Compute Reverse          ***
+;********************************
+;Parameters:    global originalEndCrc
+;               global newEndCrc
+;Returns:       in d[xorSequence+0] is the transformation message sequence
+ComputeReverse proc
+        push    eax
+        push    bx
+        push    di
+
+        mov     di, 4
+ computeReverseLoop:
+        mov     al, byte ptr[originalEndCrc+di-1]
+        xor     al, byte ptr[xorSequence+di+3]
+        call   GetTableEntry
+        xor     dword ptr[xorSequence+di], eax
+        mov     byte ptr[indexValues+di-1], bl
+        dec     di
+        jnz    computeReverseLoop
+
+        mov     eax, dword ptr[newEndCrc]
+        xor     dword ptr[xorSequence], eax
+        mov     eax, dword ptr[indexValues]
+        xor     dword ptr[xorSequence], eax
+
+        pop     di
+        pop     bx
+        pop     eax
+ComputeReverse endp
+
+;********************************
+;* Extract 32bit Offset         *
+;********************************
+;ax=length para
+;return eax=0ffffffffh if toLong or noNumber ; else eax=para
+ExtractOffset proc
+        push    edx
+        push    bx
+        push    cx
+
+        cmp     ax, 8
+        ja      toLong
+
+        mov     bx, ax
+        xor     edx, edx
+        xor     cx, cx
+ ExtractOffsetLus:
+        xor     eax, eax
+        dec     bx
+        mov     al, [parameterBuffer+bx]
+        cmp     al, 30h
+        jb     noNumber
+        cmp     al, 39h
+        ja     checkABCDEF
+        and     al, 00001111b
+        jmp    readyForAdd
+ checkABCDEF:
+        and     al, 11011111b
+        cmp     al, 41h
+        jb     noNumber
+        cmp     al, 46h
+        ja     noNumber
+        sub     al, 37h
+ readyForAdd:
+        shl     eax, cl
+        or      edx, eax
+        add     cl, 4
+        or      bx, bx
+        jnz    ExtractOffsetLus
+
+        mov     eax, edx
+ ExtractOffset_return:
+        pop     cx
+        pop     bx
+        pop     edx
+        ret
+ toLong:
+ noNumber:
+        mov     eax, 0ffffffffh
+        jmp    ExtractOffset_return
+ExtractOffset endp
+
+;********************************
+;* Get next parameter           *
+;********************************
+;return: ax=0ffffh=no parameter found; else ax=length para
+GetNextParameter proc
+        push    cx
+        push    di
+        push    si
+        push    ds
+        push    es
+
+        cld
+        xor     cx, cx
+        mov     cl, [parameterLen]
+        mov     al, 20h
+        mov     di, [parameterPos]
+        repe    scasb                   ;skip spaties
+        jcxz   no_parameter
+        dec     di
+        inc     cx
+        mov     si, di
+        repne   scasb                   ;zoek naar spatie
+        jcxz    no_correction
+        dec     di
+        inc     cx
+
+ no_correction:
+        mov     [parameterLen], cl
+        mov     [parameterPos], di
+        sub     di, si                  ;verschil tussen indices= lengte para
+        mov     cx, di
+        mov     di, offset parameterBuffer
+
+        mov     ax, ds                  ;/*
+        push    es
+        pop     ds
+        push    ax
+        pop     es                      ; xchg ds,es */
+
+        mov     ax, cx                  ;maak kopietje van lengte para
+        rep     movsb                   ;copy from ds:si(psp) to es:di(buffer)
+        mov     byte ptr[es:di],0
+
+ GetNextParameter_return:
+        pop     es
+        pop     ds
+        pop     si
+        pop     di
+        pop     cx
+        ret
+no_parameter:
+        mov     ax, 0ffffh
+        jmp    GetNextParameter_return
+GetNextParameter endp
+
+;*** Get Table Entry       ***
+;Parameters:    al      first byte of Entry to search
+;Returns:       eax     Entry
+;               bx      entry number
+GetTableEntry proc
+        mov     bx, offset crctable-1
+ getTableEntry_loop:
+        add     bx, 4                ;points to crctable+k*4-1 (k:1..)
+        cmp     [bx], al
+        jne     getTableEntry_loop
+
+        sub     bx, 3
+        mov     eax, [bx]
+        sub     bx, offset crctable
+        shr     bx, 2
+
+        ret
+GetTableEntry endp
+
+;*****************************
+;* Init Crc-Table            *
+;*****************************
+InitTable proc
+        push    eax
+        push    ebx
+        push    cx
+
+
+        xor     ebx, ebx
+InitTableLus:
+        xor     eax, eax
+        mov     al, bl
+
+        ;generate entry
+        mov     cl, 0
+ entrylus:
+        test    eax, 1
+        jz     no_topbit
+        shr     eax, 1
+        xor     eax, poly
+        jmp    entrygoon
+ no_topbit:
+        shr     eax, 1
+ entrygoon:
+        inc     cl
+        test    cl, 8
+        jz     entrylus
+
+        mov     dword ptr[ebx*4 + crctable], eax
+        inc     bx
+        test    bx, 256
+        jz     InitTableLus
+
+        pop     cx
+        pop     ebx
+        pop     eax
+        ret
+InitTable endp
+
+;*** Compute part of CRC-32 ***
+;ds:dx=pointer buffer waarvan crc32 berekent wordt
+;ax=aantal bytes die moet worden berekent
+ComputePartCRC32 proc
+        push    eax
+        push    ebx
+        push    cx
+        push    si
+
+        mov     cx, ax
+        mov     si, dx
+        mov     eax, crc32
+ computeLus:
+        xor     ebx, ebx
+        xor     al, [si]
+        mov     bl, al
+        shr     eax, 8
+        xor     eax, dword ptr[4*ebx+crctable]
+        inc     si
+        loop   computeLus
+
+        mov     [crc32], eax
+        ;mov     [bufferOffset], si
+
+        pop     si
+        pop     cx
+        pop     ebx
+        pop     eax
+
+        ret
+ComputePartCRC32 endp
+
+;*** Compute CRC-32    ***
+;Parameters:    ds:dx   pointer readbuffer (STEPSIZE big)
+;               ds:si   pointer filehandle
+;               ecx     number of bytes to read
+;Returns:       ax=ffffh on error
+;               ax=0 on no error
+ComputeCRC32 proc
+        ;****** must implement pointer mover before readfile in main ******
+ readmore:
+        call   ReadFile
+        cmp     ax, 0ffffh
+        je     computeCRC_readerror
+
+        ;ax holds read bytes
+
+        cmp     ecx, STEPSIZE
+        jae    computecrc
+
+;        cmp     ax, 0
+;        jne     beginOfBuffer
+;        mov     dx, [bufferOffset]
+; beginOfBuffer:
+
+        mov     eax, ecx
+
+ computecrc:
+        call   ComputePartCRC32
+        sub     ecx, eax
+        cmp     ecx, 0
+        ja     readmore
+        jb     computeCRC_readerror     ;unexpected EOF
+
+        xor     eax, eax        ;everything is right
+        ret
+
+ computeCRC_readerror:
+        mov     ax, 0ffffh
+        ret
+ComputeCRC32 endp
+
+;**************************
+;*** File routines      ***
+;**************************
+;eax=offset ; ds:si=pointer filehandle
+;return eax=0ffffffffh on error
+MoveFile proc
+        push    cx
+        push    dx
+
+        mov     dx, ax
+        shr     eax, 16
+        mov     cx, ax
+
+        mov     ax, 4200h
+        mov     bx, [si]
+        int     21h
+        jc     moveFileError
+
+ moveFileReturn:
+        pop     dx
+        pop     cx
+        ret
+
+ moveFileError:
+        mov     eax, 0ffffffffh
+        jmp     moveFileReturn
+MoveFile endp
+
+;ds:dx=pointer filename
+;return: ax<0ffffh=handle.;ax=true=open error.
+OpenFile proc
+        mov     ax, 3d02h
+        int     21h
+        jc     open_error
+        
+        ret
+ open_error:
+        mov     ax, 0ffffh
+        ret
+OpenFile endp
+
+;ds:dx=pointer readbuffer ; ds:si=pointer filehandle
+;return ax=ax=read bytes;ax=0ffffh=read error.
+ReadFile proc
+        push    bx
+        push    cx
+
+        mov     ah, 3fh
+        mov     bx, [si]
+        mov     cx, STEPSIZE
+        int     21h
+        jc     read_error
+
+ ReadFile_return:
+        pop     cx
+        pop     bx
+        ret
+ read_error:
+        mov     ax, 0ffffh
+        jmp    ReadFile_return
+ReadFile endp
+
+;ds:dx=pointer (write)readbuffer ; ds:si=pointer filehandle ; ax=bytes to write
+;return ax=written bytes;ax=0ffffh=write error.
+WriteFile proc
+        push    bx
+        push    cx
+
+        mov     cx, ax
+        mov     ah, 40h
+        mov     bx, [si]
+        int     21h
+        jc     write_error
+
+ WriteFile_return:
+        pop     cx
+        pop     bx
+        ret
+ write_error:
+        mov     ax, 0ffffh
+        jmp    WriteFile_return
+WriteFile endp
+
+;ds:si=pointer filehandle
+CloseFile proc
+        push    bx
+        mov     ah, 3eh
+        mov     bx, [si]
+        cmp     bx, 0
+        je     doNotClose
+        int     21h
+        jc     close_error
+        mov     word ptr[si], 0
+ doNotClose:
+        xor     ax,ax
+ CloseFile_return:
+        pop     bx
+        ret
+ close_error:
+        mov     ax, 0ffffh
+        jmp    CloseFile_return
+CloseFile endp
+
+;ds:dx=point file spec
+;return: ax=ffffh -> file not found els,e ax=n/a
+FindFile proc
+        push    cx
+
+        xor     cx, cx
+        mov     ah, 4eh
+        int     21h
+        jc      not_found
+
+ FindFile_return:
+        pop     cx
+        ret
+
+ not_found:
+        mov     ax, 0ffffh
+        jmp    FindFile_return
+FindFile endp
+
+PrintMsg proc
+        push    ax
+        mov     ah,9
+        int     21h
+        pop     ax
+        ret
+PrintMsg endp
+
+end     start
+
+

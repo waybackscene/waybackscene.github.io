@@ -1,0 +1,106 @@
+
+<!-- #09        11/06/04             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>OllyDead Synapsus</title>
+<style type="text/css">
+<!--
+td { border-width:1px;border-style:solid;border-color:#FFFFFF;font-size:12px; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">OllyDead By Synapsus<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- OllyDbg 1.10<br>&nbsp;- www.Google.com<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant avancé en Cracking<br>ayant de bonnes connaissances en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/OllyDead.exe">OllyDead.exe</a></td></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<!-- Start //-->
+
+<tr><td width="20%"><b>1 - Introduction</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il faut trouver la seule et unique date à laquelle le programme veut bien afficher le message de félicitations. Avant de commencer, quelques précisions:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 - Le carton, c'est gratuit.(Comment ça c'est pas une raison?? :p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 - La mousse, c'est joli! (sisi y'a plein de couleurs! )<br>
+
+</p>
+</td></tr>
+
+<tr><td width="20%"><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par tracer dès le début du programme et les choses sérieuses commencent rapidement avec une utilisation très particulière de l'api <i>lstrcpy</i> qui va faire office de JMP. D'abord, la chaine "NGEN" est remplacée par les caractères {0xD7, 0x13, 0x40, 0x00} correspondant à l'adresse sur laquelle on veut sauter. C'est la chaine à copier.<br>
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici une capture de la pile pour comprendre que String2 va être copiée dans String1 et ainsi remplacer l'adresse de retour de l'api(004010C1) par 004013D7.
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On arrive donc en 004013D7 sur un code illisible qui correspond en fait à une boucle qui va décrypter la suite du code. (Lorsque le code est rempli de CCA, je trace tranquillement avec F7 en surveillant l'exécution). Voici cette boucle une fois nettoyée:
+</p><center><img src="Captures/Olly03.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On continue à tracer jusqu'en 004016B8 ou le NOP précédent est remplacé par un RETN. On verra plus tard que cette boucle sera exécutée une nouvelle fois pour recrypter le code.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, le programme récupère le dossier TEMP puis y crée le fichier Crackme.sys avant d'y copier un binaire extrait des ressources.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A partir de l'adresse 00401722, les apis utilisées (OpenSCManagerA, OpenServiceA, CreateServiceA...) nous indiquent que le fichier est en fait un exécutable sous la forme d'un service NT. Ce service va être créé puis démarré. Il est important de remarquer le code suivant:
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalement, le service est détruit tout comme le fichier temporaire. Puis, le programme retourne en 004013D7 au début de la boucle de cryptage pour recrypté le code qui vient d'être exécuté. Mais cette fois, le RETN à la fin de la boucle nous envoie en 004010C1, juste après le lstrcpy du début! Ensuite, l'interface est créée de manière classique, mais "l'évènement" WM_CREATE contient ce code:
+</p><center><img src="Captures/Olly05.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La variable qui va déterminer l'enregistrement du programme se situe en 0040626F et doit contenir la valeur 0x57. On voit que cette variable est remplie en 004017D5 par la valeur de retour de l'api GetLastError, elle-même déterminée par l'api StartServiceA. Il devient donc évident que le service contient une fonction qui va vérifier la date de l'ordinateur puis la comparer à la date attendue. Et enfin générer une erreur de type 57h == 87d == ERROR_INVALID_PARAMETER.
+
+</p></td></tr>
+<tr><td width="20%"><b>3 - Crackme.sys</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour les raisons évoquées en Introduction, ce qui suit peut sembler être (est) du bricolage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comme OllyDbg ne sait pas ouvrir autre chose que des PE avec un subsystem de 2 ou 3 (et même des DLL dans la version 1.10!), je vais renommer le Crackme.sys en .exe et passé le subsystem à 3 grâce à LordPe. Une fois dans Olly (qui plante évidemment), on saute sur l'adresse 10360 (ImageBase + EntryPoint donné par LordPe) où l'on voit le code désassemblé mais non exécutable.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Etant donné que je ne connais pas toutes les subtilités du code en mode protégé, je ne vais pas expliquer la routine principale mais seulement les 3 procédures qu'elle appelle. La 1ère permet le passage en mode protégé et la dernière le retour en mode réél.
+</p><center><img src="Captures/Olly06.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Quand à la 2ème, c'est justement la fonction de vérification de la date! Elle va lire le jour, le mois et l'année dans l'horloge interne (RealTimeClock) à l'aide du code suivant:
+</p><center><img src="Captures/Olly07.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ce code est exécuté 4 fois, la valeur mise dans AL déterminant quelle information est récupérée, 7 pour le jour, 8 pour le mois, 32h pour le siecle et 9 pour l'année. Le résultat est une chaine de caractères de la forme: "11062004" pour le 11 juin 2004 par exemple. Ensuite cette chaine est cryptée avec le code réversible suivant: 
+</p><center><img src="Captures/Olly08.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalement, le résultat est comparé à la chaine hexa B310AE1162136611. Si les 2 chaines sont différentes, la valeur 0xC0000010 est placée en 104A4.
+</p><center><img src="Captures/Olly09.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Au début du programme, on voit que l'adresse contient la valeur 0xC0000182.
+</p><center><img src="Captures/Olly0A.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;De plus, la valeur contenue à cette adresse est renvoyée lorsque le service quitte.
+</p><center><img src="Captures/Olly0B.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une rapide recherche nous indique ceci:<br>
+- C0000010 == ERROR_INVALID_FUNCTION<br>
+- C0000182 == ERROR_INVALID_PARAMETER<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il ne reste plus qu'à décrypter la chaine B310AE1162136611 avec la fonction inversée pour trouver la bonne date. L'algo étant simple, j'ai utilisé 32bit Calculator de cybult.<br>
+La boucle est exécutée 2 fois. La première fois, des calculs sont effectués sur un DWORD formés à partir du 1er et du 3eme WORD. LE 2eme passage utilise le 2eme et 4eme WORD. (En n'oubliant pas le Little Endian 16bits):<br>
+<center><br>BSWAP ( NOT ( ( 136210B3 - 29A )  XOR DEADC0DE ) )  =  38313032<br>
+BSWAP ( NOT ( ( 116611AE - 29A )  XOR DEADC0DE ) )  =  35303430<br><br></center>
+On obtient la chaine 31383035323033034 soit en mode texte la date attendue qui est le <b>18 05 2004</b>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour vérifier, on lance une fenêtre d'<i>invité de commande</i> et on tape "date 18.05.04" pour modifier la date du système. Puis on lance le Crackme et voilà ce qui apparait:
+</p><center><img src="Captures/Solved.gif" alt=""></center><p align="justify">
+
+</td></tr>
+<!-- End //-->
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+The killer awoke before dawn,<br>he put his boots on
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

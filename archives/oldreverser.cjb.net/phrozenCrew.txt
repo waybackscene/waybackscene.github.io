@@ -1,0 +1,202 @@
+
+  ъ      ъ    -  -- A C i D B U R N - P R O D U C T i O N S -- - Ь   ъ     ъ
+     °    Ь  °      Ь Ь  Ь       ° Ь°          ° Ь     Ь         ЮЫЬ   Ь °
+  ЬЫЫІЯЯЫЫЫЭЬІЫЯЯЯЫЫЫЭЮЫЭЮЫЫЫЯЯЯЫІЬЮІЫЫЯЯЫЫЫЬ°ЬІЫЭ ЯЬ  ЮЫЫЫЯЯЫЫЫЬ°ІЫЫЬ ЮЫІЬ
+  ЫЫЫЭ °ІЫЫЭЫЫЫ °ЯЯЯЯ ЯЯЯ ЫЫЫ ° ЫЫЫЭЫЫЫ  ЮЫЫІ°ІЫЫ ° ЫЫЭЮЫЫЫЭ ЮЫЫІ ЫЫЫЯЫЬЫЫЫЭ
+  ІЫЫЯЯЯЫЫЫЭЫЫЫЭ° °ІЫЭЫЫЫЭЫЫЫ ° ЫЫЫЭЫЫЫЯЯЯЫЫЬЮЫЫЫ ° ЫЫЫЮЫЫЫЯЯІЫЫЬ ЫЫЫЭ ЯЫЫЫЭ
+ °ІЫЫЭ° ЫЫЫ ІЫЫЭ° ЫЫЫЭЫЫЫ°ІЫЫ °ЮЫЫЫЭЫЫЫЭ ЬЫЫЫЮЫЫЫЭ°°ІЫЫ°ІЫЫЭ ЮЫЫЫЭЫЫЫЭ° ЫЫЫЬ
+ ЮЫЫЫЭ° ЫЫЫЮЫЫЫЭ° ЫЫЫЮЫЫІЮЫЫЫ °ЮЫЫЫ°ІЫЫЭ°ЮЫЫЫЮЫЫЫЭ ЮЫЫЫЭЫЫЫЭ° ЫЫЫЭЫЫЫЭ° ЫЫІЯЬ
+ ЮЫЫЫЭ° ЫЫЫЮЫЫЫЭ° ЫЫЫЮЫЫІЮЫЫЫ °ЮЫЫЫЮЫЫЫ °ЮЫЫЫЮЫЫЫЭ ЮЫЫЫЭЫЫЫЭ°°ІЫЫ ІЫЫЭ° ЫЫЭ
+ ЮЫЫІ °ЮЫЫІЯ±ЫЫЬЬЬЫЫЫ±ЫЫІЮЫЫЫЬЬЫЫ±ЯІЫЫЫЬЬЫЫЫЫЯЫЫЫЫЬІЫЫЫЯІЫ±Ь ЮЫЯ °ІЫЫЫ ЮЫЯ
+  Я      Я°  Я    Я    Я       Я          Я         Я   °    Я      Я  Я
+  ъ      ъ    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ъ     ъ
+                                SRT - CRO
+
+
+
+        Phrozen Crew Trial Crackme 1: Calculation of a valid Serial!!
+								 
+		Tutorial by ACiD BuRN [Immortal Descendants]			 
+                             (October 19th, 1999) 						
+
+
+
+
+
+Introduction:
+
+Since , this crackme is expired (PC trial crackme 2 is out) , i can writte a tut on 
+the registration part!
+I will only show how to crack the serial / name part , because i didn't look the rest of
+the crackme yet and i don't like keyfile though :p
+
+Tools needed:
+
+		- Soft ice 3.2x
+		- Brain (some maths knowledge)
+		- an hexeditor (serial is not typable)
+                - calculator (windows one in scientific mode will do ;)
+
+
+
+ok , Run the pC crackme , enter name : ACiD BuRN , and serial : 1234
+Ctrl+D and u are in soft ice , bpx hmemcpy and then F5...
+Press the check button , and you are back in soft ice, trace until you are here:
+
+//Operations on serial:
+
+025F:004020F9  8A18                MOV     BL,[EAX]
+025F:004020FB  C1C308              ROL     EBX,08
+025F:004020FE  03D3                ADD     EDX,EBX
+025F:00402100  40                  INC     EAX
+025F:00402101  803800              CMP     BYTE PTR [EAX],00
+025F:00402104  75F3                JNZ     004020F9
+025F:00402106  8BCA                MOV     ECX,EDX
+025F:00402108  33DB                XOR     EBX,EBX
+025F:0040210A  33D2                XOR     EDX,EDX
+025F:0040210C  B83C2E4000          MOV     EAX,00402E3C
+
+//Operations on name:
+
+025F:00402111  8A18                MOV     BL,[EAX]
+025F:00402113  C1CB08              ROR     EBX,08
+025F:00402116  03D3                ADD     EDX,EBX
+025F:00402118  40                  INC     EAX
+025F:00402119  803800              CMP     BYTE PTR [EAX],00
+025F:0040211C  75F3                JNZ     00402111
+025F:0040211E  C1CA08              ROR     EDX,08
+025F:00402121  663BD1              CMP     DX,CX
+025F:00402124  7520                JNZ     00402146
+
+
+well , i think this asm code it easy enough to understand what 's going on , so
+when u are tracing , at 402113 you see: AA5C0993 in EDX.
+Trace a bit until u pass the second ROR EDX,8 (40211E) , and you will see : 93AA5C09 in EDX
+
+025F:00402121  663BD1              CMP     DX,CX
+
+this compare the value calcultated from your name and the one from your fake serial!
+
+
+Now , the question is how to get a valid serial ?!!
+Easy , hehe..
+
+
+Lemme explain what's going on!
+i entered: 1234 as serial so during the loop on my serial (same loop than for the serial) it is
+doing something like this.
+
+1st: loop on serial:
+
+
+		00 00 31 00
+	   +	00 31 32 00
+	   +	31 32 33 00
+	   +	32 33 34 31
+		-----------
+		63 96 CA 31  <> AA5C093 so it is not good 
+
+
+
+Lets call X3, X2, X1, X0, the 4th ascii values of our entered serial... 
+so it is like this :
+
+
+		00 00 X3 00
+	   +	00 X3 X2 00
+	   +	X3 X2 X1 00
+	   +	X2 X1 X0 X3
+		-----------
+		93 AA 5C 09   <---- The Good value we saw in memory
+
+
+
+Here comes the maths!! :
+
+with identifications , we obtain:
+
+
+X3 = 09
+X2 = 93 - X3 = 93 - 09 = 8A
+X1 = AA - X3 - X2 = AA - 09 - 8A = 17
+X0 = 5C - X3 - X2 - X1 = 5C - 09 - 8A - 17 = FFFFFFB2 (just take B2)
+
+
+So, the serials is : 09 8A 17 B2
+
+
+this are the ascii values of the good serial for: ACiD BuRN
+but the serial si not typable with the keyboard!!
+how to enter it so ??
+well , make a new text file for exemple , enter 1234 and save it.
+open this file with an hex editor , u will see: 31 32 33 34
+this are the ascii of 1234 , we entered in the file.
+replace them with our calculated serial :
+
+31 becomes 09
+32 becomes 8A
+33 becomes 17
+34 becomes B2
+
+and save!
+
+If you hexedit this file you must see : 09 8A 17 B2
+ok it is good , now open the file selects all the text (crapy text though coz serial is not
+typable) press ctrl+c to copy the text in Clipboard and then go in the serial field of the
+Crackme!
+Paste the serial from clipboard , for this press ctrl+d and the serial appears in the crackme!
+
+it looks like this: "	ЉІ"
+the good serial is between the "
+
+  Name: ACiD BuRN
+serial: 	ЉІ
+
+
+
+Enter this information , and you get the message: "Well Done , you have passed The Name / Serial
+Strainer! Well done! =)"
+
+
+Another one cracked :p
+
+
+
+Ending:
+
+i hope you have understood all this essay , and if you got any comments , or 
+questions , just mail me to : ACiD_BuRN@nema.com or acid2600@hotmail.com
+you can find all of my tuts at :
+Web page URL: http://acidburn2000.cjb.net
+
+
+Greetings: 
+group greetings : ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , CrackZ , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo ,
+Killer_3K, TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup, 
+zoltan , [yAtes], TarGon , Icecream , Punkguy2 , Sortof, TRDdonjuan,
+Lord Soth, Judged, G-Rom, Quantico...
+
+
+eheh , i bet i forget some peoples :-/ , sorry !!!
+
+
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+
+			
+				http://www.immortaldescendants.com/
+
+
+
+
+
+

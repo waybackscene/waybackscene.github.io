@@ -1,0 +1,126 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<META content="text/html; charset=windows-1252" http-equiv=Content-Type>
+<META content="delphi,table crc-16" name=keywords>
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>fast table based crc-16</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#A6F3FC">
+
+<H1>fast table CRC 16 in Turbo Assembly</H1>
+<P><I>the source code of this page may not appear correctly in certain browsers<BR>
+due to special characters. Have a look at the source of this HTML page<BR>
+with notepad instead</I></P>
+<PRE>;	tasm crc
+;......................................................................
+;This module calculates the CRC-16 (x^16+x^15+x^2+1) over a given data.
+;It's made to interface to TurboPascal5.5 .
+;
+;The call (in TP5.5) is : FUNCTION CRC16(VAR Data;DSize:WORD):WORD;
+;
+;To interface use :
+;
+;{$L crc.obj}
+;FUNCTION GetCRC16(VAR Data;DSize:WORD):WORD; EXTERNAL;
+;
+;......................................................................
+;The code is from the 'IEEE Micro' Aug 88 - A Tutorial on CRC Computations
+;......................................................................
+;This module has been optimized to have no static data, the table is code.
+;Further it's been tested.
+;......................................................................
+	DOSSEG
+;	.186
+DATA	SEGMENT	WORD PUBLIC
+	ASSUME	DS:DATA
+;	no data used here
+	DATA	ENDS
+;......................................................................
+CODE	SEGMENT	BYTE	PUBLIC
+	ASSUME	CS:CODE
+;......................................................................
+TableV	DW	00000h,0C0C1h,0C181h,00140h,0C301h,003C0h,00280h,0C241h
+_v1	DW	0C601h,006C0h,00780h,0C741h,00500h,0C5C1h,0C481h,00440h
+_v2	DW	0CC01h,00CC0h,00D80h,0CD41h,00F00h,0CFC1h,0CE81h,00E40h
+_v3	DW	00A00h,0CAC1h,0CB81h,00B40h,0C901h,009C0h,00880h,0C841h
+_v4	DW	0D801h,018C0h,01980h,0D941h,01B00h,0DBC1h,0DA81h,01A40h
+_v5	DW	01E00h,0DEC1h,0DF81h,01F40h,0DD01h,01DC0h,01C80h,0DC41h
+_v6	DW	01400h,0D4C1h,0D581h,01540h,0D701h,017C0h,01680h,0D641h
+_v7	DW	0D201h,012C0h,01380h,0D341h,01100h,0D1C1h,0D081h,01040h
+_v8	DW	0F001h,030C0h,03180h,0F141h,03300h,0F3C1h,0F281h,03240h
+_v9	DW	03600h,0F6C1h,0F781h,03740h,0F501h,035C0h,03480h,0F441h
+_v10	DW	03C00h,0FCC1h,0FD81h,03D40h,0FF01h,03FC0h,03E80h,0FE41h
+_v11	DW	0FA01h,03AC0h,03B80h,0FB41h,03900h,0F9C1h,0F881h,03840h
+_v12	DW	02800h,0E8C1h,0E981h,02940h,0EB01h,02BC0h,02A80h,0EA41h
+_v13	DW	0EE01h,02EC0h,02F80h,0EF41h,02D00h,0EDC1h,0EC81h,02C40h
+_v14	DW	0E401h,024C0h,02580h,0E541h,02700h,0E7C1h,0E681h,02640h
+_v15	DW	02200h,0E2C1h,0E381h,02340h,0E101h,021C0h,02080h,0E041h
+_v16	DW	0A001h,060C0h,06180h,0A141h,06300h,0A3C1h,0A281h,06240h
+_v17	DW	06600h,0A6C1h,0A781h,06740h,0A501h,065C0h,06480h,0A441h
+_v18	DW	06C00h,0ACC1h,0AD81h,06D40h,0AF01h,06FC0h,06E80h,0AE41h
+_v19	DW	0AA01h,06AC0h,06B80h,0AB41h,06900h,0A9C1h,0A881h,06840h
+_v20	DW	07800h,0B8C1h,0B981h,07940h,0BB01h,07BC0h,07A80h,0BA41h
+_v21	DW	0BE01h,07EC0h,07F80h,0BF41h,07D00h,0BDC1h,0BC81h,07C40h
+_v22	DW	0B401h,074C0h,07580h,0B541h,07700h,0B7C1h,0B681h,07640h
+_v23	DW	07200h,0B2C1h,0B381h,07340h,0B101h,071C0h,07080h,0B041h
+_v24	DW	05000h,090C1h,09181h,05140h,09301h,053C0h,05280h,09241h
+_v25	DW	09601h,056C0h,05780h,09741h,05500h,095C1h,09481h,05440h
+_v26	DW	09C01h,05CC0h,05D80h,09D41h,05F00h,09FC1h,09E81h,05E40h
+_v27	DW	05A00h,09AC1h,09B81h,05B40h,09901h,059C0h,05880h,09841h
+_v28	DW	08801h,048C0h,04980h,08941h,04B00h,08BC1h,08A81h,04A40h
+_v29	DW	04E00h,08EC1h,08F81h,04F40h,08D01h,04DC0h,04C80h,08C41h
+_v30	DW	04400h,084C1h,08581h,04540h,08701h,047C0h,04680h,08641h
+_v31	DW	08201h,042C0h,04380h,08341h,04100h,081C1h,08081h,04040h
+;......................................................................
+;This function is from IEEE, it uses the TableV.
+;FUNCTION CRC16(VAR Buffer;DSize:WORD):WORD;
+GetCRC16 PROC	FAR
+	PUBLIC	GetCRC16
+Buffer	EQU	DWORD PTR [BP+8]	; 8 9 10 11
+DSize	EQU	WORD PTR [BP+6]		; 6 7
+	push	bp
+	mov	bp,sp
+	push	ds
+	cld				;direction up
+	lds	si,Buffer		;DS:SI	= Buffer
+	mov	cx,DSize		;CX	= Size
+	mov	di,OFFSET TableV	;CS:DI	= table
+	xor	bx,bx			;BX	= CRC
+@@CRCLoop:
+	lodsb				;get databyte
+	xchg	ax,bx			;bl	= data, ax = crc
+	xor	bl,al			;bx	= tableindex 
+	xor	bh,bh			;	= lo(crc) xor data
+	shl	bx,1			;*2 -&gt;  wordindex
+	xchg	al,ah			;crc:=crc shr 8
+	xor	ah,ah			;ah:=0
+	xor	ax,cs:[di+bx]		;CRC := CRC xor Table[bx]
+	mov	bx,ax			;BX	= CRC
+	loop	@@CRCLoop
+	pop	ds
+	pop	bp
+	ret	6
+GetCRC16	ENDP	
+;......................................................................
+CODE	ENDS
+	END
+
+</PRE>
+<H3>notes</H3>
+<PRE>This crc is calculated as X^16+X^15+X^2+1 and can 
+protect 2^16 bits or 8192 bytes against single bit 
+errors. For longer datablocks, the crc-32 is to be 
+used.
+
+This is the fast implementation requiring more RAM, 
+the table is 512bytes. It can easyly be adapted for 
+other CPU's</PRE>
+
+</BODY>
+
+</HTML>

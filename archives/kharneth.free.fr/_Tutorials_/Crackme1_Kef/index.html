@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!--	#10 		12/08/2004					 	 //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>CrackMe1_By_Kef</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#FFFFFF;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+'img {  border-width:2;border-style:inset;border-color:#FFFFFF; }
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">CrackMe1 de Kef<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- PEId<br>&nbsp;- OllyDbg<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant en Cracking<br>ayant des connaissances de base en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/Crackme1_by_Kef.exe">Crackme1_by_Kef.exe</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<tr><td width="20%"><b>1 - PEId</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comme d'habitude, on commence par une analyse rapide avec <i>PeId</i> pour vérifier que le programme n'est pas compressé ou crypté. 
+Et en effet, PEiD nous indique <i>PE Pack 1.0 -> ANAKIN</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On va donc le charger dans <i>OllyDbg</i> pour étudier ça.
+</p></td></tr>
+
+<tr><td nowrap><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le dump ne devrait pas poser de problème en suivant le tut de Kef (<a href="http://www.ifrance.com/tutokef/Multi.htm">Unpack PE Pack</a>). Pour ma part, j'ai posé un BP sur JMP EAX puis F9 et F8, et enfin un coup de Ollydump avec "Rebuild Import" coché. Le programme étant décompressé, on peut donc commencé son analyse.<br>
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Première chose frappante, on voit un appel à l'API <i>IsDebuggerPresent</i>. Cette fonction va renvoyer 1 si l'application tourne sous un debugger ou 0 dans le cas contraire. Il existe de nombreuses façon de contourner ce problème, la plus simple étant en utilisant le plugin <a href="http://membres.lycos.fr/svtc/">"IsDebugPresent"</a>. Si un debugger est détecté, une MsgBox nous prévient puis le programme se ferme.<br>
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, le programme teste la présence du fichier "IloveMicrosoft.key" avec l'api CreateFileA. Si le fichier existe, les 2 fonctions suivantes vont en créer une image en mémoire et l'api MapViewOfFile va renvoyer l'adresse du début de cette image. Si le fichier n'existe pas, le programme se ferme.<br>
+</p><center><img src="Captures/Olly03.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalement, le programme compare le contenu du fichier avec la chaine de caractères suivante:
+<pre style="font-family:Courier;text-align:center;">
+&lt;strKey&gt;  53 E9 73 61 6D 65 2C 20 6F 75 76 72 65 20 74 6F  Sésame, ouvre to
+0040304B  69 20 21 20 20 20 20 20 20 31 34 38 35 32 33 32  i !      1485232
+0040305B  35 36 39 36 35 38 34 31 31 31 32 32 32 35 38 35  5696584111222585
+0040306B  36 39 20 3A 29 00                                69 :).          
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Puis continue son exécution s'ils sont égaux, sinon il se ferme.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tout ce code se trouve dans la gestion du message WM_INITDIALOG, donc ces 2 tests son effectués juste avant que la fenêtre apparaisse.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour créer le fichier, il suffit d'utiliser un éditeur hexa et d'ouvrir le dump du programme pour copier les valeurs hexa de la chaine attendue, puis de les coller dans un nouveau fichier que l'on sauvegardera dans le même dossier que le crackme en "IloveMicrosoft.key". 
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En continuant l'étude de la DialogProc(), on tombe sur la gestion du message WM_COMMAND avec 2 appels à GetDlgItemTextA. On ne doit donc pas être très loin du controle du serial.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Et en effet, on voit une boucle qui calcule la somme des codes ASCII +1 de chaque caractère du nom avant de passer cette valeur à une fonction qui renvoit une chaine de caractères. En étant un peu attentif, on remarque que la chaine retournée correspond à la somme précédemment calculée.<br>
+</p><center><img src="Captures/Olly05.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C'est en fait l'équivalent de la fonction IntToHex() de Delphi qui convertit un entier en chaine de caractères représentant sa forme Hexadécimale. On a vu que la fonction prend 2 paramêtres. Un DWORD correspondant à la valeur à convertir, et un autre DWORD représentant le nombre minimum de caractères que la chaine devra contenir. Par exemple, si le nombre minimum de caractères à retourner est 4 et que la valeur à convertir est 5E, alors la fonction va ajouter autant de 0 devant pour finalement arriver à la chaine "005E". Le traitement s'effectue de la fin de la chaine vers le début.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Et pour finir, les 2 serials sont comparés pour savoir quelle MsgBox sera affichée.<br>
+</p><center><img src="Captures/Olly06.gif" alt=""></center><p align="justify">
+</p>
+</td></tr>
+
+<tr><td width="20%"><b>3 - KeyGen</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici le listing d'un keygen codé sous Dev-C++:<br>
+
+
+<!--StartFragment-->
+<pre><code><font color="#C0C0C0">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+</font><font color="#800000"><b>int </b></font>main</font><font color="#808000">(</font><font color="#800000"><b>int </b></font>argc</font><font color="#808000">, </font><font color="#800000"><b>char </b></font><font color="#808000">*</font>argv</font><font color="#808000">[]) {
+    </font><font color="#800000"><b>char </b></font>name</font><font color="#808000">[</font><font color="#FF0000">11</font><font color="#808000">] = </font><font color="#0000FF">&quot;&quot;</font><font color="#808000">;
+    </font><font color="#800000"><b>int </b></font>i</font><font color="#808000">=</font><font color="#FF0000">0</font><font color="#808000">;
+    </font><font color="#800000"><b>int </b></font>sum </font><font color="#808000">= </font><font color="#FF0000">1</font><font color="#808000">;
+    </font><font color="#800000"><b>int </b></font>Taille </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+
+    </font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Nom: &quot;</font><font color="#808000">);
+    </font>scanf</font><font color="#808000">(</font><font color="#0000FF">&quot;%s&quot;</font><font color="#808000">, </font>name</font><font color="#808000">);
+    </font>Taille </font><font color="#808000">= </font>strlen</font><font color="#808000">(</font>name</font><font color="#808000">);
+    </font><font color="#800000"><b>if </b></font><font color="#808000">(</font>Taille </font><font color="#808000">&lt; </font><font color="#FF0000">3 </font><font color="#808000">|| </font>Taille </font><font color="#808000">&gt; </font><font color="#FF0000">10</font><font color="#808000">) {
+       </font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Minimum 3 caractères et macimum 10!\n&quot;</font><font color="#808000">);
+       </font>system</font><font color="#808000">(</font><font color="#0000FF">&quot;pause&quot;</font><font color="#808000">);
+       </font><font color="#800000"><b>return </b></font><font color="#FF0000">0</font><font color="#808000">;
+    }
+    </font><font color="#800000"><b>for </b></font><font color="#808000">(</font>i</font><font color="#808000">=</font><font color="#FF0000">0</font><font color="#808000">;</font>i</font><font color="#808000">&lt;</font>Taille</font><font color="#808000">;</font>i</font><font color="#808000">++) {
+        </font>sum </font><font color="#808000">+= </font><font color="#FF0000">1</font><font color="#808000">+</font>name</font><font color="#808000">[</font>i</font><font color="#808000">];
+    }
+    </font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Serial: %03X\n&quot;</font><font color="#808000">, </font>sum</font><font color="#808000">);
+    </font>system</font><font color="#808000">(</font><font color="#0000FF">&quot;pause&quot;</font><font color="#808000">);
+    </font><font color="#800000"><b>return </b></font><font color="#FF0000">0</font><font color="#808000">;
+}
+</font></code></pre>
+<!--EndFragment-->
+<br>
+Voici le listing d'un keygen codé sous Delphi:
+
+<pre>
+<b>procedure</b> TForm1.Button1Click(Sender: TObject);
+<b>var</b> Nom: <b>String</b>;
+  i: Integer;
+  sum: Cardinal;
+  Taille: Integer;
+<b>begin</b>
+  sum:= 1;
+  Nom := Edit1.Text;
+  Taille:=Length(Nom);
+  <b>If</b> (Taille < 3) <b>Or</b> (Taille > 10) <b>Then</b>
+    ShowMessage('Minimum 3 caractères et macimum 10!');
+  <b>For</b> i:=1 <b>To</b> Taille <b>Do</b>
+    sum := sum + 1 + Ord(Nom[i]);
+  Edit2.Text:=IntToHex(sum,3);
+<b>end</b>;
+</pre>
+
+
+</p></td></tr>
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+He took a face from the ancient gallery<br> 
+And he walked on down the hall
+
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

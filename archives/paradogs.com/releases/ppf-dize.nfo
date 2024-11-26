@@ -1,0 +1,23 @@
+                  PPF-Description Editor v1.0
+                   - -- ---------------- -- -
+
+TITLE       : PPF-Description Editor v1.0
+PROGRAMMER  : Zweifeld/Gamefreax
+PLATFORM    : PC
+RELEASE DATE: 11/30/99
+
+                   - -- ---------------- -- -
+
+ The PPF Description Editor allows you to modify  the  FILE-ID.DIZ
+ included in PPF v2.0 patchfiles.
+
+ You can create own skins for this editor. The skin size has to be
+ 370x210  pixels. The new graphic called logo.jpg has to be placed
+ in the SKIN directory of the PPF Description  Editor.  To  change
+ the credits for the skin feel free to modify the file "skin.txt".
+
+                   - -- ---------------- -- -
+
+                    http://www.paradogs.com
+
+                   - -- ---------------- -- -

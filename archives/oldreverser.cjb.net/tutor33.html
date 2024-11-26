@@ -1,0 +1,144 @@
+<html>
+<!- Notepad, the best html editor !!!  !->
+<!- what else ? !->
+
+<head><title>Cracking Tutorial, (c) ACiD BuRN / ID</title></head>
+<body bgcolor="#C0C0C0" text="#000000" link="#008000" vlink="#800080" alink="#FF0000">
+
+<center>
+<font size="+3"><b>CD Check:<br>TRSI Crackme</b><br></font><br>
+<font size="+2">Tutorial by ACiD BuRN [Immortal Descendants]<br></font>
+</center><br>
+<br></center>
+<hr><pre>
+
+
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S -- - м   њ     њ
+     А    м  А      м м  м       А мА          А м     м         олм   м А
+  мллВпплллнмВлппплллнолнолллппплВмоВллпплллмАмВлн пм  олллпплллмАВллм олВм
+  лллн АВллнллл Апппп ппп ллл А лллнллл  оллВАВлл А ллнолллн оллВ лллплмлллн
+  ВллппплллнлллнА АВлнлллнллл А лллнлллпппллмоллл А лллолллппВллм лллн плллн
+ АВллнА ллл ВллнА лллнлллАВлл Аолллнлллн млллолллнААВллАВллн олллнлллнА лллм
+ олллнА лллолллнА лллоллВоллл АолллАВллнАолллолллн олллнлллнА лллнлллнА ллВпм
+ олллнА лллолллнА лллоллВоллл Аолллоллл Аолллолллн олллнлллнААВлл ВллнА ллн
+ оллВ АоллВпБллмммлллБллВолллммллБпВлллммллллпллллмВлллпВлБм олп АВллл олп
+  п      пА  п    п    п       п          п         п   А    п      п  п
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S --  -    њ     њ
+                                SRT - CRO
+</pre>
+<pre>
+			
+
+level: EASY
+
+intro, ok this crackme is a cd check , u have to make it show u a good message
+when u don't have any CD inserted...
+
+run it , without cd , click on the button , and a shitty msg box come (heh :P)
+ok , for cd check just put a bpx on getdrivetypea.U will break and press F12
+untill you are at the good place in soft ice..
+
+you should see something like this:
+
+
+025F:00401032  83F805              CMP     EAX,05           <--- is it a CD Rom ??
+025F:00401035  75DC                JNZ     00401013
+025F:00401037  6A00                PUSH    00
+025F:00401039  6A00                PUSH    00
+025F:0040103B  6A00                PUSH    00
+025F:0040103D  6A00                PUSH    00
+025F:0040103F  6A00                PUSH    00
+025F:00401041  6A20                PUSH    20
+025F:00401043  68F7214000          PUSH    004021F7
+025F:00401048  685A224000          PUSH    0040225A
+025F:0040104D  E85E000000          CALL    KERNEL32!GetVolumeInformationA
+025F:00401052  0BC0                OR      EAX,EAX
+025F:00401054  74BD                JZ      00401013          <-- Jump to bad boy
+025F:00401056  6A00                PUSH    00
+025F:00401058  685F224000          PUSH    0040225F
+025F:0040105D  6A00                PUSH    00
+025F:0040105F  6A00                PUSH    00
+025F:00401061  685A224000          PUSH    0040225A
+
+
+
+ok , it's fucking easy , it compare the value in EAX with 5.
+
+the value in EAX can means:
+
+     0                 Drive Cannot Be determined
+     1                 Root Dir Does not exist
+     2                 DriveRemoveable
+     3                 A Fixed Disk (HardDrive)  
+     4                 Remote Drive(Network)
+     5                 Cd-Rom Drive
+     6                 RamDisk
+
+So , this crackme check if it is a CD rom drive , we must have 5 in EAX to be good!
+Else , it will jump..
+
+
+025F:00401032  83F805              CMP     EAX,05          
+025F:00401035  75DC                JNZ     00401013        <-- just NOP it
+
+NOP it and it won't jump anymore
+open the crackme with an hex editor and look for 83F80575DC and change it in 83F8059090.
+After this check , we have seen in soft ice "CALL    KERNEL32!GetVolumeInformationA"
+hehe , another common API used in CD check.
+it looked like this:
+
+025F:0040104D  E85E000000          CALL    KERNEL32!GetVolumeInformationA
+025F:00401052  0BC0                OR      EAX,EAX
+025F:00401054  74BD                JZ      00401013          <-- Jump to bad boy
+
+
+
+So you just have to NOP this conditional jump, and the crackme is Cracked :)
+took me 5 mins to crack and writte the tut on this crackme , but it was nice after 
+A fucking day at school ;p
+
+
+it is finish , i am sure u understood all of this , coz it is very very easy :)
+
+
+Ending:
+
+mail me to : ACiD_BuRN@nema.com or acid2600@hotmail.com
+you can find all of my tuts at :
+Web page URL: http://acidburn2000.cjb.net
+
+
+Greetings: 
+group greetings : ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , CrackZ , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo ,
+Killer_3K, TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup, 
+zoltan , [yAtes], TarGon , Icecream , Punkguy2 , Sortof, TRDdonjuan,
+Lord Soth, Judged, G-Rom, Quantico, Christal, psike, Leo0n, Albator,
++Spath, +Frog's Print, toutim ......
+
+
+eheh , i bet i forget some peoples :-/ , sorry !!!
+
+
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+
+			
+				http://www.immortaldescendants.com/
+
+</pre>
+
+<br>
+<hr>
+<br><div align="center"><font face="Times New Roman, Times, serif" size="3">Copyright 1999 <a href="mailto:acid2600@hotmail.com">ACiD BuRN</a> and the <a href="http://www.ImmortalDescendants.com">Immortal Descendants</a></font></div>
+  
+
+</body></html>

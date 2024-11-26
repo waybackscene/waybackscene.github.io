@@ -1,0 +1,138 @@
+
+<!-- #08 ][     28/05/04             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>Nag Screen Synapsus ][</title>
+<style type="text/css">
+<!--
+td { border-width:1px;border-style:solid;border-color:#FFFFFF;font-size:12px; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">Crackme Nag Screen Synapsus ][<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- OllyDbg 1.09d<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant avancé en Cracking<br>ayant de bonnes connaissances en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/CrackMe.exe">CrackMe.exe</a></td></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<!-- Start //-->
+
+<tr><td width="20%"><b>1 - Introduction</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il faut supprimer la MessageBox qui apparait au démarrage du programme. Mais cette fois en étudiant le progamme en profondeur et en patchant 3 octets.
+</p><center><img src="Captures/msgbox.gif" alt=""></center>
+</td></tr>
+
+<tr><td width="20%"><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc on va tracer tranquillement depuis l'entry point. Le début est classique, si ce n'est que l'adresse de "user32.dll" est récupérée puis une boucle va décrypter la suite du code. 
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En fait, ce code va être utilisé pour générer des exceptions de type "Single-Step" gérées par la routine suivante pour décrypter la grosse partie de code de la gestion de WM_CREATE dans la WNDProc(). Mais je n'ai pas encore compris comment! :( Oui je sais mais j'aime bien la mousse!)
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici la routine de gestion des messages décryptée.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D'abord le CALL va extraire une image des ressources puis la charger en mémoire. En regardant la gestion de WM_PAINT, on voit que la valeur retournée est un HBITMAP qui sera affiché dans la fenêtre.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, on saute au-dessus de 5 chaines plutôt explicites!!
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A partir de là, le code devient illisible. De nombreux sauts (sous forme de Jxx, PUSH + RET, CALL...) viennent obscurcir le code. Mais en traçant tranquillement avec F7, on arrive à suivre ce qu'il se passe.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par un detect-trace dont le code épuré correspond à ça:<br>
+<pre style="font-family:'Courier New';">
+RDTSC                        ; Recupere le nombre de cycles ecoules
+PUSH EAX                     ; depuis le demarrage du processeur
+......                       ; Quelques sauts inutiles
+RDTSC                        ; Recupere le nombre de cycles ecoules... 
+SUB EAX,DWORD PTR SS:[ESP]   ; Compare les 2 temps.
+CMP AX, 0F00                 ; Si la différence est trop grande,
+JA plantage                  ; Une exception est generee et le prog plante.
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici une partie du code original que je trouve délirant! La "routine" commence en 40198E puis le 2eme RDTSC est exécuté plus bas où un JMP renvoie en 401973. Ensuite, la valeur 3D66 est placée en 401978 avant de sauter dessus grace au RETN.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cette détection est présente sous cette forme à de nombreuses reprises.
+</p><center><img src="Captures/Olly05.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On enchaine avec une détection de SoftIce (dépoussiérée) qui fait planter le prog s'il est présent. Avant de tomber sur un nouveau detect-trace. Cette série est exécutée une nouvelle fois avec "\\.\SIWDEBUG".
+</p><center><img src="Captures/Olly06.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On poursuit avec une détection de debugger ring3 mais qui ne fonctionne que sous Windows 9x.
+</p><center><img src="Captures/Olly07.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La chaine "ShowWindow" est décryptée. Puis encore un detect-trace.
+</p><center><img src="Captures/Olly08.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Et enfin un appel à une fonction (en 401273) qui va récupérer l'adresse de l'api à partir de l'adresse de base de user32.dll. L'Export Table est parcourue jusqu'à trouver la chaine recherchée. Nous avons donc maintenant l'adresse de ShowWindow() dans EAX.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Puis 4 valeurs sont placées sur la pile. D'abord en 401BDC le flag de ShowWindow, suivi du HWND de la fenêtre. Et enfin l'adresse de retour du ShowWindow (qui est donc 402135) et le dernier paramètre de MessageBoxA(). 
+</p><center><img src="Captures/Olly09.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, la chaine "Nag-Screen" est décryptée en 401C17 puis placée sur la pile en tant que 3ème paramètre de MessageBoxA. Le programme fait de même avec la chaine "VERSION ENREGISTREE..." mais effectue un detect-trace avant de placer la chaine et le HWND de la fenêtre sur la pile. Pour finir, un detect-trace est exécuté une fois de plus.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le programme vérifie encore qu'il ne tourne pas sous un debugger. Puis exécute un énième detect-trace!!
+</p><center><img src="Captures/Olly0A.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En 401E02, l'adresse de ShowWindow est placée sur la pile avant un detect-trace. Puis en 401E5F, la chaine "MessageBoxA" est décryptée. (puis de nouveau un detect-trace). De la même façon que précédemment, la fonction en 401273 est appelée pour retrouver l'adresse de MessageBoxA. (Et un autre detect-trace pour la route...)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, le programme vérifie qu'aucun point d'arrêt n'est posé sur User32.MessageBoxA. La valeur testée en 4089D8 est initialisée au début du programme en 401412 et n'est apparemment jamais modifiée. 
+</p><center><img src="Captures/Olly0B.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Si tout va bien, un JMP saute sur le label de MessageBoxA comme s'il y avait eu un simple CALL.
+</p><center><img src="Captures/Olly0D.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Par contre voilà à quoi ressemble la pile à cet instant:<br>
+On a bien les 4 paramètres de la MessageBox mais l'adresse de retour correspond à l'adresse de ShowWindow. D'ailleurs on voit à la suite l'adresse de retour et les 2 paramètres de cette api.
+</p><center><img src="Captures/Olly0C.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une fois ces 2 fonctions exécutées, on se retrouve bien en 402135 (où nous attend un dernier detect-trace) pour enfin sortir de cette WindowProc!!!
+
+</p></td></tr>
+<tr><td width="20%"><b>3 - Patch</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour supprimer cette MsgBox, il faut donc éviter que ses paramètres se retrouvent sur la pile. On va donc patcher juste avant, c'est à dire au moment où sont placés ceux de ShowWindow en 401BDC.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On a donc les 2 paramètres de ShowWindow placés sur la pile puis comme adresse de retour, on va mettre le JMP qui sort de la gestion de WM_CREATE soit 4021E9. Il ne reste plus qu'à sauter sur USER32.ShowWindow dont l'adresse se trouve dans EAX.
+</p><center><img src="Captures/Olly0E.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le problème, c'est que ce code est crypté au lancement du programme. Il va donc falloir trouver à quelles valeurs correspondent ces 3 octets cryptés. Après quelques tests, on s'aperçoit que les octets sont décryptés indépendamment les uns des autres et que chaque valeur correspond à une même valeur une fois cryptée.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;J'ai donc codé une boucle dans un endroit libre (en 406F90) pour remplir 256 octets dans la zone de décryptage (qui commence en 4016FF) des valeurs 00 à FF et ainsi extraire un tableau de conversion. On remarque une certaine répétition dans le motif mais je ne vais pas essayer de deviner l'algo utilisé!! :p 
+
+<pre style="font-family:'Courier New';">
+     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+
+ 0  8E EE CE 2E 0E 6E 4E AE 8F EF CF 2F 0F 6F 4F AF
+ 1  88 E8 C8 28 08 68 48 A8 89 E9 C9 29 09 69 49 A9
+ 2  8A EA CA 2A 0A 6A 4A AA 8B EB CB 2B 0B 6B 4B AB
+ 3  84 E4 C4 24 04 64 44 A4 85 E5 C5 25 05 65 45 A5
+ 4  86 E6 C6 26 06 66 46 A6 87 E7 C7 27 07 67 47 A7
+ 5  80 E0 C0 20 00 60 40 A0 81 E1 C1 21 01 61 41 A1
+ 6  82 E2 C2 22 02 62 42 A2 83 E3 C3 23 03 63 43 A3
+ 7  9C FC DC 3C 1C 7C 5C BC 9D FD DD 3D 1D 7D 5D BD
+ 8  9E FE DE 3E 1E 7E 5E BE 9F FF DF 3F 1F 7F 5F BF
+ 9  98 F8 D8 38 18 78 58 B8 99 F9 D9 39 19 79 59 B9
+ A  9A FA DA 3A 1A 7A 5A BA 9B FB DB 3B 1B 7B 5B BB
+ B  94 F4 D4 34 14 74 54 B4 95 F5 D5 35 15 75 55 B5
+ C  96 F6 D6 36 16 76 56 B6 97 F7 D7 37 17 77 57 B7
+ D  90 F0 D0 30 10 70 50 B0 91 F1 D1 31 11 71 51 B1
+ E  92 F2 D2 32 12 72 52 B2 93 F3 D3 33 13 73 53 B3
+ F  EC CC 2C 0C 6C 4C AC 8C ED CD 2D 0D 6D 4D AD 8D
+
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;il suffit de remplacer BB par 19 en 401BE6 et 2554 par 8951 en 401BEA. <a href="Cible/CrackMePatched2.exe">CrackMePatched2.exe</a>
+</p>
+</td></tr>
+<!-- End //-->
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+The snake is long, seven miles<br>
+Ride the snake...he's old, and his skin is cold
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

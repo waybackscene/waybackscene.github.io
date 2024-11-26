@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+<pre>
+
+How to Crack Duelist Crackme 1 by Acid Burn translated by zerOOne
+
+ok, ich bin zurück um wieder Spass mit Crackmes zu haben !!
+Es handelt sich um ein Win Crackme von Duelist.
+Die Sicherheitsroutine ist eine einzugebene Seriennummer !!
+
+GO GO GO !!
+
+ok, setzt ein bpx auf GetWindowTextA und GetDlgItemTextA, dann gebt eine beliebige
+Seriennummer ein wie z.B. : 123456789
+Drückt auch "Check" und ihr seid zurück in SiftIce.
+Ihr solltet folgendes sehen:
+:00401107  E855020000          CALL    USER32!GetDlgItemTextA 
+:0040110C  33C0                XOR     EAX,EAX 
+:0040110E  80B8F720400000      CMP     BYTE PTR [EAX+004020F7],00  <= Vergleich von eingegebener S/N
+:00401115  7418                JZ      0040112F                    <= Falls falsch sprung zu bad cracker
+:00401117  80B0F720400043      XOR     BYTE PTR [EAX+004020F7],43  <= xor with 43h
+:0040111E  80B0F72040001E      XOR     BYTE PTR [EAX+004020F7],1E  <= xor with 1Eh 
+:00401125  80B0F720400055      XOR     BYTE PTR [EAX+004020F7],55  <= xor with 55h 
+:0040112C  40                  INC     EAX 
+:0040112D  E2DF                LOOP    0040110E  <= Schleife für jedes Zeichen
+So wir sehen, dass Crackme die Werte mit 43h, 1Eh und 55h xored !!
+Aber was ist xoring ???
+Drückt F10 um zu tracen and ihr seht folgendes:
+
+ :0040114E  68D3204000         PUSH    004020D3 
+ :0040114E  68F7204000         PUSH    004020F7
+
+Gebt "d 4020D3" ein und ihr solltet folgendes sehen:
+
+:004020D3 7B 61 65 78 64 6D 26 6B-7A 69 6B 63 65 6D 26 3C  {aexdm&kzikcem&< 
+:004020E3 26 66 6D 7F 6A 61 6D 7B-26 6A 71 26 6C 7D 6D 64  &fmjam{&jq&l}md 
+:004020F3 61 7B 7C                                         a{| 
+
+Vielleicht ist das, das was gexored wird !!
+Gebt "d 4020F7" ein:
+Ihr seht im Datenfenster: 9:;<=>      Es ist nicht wichtig, es ist die Seriennummer, die ihr
+eingegeben habt nach dem xor.
+So ihr habt einen Key, wir werden einen xor damit machen !!!
+Um den richtigen Code zu finden, müssen wir die Reihenfolge von xor umdrehen: 43h; 1Eh; 55h
+wird zu 55h; 1Eh; 43h;
+Lasst uns die Seriennummer berechnen !!!:
+fuer 55h: 
+
+7B 61 65 78 64 6D 26 6B 7A 69 6B 63 65 6D 26 3C 26 66 6D 7F 6A 61 6D 7B 26 6A 71 26 6C 7D 6D 64 61 7B 7C 
+                                        XOR
+
+55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 
+
+                                        =
+2E 34 30 2D 31 38 73 3E 2F 3C 3E 36 30 38 73 69 73 33 38 2A 3F 34 38 2E 73 3F 24 73 39 28 38 31 34 2E 29 
+
+
+
+fuer 1Eh:
+
+
+2E 34 30 2D 31 38 73 3E 2F 3C 3E 36 30 38 73 69 73 33 38 2A 3F 34 38 2E 73 3F 24 73 39 28 38 31 34 2E 29 
+                                        XOR
+
+1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E
+
+                                        =
+30 2A 2E 33 2F 26 6D 20 31 22 20 28 2E 26 6D 77 6D 2D 26 34 21 2A 26 30 6D 21 3A 6D 27 36 26 2F 2A 30 37 
+
+
+
+Fuer 43h:
+
+
+
+30 2A 2E 33 2F 26 6D 20 31 22 20 28 2E 26 6D 77 6D 2D 26 34 21 2A 26 30 6D 21 3A 6D 27 36 26 2F 2A 30 37 
+
+43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43
+
+                                        =
+73 69 6D 70 6C 65 2E 63 72 61 63 6B 6D 65 2E 34 2E 6E 65 77 62 69 65 73 2E 62 79 2E 64 75 65 6C 69 73 74 
+
+
+So wie ist nun die Nummer ??
+Convertiert die ASCII Werte !!
+
+73696D706C652E637261636B6D652E342E6E6577626965732E62792E6475656C697374 ist gleich zu :
+
+
+73 69 6D 70 6C 65 2E 63 72 61 63 6B 6D 65 2E 34 2E 6E 65 77 62 69 65 73 2E 62 79 2E 64 75 65 6C 69 73 74 
+s  i  m  p  l  e  .  c   r a  c  k  m   e  .  4 .  n   e  w  b  i  e  s  .  b  y  .  d  u  e  l  i  s  t
+
+So der Code ist :simple.crackme.4.newbies.by.duelist
+
+hehe !!
+Wir habens geschafft !
+Ich hoffe ihr habt alles verstanden !!
+Es war sehr einfach!!
+Ihr könnt mir an acid2600@hotmail.com für Fragen oder anderes mailen !!!
+Cy@ !!!
+					ACiD BuRN [ReFLeXZ'99 & ECLiPSE'99]
+
+
+</PRE></left>
+</BODY>
+</HTML>

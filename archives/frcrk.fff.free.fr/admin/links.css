@@ -1,0 +1,15 @@
+a{text-decoration:none}
+TD{font-family: Verdana; font-size: x-small;}
+body{
+SCROLLBAR-FACE-COLOR: #ffffff;
+SCROLLBAR-HIGHLIGHT-COLOR: #3c6a91;
+SCROLLBAR-SHADOW-COLOR: #3c6a91;
+SCROLLBAR-3DLIGHT-COLOR: #ffffff;
+SCROLLBAR-ARROW-COLOR: #3c6a91;
+SCROLLBAR-TRACK-COLOR: #ffffff;
+SCROLLBAR-DARKSHADOW-COLOR: #ffffff
+}
+a:hover{color:#EB1F15}
+A:link    {color:#0066CC}
+A:active  {color:#0066CC}
+A:visited {color:#0066CC}

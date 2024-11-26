@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+<head>
+<title>Esoquynthe - Analyse de BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="titre"></div>
+<div id="menu">
+	<ul>
+	<li> <a href="intro.html">1. Intro</a></li>
+	<li><a href="schema.html">2. Schéma</a></li>
+	<li><a href="analyse.html">3. Routine serial</a></li>
+	<li><a href="keygen.html">4. Créer le keygen</a></li>
+	<li><a href="greetz.html">5. Greetz</a></li>
+	</ul>
+</div>
+
+<div id="contenu">
+<h1> 4. Créer le keygen</h1>
+<p> Nous allons maintenant coder un keygen en assembleur. Vous pouvez accéder au keygen complet en cliquant sur ce lien <a href="keygen.rar">KEYGEN</a>. Le vrai problème de ce keygenme réside dans le code du keygen. En effet, le serial dépend de 3 bytes situés dans le binaire d'origine variables à chaque lancement ! Notre keygen doit donc tout d'abord se charger de récupérer ces 3 octets. Nous allons donc commencer le travail en scannant les processus actifs à la recherche du module "esoquynthe.exe". une fois le binaire trouvé, nous allons ouvrir le processus correspondant et nous allons subtiliser les 3 fameux bytes. Il ne nous restera plus qu'à utiliser la TABLE DE VERIFICATION pour récupérer la bonne séquence à cliquer.</p>
+<h2> Récupérer le handle de esoquynthe</h2>
+<p> Nous allons donc commencer par scanner les processus actifs à la recherche de notre module en utilisant une technique très répendue : <strong> CreateToolhelp32Snapshot</strong></p>
+
+<p> Les datas :</p>
+<pre>
+    lpNumberOfBytesWritten  DWORD   0
+    Nom_Module              BYTE    "esoquynthe.exe",0 
+    hProcessSnap            DWORD   0
+    hModuleSnap             DWORD   0
+    pProcessEntry           PROCESSENTRY32 <>
+    pModuleEntry            MODULEENTRY32 <>
+    titre                   BYTE    "information :",0
+    texte                   BYTE    "Le crackme esoquynthe n'est pas lancé !",0
+</pre>
+<p> Le code :</p>
+
+<pre>
+  push 0
+  push TH32CS_SNAPPROCESS
+<strong>  call CreateToolhelp32Snapshot                     ; Snapshot of processes</strong>
+  mov hProcessSnap, eax
+
+  mov pProcessEntry.dwSize, SIZEOF PROCESSENTRY32
+  push offset pProcessEntry
+  push hProcessSnap
+<strong>  call Process32First                               ; Get first process</strong>
+
+Test_Process:
+  cmp eax, 0
+  jnz Scan_Process
+  jmp sortie
+
+Scan_Process:
+
+  push pProcessEntry.th32ProcessID
+  push TH32CS_SNAPMODULE
+  call CreateToolhelp32Snapshot                     ; Snapshot of modules in the current process
+  mov hModuleSnap, eax
+
+
+  mov pModuleEntry.dwSize, SIZEOF MODULEENTRY32
+  push offset pModuleEntry
+  push hModuleSnap
+ <strong> call Module32First                                ; Get first Module</strong>
+
+Test_Module:
+  cmp eax, 1
+  jnz Next_Process 
+  
+  push offset pModuleEntry.szModule
+  push offset Nom_Module
+<strong>  call lstrcmpiA                                    </strong>
+  test eax, eax
+  jnz NextModule
+  jmp LIRE_PROCESS
+
+NextModule:
+  push offset pModuleEntry
+  push hModuleSnap
+<strong> call Module32Next</strong>
+  jmp Test_Module
+
+Next_Process:
+  push hModuleSnap
+  call CloseHandle
+  push offset pProcessEntry
+  push hProcessSnap
+<strong>  call Process32Next</strong>
+  jmp Test_Process
+
+sortie:
+  push 0
+  push offset titre
+  push offset texte
+  push 0
+  call MessageBoxA
+  jmp fin
+; ************************************ Détermine le code !
+
+LIRE_PROCESS:
+</pre>
+
+<h2> Récupération des 3 octets</h2>
+<p> Nous allons alors ouvrir le processus et récupérer les 3 bytes.</p>
+<pre>
+LIRE_PROCESS:
+
+  push pProcessEntry.th32ProcessID
+  push 0
+  push PROCESS_VM_READ
+<strong>  call OpenProcess</strong>
+
+
+  push lpNumberOfBytesWritten
+  push 4
+  push offset CHAINE
+  push 405103h
+  push eax
+<strong>  call ReadProcessMemory</strong>
+</pre>
+<h2> Générer la séquence de touches</h2>
+<p> Nous pouvons alors tranquillement générer la bonne séquence de touches en utilisant une table comme la TABLE DE VERIFICATION.</p>
+<p> Les Datas :</p>
+<pre>
+    FORMAT_     BYTE    "%.8x",0
+    
+   
+    CHAINE      DWORD   0
+    CODE        DWORD   0
+                DWORD   0
+    CODE_ascii  BYTE    0 DUP(10)
+    TABLE       BYTE    04h,03h,02h,01h,00h
+                BYTE    01h,00h,04h,03h,02h
+                BYTE    02h,01h,00h,04h,03h
+                BYTE    03h,02h,01h,00h,04h
+</pre>
+<p> Le code :</p>
+<pre>
+  mov esi, offset CHAINE
+  mov edi, offset CODE
+  mov ecx, 1
+
+Scan:
+    mov eax, 0
+    cmp byte ptr [esi], 0
+    jne @F
+    add eax, 0
+    jmp suite
+@@:
+    cmp byte ptr [esi], 1
+    jne @F
+    add eax, 5
+    jmp suite
+@@:
+    cmp byte ptr [esi], 2
+    jne @F
+    add eax, 0Ah
+    jmp suite
+@@:
+    cmp byte ptr [esi], 2Bh
+    jne suite
+    add eax, 0Fh
+suite:
+    cmp byte ptr [edi+ecx-1], 0
+    jne @F
+    add eax, 0
+    jmp boucle
+@@:
+    cmp byte ptr [edi+ecx-1], 1
+    jne @F
+    add eax, 1
+    jmp boucle
+@@:
+    cmp byte ptr [edi+ecx-1], 2
+    jne @F
+    add eax, 2
+    jmp boucle
+@@:
+    cmp byte ptr [edi+ecx-1], 3h
+    jne @F
+    add eax, 3
+    jmp boucle
+@@:
+    cmp byte ptr [edi+ecx-1], 4h
+    jne boucle
+    add eax, 4
+boucle:
+    mov ebx, offset TABLE		------------------ Récupérer la valeur dans TABLE
+    add ebx, eax
+    movzx eax, byte ptr [ebx]
+    mov byte ptr [edi+ecx], al
+    inc ecx
+    inc esi
+    cmp ecx, 4
+    jne Scan
+
+    mov esi, CODE
+    push esi
+    push offset FORMAT_
+    push offset CODE_ascii
+    call wsprintfA
+    add esp, 0Ch
+
+    mov esi, offset CODE_ascii
+    add esi, 7
+    push esi
+    push SERIAL1
+    push hWin
+    call SetDlgItemTextA -------------------------------- Premier bouton
+
+    dec esi
+    mov word ptr [esi], 0
+    dec esi
+    push esi
+    push SERIAL2
+    push hWin
+    call SetDlgItemTextA ---------------------------------- Second bouton
+
+    dec esi
+    mov word ptr [esi], 0
+    dec esi
+    push esi
+    push SERIAL3
+    push hWin
+    call SetDlgItemTextA ---------------------------------- troisième bouton
+
+    dec esi
+    mov word ptr [esi], 0
+    dec esi
+    push esi
+    push SERIAL4
+    push hWin
+    call SetDlgItemTextA ---------------------------------- Quatrième bouton
+</pre>
+
+
+<p> Vous pouvez constater qu'à aucun moment je n'utilise les valeurs poussées sur la pile dans le binaire d'origine. Seule la TABLE est importante, le reste n'est que du décor.</p>
+
+<div class="page_suivante">
+<a href="greetz.html"><img class ="noborder" src = "images/hand.jpg" alt="Page suivante" title="Page suivante" /></a>
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+
+</div>
+</body>
+</html>

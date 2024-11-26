@@ -1,0 +1,161 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+<pre>
+            WarezPuP Vb crackme 3 tutors by ACiD BuRN
+
+
+ok , another vb crackme tutor from me , but this time it was a little
+more funny coz the crackme used something against the cracker *g*
+hehe
+but you will see !!!
+
+
+Tools needed : Soft-ice 3.x or 4
+               Smart Check 6
+               A brain :)
+
+
+ok , i assume you have all this tools , so now lets Rock ! :)
+
+*****************
+****1st part*****
+*****************
+
+
+Run the crackm me to see the protection and you see a messagebox
+saying you : "WarezPuP greets all those Crackers who try my third ..."
+ok , press the OK button.
+ugh ? another messagebox , saying you same shits :)
+ok , press the ok Button and now , the crackme end :(
+what the hell is that ? 1st i though it was a Sice detect so , i ran
+Smart check on the crackme.
+so , in Smart check you u run it , you see the 2 messages Boxes and it
+end...
+So in Smart check double click on +form1_load
+well , scroll down until you see the text of the 1st message box.
+just after all this shit of 'Chr$(integer:blabla)'. you see this :
+
+MsgBox(VARIANT:String:"WarezPuP greets all those Cr..." <== this is the
+1st messagebox , but we know it end after the second !!
+
+ok , so let scroll down and we see :
+
+Dir(VARIANT:String:"C\\WINDOWS\SMRTCHCK.TSF",FLAGS:00000000)
+
+hmmm, what the hell is this ?? maybe the crackme look for this file
+and end if it found it !!! hehe
+ok , make a copy of this file with another name like SMRTCHCK.bak
+and errase this one.
+Now restart the crackme , u see the First Nag , but wait ... it run now
+hehe , we kicked the 1st protection *g*
+we can see a window with name / serial protection , hehe...
+
+
+*****************
+****2nd part*****
+*****************
+
+ok , now i will use Sice for this part coz i like this , but i succeed
+in this task with Smart check too...
+for this i will use a Search methode who works fine with some VB :)
+hehe
+
+before , read this :
+
+so , the search in sice is : 
+S 0 L ffffffff 56,57,8b,7c,24,10,8b,74,24,0c,8b,4c,24,14,33,c0,f3,66,a7
+
+long to type so its a good to put this in winice.dat.
+the Alt-F4 that is rarely used in your winice.dat file.so you can
+use Alt-F4 as shortcut ! put this in the winice.dat
+AF4="^s 0 l ffffffff 56,57,8b,7c,24,10,8b,74,24,0c,8b,4c,24,14,33,c0,f3,66,a7;"
+This will save you the time of typing all that !! restart your computer now !
+
+
+When it is done , we can start to crack this babe !
+
+Enter this name and Serial :
+
+Enter : ACiD BuRN
+sERIAL: 11223344
+
+
+ctrl+D to soft-ice and type bpx hmemcpy, press F5 and click on Ok and 
+we are back at Soft-ice...
+now press F11 and F12 untill you see Msvbvm50 at the down of the 
+softice window.We are now at the good place , alt+F4 to search the 
+compare emplacement !!
+Now you should see "search pattern found at XXX:XXXXXXXX". for me 
+XXX:XXXXXX is 25F:7B1DD9EA. Put a bpx on 25F:7B1DD9EA and disabled the
+hmemcpy bpx ,type bd 0.
+
+now press F11 and we break at 25F:7B1DD9EA .
+it is where is the comparaison , We will see :
+
+
+: 56 push esi
+: 57 push edi
+: 8B7C2410 mov edi, [esp + 10] ; Move real serial into edi
+: 8B7C240C mov esi, [esp + 0C] ; Move fake serial into esi
+: 8B4C2414 mov ecx, [esp + 14]
+
+Press F10 to pass "mov edi, [esp + 10]" and type d edi for see the real
+serial !
+
+In data window , u must see : 
+1.1.1.5.7.9.4.M.i.c.9.5.1.3.F.r.o.s.4.6.0.5.4.0.-.D.S.P
+
+'cauz it is a vb proggy it is in wide format (space between digits).
+to have the real serial remove the dots.
+So, the real code is : 1115794Mic9513Fros460540-DSP
+
+For check if it is the good one , we will enter:
+
+nAME: ACiD BuRN 
+cODE: 1115794Mic9513Fros460540-DSP
+
+click on the Button and enjoy your Congratulations Messagebox :)
+
+**************************************************************************
+*note : in the Zip u can see the screen shots or in this page on my site *
+**************************************************************************
+
+this message box say you Good , keygen me now , hehe , i have others
+apps to Crack so i don't have time for playing with this.
+I think a good look in Smart check will show u lot... keygen it now :)
+
+
+Well , this tut is finish , hope u understand all this piece of
+text , but if you have a comment or one question, mail me to :
+ACiD_BuRN@nema.com or acid2600@caramail.com.
+
+have Fun and happy cracking !
+
+
+greets to my groups : ECLiPSE / PWA / CiA / oDDiTY
+also greetingz to:
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, Torn@do, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPuP , _y , SiONIDE , SKORPIEN
+...
+
+Sorry if you are not here too many people to greetz !!!)
+
+
+			             ACiD BuRN 
+
+
+
+
+</PRE></left>
+
+<center><img SRC="Warez.jpg"</center>
+
+
+</BODY>
+</HTML>

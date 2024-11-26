@@ -1,0 +1,320 @@
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
+    ²²    ____                     __       __           ²²ßÛ
+    ²²   /  _/_ _  __ _  ___  ____/ /____ _/ /           ²² ÛßÛ
+    ²²  _/ //  ' \/  ' \/ _ \/ __/ __/ _ `/ /            ²² Û Û
+    ²² /___/_/_/_/_/_/_/\___/_/  \__/\_,_/_/             ²² Û Û
+    ²²   ____                          __          __    ²² Û Û
+    ²²  / __ \___ ___ _______ ___  ___/ /__ ____  / /____²² Û Û
+    ²² / /_/ / -_|_-</ __/ -_) _ \/ _  / _ `/ _ \/ __(_-<²² Û Û
+    ²²/_____/\__/___/\__/\__/_//_/\_,_/\_,_/_//_/\__/___/²² Û Û
+    ²²                                                   ²² Û Û
+    ²²      Web: http://www.ImmortalDescendants.org      ²² Û Û
+    ²²                Author: ACiD BuRN                  ²² Û Û
+    ²²                Date: 24/05/2000                   ²² Û Û
+    ²²         Topic: Keygening MP3 Explorer 3.2	 ²² Û Û
+    ²²               Level: beginners                    ²² Û Û
+    ²²                                                   ²² Û Û
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²² Û Û
+      ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ Û
+        ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ
+
+
+
+tools used: 
+		- Soft ice 3.23 (best version for me :)
+		- a C++ compiler
+		- a brain
+		- Some good music :)
+
+Note: I assume you know how to use this tools , else you gotta find some easy
+tutorials that teach you how to use them and come back once your ready :)
+
+
+Oh yeah , another tutor from your lil ACiD BuRN :) the frog is back from hell heh!
+Ok, looks like i am finally back in cracking and reversing stuff hehe ;)
+After a goddamn long time without doing anything coz of my illness ( which isn't fixed thought)
+i am ready to make others tutorials :)
+Enough blabla! let's Rock :)
+oh by the way , i keygened CORE trial CrackMe :p
+
+
+I'm gonna teach you a good way to keygen many shits !
+using BPR can help you a lot in keygening, you will see :)
+
+
+1)Let's Rock
+
+
+Run mp3 explorer and go in the '?' menu and look in about:)
+Here is a place to enter name/serial hehe!
+enter name: ACiD BuRN
+enter code: 12321
+
+in fact, the bpr technic will put us directly in the generation part of the algo!
+without tracing like a fool :)
+look that:
+
+Put a bpx on GetWindowtextA and press on the OK button!
+Soft ice pop up! Break due to BPX USER32!GETWINDOWTEXTA ..
+btw don't press anything ! (i.e: F11 or F12) 
+we're gonna look the stack parameter.for a best lisibility , we will look dword (command = dd)
+so , in soft ice: dd esp
+Why that ?! huh
+
+
+"dd" means: display dword and "esp" is the stack pointer!
+After pressing "dd esp", the Soft-ice's window change and we can see the parameters :
+
+
+xxxx:yyyyyyyy  A     B     C     D  ................
+xxxx:yyyyyyyy  E     F     G     H  ................
+
+
+Where A,B,C,D,E... look like:  XXXXXXXX (Of course XXXXXXXX are some numbers hehe)
+
+You should see something like that:
+
+xxxx:yyyyyyyy   0044423B	00000464	015DB338	0000000A  ...........
+
+We will only use this :)
+
+(As you noticed, here A=0044423B , B=00000464, C= 015DB338...)
+We can see here the adress where our name ends (015DB338).
+
+type D "adress where the name ends"
+For example here is is: D 015DB338
+
+
+Now , you can press F11 and you should see the name at the address we looked
+(where the name ended...)
+Good, we are on the good way eheh!
+
+We're gonna put a BPR (break on memory range).
+this kind of BP works like this:
+
+bpr "start adress" "end address" RW
+
+RW means:  Read and write. 
+So, it's gonna stop when something is reading or writting in this adress !
+
+So, under Soft-ice, type this:
+bpr 015DB338 015DB338 + (length of the name - 1) RW
+
+ACiD BuRN (length: 9 -> 9 - 1 = 8)
+In our target, for ACiD BuRN , we type this :
+
+bpr 15DB338 015DB338+8 RW
+
+Now , you can disable our bpx on getwindowtextA! ( bd 0 )
+You just have to press F5 and we will land in directly in the algo :)
+well , on this app , not directly , we land in the dll so keep pressing F5 till you are
+in DLLs :)
+
+'Coz, we don't give a flying fuck of them :p
+
+Once you are in the App, we are in the good place ! and algo starts there :
+look my winice.log
+
+----------------------SNiP----- SNiP----- SNiP----------------------------
+
+
+:bpx getwindowtexta
+Break due to BPX USER32!GetWindowTextA  (ET=1.17 seconds)
+:dd esp
+:d 15f5a18
+Break due to G (ET=268.99 microseconds)
+:bpr 15f5a18 15f5a18+8 RW
+:bd 0
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+Break due to BPR #0267:015F5A18 #0267:015F5A20 RW
+:u eip l 50
+
+comment: here comes the first loop:
+
+025F:0040A173  8B442420            MOV     EAX,[ESP+20]  ; EAX contains the adress of my name
+025F:0040A177  0FBE0C06            MOVSX   ECX,BYTE PTR [EAX+ESI] ; ECX = hex value of 1st char
+025F:0040A17B  51                  PUSH    ECX
+025F:0040A17C  E8E9BB0100          CALL    00425D6A      ; intresting !!!!
+025F:0040A181  83C404              ADD     ESP,04
+025F:0040A184  03E8                ADD     EBP,EAX      ; add ascii value in hex to EBP
+025F:0040A186  46                  INC     ESI          ; next char!
+025F:0040A187  3BF7                CMP     ESI,EDI      ; All chars done ?!
+025F:0040A189  7CE8                JL      0040A173     ; no, jmp start !
+
+
+025F:0040A18B  8B4C240C            MOV     ECX,[ESP+0C]         /
+025F:0040A18F  BAC0D40100          MOV     EDX,0001D4C0        /
+025F:0040A194  2BD5                SUB     EDX,EBP            /   we will look that
+025F:0040A196  33C0                XOR     EAX,EAX           /    after !
+025F:0040A198  3BCA                CMP     ECX,EDX          /
+025F:0040A19A  8D4C2420            LEA     ECX,[ESP+20]    /
+025F:0040A19E  0F94C0              SETZ    AL             /
+
+
+So, we see that it takes ascii value of each chars and add them in EBP.
+But there is a Call which looks intresting ! let's have a closer look in it :
+
+:u eip l 50
+
+025F:00425D6A  53                  PUSH    EBX
+025F:00425D6B  33DB                XOR     EBX,EBX         ; EBX=0
+025F:00425D6D  391D74344800        CMP     [00483474],EBX  
+025F:00425D73  7513                JNZ     00425D88
+025F:00425D75  8B442408            MOV     EAX,[ESP+08]  ;move ascii value in EAX
+025F:00425D79  83F861              CMP     EAX,61        ;compare it to 61h     
+025F:00425D7C  7C59                JL      00425DD7      ;less than 61? jump to 425DD7
+025F:00425D7E  83F87A              CMP     EAX,7A        ;compare it to 7A
+025F:00425D81  7F54                JG      00425DD7  ;greater than 7A? jump to 425DD7
+025F:00425D83  83E820              SUB     EAX,20    ;less than 7A but greater than 61 (eax-20)  
+025F:00425D86  5B                  POP     EBX
+025F:00425D87  C3                  RET               ;ret! come out of the call!
+025F:00425D88  56                  PUSH    ESI
+025F:00425D89  BE88484800          MOV     ESI,00484888
+025F:00425D8E  57                  PUSH    EDI
+025F:00425D8F  56                  PUSH    ESI
+
+
+
+Ok , so what's goin' on ?!
+Well it compares the char to 61 , 7A!
+61h = a and 7Ah = z  if it is less than 7A but greater than 61 it substract 20 to it 
+Well , this is just making all the chars in uppercase !
+So the serial for ACiD BuRN will be the same than for Acid Burn , acid burn, ACID burn...
+So what does the main loop ?
+Convert in uppercase and then add ascii value to EBP...
+Do all Chars and then we land here:
+
+025F:0040A18B  8B4C240C            MOV     ECX,[ESP+0C]   ; ECX = our fake entered serial
+025F:0040A18F  BAC0D40100          MOV     EDX,0001D4C0   ; EDX = 1D4C0h = 12000  
+025F:0040A194  2BD5                SUB     EDX,EBP        ; EDX = EDX - EBP
+025F:0040A196  33C0                XOR     EAX,EAX        ; EAX = 0
+025F:0040A198  3BCA                CMP     ECX,EDX        ; Compare fake serial to good one
+025F:0040A19A  8D4C2420            LEA     ECX,[ESP+20]  
+025F:0040A19E  0F94C0              SETZ    AL            
+
+it is clear enough !
+So the algo is:
+
+- convert all chars to uppercase
+- add all ascii value 
+- Substract the result of ascii added to 12000
+
+
+Now ,you can easily code a keygen for MP3 Explorer !
+As usual , i am gonna give you the source of a working Keygen coded by me :)
+No more Visual basic ( i was lazy hehehe!) here it is C++ + inline asm :)
+
+
+-------------------------start of my source---------------------------------
+
+#include <stdio.h>
+#include <string.h>
+#include <conio.h>
+
+int main(){
+    int i,len;
+
+    unsigned char name[100];
+
+    unsigned long check=128;
+
+    printf("\Mp3 Explorer Keygen By : ACiD BuRN [Immortal descendants] \n ");
+    printf("\__________________________________________________________");
+    printf("\nEnter name: ");
+    gets(name);
+    len=strlen(name);
+
+asm
+{
+       xor ecx, ecx
+       xor edi, edi	
+       mov edx, [len]
+
+start1:
+       movsx eax, [name+ecx]
+       cmp eax, 97
+       jl temp1
+       cmp eax, 122
+       jg temp1
+       sub eax, 32
+
+temp1:
+       add edi, eax
+       inc ecx
+       cmp ecx, edx
+       jne start1
+
+       mov eax, 120000
+       sub eax, edi
+       mov [check], eax
+
+}
+    
+    printf("=: %lu" ,check); /* %lu = decimal, check = serial */
+    printf("\nEnjoy!");
+getch();
+return 0;
+
+}
+
+----------------------------end of my source---------------------------------
+
+Info:
+
+if you compil this keygen it will works but if you enter a name with
+accents ie: frédéric or Cédric ... the given serial won't work..
+Why that ? i dunno ... looks like the compiler fuck up a bit the code hehe
+Because if you compil this algo in a 32 bits GUI Keygen it will works for evername !
+But hell ! i ain't gonna give you my C++ template :p hehe :)
+
+
+
+
+This tutorial is over and i hope you learnt something from it...
+btw , as i don't have internet anymore, don't mail me your question coz i don't 
+know when i would read them!
+But Go on #Cracking4newbies and go nag an OP there ;-Þ
+
+
+This tutorial is dedicated to my girly! 
+Celine , you own me !:)
+
+
+Greets fly out to:
+
+no specific order
+
+CyberBlade,R!SC , ^INFeRNo^ , AB4DS , Klefz , Volatility ,
+TORN@DO , T4D , Jeff , [Virus] , JaNe , Appbusta , Duelist , tKC , BuLLeT ,
+Lucifer48 , MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio ,
+SiFLyiNG , Fire Worx , CrackZ , neural_en , WarezPup , _y , SiONIDE ,
+SKORPIEN , Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux ,
+Carpathia , K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD , ytc ,
+Kwai_lo , Killer_3K , TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine ,
+WarezPup , zoltan , [yAtes] , TarGon , Icecream , Punkguy2 , Sortof ,
+TRDdonjuan , Lord Soth , Judged , G-Rom , Quantico , Christal , psike , Leo0n ,
+Albator , +Spath , +Frog's Print , toutim , Pulsar , Night , psike , Uno , F|SH ,
+Lixus , LosT , RD-116 , Ben0 , Whizkid , [MandKind] , alpine , Alsindor ,
+Stone , Elraizer , Fravia+ , Iczelion , nody , Asphalt , Rhythm ,
+rudeboy , X-Calibre , Cirus , shaoni...
+...
+"Put your name here! :P" ...
+
+
+
+
+Take Care,
+
+
+			ACiD BuRN [Immortal Descendants / ECLiPSE ]
+
+
+

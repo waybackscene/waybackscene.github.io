@@ -1,0 +1,232 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+				Welcome to my 21th tutorial !!
+                     How to keygen the Cracking4newies Crackme 3 project
+
+
+
+Introduction:
+
+Well , this is project to teach newbies cracking.It is the 3rd project , i didn't
+look the others yet , coz i am damn busy...
+Anyway , i take time to make one tutor , coz this will help newbies , who want to
+learn keygening , and it is good for me to make keygens sometimes , hehe :)
+
+
+Crackme notes from crackme's readme :
+
+================================================================================
+#Cracking4Newbies                            WEEKLY CRACKING TARGET FOR EVERYONE
+--------------------------------------------------------------------------------
+Start:               25/08/1999
+End:                 02/09/1999
+
+Name of target:      #Cracking4Newbies CrackMe #3
+URL:                 http://c4nprojects.cjb.net
+Size:                12 KB
+Objectives:          Explain how the serial number is generated ... and if
+                     possible, code a KeyGEN for it.
+================================================================================
+
+i will add this :
+
+Level : easy
+coded by : ytc and Kwai Lo (thx friends , nice crackme !)
+
+
+
+I)lets go !!
+
+
+ok, now it is time to keygen this bitch , so in soft ice set your favorites BPX used
+in name / serial cracking :
+bpx getwindowtewta and getdlgitemtexta.
+
+Enter your name and Fake serial.(name : ACiD BuRN /  Serial : 12345)
+Click on enter , you are now back in Soft ice , press F12 coz you are not in the good
+place , but in the lame user32 dll...
+now , you can see , you are in the crackme. (i hope u understand all , i am tired as hell ;) )
+trace with F10 , until u land here :
+
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:004010C6(C)
+|
+:004010AF 0FBE4415C0              movsx eax, byte ptr [ebp+edx-40]   ; put in eax the 1st ascii 
+value of you name (for ACiD BuRN :  A=41)
+
+:004010B4 03F0                    add esi, eax                 /                  
+:004010B6 8D7DC0                  lea edi, dword ptr [ebp-40] /   
+:004010B9 83C9FF                  or ecx, FFFFFFFF           /               
+:004010BC 33C0                    xor eax, eax              /               
+:004010BE 42                      inc edx                  /        Loop                        
+:004010BF F2                      repnz                   /
+:004010C0 AE                      scasb                  /
+:004010C1 F7D1                    not ecx               /
+:004010C3 49                      dec ecx              /      
+:004010C4 3BD1                    cmp edx, ecx        /            
+:004010C6 76E7                    jbe 004010AF       /              
+
+
+
+ok , so what does this loop ?! :
+
+movsx eax, byte ptr [ebp+edx-40]  <==   eax = ascii value of the char at position EDX
+add esi, eax                      <==   esi = esi + eax   
+inc edx                           <==   next char
+cmp edx, ecx                      <==   compare length of your name with the counter in edx
+jbe 004010AF                      <==   If all chars are not done, loop until edx = length name
+
+
+so , this loop just take each ascii value and add it in ESI.
+the result for ACiD BuRN is : 2A8
+
+41 + 43 + 69 + 44 + 20 + 42 + 75 + 52 + 4E = 2A8
+A     C    i   D  space   B    u   R    N
+
+
+After this loop , you land here :
+
+
+:004010C8 897508                  mov dword ptr [ebp+08], esi  ; [ebp+8] contains ESI value
+:004010CB C1650807                shl dword ptr [ebp+08], 07   ; [ebp+8] = shl [ebp+8],7
+:004010CF 8D4DF4                  lea ecx, dword ptr [ebp-0C]  
+:004010D2 6A0A                    push 0000000A
+:004010D4 51                      push ecx
+:004010D5 68E9030000              push 000003E9
+:004010DA 53                      push ebx
+
+
+
+As you can see , the esi value (for me : 2A8) is strored in [ebp+8].
+then you see :   shl dword ptr [ebp+08], 07
+really interesting ;)
+well , we have to trace again..
+Trace until you land here :
+
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:004010E4(C)
+|
+:00401102 8D55F4                  lea edx, dword ptr [ebp-0C]
+:00401105 52                      push edx
+:00401106 E840010000              call 0040124B
+:0040110B 8B4D08                  mov ecx, dword ptr [ebp+08] ; ECX = [ebp+8] ([ebp+8]= shl esi,7)
+:0040110E 83C404                  add esp, 00000004
+:00401111 03CE                    add ecx, esi                 ; ECX = ECX + ESI  (ESI=2A8 for me)
+:00401113 3BC8                    cmp ecx, eax                 ; ? eax = fake serial / ? ecx = good
+:00401115 6A00                    push 00000000
+:00401117 751B                    jne 00401134                 ; if not equal jump lame cracker
+
+* Possible StringData Ref from Data Obj ->"Good!"
+                                  |
+:00401119 685C504000              push 0040505C
+
+* Possible StringData Ref from Data Obj ->"Congratulations!!"
+                                  |
+:0040111E 6848504000              push 00405048
+:00401123 53                      push ebx
+
+
+
+Nice , now , i think you are able to make a keygen !!!
+lemme show u all the algo :
+
+1st part: Add all ascii value of your name and strore it in a variable.(ESI in memory)
+2nd part: take the value in ESI and do a shl,7 on it and strore it in a variable.([ebp+8] in memory)
+3rd part: take the value of the 1st part and add it to the 2nd part's value. 
+4th part: take the result in decimal for serial :)
+
+Name : ACiD BuRN
+sERiAL : 87720
+
+i gave you all to make your own keygen , but i will show u my source ;)
+coz this tut is for newbies , well this is my delphi source...
+i coded it very fast at 2 am , but works fine !
+
+
+II) Delphi keygen sources:
+
+
+procedure TForm1.Edit1Change(Sender: TObject);
+
+var i,ascii,result: integer;
+
+begin
+	for i:=1 to length(edit1.text) do
+begin
+
+ascii:=ascii + ord(edit1.text[i]);
+end;
+
+asm
+    mov eax,ascii
+    mov ecx,ascii
+    shl eax,7
+    add eax,ecx
+    mov ascii,eax
+end;
+
+result:=ascii;
+edit2.text:=inttostr(result);
+end;
+end.
+
+
+to make this work , u need to create a new project in delphi 4 and put this text box
+edit1.text box = place to enter name
+edit2.text box = final serial
+
+click on edit1.text , in events , double click on "on change" and past this code !!
+have Fun :)
+
+
+III) Ending...
+
+I want to thanx my friends ytc and kwai_lo for this cool crackme ;)
+Well , this tut is finish , hope u understand all this piece of text , but if you have a 
+comment or one question, mail me to : ACiD_BuRN@crackerinaction.org
+Enjoy!
+
+
+Greetings to my groups : ECLiPSE / CiA
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo....
+
+
+i want to greets PWA members , i left this group due to not enough time for them :(
+sorry Dudes ;) , i will back !!
+
+
+if your name is not here sorry !!! lot of men to greets !
+
+
+				ACiD BuRN [ECL/CiA]
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE></left>
+</BODY>
+</HTML>

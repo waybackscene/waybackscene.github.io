@@ -1,0 +1,696 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<meta name="author" content="elooo - Kharneth" />
+  <meta name="description" content="Tutorial pour le crackme esoquynthe de meat" />
+
+	<title>Tutorial pour le crackme esoquynthe de meat</title>
+	
+	
+	<style type="text/css">    
+    body {
+     		 font-family:Verdana;
+    		 font-size:10pt;
+				 width:95%;
+    }
+    a:visited, a:active, a:link {
+      color:#555;
+    }
+    
+    a:hover {
+      color:#900;
+    	text-decoration:none;
+    }
+    p {
+    	 	 text-align:justify;
+    		 text-indent:20px;
+    		 font-size:12px;
+    		 margin-right:30px;
+    }
+    hr {
+    	 align:center;
+    	 noshade:true;
+    	 size:1px;
+    	 width:90%;
+    	 margin-top:40px;
+    	 margin-bottom:40px;
+    }
+
+    .Titre { font-weight:bold;font-size:14pt;text-align:center;margin-bottom:60px; }
+		.Auteur	{ font-weight:bold;font-size:12pt;text-align:center;margin:-30px 0 40px 0;font-style:italic; }		
+		.img { text-align:center; }
+		.reg { font-weight:bold;color:blue; }
+		.inst { font-weight:bold;color:#FFCC00; }
+		.label { font-weight:bold;color:purple; }
+		.label2 { font-weight:bold;color:red; } 
+		.num { color:red; }
+		.add { font-weight:bold;color:gray; }
+	</style>
+
+	
+</head>
+
+<body>
+			<div class="Titre">Solution de esoquynthe</div>
+			<div class="Auteur">par elooo (<span style="font-size:80%;">mise en page par Kharneth</span>)</div>
+			
+			<p>
+				 Alors pour commencer, je voudrais dire à Meat que l'interface graphique de son crackme est très jolie,
+				 mais alors niveau practicité c'est un peu la misère. :p<br />
+				 Comment tu veux que j'énonce les serials possibles si on n'arrive déjà pas à se mettre d'accord sur les lettres affichées hein ?? :D
+			</p>
+			<p>
+				 Bon alors on va dire que de gauche à droite et de haut en bas je vois :<br />
+				 <img src="Captures/Capture02.png" alt="Bouttons" style="float:right;margin-right:200px;margin-top:10px;" /><br />
+				 <ul>
+						<li> B</li>
+						<li> A</li>
+						<li> R</li>
+						<li> Y</li>
+						<li> O</li>
+				 </ul><br />
+			  (<i>L'espèce de truc entre le R et le Y n'est pas cliquable</i>)			
+			</p>
+			<p>
+				 J'ai fait ce crackme en dead listing quasi intégralement. J'ai juste posé des breakpoints sur les tests 
+				 des valeurs envoyées à <b>SendMessageA</b> afin de récupérer l'handle des boutons dans le registre <span class="reg">eax</span> à chaque 
+				 fois :
+			</p>
+			<p class="img">
+				 <img src="Captures/Code01.png" alt="Code01" />
+			</p>
+			<p>
+				 <span class="reg">esi</span> sert de compteur ici, mais sert aussi de pointeur pour le buffer Serial.
+				 En fonction des lettres cliquées, des valeurs vont être déposées dans le buffer Serial (<i>cf commentaires ci-dessus</i>).
+				 <span class="reg">esi</span> va correspondre à l'ordre des lettres cliquées.			
+			</p>
+			<p>
+				 Une fois qu'on a tapé <span class="num">4</span> caractères, il entre dans le call de vérification (<i><span class="add">00401548</span> <span class="inst">call</span> <span class="label">&lt;VERIF&gt;</span></i>).
+				 Ce call correspond à une grosse boucle <span class="label2">&lt;LOOP&gt;</span>, et on voit que le compteur est géré par <span class="reg">esi</span>
+				 qui sera compris entre <span class="num">0</span> (inclus) et <span class="num">2</span> (inclus). Donc on peut en déduire qu'il y aura <span class="num">3</span> passages dans la boucle <span class="label2">&lt;LOOP&gt;</span>.<br />
+				 <span class="reg">esi</span> est également utilisé comme pointeur dans le buffer qui contient les valeurs attribuées lors du clic sur les lettres.			
+			</p>
+			<p class="img"><br />
+				 <img src="Captures/Code02.png" alt="Code02" /><br />
+				 <img src="Captures/Code03.png" alt="Code03" /><br />
+				 <img src="Captures/Code04.png" alt="Code04" /><br />
+				 <img src="Captures/Code05.png" alt="Code05" />
+			</p>
+			<p>
+				 Dans la routine de vérification, on voit tout en bas, qu'il va récupérer de la pile trois valeurs, qu'il
+				 va ensuite stockée dans <span class="reg">eax</span>, <span class="reg">ebx</span> et <span class="reg">ecx</span>.<br />
+				 Puis il va additionner ces trois valeurs et la somme devra faire <span class="num">0x1357E65C</span> si l'on veut voir s'afficher un message de réussite.			
+			</p>
+			<p>
+				 On voit que 5 valeurs peuvent être pushées dans cette routine :<br />
+				 <ul>
+				 		 <li><span class="num">0x1337C0DE</span></li>
+						 <li><span class="num">0x00111347</span></li>
+						 <li><span class="num">0x000F1237</span></li>
+						 <li><span class="num">0x00BADB07</span></li>
+						 <li><span class="num">0x00011411</span></li>
+				 </ul>			
+			</p>
+			<p>
+				 Mais comme il n'y a que trois <span class="add">pop</span> à la fin de la routine et qu'il faut bien rétablir la pile, on comprend
+				 vite qu'il ne récupérera que trois valeurs parmi ces 5.
+				 Reste à trouver quelles sont ces 3 valeurs additionnées ensemble qui donneraient <span class="num">0x1357E65C</span>.
+				 Un rapide test me permet de constater que :
+				 <div style="text-align:center;"><span class="num">0x1337C0DE</span> + <span class="num">0x00111347</span> + <span class="num">0x000F1237</span> = <span class="num">0x1357E65C</span></div>
+			</p>
+			<p>
+				 Chacune de ces trois valeurs peut être pushée si un test parmi les 20 de ceux énoncés ci-dessus est validé.
+				 Par souci d'économie de place, j'ai décidé de nommer caractère1 = c1 et ainsi de suite jusqu'à c7 dans
+				 les commentaires ci-dessus. Ces commentaires mettent en évidence les conditions pour que chacune des valeurs souhaitées soit pushée.			
+			</p>
+			<p>
+				 Si on décide d'extraire toutes les bonnes valeurs à la main, en tenant compte des conditions requises, voici donc ce qu'on obtient :			
+			</p>
+			<ul>
+					 <li><span class="reg">esi</span> = <span class="num">00</span><br /><br />
+					 00-01-__-__-01-__-__<br />
+					 00-02-__-__-02-__-__<br />
+					 00-2B-__-__-2B-__-__<br />
+					 00-2D-__-__-00-__-__<br />
+					 01-00-__-__-01-__-__<br />
+					 01-01-__-__-02-__-__<br />
+					 01-02-__-__-2B-__-__<br />
+					 01-2B-__-__-00-__-__<br />
+					 02-00-__-__-02-__-__<br />
+					 02-01-__-__-2B-__-__<br />
+					 02-02-__-__-00-__-__<br />
+					 02-2D-__-__-01-__-__<br />
+					 2B-00-__-__-2B-__-__<br />
+					 2B-01-__-__-00-__-__<br />
+					 2B-2B-__-__-01-__-__<br />
+					 2B-2D-__-__-02-__-__<br />
+					 2D-00-__-__-00-__-__<br />
+					 2D-02-__-__-01-__-__<br />
+					 2D-2B-__-__-02-__-__<br />
+					 2D-2D-__-__-2B-__-__<br /><br />
+			
+					 </li>
+					 <li><span class="reg">esi</span> = <span class="num">01</span><br /><br />
+					 		 <ul>
+							 		 <li><b>Si valeur 2 = 00</b><br /><br />
+									     01-00-01-__-01-01-__<br />
+											 02-00-01-__-02-01-__<br />
+											 2B-00-01-__-2B-01-__<br />
+											 2D-00-01-__-00-01-__<br />
+											 01-00-02-__-01-02-__<br />
+											 02-00-02-__-02-02-__<br />
+											 2B-00-02-__-2B-02-__<br />
+											 2D-00-02-__-00-02-__<br />
+											 01-00-2B-__-01-2B-__<br />
+											 02-00-2B-__-02-2B-__<br />
+											 2B-00-2B-__-2B-2B-__<br />
+											 2D-00-2B-__-00-2B-__<br />
+											 01-00-2D-__-01-00-__<br />
+											 02-00-2D-__-02-00-__<br />
+											 2B-00-2D-__-2B-00-__<br />
+											 2D-00-2D-__-00-00-__<br /><br />
+									 </li>
+									 <li><b>Si valeur 2 = 01</b><br /><br />
+									     00-01-00-__-01-01-__<br />
+											 01-01-00-__-02-01-__<br />
+											 02-01-00-__-2B-01-__<br />
+											 2B-01-00-__-00-01-__<br />
+											 00-01-01-__-01-02-__<br />
+											 01-01-01-__-02-02-__<br />
+											 02-01-01-__-2B-02-__<br />
+											 2B-01-01-__-00-02-__<br />
+											 00-01-02-__-01-2B-__<br />
+											 01-01-02-__-02-2B-__<br />
+											 02-01-02-__-2B-2B-__<br />
+											 2B-01-02-__-00-2B-__<br />
+											 00-01-2B-__-01-00-__<br />
+											 01-01-2B-__-02-00-__<br />
+											 02-01-2B-__-2B-00-__<br />
+											 2B-01-2B-__-00-00-__<br /><br />					 
+									 </li>
+									 <li><b>Si valeur 2 = 02</b><br /><br />
+									     00-02-00-__-02-02-__<br />
+											 01-02-00-__-2B-02-__<br />
+											 02-02-00-__-00-02-__<br />
+											 2D-02-00-__-01-02-__<br />
+											 00-02-01-__-02-2B-__<br />
+											 01-02-01-__-2B-2B-__<br />
+											 02-02-01-__-00-2B-__<br />
+											 2D-02-01-__-01-2B-__<br />
+											 00-02-02-__-02-00-__<br />
+											 01-02-02-__-2B-00-__<br />
+											 02-02-02-__-00-00-__<br />
+											 2D-02-02-__-01-00-__<br />
+											 00-02-2D-__-02-01-__<br />
+											 01-02-2D-__-2B-01-__<br />
+											 02-02-2D-__-00-01-__<br />
+											 2D-02-2D-__-01-01-__<br /><br />					 
+									 </li>
+									 <li><b>Si valeur 2 = 2B</b><br /><br />		
+									     00-2B-00-__-2B-2B-__<br />
+											 01-2B-00-__-00-2B-__<br />
+											 2B-2B-00-__-01-2B-__<br />
+											 2D-2B-00-__-02-2B-__<br />
+											 00-2B-01-__-2B-00-__<br />
+											 01-2B-01-__-00-00-__<br />
+											 2B-2B-01-__-01-00-__<br />
+											 2D-2B-01-__-02-00-__<br />
+											 00-2B-2B-__-2B-01-__<br />
+											 01-2B-2B-__-00-01-__<br />
+											 2B-2B-2B-__-01-01-__<br />
+											 2D-2B-2B-__-02-01-__<br />
+											 00-2B-2D-__-2B-02-__<br />
+											 01-2B-2D-__-00-02-__<br />
+											 2B-2B-2D-__-01-02-__<br />
+											 2D-2B-2D-__-02-02-__<br /><br />					 
+									 </li>
+									 <li><b>Si valeur 2 = 2D</b><br /><br />	
+									     00-2D-00-__-00-00-__<br />
+											 02-2D-00-__-01-00-__<br />
+											 2B-2D-00-__-02-00-__<br />
+											 2D-2D-00-__-2B-00-__<br />
+											 00-2D-02-__-00-01-__<br />
+											 02-2D-02-__-01-01-__<br />
+											 2B-2D-02-__-02-01-__<br />
+											 2D-2D-02-__-2B-01-__<br />
+											 00-2D-2B-__-00-02-__<br />
+											 02-2D-2B-__-01-02-__<br />
+											 2B-2D-2B-__-02-02-__<br />
+											 2D-2D-2B-__-2B-02-__<br />
+											 00-2D-2D-__-00-2B-__<br />
+											 02-2D-2D-__-01-2B-__<br />
+											 2B-2D-2D-__-02-2B-__<br />
+											 2D-2D-2D-__-2B-2B-__<br /><br />					 
+									 </li>
+							 </ul>
+					 </li>
+					 <li><span class="reg">esi</span> = <span class="num">02</span> (<i>permet d'extraire tous les serials possibles</i>) :<br /><br />
+					     <ul>
+							 		 <li><b>Si valeur 3 = 00</b><br /><br />	
+									     <table style="width:100%;">
+											 				<tr>
+															<td>
+                                00-01-00-01-01-01-01<br />
+                                01-01-00-01-02-01-01<br />
+                                02-01-00-01-2B-01-01<br />
+                                2B-01-00-01-00-01-01<br />
+                                00-02-00-01-02-02-01<br />
+                                01-02-00-01-2B-02-01<br />
+                                02-02-00-01-00-02-01<br />
+                                2D-02-00-01-01-02-01<br />
+                                00-2B-00-01-2B-2B-01<br />
+                                01-2B-00-01-00-2B-01<br />
+                                2B-2B-00-01-01-2B-01<br />
+                                2D-2B-00-01-02-2B-01<br />
+                                00-2D-00-01-00-00-01<br />
+                                02-2D-00-01-01-00-01<br />
+                                2B-2D-00-01-02-00-01<br />
+                                2D-2D-00-01-2B-00-01<br />												
+															</td>
+															<td>
+                                00-01-00-02-01-01-02<br />	
+                                01-01-00-02-02-01-02<br />	
+                                02-01-00-02-2B-01-02<br />	
+                                2B-01-00-02-00-01-02<br />	
+                                00-02-00-02-02-02-02<br />	
+                                01-02-00-02-2B-02-02<br />	
+                                02-02-00-02-00-02-02<br />	
+                                2D-02-00-02-01-02-02<br />	
+                                00-2B-00-02-2B-2B-02<br />	
+                                01-2B-00-02-00-2B-02<br />	
+                                2B-2B-00-02-01-2B-02<br />	
+                                2D-2B-00-02-02-2B-02<br />	
+                                00-2D-00-02-00-00-02<br />	
+                                02-2D-00-02-01-00-02<br />	
+                                2B-2D-00-02-02-00-02<br />	
+                                2D-2D-00-02-2B-00-02<br />												
+															</td>
+															<td>
+                                00-01-00-2B-01-01-2B<br />
+                                01-01-00-2B-02-01-2B<br />
+                                02-01-00-2B-2B-01-2B<br />
+                                2B-01-00-2B-00-01-2B<br />
+                                00-02-00-2B-02-02-2B<br />
+                                01-02-00-2B-2B-02-2B<br />
+                                02-02-00-2B-00-02-2B<br />
+                                2D-02-00-2B-01-02-2B<br />
+                                00-2B-00-2B-2B-2B-2B<br />
+                                01-2B-00-2B-00-2B-2B<br />
+                                2B-2B-00-2B-01-2B-2B<br />
+                                2D-2B-00-2B-02-2B-2B<br />
+                                00-2D-00-2B-00-00-2B<br />
+                                02-2D-00-2B-01-00-2B<br />
+                                2B-2D-00-2B-02-00-2B<br />
+                                2D-2D-00-2B-2B-00-2B<br />												
+															</td>
+															<td>
+                                00-01-00-2D-01-01-00<br />
+                                01-01-00-2D-02-01-00<br />
+                                02-01-00-2D-2B-01-00<br />
+                                2B-01-00-2D-00-01-00<br />
+                                00-02-00-2D-02-02-00<br />
+                                01-02-00-2D-2B-02-00<br />
+                                02-02-00-2D-00-02-00<br />
+                                2D-02-00-2D-01-02-00<br />
+                                00-2B-00-2D-2B-2B-00<br />
+                                01-2B-00-2D-00-2B-00<br />
+                                2B-2B-00-2D-01-2B-00<br />
+                                2D-2B-00-2D-02-2B-00<br />
+                                00-2D-00-2D-00-00-00<br />
+                                02-2D-00-2D-01-00-00<br />
+                                2B-2D-00-2D-02-00-00<br />
+                                2D-2D-00-2D-2B-00-00<br />												
+															</td>
+															</tr>
+											 </table><br />
+									 </li>
+									 <li><b>Si valeur 3 = 01</b><br /><br />	
+									     <table style="width:100%;">
+											 				<tr>
+															<td>
+  															01-00-01-00-01-01-01<br />
+                                02-00-01-00-02-01-01<br />
+                                2B-00-01-00-2B-01-01<br />
+                                2D-00-01-00-00-01-01<br />
+                                00-01-01-00-01-02-01<br />
+                                01-01-01-00-02-02-01<br />
+                                02-01-01-00-2B-02-01<br />
+                                2B-01-01-00-00-02-01<br />
+                                00-02-01-00-02-2B-01<br />
+                                01-02-01-00-2B-2B-01<br />
+                                02-02-01-00-00-2B-01<br />
+                                2D-02-01-00-01-2B-01<br />
+                                00-2B-01-00-2B-00-01<br />
+                                01-2B-01-00-00-00-01<br />
+                                2B-2B-01-00-01-00-01<br />
+                                2D-2B-01-00-02-00-01<br />
+															</td>
+															<td>
+                                01-00-01-01-01-01-02<br />
+                                02-00-01-01-02-01-02<br />
+                                2B-00-01-01-2B-01-02<br />
+                                2D-00-01-01-00-01-02<br />
+                                00-01-01-01-01-02-02<br />
+                                01-01-01-01-02-02-02<br />
+                                02-01-01-01-2B-02-02<br />
+                                2B-01-01-01-00-02-02<br />
+                                00-02-01-01-02-2B-02<br />
+                                01-02-01-01-2B-2B-02<br />
+                                02-02-01-01-00-2B-02<br />
+                                2D-02-01-01-01-2B-02<br />
+                                00-2B-01-01-2B-00-02<br />
+                                01-2B-01-01-00-00-02<br />
+                                2B-2B-01-01-01-00-02<br />
+                                2D-2B-01-01-02-00-02<br />												
+															</td>
+															<td>
+                                01-00-01-02-01-01-2B<br />	
+                                02-00-01-02-02-01-2B<br />	
+                                2B-00-01-02-2B-01-2B<br />	
+                                2D-00-01-02-00-01-2B<br />	
+                                00-01-01-02-01-02-2B<br />	
+                                01-01-01-02-02-02-2B<br />	
+                                02-01-01-02-2B-02-2B<br />	
+                                2B-01-01-02-00-02-2B<br />	
+                                00-02-01-02-02-2B-2B<br />	
+                                01-02-01-02-2B-2B-2B<br />	
+                                02-02-01-02-00-2B-2B<br />	
+                                2D-02-01-02-01-2B-2B<br />	
+                                00-2B-01-02-2B-00-2B<br />	
+                                01-2B-01-02-00-00-2B<br />	
+                                2B-2B-01-02-01-00-2B<br />	
+                                2D-2B-01-02-02-00-2B<br />												
+															</td>
+															<td>
+                                01-00-01-2B-01-01-00<br />
+                                02-00-01-2B-02-01-00<br />
+                                2B-00-01-2B-2B-01-00<br />
+                                2D-00-01-2B-00-01-00<br />
+                                00-01-01-2B-01-02-00<br />
+                                01-01-01-2B-02-02-00<br />
+                                02-01-01-2B-2B-02-00<br />
+                                2B-01-01-2B-00-02-00<br />
+                                00-02-01-2B-02-2B-00<br />
+                                01-02-01-2B-2B-2B-00<br />
+                                02-02-01-2B-00-2B-00<br />
+                                2D-02-01-2B-01-2B-00<br />
+                                00-2B-01-2B-2B-00-00<br />
+                                01-2B-01-2B-00-00-00<br />
+                                2B-2B-01-2B-01-00-00<br />
+                                2D-2B-01-2B-02-00-00<br />												
+															</td>
+															</tr>
+											 </table><br />
+									 </li>
+									 <li><b>Si valeur 3 = 02</b><br /><br />
+									     <table style="width:100%;">
+											 				<tr>
+															<td>
+                                01-00-02-00-01-02-02<br />
+                                02-00-02-00-02-02-02<br />
+                                2B-00-02-00-2B-02-02<br />
+                                2D-00-02-00-00-02-02<br />
+                                00-01-02-00-01-2B-02<br />
+                                01-01-02-00-02-2B-02<br />
+                                02-01-02-00-2B-2B-02<br />
+                                2B-01-02-00-00-2B-02<br />
+                                00-02-02-00-02-00-02<br />
+                                01-02-02-00-2B-00-02<br />
+                                02-02-02-00-00-00-02<br />
+                                2D-02-02-00-01-00-02<br />
+                                00-2D-02-00-00-01-02<br />
+                                02-2D-02-00-01-01-02<br />
+                                2B-2D-02-00-02-01-02<br />
+                                2D-2D-02-00-2B-01-02<br />												
+															</td>
+															<td>
+                                01-00-02-01-01-02-2B<br />
+                                02-00-02-01-02-02-2B<br />
+                                2B-00-02-01-2B-02-2B<br />
+                                2D-00-02-01-00-02-2B<br />
+                                00-01-02-01-01-2B-2B<br />
+                                01-01-02-01-02-2B-2B<br />
+                                02-01-02-01-2B-2B-2B<br />
+                                2B-01-02-01-00-2B-2B<br />
+                                00-02-02-01-02-00-2B<br />
+                                01-02-02-01-2B-00-2B<br />
+                                02-02-02-01-00-00-2B<br />
+                                2D-02-02-01-01-00-2B<br />
+                                00-2D-02-01-00-01-2B<br />
+                                02-2D-02-01-01-01-2B<br />
+                                2B-2D-02-01-02-01-2B<br />
+                                2D-2D-02-01-2B-01-2B<br />												
+															</td>
+															<td>
+                                01-00-02-02-01-02-00<br />
+                                02-00-02-02-02-02-00<br />
+                                2B-00-02-02-2B-02-00<br />
+                                2D-00-02-02-00-02-00<br />
+                                00-01-02-02-01-2B-00<br />
+                                01-01-02-02-02-2B-00<br />
+                                02-01-02-02-2B-2B-00<br />
+                                2B-01-02-02-00-2B-00<br />
+                                00-02-02-02-02-00-00<br />
+                                01-02-02-02-2B-00-00<br />
+                                02-02-02-02-00-00-00<br />
+                                2D-02-02-02-01-00-00<br />
+                                00-2D-02-02-00-01-00<br />
+                                02-2D-02-02-01-01-00<br />
+                                2B-2D-02-02-02-01-00<br />
+                                2D-2D-02-02-2B-01-00<br />												
+															</td>
+															<td>
+                                01-00-02-2D-01-02-01<br />
+                                02-00-02-2D-02-02-01<br />
+                                2B-00-02-2D-2B-02-01<br />
+                                2D-00-02-2D-00-02-01<br />
+                                00-01-02-2D-01-2B-01<br />
+                                01-01-02-2D-02-2B-01<br />
+                                02-01-02-2D-2B-2B-01<br />
+                                2B-01-02-2D-00-2B-01<br />
+                                00-02-02-2D-02-00-01<br />
+                                01-02-02-2D-2B-00-01<br />
+                                02-02-02-2D-00-00-01<br />
+                                2D-02-02-2D-01-00-01<br />
+                                00-2D-02-2D-00-01-01<br />
+                                02-2D-02-2D-01-01-01<br />
+                                2B-2D-02-2D-02-01-01<br />
+                                2D-2D-02-2D-2B-01-01<br />												
+															</td>															
+															</tr>
+											 </table><br />									 
+									 </li>
+									 <li><b>Si valeur 3 = 2B</b><br /><br />
+									     <table style="width:100%;">
+											 				<tr>
+															<td>
+                                01-00-2B-00-01-2B-2B<br />
+                                02-00-2B-00-02-2B-2B<br />
+                                2B-00-2B-00-2B-2B-2B<br />
+                                2D-00-2B-00-00-2B-2B<br />
+                                00-01-2B-00-01-00-2B<br />
+                                01-01-2B-00-02-00-2B<br />
+                                02-01-2B-00-2B-00-2B<br />
+                                2B-01-2B-00-00-00-2B<br />
+                                00-2B-2B-00-2B-01-2B<br />
+                                01-2B-2B-00-00-01-2B<br />
+                                2B-2B-2B-00-01-01-2B<br />
+                                2D-2B-2B-00-02-01-2B<br />
+                                00-2D-2B-00-00-02-2B<br />
+                                02-2D-2B-00-01-02-2B<br />
+                                2B-2D-2B-00-02-02-2B<br />
+                                2D-2D-2B-00-2B-02-2B<br />												
+															</td>
+															<td>
+                                01-00-2B-01-01-2B-00<br />
+                                02-00-2B-01-02-2B-00<br />
+                                2B-00-2B-01-2B-2B-00<br />
+                                2D-00-2B-01-00-2B-00<br />
+                                00-01-2B-01-01-00-00<br />
+                                01-01-2B-01-02-00-00<br />
+                                02-01-2B-01-2B-00-00<br />
+                                2B-01-2B-01-00-00-00<br />
+                                00-2B-2B-01-2B-01-00<br />
+                                01-2B-2B-01-00-01-00<br />
+                                2B-2B-2B-01-01-01-00<br />
+                                2D-2B-2B-01-02-01-00<br />
+                                00-2D-2B-01-00-02-00<br />
+                                02-2D-2B-01-01-02-00<br />
+                                2B-2D-2B-01-02-02-00<br />
+                                2D-2D-2B-01-2B-02-00<br />												
+															</td>
+															<td>
+                                01-00-2B-2B-01-2B-01<br />
+                                02-00-2B-2B-02-2B-01<br />
+                                2B-00-2B-2B-2B-2B-01<br />
+                                2D-00-2B-2B-00-2B-01<br />
+                                00-01-2B-2B-01-00-01<br />
+                                01-01-2B-2B-02-00-01<br />
+                                02-01-2B-2B-2B-00-01<br />
+                                2B-01-2B-2B-00-00-01<br />
+                                00-2B-2B-2B-2B-01-01<br />
+                                01-2B-2B-2B-00-01-01<br />
+                                2B-2B-2B-2B-01-01-01<br />
+                                2D-2B-2B-2B-02-01-01<br />
+                                00-2D-2B-2B-00-02-01<br />
+                                02-2D-2B-2B-01-02-01<br />
+                                2B-2D-2B-2B-02-02-01<br />
+                                2D-2D-2B-2B-2B-02-01<br />												
+															</td>
+															<td>
+                                01-00-2B-2D-01-2B-02<br />
+                                02-00-2B-2D-02-2B-02<br />
+                                2B-00-2B-2D-2B-2B-02<br />
+                                2D-00-2B-2D-00-2B-02<br />
+                                00-01-2B-2D-01-00-02<br />
+                                01-01-2B-2D-02-00-02<br />
+                                02-01-2B-2D-2B-00-02<br />
+                                2B-01-2B-2D-00-00-02<br />
+                                00-2B-2B-2D-2B-01-02<br />
+                                01-2B-2B-2D-00-01-02<br />
+                                2B-2B-2B-2D-01-01-02<br />
+                                2D-2B-2B-2D-02-01-02<br />
+                                00-2D-2B-2D-00-02-02<br />
+                                02-2D-2B-2D-01-02-02<br />
+                                2B-2D-2B-2D-02-02-02<br />
+                                2D-2D-2B-2D-2B-02-02<br />												
+															</td>
+															</tr>
+											 </table><br />									 
+									 </li>
+									 <li><b>Si valeur 3 = 2D</b><br /><br />
+									     <table style="width:100%;">
+											 				<tr>
+															<td>
+                                01-00-2D-00-01-00-00<br />
+                                02-00-2D-00-02-00-00<br />
+                                2B-00-2D-00-2B-00-00<br />
+                                2D-00-2D-00-00-00-00<br />
+                                00-02-2D-00-02-01-00<br />
+                                01-02-2D-00-2B-01-00<br />
+                                02-02-2D-00-00-01-00<br />
+                                2D-02-2D-00-01-01-00<br />
+                                00-2B-2D-00-2B-02-00<br />
+                                01-2B-2D-00-00-02-00<br />
+                                2B-2B-2D-00-01-02-00<br />
+                                2D-2B-2D-00-02-02-00<br />
+                                00-2D-2D-00-00-2B-00<br />
+                                02-2D-2D-00-01-2B-00<br />
+                                2B-2D-2D-00-02-2B-00<br />
+                                2D-2D-2D-00-2B-2B-00<br />												
+															</td>
+															<td>
+                                01-00-2D-02-01-00-01<br />
+                                02-00-2D-02-02-00-01<br />
+                                2B-00-2D-02-2B-00-01<br />
+                                2D-00-2D-02-00-00-01<br />
+                                00-02-2D-02-02-01-01<br />
+                                01-02-2D-02-2B-01-01<br />
+                                02-02-2D-02-00-01-01<br />
+                                2D-02-2D-02-01-01-01<br />
+                                00-2B-2D-02-2B-02-01<br />
+                                01-2B-2D-02-00-02-01<br />
+                                2B-2B-2D-02-01-02-01<br />
+                                2D-2B-2D-02-02-02-01<br />
+                                00-2D-2D-02-00-2B-01<br />
+                                02-2D-2D-02-01-2B-01<br />
+                                2B-2D-2D-02-02-2B-01<br />
+                                2D-2D-2D-02-2B-2B-01<br />												
+															</td>
+															<td>
+                                01-00-2D-2B-01-00-02<br />
+                                02-00-2D-2B-02-00-02<br />
+                                2B-00-2D-2B-2B-00-02<br />
+                                2D-00-2D-2B-00-00-02<br />
+                                00-02-2D-2B-02-01-02<br />
+                                01-02-2D-2B-2B-01-02<br />
+                                02-02-2D-2B-00-01-02<br />
+                                2D-02-2D-2B-01-01-02<br />
+                                00-2B-2D-2B-2B-02-02<br />
+                                01-2B-2D-2B-00-02-02<br />
+                                2B-2B-2D-2B-01-02-02<br />
+                                2D-2B-2D-2B-02-02-02<br />
+                                00-2D-2D-2B-00-2B-02<br />
+                                02-2D-2D-2B-01-2B-02<br />
+                                2B-2D-2D-2B-02-2B-02<br />
+                                2D-2D-2D-2B-2B-2B-02<br />												
+															</td>
+															<td>
+                                01-00-2D-2D-01-00-2B<br />
+                                02-00-2D-2D-02-00-2B<br />
+                                2B-00-2D-2D-2B-00-2B<br />
+                                2D-00-2D-2D-00-00-2B<br />
+                                00-02-2D-2D-02-01-2B<br />
+                                01-02-2D-2D-2B-01-2B<br />
+                                02-02-2D-2D-00-01-2B<br />
+                                2D-02-2D-2D-01-01-2B<br />
+                                00-2B-2D-2D-2B-02-2B<br />
+                                01-2B-2D-2D-00-02-2B<br />
+                                2B-2B-2D-2D-01-02-2B<br />
+                                2D-2B-2D-2D-02-02-2B<br />
+                                00-2D-2D-2D-00-2B-2B<br />
+                                02-2D-2D-2D-01-2B-2B<br />
+                                2B-2D-2D-2D-02-2B-2B<br />
+                                2D-2D-2D-2D-2B-2B-2B<br />												
+															</td>
+															</tr>
+											 </table><br />									 
+									 </li>									 
+							 </ul>
+					 </li>
+			</ul>
+			<p>
+				 Mais l'étude ne s'arrête pas là.<br />
+				 En effet, on a vu précédemment que seuls quatres symboles cliqués sont nécessaires pour que la routine de vérification soit appelée.
+				 En fait, les trois dernieres valeurs sont générées de manière aléatoire à l'ouverture du crackme.<br />
+				 Voici la routine qui se charge de ça :			
+			</p>
+			<p class="img">
+				 <img src="Captures/Code06.png" alt="Code06" />
+			</p>
+			<p>
+				 Il y aura donc trois passages dans cette boucle afin que les trois valeurs soient générées puis 
+				 sauvegardées en mémoire en <span class="add">[405103]</span>, <span class="add">[405104]</span> et <span class="add">[405105]</span>.
+				 Notons au passage qu'aucun de ces trois bytes ne prendra la valeur <span class="num">2Dh</span>.
+				 <br />
+				 Une fois ces valeurs générées, elles apparaîtront sur l'interface du crackme sous forme de symboles :			
+			</p>
+			<p class="img">
+		 		 <img src="Captures/Capture01.png" alt="Capture01" />
+			</p>
+			<p>
+				 A l'issue, la seule chose qu'il nous reste à faire, c'est de compléter le serial, en renseignant les quatre
+				 premières valeurs demandées. Chose qui sera faisable en cliquant sur les symboles présents sur le terrain 
+				 investi par le moustique.			
+			</p>
+			<p class="img">
+		 		 <img src="Captures/Capture02.png" alt="Capture02" />
+			</p>	
+			<p>
+				 Enfin, si nos quatre symboles cliqués permettent de former un septuplet valide avec les trois valeurs
+				 générées aléatoirement, alors, le gros symbole présent sur la tige de la plante sera modifié :			
+			</p>		
+			<p class="img">
+		 		 <img src="Captures/Capture03.png" alt="Capture03" />
+			</p>		
+			<p>
+				 Et voilà :)<br />
+				 <br />
+				 Pour pouvoir élaborer le keygen, il ne reste qu'à récupérer ces trois valeurs générées aléatoirement en 
+				 appelant <b>CreateProcess</b> (<i>afin d'ouvrir le crackme</i>), et de faire un <b>ReadProcessMemory</b> sur trois bytes en <span class="add">00405103</span>.			
+			</p>
+			<hr />
+			<p>
+				 <span class="Auteur">Remerciements :</span><br />
+				 <br />
+				 <ul>
+				 <li><b>Meat</b>, sinon ce tutorial n'aurait jamais eu lieu.</li>
+				 <li><b>Kharneth</b>, parce qu'il s'est donné à fond pour me faire une superbe GUI et une jolie présentation html (<i>moui, sinon c'était du mode console, et du txt :P</i>).</li>
+				 </ul><br />
+			</p>
+			
+			<div class="Auteur" style="text-align:right;margin-right:200px;margin-top:20px;">elooo</div>
+</body>
+</html>

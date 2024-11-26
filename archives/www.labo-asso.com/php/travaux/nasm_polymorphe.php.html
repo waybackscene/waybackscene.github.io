@@ -1,0 +1,294 @@
+<html>
+<head>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center"> 
+                    <p><font size="5">Petit essai d'implantation de<br>
+                      code polymorphe sous nasm<br></font>
+                      -=&curren; Lionel d'Hauenens &curren;=-</p>
+                    <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                      <tr> 
+                        <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                            <tr> 
+                              <td><a href="../../download/nasm_polymorphe.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table>
+                  </div></td>
+                <td width="1"> <div align="ri????5?ght"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>            
+            <br>
+            <table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td> <div align="justify"> 
+                          <p align="justify">En assembleur, l'utilisation de macros 
+                            permet de g&eacute;n&eacute;rer du code polymorphe 
+                            d'une mani&egrave;re assez facile et efficace. Il 
+                            suffit pour cela de consid&eacute;rer un certain nombre 
+                            d'instructions ou de groupe d'instructions assembleur. 
+                            Et de les traiter par des macros donnant chacune du 
+                            code diff&eacute;rent pour le m&ecirc;me r&eacute;sultat.</p>
+                          <p>Prenons un exemple simple en consid&eacute;rant l'instruction 
+                            :<br>
+                            -&gt; <font color="#00FFFF">mov reg, reg/mem/imm </font></p>
+                          <p>On peut tr&egrave;s bien la traiter comme ceci :</p>
+                          <p><font color="#00FFFF">%macro mov_reg_0&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;push %2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;pop %1<br>
+                            %endmacro</font></p>
+                          <p>ou bien comme cela :</p>
+                          <p><font color="#00FFFF">%macro mov_reg_1&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;push %2<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;xchg %1, dword [esp]<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;add esp,4<br>
+                            %endmacro</font></p>
+                          <p>Toutes les fantaisies sont possibles. Ce qui en fait 
+                            une discipline assez libre et o&ugrave; la cr&eacute;ativit&eacute; 
+                            fait toute la diff&eacute;rence. La seule r&egrave;gle 
+                            &agrave; respecter est d'obtenir le m&ecirc;me r&eacute;sultat 
+                            pour un groupe de macros donn&eacute;.</p>
+                          <p>Bien sur, plus la banque de macros sera riche plus 
+                            le code sera polymorphe. Mais malheureusement, plus 
+                            la banque est riche plus l'implantation &agrave; la 
+                            main devient lourde.</p>
+                          <p>Imaginons que pour notre exemple pr&eacute;c&eacute;dant 
+                            nous ayons &agrave; notre disposition 50 macros diff&eacute;rentes. 
+                            Et que nous d&eacute;sirons polymorpher (Mot non reconnu 
+                            par l'Acad&eacute;mie Fran&ccedil;aise. &copy; Yoyo) 
+                            ce bout de code :</p>
+                          <p><font color="#00FFFF">&nbsp;&nbsp;&nbsp;&nbsp;mov 
+                            eax, ebp<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov ebx, 012345678h<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov ecx, 010h<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov edx, dword [ebp+4]</font></p>
+                          <p>D'une mani&egrave;re arbitraire, cela pourrait donner 
+                            ceci :</p>
+                          <p><font color="#00FFFF">&nbsp;&nbsp;&nbsp;&nbsp;mov_reg_1 
+                            &nbsp;eax, ebx <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov_reg_25 ebx, 012345678h 
+                            <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov_reg_49 ecx, 010h <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov_reg_36 edx, dword [ebp+04]</font></p>
+                          <p>En plus de devoir appliquer soit m&ecirc;me des num&eacute;ros 
+                            aux macros, on peut regretter que le code gardera 
+                            malgr&eacute; tout la m&ecirc;me apparence &agrave; 
+                            chaque compilation.</p>
+                          <p>On voit vite l'utilit&eacute; de d&eacute;velopper 
+                            un outil ext&eacute;rieur qui s'occuperait d'appliquer 
+                            les num&eacute;ros aux macros d'une mani&egrave;re 
+                            al&eacute;atoire (ou pseudo-al&eacute;atoire pour 
+                            les puristes). </p>
+                          <p>Ceci permettrait alors de coder plus simplement comme 
+                            ceci :</p>
+                          <p><font color="#00FFFF">&nbsp;&nbsp;&nbsp;&nbsp;mov_reg 
+                            eax, ebx <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov_reg ebx, 012345678h <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov_reg ecx, 010h <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;mov_reg edx, dword [ebp+04]</font></p>
+                          <p>et l'outil ext&eacute;rieur s'occuperait de rajouter 
+                            au nom de chaque pseudo-macro un num&eacute;ro al&eacute;atoire, 
+                            suivant le nombre de macros disponibles, avant de 
+                            laisser le travail &agrave; l'assembleur.</p>
+                          <p>Ma qu&ecirc;te &eacute;tait d'obtenir l'environnement 
+                            qui vient d'&ecirc;tre expos&eacute; mais sans utiliser 
+                            de programme ext&eacute;rieur. Je d&eacute;sirais 
+                            &agrave; tout prix travailler uniquement avec ce que 
+                            propose le pre-processeur de nasm. </p>
+                          <p>Mais pour arriver &agrave; cela, il me fallait, avant 
+                            tout, r&eacute;ussir &agrave; r&eacute;cup&eacute;rer 
+                            une valeur changeante &agrave; chaque compilation 
+                            et de la communiquer &agrave; l'assembleur.</p>
+                          <p>J'ai r&eacute;solu ce probl&egrave;me en bidouillant 
+                            une routine en ligne de commande qui permet de communiquer 
+                            cette si pr&eacute;cieuse cl&eacute; changeante en 
+                            fonction du temps. Pour plus d'information, il vous 
+                            faut aller voir dans le fichier &quot;make.bat&quot; 
+                            que l'on trouve dans l'exemple.</p>
+                          <p>Ensuite, il m'a fallu d&eacute;velopper une macro 
+                            principale qui s'occupe de choisir et de d&eacute;finir 
+                            les macros du code polymorphe. Tout ceci, sans oublier 
+                            de faire en sorte que ma cl&eacute; soit hach&eacute;e 
+                            &agrave; chaque macro g&eacute;n&eacute;r&eacute;e.</p>
+                          <p>Le fichier &quot;polymorphe.asm&quot; donne un exemple 
+                            pr&eacute;cis de cette m&eacute;thode. </p>
+                          <p>J'ai essay&eacute; de commenter les sources sans 
+                            tout d&eacute;tailler pour autant. Un petit tour dans 
+                            la documentation de nasm n'a jamais fait de mal &agrave; 
+                            personne :p<br>
+                            N&eacute;anmoins, si cela ne suffit pas, n'h&eacute;sitez 
+                            pas &agrave; exposer vos probl&egrave;mes de compr&eacute;hension 
+                            sur le <a href="http://www.labo-asso.com/forum/index.php" target="_blank">forum 
+                            de LABO</a>. Et bien &eacute;videmment, toutes propositions 
+                            pour am&eacute;liorer le concept seront les bienvenues 
+                            :)</p>
+                          <p>Amusez-vous bien :)<br>
+                          </p>
+                          <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p>Vous venez de lire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot <font color="#00FFFF">polymorpher</font> 
+                            qui est un mot prot&eacute;g&eacute; par la loi. Vous 
+                            me devez donc 1 Euro. Mais que vois-je ! Vous venez 
+                            de relire le mot &quot;<font color="#00FFFF">polymorpher</font>&quot; 
+                            qui est un mot pr.........<font color="#FFFF00">Error 
+                            ! Stack Overflow !</font>......</p>
+                          <p></p>
+                        </div>
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                          <tr> 
+                            <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                                <tr> 
+                                  <td nowrap><font color="#339999" size="2" face="Fixedsys">Lionel 
+                                    d'Hauenens</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        &nbsp;</td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+			<div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="nasm_polymorphe.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+          </td>
+              </tr>
+            </table></td>
+        </tr>
+      </table>
+</body>
+</html>

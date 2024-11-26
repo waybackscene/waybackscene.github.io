@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>D&eacute;tection de Noyau - int 3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p align='justify'><font face="Fixedsys" size="2">:)</font></p>
+            </td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_reflechie.gif" width="91" height="126" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="95%"> <div align="center"><font face="Fixedsys" size="6" color="#33CC33">Detection 
+                    du Noyau<br>
+                    <font size="2">-=&curren; int 3 &curren;=-</font></font><font face="Fixedsys" size="2"><u><br>
+                    </u>(version 1.01)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_reflechie.gif" width="91" height="126" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p align="justify"><font face="Fixedsys" size="2">Il est &eacute;trange 
+              de constater que window$ ne fournie pas les m&ecirc;mes informations 
+              &agrave; un SEH losqu'une interruption 3 (EXCEPTION_BREAKPOINT) 
+              est d&eacute;clench&eacute;e.<br>
+              En effet, le noyau 9x interpr&egrave;te cette interruption en fournissant 
+              au SEH une interruption de type trap. Le registre EIP dans le CONTEXT 
+              pointe donc sur l'instruction qui suit imm&eacute;diatement l'instruction 
+              qui a d&eacute;clench&eacute; l'interruption 3 : int&nbsp;3 (0xCC).<br>
+              Par contre, le noyau NT respecte le type de l'interruption 3 et 
+              fournie donc au SEH une interruption de type faute. Le registre 
+              EIP dans le CONTEXT pointe donc sur l'instruction qui a d&eacute;clench&eacute; 
+              l'interruption 3 : int&nbsp;3 (0xCC).<br>
+              </font></p>
+            <p align="left"><font face="Fixedsys" size="2">Voici un petit exemple 
+              avec source : <a href="../../../telecharger/window$/detecte_noyau_int3.zip" onFocus="if(this.blur)this.blur()" target="_blank"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a></font></p>
+            <div align="center"> 
+              <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr> 
+                  <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                </tr>
+              </table>
+              <font face="Fixedsys" size="2">Illustrations : Bill WATTERSON - 
+              &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 08/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+            </font> </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<html>
+<head>
+<title>Crackme de r&eacute;f&eacute;rence : RiDiCuLe</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript">
+<!--
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p align='justify'><font face="Fixedsys" size="2">:)</font></p>
+            </td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_nyark.gif" width="82" height="124" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="95%"> <div align="center"><font size="6" color="#33CC33" face="Fixedsys">Anti-debugger<br>
+                    <font size="2">Crackme de r&eacute;f&eacute;rence<br>
+                    -=&curren; RiDiCuLe &curren;=-</font></font><font face="Fixedsys" size="2"><u><br>
+                    </u>(version 1.01)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_nyark.gif" width="82" height="124" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p align="justify"><font face="Fixedsys" size="2"> Pour les besoins 
+              de cette section, un petit Crackme (avec source) nomm&eacute; 'RiDiCuLe' 
+              a &eacute;t&eacute; cr&eacute;&eacute; afin de servir de r&eacute;f&eacute;rence 
+              de code non prot&eacute;g&eacute;. Il est donc facile de le tracer 
+              et de se familiariser avec celui-ci. Si le coeur vous en dit, vous 
+              pouvez m&ecirc;me rechercher un mot de passe valide... ;)</font></p>
+            <p align="justify"><font face="Fixedsys" size="2">Les anti-debugger 
+              pr&eacute;sent&eacute;s dans cette section sont en g&eacute;n&eacute;ral 
+              facilement neutralisables. Le but n'&eacute;tant pas de cacher mais 
+              de montrer.</font></p>
+            <p align="justify"><font face="Fixedsys" size="2">L'Art est bien s&ucirc;r 
+              de jongler avec les anti-debugger tout en les rendant les plus furtifs 
+              possible. Se battre contre les crackeurs demande-t-il une certaine 
+              dose de perversit&eacute; ? possible...</font></p>
+            <p align="justify"><font face="Fixedsys" size="2"> Tous les anti-debugger 
+              sont appliqu&eacute;s &agrave; RiDiCuLe afin que vous puissiez voir 
+              concr&egrave;tement l'action de ceux-ci.</font></p>
+            <p align="left"><font face="Fixedsys" size="2">Crackme de r&eacute;f&eacute;rence 
+              (RiDiCuLe) : <a href="../../../telecharger/anti_cracking/anti_debugger/ridicule_Crackme.zip" onFocus="if(this.blur)this.blur()" target="_blank"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a><br>
+              </font></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+              </tr>
+            </table>
+            <div align="center"><font face="Fixedsys" size="2">Illustrations : 
+              Bill WATTERSON - &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 08/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+            </font> </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,585 @@
+COMMENTAIRES DE L'AUTEUR (KHARNETH :)):
+---------------------------------------
+
+Salut!
+
+En étudiant le Bugtraq#1, j'ai exécuté le virus par inadvertance et plusieurs de mes 
+fichiers ont été corrompus!
+Je n'arrive pas à les réparer. S'il vous plait, aidez moi!!
+
+
+Le fichier est un simple petit programme dont certaines structures ont été modifiées. 
+Le but est de retrouver un exécutable valide (Une MessageBox est affichée).
+Il y a en tout 16 membres effacés (remplacés par des 00). Retrouvez lesquels ainsi que 
+la valeur qu'ils doivent contenir. Un membre peut être du type BYTE, WORD, DWORD ou 
+chaine de caractères. Vous ne devez pas toucher aux autres valeurs. Analysez bien 
+chaque structure du PE (PEHeader, SectionHeader, ImportTable...).
+Vous pouvez utiliser les outils que vous voulez mais je ne pense pas qu'autre chose 
+qu'un éditeur Hexa soit utile.
+
+La solution doit être présentée sous forme de liste des différents membres des 
+différentes structures modifiés. Avec la valeur et un petit texte expliquant pourquoi 
+cette valeur.
+Exemple:
+"Offset 0000 : WORD DosHeader.e_magic = 5A4D ('MZ')
+Tout exécutable windows doit commencer par la signature MZ."
+
+Si la valeur est le résultat d'un calcul, expliquez le calcul.
+
+Considérez cet exercice comme un TD et non un véritable défi. Le but étant de se 
+familiariser avec le PE. Cela signifie que vous ne devez pas hésiter à poser des 
+questions si vous êtes bloqués. En précisant ce que vous ne comprenez pas dans les 
+docs que vous avez lues.
+
+Documentation utile :
+hxxp://msdn.microsoft.com/msdnmag/issues/02/02/PE/default.aspx
+hxxp://msdn.microsoft.com/msdnmag/issues/02/03/PE2/default.aspx
+hxxp://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b45/pecoff.doc
+
+Le programme original fonctionnait très bien sous 98, 2000 et XP (SP1 & SP2)
+
+http://kharneth.free.fr/_CrackMe_/PEAnalysis.zip 
+
+
+--------------------------------------------------------------------
+
+SOLUTION D'ELOOO :
+------------------
+
+
+
+
+*****************************************************************
+*                          ShowPE 1.1                           *
+*                    coded in asm 32 bits                       *
+*                          by elooo                             *
+*****************************************************************
+
+-----> Log for : h:\PEAnalysis.exe
+_________________________________________________________________
+
+
+_________________________________________________________________
+
+        IMAGE_DOS_HEADER
+_________________________________________________________________
+           0X0 WORD  e_magic                     : 0X0000
+        -----> Unknown Signature !
+It is not a DOS/Windows Executable File !
+--------------------------------------------------------------------------
+
+=> MZ pour la signature d'un fichier dos/win executable donc mettre 4D5A en 0x0
+
+
+
+*****************************************************************
+*                          ShowPE 1.1                           *
+*                    coded in asm 32 bits                       *
+*                          by elooo                             *
+*****************************************************************
+
+-----> Log for : h:\PEAnalysis.exe
+_________________________________________________________________
+
+
+_________________________________________________________________
+
+        IMAGE_DOS_HEADER
+_________________________________________________________________
+           0X0 WORD  e_magic                     : 0X5A4D
+        -----> IMAGE_DOS_SIGNATURE (MZ File, Win32)
+           0X2 WORD  e_cblp                      : 0X0090
+        -----> Bytes on last page of file
+           0X4 WORD  e_cp                        : 0X0003
+        -----> Pages in file
+           0X6 WORD  e_crlc                      : 0X0000
+        -----> Relocations
+           0X8 WORD  e_cparhdr                   : 0X0004
+        -----> Size of header in paragraphs
+           0XA WORD  e_minalloc                  : 0X0000
+        -----> Minimum extra paragraphs needed
+           0XC WORD  e_maxalloc                  : 0XFFFF
+        -----> Maximum extra paragraphs needed
+           0XE WORD  e_ss                        : 0X0000
+        ----->  Initial (relative) SS value
+          0X10 WORD  e_sp                        : 0X00B8
+        -----> Initial SP value
+          0X12 WORD  e_csum                      : 0X0000
+        -----> Checksum
+          0X14 WORD  e_ip                        : 0X0000
+        -----> Initial IP value
+          0X16 WORD  e_cs                        : 0X0000
+        -----> Initial (relative) CS value
+          0X18 WORD  e_lfarlc                    : 0X0040
+        -----> File address of relocation table
+        (must be set to 0x40 even if there is no relocation)
+          0X1A WORD  e_ovno                      : 0X0000
+        -----> Overlay number
+          0X1C WORD  e_res[4]
+                e_res[1]                         : 0X0000
+                e_res[2]                         : 0X0000
+                e_res[3]                         : 0X0000
+                e_res[4]                         : 0X0000
+          0X24 WORD  e_oemid                     : 0X0000
+        -----> OEM identifier
+          0X26 WORD  e_oeminfo                   : 0X0000
+        -----> OEM information
+          0X28 WORD  e_res2[10]
+                e_res2[1]                        : 0X0000
+                e_res2[2]                        : 0X0000
+                e_res2[3]                        : 0X0000
+                e_res2[4]                        : 0X0000
+                e_res2[5]                        : 0X0000
+                e_res2[6]                        : 0X0000
+                e_res2[7]                        : 0X0000
+                e_res2[8]                        : 0X0000
+                e_res2[9]                        : 0X0000
+                e_res2[10]                       : 0X0000
+          0X3C DWORD e_lfanew                    : 0X00000000
+        -----> Offset of the PE Signature
+_________________________________________________________________
+_________________________________________________________________
+
+        IMAGE_NT_HEADER
+_________________________________________________________________
+           0X0 DWORD Signature                   : 0X00905A4D
+It is not a valid PE File !
+
+=> Manque la valeur de e_lfanew en 0x3C
+=> Retrouver la string "PE", relever l'offset et la foutre en 0x3C
+"PE" à l'offset 0xC0.
+
+---------------------------------------------------------------------
+
+_________________________________________________________________
+
+        IMAGE_NT_HEADER
+_________________________________________________________________
+          0XC0 DWORD Signature                   : 0X00004550
+        -----> PE File
+          0XC4 IMAGE_FILE_HEADER
+          0XD8 IMAGE_OPTIONAL_HEADER
+_________________________________________________________________
+_________________________________________________________________
+
+        IMAGE_FILE_HEADER
+_________________________________________________________________
+          0XC4 WORD  Machine                     : 0X014C
+        -----> Build for Intel 80386 processor
+          0XC6 WORD  NumberOfSections            : 0X0000
+          0XC8 DWORD TimeDateStamp               : 0X425647A9
+          0XCC DWORD PointerToSymbolTable        : 0X00000000
+          0XD0 DWORD NumberOfSymbols             : 0X00000000
+          0XD4 WORD  SizeOfOptionalHeader        : 0X0000
+          0XD6 WORD  Characteristics             : 0X0000
+        -----> Non-32-bit-word machine
+        -----> Big endian
+        -----> Contains base relocations
+        -----> COFF line numbers haven't been removed
+        -----> COFF symbol table entries for local symbols haven't been rem
+        -----> Debugging information not removed from image file
+        -----> Removable media : not needed to copy and run from swap file.
+        -----> Network :  not needed to copy and run from swap file.
+        -----> Runs on MP or UP machine
+        -----> Normally trim working set
+        -----> Object/library file
+        -----> Not a system file
+        -----> File is not a DLL
+_________________________________________________________________
+_________________________________________________________________
+
+        IMAGE_OPTIONAL_HEADER
+_________________________________________________________________
+
+          0XD8 WORD  Magic                       : 0X010B
+          0XDA BYTE  MajorLinkerVersion          : 0X05
+          0XDB BYTE  MinorLinkerVersion          : 0X0C
+        -----> Linker version: 5.12
+          0XDC DWORD SizeOfCode                  : 0X00000200
+        -----> Size of the executable code : 512 bytes
+          0XE0 DWORD SizeOfInitializedData       : 0X00000600
+        -----> Size of the data segment : 1536 bytes
+          0XE4 DWORD SizeOfUninitializedData     : 0X00000000
+          0XE8 DWORD AddressOfEntryPoint         : 0X00001000
+        -----> Execution starts at 0x00001000 (RVA) or at 0x00001000 (VA)
+          0XEC DWORD BaseOfCode                  : 0X00001000
+        -----> RVA to the executable code : 0x00001000
+          0XF0 DWORD BaseOfData                  : 0X00002000
+        -----> RVA to the initialized data : 0x00002000
+          0XF4 DWORD ImageBase                   : 0X00000000
+        -----> Preferred load base is 0x00000000
+          0XF8 DWORD SectionAlignment            : 0X00001000
+          0XFC DWORD FileAlignment               : 0X00000200
+        -----> Sections aligned to 4096 bytes in RAM, 512 bytes in file
+         0X100 WORD  MajorOperatingSystemVersion : 0X0004
+         0X102 WORD  MinorOperatingSystemVersion : 0X0000
+         0X104 WORD  MajorImageVersion           : 0X0004
+         0X106 WORD  MinorImageVersion           : 0X0000
+         0X108 WORD  MajorSubsystemVersion       : 0X0004
+         0X10A WORD  MinorSubsystemVersion       : 0X0000
+        -----> Versions: NT 4.0, Win32 4.0, App 4.0
+         0X10C DWORD Win32VersionValue           : 0X00000000
+         0X110 DWORD SizeOfImage                 : 0X00000000
+        -----> Size of image in RAM: 0 bytes
+         0X114 DWORD SizeOfHeaders               : 0X00000000
+        -----> Size of headers / offset to the 1st section in file: 0x0
+         0X118 DWORD CheckSum                    : 0X000108B1
+        -----> Checksum: 0x000108b1
+         0X11C WORD  Subsystem                   : 0X0000
+        -----> Subsystem unknown !
+         0X11E WORD  DllCharacteristics          : 0X0000
+         0X120 DWORD SizeOfStackReserve          : 0X00100000
+        -----> Size of reserved stack : 1048576 bytes
+         0X124 DWORD SizeOfStackCommit           : 0X00001000
+        -----> Size of initially committed stack : 4096 bytes
+         0X128 DWORD SizeOfHeapReserve           : 0X00100000
+        -----> Size of the reserved heap : 1048576 bytes
+         0X12C DWORD SizeOfHeapCommit            : 0X00001000
+        -----> Size of the committed heap : 4096 bytes
+         0X130 DWORD LoaderFlags                 : 0X00000000
+         0X134 DWORD NumberOfRvaAndSizes         : 0X00000000
+        -----> Number of valid entries in the IMAGE_DATA_DIRECTORY : 0
+         0X138 IMAGE_DATA_DIRECTORY
+_________________________________________________________________
+
+
+On constate qu'il manque :
+- le nombre de sections -> mettre 4 en 0xC6 (.text, .rdata, .data, .rsrc)
+- la taille du SizeOfOptionalHeader en 0xD4 (0x1B8 (= emplacement du nom de la 1ere section) - 0xD8 (debut de l'IMAGE_OPTIONAL_HEADER) = 0xE0)
+- la valeur de Characteristics en 0xD6 : en général pour un fichier exe, non dll, non système, c'est souvent 0x10F, donc on mettra ça.
+- l'ImageBase en 0xF4 (on suppose que ça va être 00400000 pour le moment, comme la majorité des executables PE)
+- La SizeOfImage en 0x110 (on remplira quand mon tool saura nous donner ses infos sans qu'on les cherche dans l'hexdump ;) *flemme*)
+- La SizeOfHeaders en 0x114 (correspond à l'offset de la 1ere section dans le fichier) = 0x400
+- Le Subsystem en 0x11C (si windows console = 3 et si Windows GUI = 2). On mettra 2 histoire de voir.
+- Le NumberOfRvaAndSizes en 0x134. Par défaut y'en a 16, donc on mettra 0x10 pour voir...
+
+On corrige tout ça (sauf la SizeOfImage pour le moment, et on relance ShowPE :))
+
+_________________________________________________________________
+
+        IMAGE_FILE_HEADER
+_________________________________________________________________
+          0XC4 WORD  Machine                     : 0X014C
+        -----> Build for Intel 80386 processor
+          0XC6 WORD  NumberOfSections            : 0X0004
+        -----> 4 sections
+          0XC8 DWORD TimeDateStamp               : 0X425647A9
+          0XCC DWORD PointerToSymbolTable        : 0X00000000
+          0XD0 DWORD NumberOfSymbols             : 0X00000000
+          0XD4 WORD  SizeOfOptionalHeader        : 0X00E0
+        -----> Size of optional header: 224 bytes
+          0XD6 WORD  Characteristics             : 0X010F
+        -----> 32-bit-word machine
+        -----> Big endian
+        -----> Must be loaded at its preferred base address
+        -----> COFF line numbers have been removed
+        -----> COFF symbol table entries for local symbols have been removed
+        -----> Debugging information not removed from image file
+        -----> Removable media : not needed to copy and run from swap file.
+        -----> Network :  not needed to copy and run from swap file.
+        -----> Runs on MP or UP machine
+        -----> Normally trim working set
+        -----> Executable file
+        -----> Not a system file
+        -----> File is not a DLL
+_________________________________________________________________
+_________________________________________________________________
+
+        IMAGE_OPTIONAL_HEADER
+_________________________________________________________________
+
+          0XD8 WORD  Magic                       : 0X010B
+          0XDA BYTE  MajorLinkerVersion          : 0X05
+          0XDB BYTE  MinorLinkerVersion          : 0X0C
+        -----> Linker version: 5.12
+          0XDC DWORD SizeOfCode                  : 0X00000200
+        -----> Size of the executable code : 512 bytes
+          0XE0 DWORD SizeOfInitializedData       : 0X00000600
+        -----> Size of the data segment : 1536 bytes
+          0XE4 DWORD SizeOfUninitializedData     : 0X00000000
+          0XE8 DWORD AddressOfEntryPoint         : 0X00001000
+        -----> Execution starts at 0x00001000 (RVA) or at 0x00401000 (VA)
+          0XEC DWORD BaseOfCode                  : 0X00001000
+        -----> RVA to the executable code : 0x00001000
+          0XF0 DWORD BaseOfData                  : 0X00002000
+        -----> RVA to the initialized data : 0x00002000
+          0XF4 DWORD ImageBase                   : 0X00400000
+        -----> Preferred load base is 0x00400000
+          0XF8 DWORD SectionAlignment            : 0X00001000
+          0XFC DWORD FileAlignment               : 0X00000200
+        -----> Sections aligned to 4096 bytes in RAM, 512 bytes in file
+         0X100 WORD  MajorOperatingSystemVersion : 0X0004
+         0X102 WORD  MinorOperatingSystemVersion : 0X0000
+         0X104 WORD  MajorImageVersion           : 0X0004
+         0X106 WORD  MinorImageVersion           : 0X0000
+         0X108 WORD  MajorSubsystemVersion       : 0X0004
+         0X10A WORD  MinorSubsystemVersion       : 0X0000
+        -----> Versions: NT 4.0, Win32 4.0, App 4.0
+         0X10C DWORD Win32VersionValue           : 0X00000000
+         0X110 DWORD SizeOfImage                 : 0X00000000
+        -----> Size of image in RAM: 0 bytes
+         0X114 DWORD SizeOfHeaders               : 0X00000400
+        -----> Size of headers / offset to the 1st section in file: 0x400
+         0X118 DWORD CheckSum                    : 0X000108B1
+        -----> Checksum: 0x000108b1
+         0X11C WORD  Subsystem                   : 0X0003
+        -----> Uses Windows Console subsystem
+         0X11E WORD  DllCharacteristics          : 0X0000
+         0X120 DWORD SizeOfStackReserve          : 0X00100000
+        -----> Size of reserved stack : 1048576 bytes
+         0X124 DWORD SizeOfStackCommit           : 0X00001000
+        -----> Size of initially committed stack : 4096 bytes
+         0X128 DWORD SizeOfHeapReserve           : 0X00100000
+        -----> Size of the reserved heap : 1048576 bytes
+         0X12C DWORD SizeOfHeapCommit            : 0X00001000
+        -----> Size of the committed heap : 4096 bytes
+         0X130 DWORD LoaderFlags                 : 0X00000000
+         0X134 DWORD NumberOfRvaAndSizes         : 0X00000010
+        -----> Number of valid entries in the IMAGE_DATA_DIRECTORY : 16
+         0X138 IMAGE_DATA_DIRECTORY
+_________________________________________________________________
+_________________________________________________________________
+
+        IMAGE_DATA_DIRECTORY
+_________________________________________________________________
+
+                IMAGE_DIRECTORY_ENTRY_EXPORT
+         0X138 DWORD VirtualAddress              : 0X00000000
+         0X13C DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_IMPORT
+         0X140 DWORD VirtualAddress              : 0X00002010
+         0X144 DWORD Size                        : 0X0000003C
+
+                IMAGE_DIRECTORY_ENTRY_RESOURCE
+         0X148 DWORD VirtualAddress              : 0X00004000
+         0X14C DWORD Size                        : 0X000000B8
+
+                IMAGE_DIRECTORY_ENTRY_EXCEPTION
+         0X150 DWORD VirtualAddress              : 0X00000000
+         0X154 DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_SECURITY
+         0X158 DWORD VirtualAddress              : 0X00000000
+         0X15C DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_BASERELOC
+         0X160 DWORD VirtualAddress              : 0X00000000
+         0X164 DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_DEBUG
+         0X168 DWORD VirtualAddress              : 0X00000000
+         0X16C DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_COPYRIGHT
+         0X170 DWORD VirtualAddress              : 0X00000000
+         0X174 DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_GLOBALPTR
+         0X178 DWORD VirtualAddress              : 0X00000000
+         0X17C DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_TLS
+         0X180 DWORD VirtualAddress              : 0X00000000
+         0X184 DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG
+         0X188 DWORD VirtualAddress              : 0X00000000
+         0X18C DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT
+         0X190 DWORD VirtualAddress              : 0X00000000
+         0X194 DWORD Size                        : 0X00000000
+
+                IMAGE_DIRECTORY_ENTRY_IAT
+         0X198 DWORD VirtualAddress              : 0X00002000
+         0X19C DWORD Size                        : 0X00000010
+
+                IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT
+         0X1A0 DWORD VirtualAddress              : 0X00000000
+         0X1A4 DWORD Size                        : 0X00000000
+_________________________________________________________________
+_________________________________________________________________
+
+        IMAGE_SECTION_HEADER
+_________________________________________________________________
+
+                SECTION
+         0X1B8       Name                        : .text
+         0X1C0 DWORD VirtualSize                 : 0X00000026
+         0X1C4 DWORD VirtualAddress              : 0X00000000
+         0X1C8 DWORD SizeOfRawData               : 0X00000000
+         0X1CC DWORD PointerToRawData            : 0X00000000
+         0X1D0 DWORD PointerToRelocations        : 0X00000000
+         0X1D4 DWORD PointerToLinenumbers        : 0X00000000
+         0X1D8 WORD  NumberOfRelocations         : 0X0000
+         0X1DA WORD  NumberOfLinenumbers         : 0X0000
+         0X1DC DWORD Characteristics             : 0X60000020
+        -----> Contains executable code
+        -----> Executable as code
+        -----> Readable
+
+                SECTION
+         0X1E0       Name                        : .rdata
+         0X1E8 DWORD VirtualSize                 : 0X00000092
+         0X1EC DWORD VirtualAddress              : 0X00002000
+         0X1F0 DWORD SizeOfRawData               : 0X00000200
+         0X1F4 DWORD PointerToRawData            : 0X00000600
+         0X1F8 DWORD PointerToRelocations        : 0X00000000
+         0X1FC DWORD PointerToLinenumbers        : 0X00000000
+         0X200 WORD  NumberOfRelocations         : 0X0000
+         0X202 WORD  NumberOfLinenumbers         : 0X0000
+         0X204 DWORD Characteristics             : 0X40000040
+        -----> Contains initialized data
+        -----> Readable
+
+                SECTION
+         0X208       Name                        : .data
+         0X210 DWORD VirtualSize                 : 0X00000040
+         0X214 DWORD VirtualAddress              : 0X00003000
+         0X218 DWORD SizeOfRawData               : 0X00000200
+         0X21C DWORD PointerToRawData            : 0X00000800
+         0X220 DWORD PointerToRelocations        : 0X00000000
+         0X224 DWORD PointerToLinenumbers        : 0X00000000
+         0X228 WORD  NumberOfRelocations         : 0X0000
+         0X22A WORD  NumberOfLinenumbers         : 0X0000
+         0X22C DWORD Characteristics             : 0XC0000040
+        -----> Contains initialized data
+        -----> Readable
+        -----> Writeable
+
+                SECTION
+         0X230       Name                        : .rsrc
+         0X238 DWORD VirtualSize                 : 0X000000B8
+         0X23C DWORD VirtualAddress              : 0X00004000
+         0X240 DWORD SizeOfRawData               : 0X00000200
+         0X244 DWORD PointerToRawData            : 0X00000A00
+         0X248 DWORD PointerToRelocations        : 0X00000000
+         0X24C DWORD PointerToLinenumbers        : 0X00000000
+         0X250 WORD  NumberOfRelocations         : 0X0000
+         0X252 WORD  NumberOfLinenumbers         : 0X0000
+         0X254 DWORD Characteristics             : 0X40000040
+        -----> Contains initialized data
+        -----> Readable
+_________________________________________________________________
+
+Alors en ce qui concerne l'IMAGE_DATA_DIRECTORY, tout semble correct, si ça foire après, on saura qu'il faudra fouiner là-dedans :>.
+Voyons voir le reste...
+Il manque :
+- La VirtualAddress de la section .text en 0X1C4 : on mettra 0x1000 (cf Section Alignment)
+- La SizeOfRawData  de cette même section en 0X1C8 : on mettra 0x200 (cf FileAlignment)
+- Le PointerToRawData en 0X1CC : C'est le début de cette section dans le fichier, donc on l'a vu tout à l'heure  -> 0x400
+
+Et maintenant on va pouvoir complèter la SizeOfImage de tout à l'heure :
+0x4000 + 0xB8 = 0x40B8 :)
+
+On corrige tout ça et on teste notre binaire ;)
+
+Ah bah ça crashe :)
+Donc à mon avis y'a encore des choses à revoir au niveau de l'IMAGE_DATA_DIRECTORY.
+Je sors un autre de mes outils de warlodz ^^
+
+********************************************************
+*                   LogImports 1.0                     *
+*                coded in asm 32 bits                  *
+*                     by elooo                         *
+********************************************************
+
+-----> Log for : h:\PEAnalysis.exe
+_______________________________________________________
+
+IMAGE_DOS_SIGNATURE (MZ) at    : 0x00000000
+IMAGE_NT_SIGNATURE (PE) at     : 0x000000c0
+FileHeader at                  : 0x000000c4
+OptionalHeader at              : 0x000000d8
+Number of sections             : 4
+
+RVA of the Import Directory    : 0x00002010
+Length of the Import Directory : 0x0000003c
+
+Section .text
+        RVA    = 0x00001000
+        Offset = 0x00000400
+        Length = 0x00000200
+
+Section .rdata
+        RVA    = 0x00002000
+        Offset = 0x00000600
+        Length = 0x00000200
+        (Section of Import Table !)
+
+Section .data
+        RVA    = 0x00003000
+        Offset = 0x00000800
+        Length = 0x00000200
+
+Section .rsrc
+        RVA    = 0x00004000
+        Offset = 0x00000a00
+        Length = 0x00000200
+
+----------------------------------------------------------------
+
+Effectivement, y'a un ch'tit problème puisqu'il n'arrive pas à atteindre la 1ere IMAGE_IMPORT_DESCRIPTOR :)
+On va l'aider en corrigeant tout ça :)
+
+A la rva 0x2010 (offset 0x610), on devrait trouver le 1er OriginalFirstThunk, mais évidemment là y'a rien.
+Bref, on regarde dans le dump, et on voit que celui-ci est situé en 0x64C, doit on mettra 0x204C à l'offset 0x610.
+
+_______________________________________________________
+
+                IMAGE_IMPORT_DESCRIPTOR
+_______________________________________________________
+
+OriginalFirstThunk : 0x0000204c ; offset = 0x0000064c
+TimeDateStamp      : 0x00000000
+ForwarderChain     : 0x00000000
+Name               : 0x00000000
+FirstThunk         : 0x00000000
+
+-----> MZÉ
+
+-------------------------------------------------------
+  Hint | Name
+-------------------------------------------------------
+   128 | ExitProcess
+
+_______________________________________________________
+
+
+_______________________________________________________
+
+                IMAGE_IMPORT_DESCRIPTOR
+_______________________________________________________
+
+OriginalFirstThunk : 0x00002054 ; offset = 0x00000654
+TimeDateStamp      : 0x00000000
+ForwarderChain     : 0x00000000
+Name               : 0x00002086 ; offset = 0x00000686
+FirstThunk         : 0x00002008 ; offset = 0x00000608
+
+-----> user32.dll
+
+-------------------------------------------------------
+  Hint | Name
+-------------------------------------------------------
+   413 | MessageBoxA
+
+_______________________________________________________
+
+------------------------------------------------------------------
+
+Ok, y'a du mieux, mais ce n'est toujours pas ça :)
+Il manque la rva vers le nom de la dll (Name) et le FirstThunk, screugneugneu :)
+Donc on y retourne...
+
+"kernel32" est en 0x66A, soit 206A en RVA, donc en 0x61C on met cette valeur :p
+Et reste le FisrtThunk à remplir (qui est à 0 pour le moment) et qui se trouve en 0x620 : 0x2000 (soit 0x600)
+
+On teste, et YAHOOOOOOO, ça marche nickel :)))))
+
+
+++
+
+elooo
+

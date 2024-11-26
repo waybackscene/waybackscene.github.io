@@ -1,0 +1,221 @@
+# ======================================================================
+# Makefile for checksum program
+#
+# Targets:
+#	all		make everything
+#	checksum	checksum program
+#	checksum.tar	checksum program distribution in UNIX tar format
+#	checksum.zip	checksum program distribution in Info-Zip format
+#	checksum.zoo	checksum program distribution in zoo archive format
+#	clean		remove object files and other temporary files
+#	clobber		remove all reconstructable files
+#	crc.tab		output of polynom
+#	install		install checksum in system directory
+#	polynom		generator of polynomial coefficients used by
+#			checksum
+#	test.new	simple test of checksum and its status codes
+#	uninstall	remove checksum from system directory
+#
+# [15-Jul-1992]
+# ======================================================================
+
+# These two values may need to be changed for your local conventions
+BINDIR        = /usr/local/bin
+MANDIR        = /usr/local/man/man1
+
+CC            = cc
+CC            = gcc -Wall -Wshadow -Wcast-qual -Wpointer-arith -Wwrite-strings
+
+CHECKSUM      = ./checksum
+
+COMPRESS      = compress
+
+# Use -p (preserve time stamp) where available
+CP          = /bin/cp -p
+
+CWEAVE        = cweave
+
+CTANGLE       = ctangle
+
+DETEX         = detex
+
+FTPDIR        = /usr/spool/ftp/pub/misc
+
+# Use -p to preserve time stamps where available;
+# HPUX and AT&T System V lack it however
+INSTALL       = /bin/cp -p
+
+LN            = /bin/ln
+
+RM            = /bin/rm -f
+
+SEP           = "============================================================"
+
+SHELL         = /bin/sh
+
+SPELL         = spell
+
+STRIP         = strip
+
+TAR           = tar
+
+TARFILES      = Makefile README checksum.c checksum.eok checksum.txt \
+		checksum.man checksum.tex checksum.toc checksum.w \
+		index polynom.c polynom.eok polynom.tex polynom.toc \
+		polynom.w test.org test.new ibmpcdos vaxvms
+ 
+TMP           = tmp
+
+UNZIP         = unzip
+
+VERSION       = `nawk '/^%%% *version * = / \
+		{ gsub(/[^0-9.]/,"",$$4); gsub(/\./,"-",$$4); print $$4 }' \
+		checksum.w`
+
+ZIP           = zip
+
+ZOO           = zoo
+
+#=======================================================================
+# the remaining lines should not need changes
+
+.SUFFIXES: .exc .tex .dvi .w
+
+.tex.exc:
+	$(DETEX) $< | $(SPELL) >$@
+	- diff $*.eok $@
+
+.w.tex:
+	$(CWEAVE) $<
+
+.tex.dvi:
+	tex $<
+
+.w.dvi:
+	$(CWEAVE) $<
+	tex $<
+
+.w.c:
+	$(CTANGLE) $<
+
+.w.o:
+	$(MAKE) "CC=$(CC)" "CFLAGS=$(CFLAGS)" $*.c
+	$(MAKE) "CC=$(CC)" "CFLAGS=$(CFLAGS)" $*.o
+
+#=======================================================================
+
+all:	checksum polynom crc.tab test.new checksum.dvi polynom.dvi
+
+checksum:	checksum.o
+	$(CC) $(CFLAGS) -o checksum checksum.o
+
+checksum.txt:	checksum.man
+	nroff -man checksum.man | col -b >$@
+
+checksum.tar:	$(TMP)/LASTUPDATE
+	cd $(TMP) ; $(TAR) cf ../$@ checksum
+	-$(RM) checksum-$(VERSION).tar
+	$(LN) $@ checksum-$(VERSION).tar
+
+checksum.tar.z:	checksum.tar
+	$(COMPRESS) <$? >$@
+	-$(RM) checksum-$(VERSION).tar.z
+	$(LN) $@ checksum-$(VERSION).tar.z
+
+checksum.tar-lst:	checksum.tar
+	$(TAR) tvf checksum.tar >$@
+	-$(RM) checksum-$(VERSION).tar-lst
+	$(LN) checksum.tar-lst checksum-$(VERSION).tar-lst
+
+checksum.zip:	$(TMP)/LASTUPDATE
+	-$(RM) $@
+	cd $(TMP) ; $(ZIP) -r ../$@ checksum
+	-$(RM) checksum-$(VERSION).zip
+	$(LN) $@ checksum-$(VERSION).zip
+
+checksum.zip-lst:	checksum.zip
+	$(UNZIP) -v checksum.zip >$@
+	-$(RM) checksum-$(VERSION).zip-lst
+	$(LN) $@ checksum-$(VERSION).zip-lst
+
+checksum.zoo:	$(TMP)/LASTUPDATE
+	-$(RM) $@
+	cd $(TMP) ; \
+		$(ZOO) a ../$@ checksum checksum/* checksum/*/* checksum/*/*/*
+	-$(RM) checksum-$(VERSION).zoo
+	$(LN) $@ checksum-$(VERSION).zoo
+
+checksum.zoo-lst:	checksum.zoo
+	$(ZOO) v checksum.zoo >$@
+	-$(RM) checksum-$(VERSION).zoo-lst
+	$(LN) $@ checksum-$(VERSION).zoo-lst
+
+clean:
+	-$(RM) *.dvi
+	-$(RM) *.log
+	-$(RM) *.dvi-*
+	-$(RM) *.exc
+	-$(RM) *.o
+	-$(RM) *~
+	-$(RM) -r $(TMP)
+	-$(RM) \#*
+	-$(RM) checksum*.tar*
+	-$(RM) checksum*.zip*
+	-$(RM) checksum*.zoo*
+	-$(RM) core
+
+clobber:	clean
+	-$(RM) checksum polynom crc.tab
+
+crc.tab:	polynom
+	./polynom
+
+install:	checksum
+	$(INSTALL) checksum $(BINDIR)/checksum
+	$(STRIP) $(BINDIR)/checksum
+	chmod 755 $(BINDIR)/checksum
+	$(INSTALL) checksum.man $(MANDIR)/checksum.1
+	chmod 744 $(MANDIR)/checksum.1
+
+install-ftp:	checksum.tar-lst checksum.tar.z checksum.zip-lst checksum.zoo-lst
+	$(CP) checksum-$(VERSION).tar.z $(FTPDIR)
+	$(CP) checksum-$(VERSION).tar-lst $(FTPDIR)
+	$(CP) checksum-$(VERSION).zip $(FTPDIR)
+	$(CP) checksum-$(VERSION).zip-lst $(FTPDIR)
+	$(CP) checksum-$(VERSION).zoo $(FTPDIR)
+	$(CP) checksum-$(VERSION).zoo-lst $(FTPDIR)
+
+polynom:	polynom.o
+	$(CC) $(CFLAGS) -o polynom polynom.o
+
+test.new:	checksum
+#	$(CHECKSUM) -c test.org test.new
+	$(CHECKSUM) test.org test.new
+	@echo $(SEP)
+	@echo "The following lines should show the old and new checksums:"
+	- diff test.org test.new
+	@echo $(SEP)
+	@echo "The following test should return a NON-ZERO status code:"
+	@if $(CHECKSUM) -v test.org  >/dev/null ;\
+	then	echo "	checksum INCORRECTLY returns a zero status code" ;\
+	else	echo "	checksum correctly returns a NON-ZERO status code" ;\
+	fi
+	@echo $(SEP)
+	@echo "The following test should return a ZERO status code:"
+	@if $(CHECKSUM) -v test.new >/dev/null ;\
+	then	echo "	checksum correctly returns a ZERO status code" ;\
+	else	echo "	checksum INCORRECTLY returns a non-zero status code" ;\
+	fi
+	@echo $(SEP)
+
+$(TMP)/LASTUPDATE:	$(TARFILES)
+	-$(RM) -r $(TMP)
+	-mkdir $(TMP) $(TMP)/checksum $(TMP)/checksum/v$(VERSION)
+	$(TAR) cf - $(TARFILES) | (cd $(TMP)/checksum/v$(VERSION); $(TAR) xf -)
+	date > $@
+
+uninstall:
+	$(RM) $(BINDIR)/checksum
+	$(RM) $(MANDIR)/checksum.1
+
+

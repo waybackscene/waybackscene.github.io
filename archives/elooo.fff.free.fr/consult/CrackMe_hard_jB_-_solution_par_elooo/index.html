@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+  font-family: "trebuchet ms", verdana, sans-serif;
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover
+  {
+  color: #003663;
+  background-color: #CCCC66; 
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>CrackMe_hard de jB - Solution par elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie avanc&eacute;</td><td>Ollydbg 1.9d</td><td>elooo</td></tr>
+</table>
+
+  <h2>Familiarisation avec le crackme</h2>
+<p>La premi&egrave;re chose que l'on remarque sur ce crackme c'est qu'il n'y a pas de bouton "OK" ou
+"Tester", bref un bouton qui nous permettrait de v&eacute;rifier que notre serial entr&eacute; est correct.<br />
+Mais comment peut donc se faire la v&eacute;rification ?<br />
+Le crackme r&eacute;cup&egrave;re en fait chaque caract&egrave;re au fur et &agrave; mesure qu'ils sont rentr&eacute;s et les teste. C'est la seule hypoth&egrave;se envisageable.</p>
+
+<p style="text-align:center">
+<img src="1.jpg" alt="Image 1" />
+</p>
+
+<p>
+USER32.GetDlgItemTextA permet de faire &ccedil;a ais&eacute;ment. Nous affichons donc les imports (ctrl+n) puis posons un bp sur toutes les r&eacute;f&eacute;rences &agrave; cette fonction.<br />
+On fait F9 pour lancer le processus.<br />
+Evidemment &ccedil;a breake illico. Pressez sur F9 jusqu'&agrave; ce que le crackme soit compl&egrave;tement lanc&eacute;. Il faut savoir que d&egrave;s que vous modifirez le champ "Mot de passe", &ccedil;a breakera sous olly.<br />
+Placez-vous sur ce fameux champ avec la souris et effacez un point de "DUR, DUR..." par exemple.</p>
+
+
+  <h2>Etude de la routine</h2>
+
+<p>Vous devriez breaker au m&ecirc;me endroit que moi.</p>
+
+<p style="text-align:center">
+<img src="2.jpg" alt="Image 2" />
+</p>
+
+<p>J'ai commenc&eacute; &agrave; commenter la routine. Comme vous pouvez le voir, il y a un test sur la longueur du pass : si celle-ci n'est pas &eacute;gale &agrave; 9, on jump vers badboy.<br />
+Donc 1ere chose : <span style="font-weight: bolder">le pass doit faire 9 caract&egrave;res !</span><br />
+Testons donc avec un fake serial de 9 lettres  pour voir la suite :)<br />
+D&eacute;sactivez vos précédents bp, pressez sur F9 pour bien relancer le crackme et rentrez par exemple ABCDEFGHI.<br />
+Posez votre bp juste o&ugrave; on s'&eacute;tait arr&ecirc;t&eacute; tout &agrave; l'heure (en 0040107B), puis de nouveau F9. Ca breake et on va tracer lentement tout en commentant :)</p>
+
+<p style="text-align:center">
+<img src="3.jpg" alt="Image 3" />
+</p>
+
+<p>Un call nous emm&egrave;ne un peu plus loin dans la routine et on peut voir un test entre le dernier caract&egrave;re de notre fake serial et 45h. La derni&egrave;re lettre de ABCDEFGHI est un I, autrement dit 49h. Pour obtenir 45h, il faudrait que notre fake serial finisse par E.<br />
+D'o&ugrave; cette 2eme condition : <span style="font-weight: bolder">le serial finit par un E !</span>
+</p>
+<p>On inverse en live le saut qui suit :</p>
+<blockquote><p>004010BA   . /0F85 9A000000 JNZ CrackMe_.0040115A</p>
+<p>Ce qui donne :</p>
+<p>004010BA     /0F84 9A000000 JE CrackMe_.0040115A</p></blockquote>
+<p>Et on continue :</p>
+
+<p style="text-align:center">
+<img src="4.jpg" alt="Image 4" />
+</p>
+
+<p>
+Le crackme va, comme je l'ai annot&eacute; ci-dessus passer chaque caract&egrave;re de notre fake serial en revue, et tout d'abord v&eacute;rifier qu'il correspond &agrave; une valeur hexad&eacute;cimale comprise entre 41h et 5Ah, autrement dit que notre fake serial n'est constitu&eacute; que de lettres comprises entre A et Z.<br />
+Donc 3eme condition : <span style="font-weight: bolder">le serial est un mot &eacute;crit en majuscules !</span></p>
+
+<p>Une fois cette v&eacute;rification faite pour un caract&egrave;re, il prend la position de ce caract&egrave;re dans l'alphabet (soustrait 41h &agrave; la valeur hexa du caract&egrave;re, ce qui &eacute;quivaut &agrave; r&eacute;cup&eacute;rer sa position dans l'alphabet en consid&eacute;rant qu'un A aura la position 0, un B la position 1, etc).<br />
+Cette position va permettre ensuite d'aller chercher une valeur dans une table pr&eacute;d&eacute;finie, table qui a sa premi&egrave;re valeur dans edx, sa deuxi&egrave;me en edx+1, etc.<br />
+Si on va voir dans le dump quelles sont les valeurs qui se trouvent &agrave; l'adresse m&eacute;moire point&eacute;e par edx, on tombe sur notre table de valeurs.</p>
+
+<p style="text-align:center">
+<img src="5.jpg" alt="Image 5" />
+</p>
+
+<p>Pour plus de clart&eacute;, on pourrait faire un tableau de correspondances :</p>
+
+<table border="1" summary="Tableau de correspondances avec les valeurs de la table">
+<colgroup  span="27" width="3.5%" />
+   <tr><th>Lettres</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th><th>N</th><th>O</th><th>P</th><th>Q</th><th>R</th><th>S</th><th>T</th><th>U</th><th>V</th><th>W</th><th>X</th><th>Y</th><th>Z</th>
+</tr>
+   <tr><td>Valeurs</td><td>18</td><td>19</td><td>07</td><td>11</td><td>01</td><td>05</td><td>04</td><td>08</td><td>15</td><td>02</td><td>12</td><td>10</td><td>03</td><td>14</td><td>0F</td><td>0D</td><td>0B</td><td>06</td><td>17</td><td>0A</td><td>09</td><td>0C</td><td>0E</td><td>13</td><td>16</td><td>10</td>
+</tr>
+</table>
+
+<p>
+On transforme ensuite cette valeur en binaire, et on effectue un d&eacute;calage de 4 bits &agrave; droite.<br />
+Exemple pour A :</p>
+<blockquote><p>A correspond &agrave; la valeur 18h dans la table (attention, toutes les valeurs dans la table sont des valeurs en hexad&eacute;cimal !)</p>
+<p> 18h est &eacute;gal en binaire &agrave; 11000 (je n'explique pas comment on convertit manuellement des valeurs hexa en binaire, pour ceux qui ne savent pas, la calculatrice win fait &ccedil;a tr&egrave;s bien :))</p>
+<p>Mais attention encore une fois, la valeur binaire doit &ecirc;tre donn&eacute;e sur un format de demi-octets, autrement dit on doit avoir 4 chiffres, 8 chiffres, 12 chiffres, 16 chiffres, etc, mais pas 6. S'il manque des chiffres, on rajoute des 0 &agrave; gauche. 11000 sera donc not&eacute;e finalement 00011000.</p>
+<p> On prend les 4 derniers chiffres de la valeur binaire (0001<span style="font-weight: bolder">1000</span> et on les d&eacute;place &agrave; gauche (ce qui correspond &agrave; un d&eacute;calage par la droite).</p>
+<p>On a maintenant pour valeur binaire <span style="font-weight: bolder">1000</span>0001, ce qui &eacute;quivaut &agrave; une valeur hexad&eacute;cimale de 81h</p></blockquote>
+<p>Voil&agrave; donc &agrave; quoi correspond le ROL AL, 4.<br />
+Il va remplacer chaque valeur hexad&eacute;cimale de notre fake serial par cette nouvelle valeur ainsi obtenue. On pourrait alors refaire un tableau de correspondances si l'on veut simplifier encore un peu les choses.</p>
+
+<table border="1" summary="Tableau de correspondances apr&egrave; le d&eacute;calage &agrave; droite">
+<colgroup  span="27" width="3.5%" />
+   <tr><th>Lettres</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th><th>K</th><th>L</th><th>M</th><th>N</th><th>O</th><th>P</th><th>Q</th><th>R</th><th>S</th><th>T</th><th>U</th><th>V</th><th>W</th><th>X</th><th>Y</th><th>Z</th>
+</tr>
+
+   <tr><td>Avant</td><td>18</td><td>19</td><td>07</td><td>11</td><td>01</td><td>05</td><td>04</td><td>08</td><td>15</td><td>02</td><td>12</td><td>10</td><td>03</td><td>14</td><td>0F</td><td>0D</td><td>0B</td><td>06</td><td>17</td><td>0A</td><td>09</td><td>0C</td><td>0E</td><td>13</td><td>16</td><td>10</td>
+</tr>
+
+   <tr><td>Apr&egrave;s</td><td>81</td><td>91</td><td>70</td><td>11</td><td>10</td><td>50</td><td>40</td><td>80</td><td>51</td><td>20</td><td>21</td><td>01</td><td>30</td><td>41</td><td>F0</td><td>D0</td><td>B0</td><td>60</td><td>71</td><td>A0</td><td>90</td><td>C0</td><td>E0</td><td>31</td><td>61</td><td>01</td>
+</tr>
+</table>
+
+<p>A la place de notre fake serial d'origine est donc stock&eacute;e une nouvelle s&eacute;rie de valeurs (dans ecx). Le screenshot ci-dessous le confirme :</p>
+
+<p style="text-align:center">
+<img src="6.jpg" alt="Image 6" />
+</p>
+
+<p>Continuons les commentaires de la routine.</p>
+
+<p style="text-align:center">
+<img src="9.jpg" alt="Image 9" />
+</p>
+
+<p>On met les 4 premi&egrave;res valeurs de ecx (ce qui correspond &agrave; nos 4 premi&egrave;res lettres apr&egrave;s transformation) dans eax, les 4 suivantes dans ebx.<br />
+Et l&agrave; j'en entends me dire "Et le dernier caract&egrave;re alors ? Le serial doit faire 9 caract&egrave;res non ?". C'est exact, mais un test &agrave; d&eacute;j&agrave; &eacute;t&eacute; fait au pr&eacute;alable, souvenez-vous, il v&eacute;rifiait si le dernier caract&egrave;re &eacute;tait &eacute;gal &agrave; un E, donc un nouveau test n'est pas indispensable.<br />
+Ensuite il inverse l'ordre des valeurs contenues dans eax et l'ordre de celles contenues dans ebx. Voil&agrave; ce que donne les registres avant et apr&egrave;s :</p>
+
+<p style="text-align:center">
+Avant : 
+<img src="7.jpg" alt="Image 7" />
+&nbsp;&nbsp;&nbsp;&nbsp;
+Apr&egrave;s :
+<img src="8.jpg" alt="Image 8" />
+</p>
+
+<p>On a donc maintenant</p>
+<blockquote><p>eax = 81917011 et ebx = 10504080</p></blockquote>
+
+<p style="text-align:center">
+<img src="10.jpg" alt="Image 10" />
+</p>
+
+<p>On xor ensuite ebx avec eax et on met cette valeur dans ebx. Faisons ça en manuel pour bien comprendre &agrave; quoi correspond un xor.<br />
+eax = 81917011 en hexad&eacute;cimal = 10000001100100010111000000010001 en binaire.<br />
+ebx = 10504080 en hexad&eacute;cimal = 10000010100000100000010000000 en binaire.<br />
+Le nombre de chiffres de ebx ne correspondant pas &agrave; un multiple de 4, on compl&egrave;te avec des 0.<br />
+Donc ebx = <span style="font-weight: bolder">000</span>10000010100000100000010000000</p>
+<blockquote><p>Le xor correspond au OU EXCLUSIF, pour r&eacute;soudre XOR EBX, EAX, il va donc falloir prendre chaque bit des valeurs binaires de ebx et de eax et se r&eacute;f&eacute;rer &agrave; la table de v&eacute;rit&eacute; ci-dessous.</p></blockquote>
+
+<table border="1" summary="Table de v&eacute;rit&eacute; du XOR" width="50%">
+<colgroup  span="3" width="33%" />
+   <tr><th>xor</th><th>0</th><th>1</th></tr>
+   <tr><td>0</td><td>0</td><td>1</td></tr>
+   <tr><td>1</td><td>1</td><td>0</td></tr>
+</table>
+
+<blockquote><p>eax = 10000001100100010111000000010001</p>
+<p>ebx = 00010000010100000100000010000000</p>
+<p>xor = 10010001110000010011000010010001 = 91C13091 en hexad&eacute;cimal</p></blockquote>
+
+<p>On met la valeur du xor dans ebx. On a donc maintenant :<br />
+eax = 81917011<br />
+ebx = 91C13091</p>
+
+<p>On passe alors au rol eax, 0D.<br />
+On a vu au-dessus qu'un ror &eacute;tait un d&eacute;calage &agrave; droite, eh bien un rol, c'est un d&eacute;calage &agrave; gauche, ici de 13 bits (0Dh = 13) :)<br />
+On prend les 13 premiers bits de eax : <span style="font-weight: bolder">1000000110010</span>0010111000000010001<br />
+Et on les passe &agrave; droite : 0010111000000010001<span style="font-weight: bolder">1000000110010</span> = 2E023032h</p>
+
+<p>On met la valeur du rol dans eax :</p>
+<blockquote><p>eax = 2E023032 et ebx = 91C13091</p></blockquote>
+
+<p>Ensuite le ror ebx, 0D. Même principe mais dans l'autre sens.<br />
+On prend les 13 derniers bits de ebx : 1001000111000001001<span style="font-weight: bolder">1000010010001</span><br />
+Et on les passe &agrave; gauche : <span style="font-weight: bolder">1000010010001</span>1001000111000001001 = 848C8E09h</p>
+
+<p>On met la valeur du ror dans ebx :</p>
+<blockquote><p>eax = 2E023032 et ebx = 848C8E09</p></blockquote>
+<p>Et on stocke le tout dans ecx, ebx d'abord puis eax &agrave; la suite.<br />
+Vous noterez cependant que les valeurs ne sont pas stock&eacute;es comme je les ai &eacute;crites ci-dessus, mais en ordre inverse : 848C8E09 est stock&eacute; en 098E8C84 et 2E023032 en 3230022E. C'est d&ucirc; au format little endian d'Intel, il suffit juste de le savoir, et d'en tenir compte pour la suite :)</p>
+
+<p style="text-align:center">
+<img src="11.jpg" alt="Image 11" />
+</p>
+
+<p>Bon c'est pas termin&eacute; donc on continue :</p>
+
+<p style="text-align:center">
+<img src="12.jpg" alt="Image 12" />
+</p>
+
+<p>On initialise esi et eax &agrave; 0, et on met 13 (0Dh) dans ebx.<br />
+On met le contenu de ecx dans edi. Puis on prend chaque valeur hexa de edi (sera stock&eacute;e dans al) que l'on va diviser par ebx.<br />
+cdq étend le contenu de eax &agrave; 64 bits et le r&eacute;sultat est renvoy&eacute; en edx:eax.<br />
+On r&eacute;cup&egrave;re la valeur enti&egrave;re de la division que l'on met dans edi &agrave; la place de la valeur qu'on a prise pr&eacute;c&eacute;demment et le reste de la division (modulo) sera mis dans un autre buffer (en esi+4021AD).<br />
+On incr&eacute;mente esi (qui nous sert de compteur ici) et tant que esi est diff&eacute;rent de 8 on repasse dans la routine pour s'occuper de la valeur suivante d'edi.</p>
+
+<p>Comme pr&eacute;c&eacute;demment on va faire le premier caract&egrave;re manuellement pour voir ce que &ccedil;a donne concr&egrave;tement :</p>
+<blockquote><p>La premi&egrave;re valeur prise est al = 09 (cf ci-dessus pour l'explication).</p>
+<p>On &eacute;tend le contenu de eax &agrave; 64 bits. Pour rappel, eax est la forme &eacute;tendue (sur 32 bits) de ax (16 bits). ax est lui-m&ecirc;me divis&eacute; en ah (partie haute de ax sur 8 bits) et al (partie basse de ax sur 8 bits). Ici on a donc eax = 00000009, ax = 0009 et al = 09.</p>
+<p>Le fait d'utiliser cdq va nous permettre de r&eacute;cup&eacute;rer le modulo (reste de la division) dans edx.</p>
+<p>09 / 13 = 0 (valeur enti&egrave;re) + 9 (modulo) donc on devrait trouver eax = 00000000 et edx = 00000009</p>
+<p>C'est effectivement le cas, mais edx ne nous int&eacute;resse pas, c'est surtout le modulo qui est int&eacute;ressant, sans tous les 0 devant donc on stocke juste dl (= 09)dans esi+4021AD.</p></blockquote>
+
+<p>Voil&agrave; pour un caract&egrave;re. Une fois les 8 caract&egrave;res pass&eacute;s on trouve dans esi+4021AD :</p>
+
+<p style="text-align:center">
+<img src="14.jpg" alt="Image 14" />
+</p>
+
+<p>Et dans edi :</p>
+
+<p style="text-align:center">
+<img src="13.jpg" alt="Image 13" />
+</p>
+
+<p> Et cette fois-ci on touche &agrave; la fin, la s&eacute;rie de checksum :</p>
+
+<p style="text-align:center">
+<img src="15.jpg" alt="Image 15" />
+</p>
+
+<p>Le crackme compare eax &agrave; 0109010B, ebx &agrave; 07070703, edx &agrave; 03030301 et ecx &agrave; 010A0000.<br />
+Pour notre fake serial on obtient &agrave; terme :<br />
+eax = 020A0C09<br />
+ebx = 0702090B<br />
+edx = 03000303<br />
+ecx = 0A0A0A00<br />
+Bref, c'est pas gagn&eacute; :p</p>
+<p>Donc on r&eacute;capitule :</p>
+  <ul class="liste">
+     <li>Le pass doit faire 9 caractères</li>
+     <li>Le serial finit par un E</li>
+     <li>Le serial est un mot écrit en majuscules</li>
+     <li>eax = 0109010B</li>
+     <li>ebx = 07070703</li> 
+     <li>edx = 03030301</li>
+     <li>ecx = 010A0000</li>
+  </ul>
+
+
+  <h2>R&eacute;solution du crackme</h2>
+
+<p>Je vois 3 m&eacute;thodes possibles de r&eacute;solution de ce crackme : soit on code un programme qui ferait les calculs sur les 8 premiers caract&egrave;res du serial pour que nos registres correspondent &agrave; ce qui est attendu, soit on modifie directement les registres dans ollydbg, soit on refait tous les calculs en sens inverse &agrave; la main :p</p>
+
+<h3>Modification dans les registres</h3>
+
+<p>edx = 03030301 et ecx = 010A0000 correspondent aux modulo de la division euclidienne par 0D et ebx = 07070703 et eax = 0109010B aux valeurs enti&egrave;res respectives. On peut donc remonter facilement.</p>
+<p>0B + 00 * 0D = 0B<br />
+01 + 00 * 0D = 01<br />
+09 + 0A * 0D = 8B<br />
+01 + 01 * 0D = 0E<br />
+On a donc la valeur de ebx apr&egrave;s le ror ebx, 0D.</p>
+<blockquote><p>ebx = 0E8B010B</p></blockquote>
+<p>03 + 01 * 0D = 10<br />
+07 + 03 * 0D = 2E<br />
+07 + 03 * 0D = 2E<br />
+07 + 03 * 0D = 2E<br />
+Et la valeur de eax apr&egrave;s le rol eax, 0D.</p>
+<blockquote><p>eax = 2E2E2E10</p></blockquote>
+<p>On pause un bp sur le "xor ebx, eax", on patche le "rol eax, 0D" en "ror eax, 0D", on change la valeur de eax par 2E2E2E10 et on fait F7 deux fois. On regarde la nouvelle valeur de eax = 70817171, ce qui correspond &agrave; CASS (cf table de correspondance au-dessus).<br />
+On a alors les 4 premiers caract&egrave;res du pass :)</p>
+<p>Passons au "ror ebx, 0D".<br />
+M&ecirc;me m&eacute;thode que pour eax, et on obtient ebx = 602161D1</p>
+<p>Mais ebx est modifi&eacute; par le "xor ebx, eax" &eacute;galement.<br />
+eax = 70817171 et ebx = 602161D1<br />
+70817171 ^ 602161D1 = 10A010A0, ce qui correspond &agrave; ETET<br />
+Voici donc les 4 caract&egrave;res suivants du pass.</p>
+<blockquote><p>On se souvient que la 9eme lettre est un E, par cons&eacute;quent on sait dire maintenant que le pass valide est "CASSETETE"</p></blockquote>
+
+<p> On v&eacute;rifie :</p>
+
+<p style="text-align:center">
+<img src="16.jpg" alt="Image 16" />
+</p>
+<p>On a bien travaill&eacute; :) :)</p>
+
+<h3>Coding d'un prog qui ferait les calculs à notre place</h3>
+
+<p>Je vous mets ci-dessous le bout de code (en asm) que j'ai cod&eacute; en me basant sur ce que j'ai expliqu&eacute; plus haut afin que mon petit prog me fasse les calculs.<br />
+C'est pas aussi propre que le code de jB, c'est pas rigoureux, pas tr&egrave;s joli (je fais avec mes connaissances actuelles :p) mais bon &ccedil;a fonctionne :)<br />
+Autrement dit, je ne cherche pas &agrave; avoir des commentaires sur ma mani&egrave;re de coder, et surtout ne prenez pas exemple sur cette source pour apprendre l'asm :)</p>
+
+
+<blockquote>
+<pre>
+
+pushad
+			
+     mov     PART2, 109010Bh           <span style="color:#99CC66">; initialise avec les valeurs qu'on cherche</span>
+     mov     ebx, 7070703h           <span style="color:#99CC66">; initialise avec les valeurs qu'on cherche</span>
+     mov     eax, 3030301h           <span style="color:#99CC66">; initialise avec les valeurs qu'on cherche</span>
+     mov     PART1, 10A0000h           <span style="color:#99CC66">; initialise avec les valeurs qu'on cherche</span>
+     xor     esi, esi
+     xor     edi, edi
+                 
+ 
+ modulo1:   <span style="color:#990000">; Multiplication par 0D avec prise en compte du modulo</span>
+     xor     edx, edx      
+     mov     dl, byte ptr [esi+PART1]             
+     imul    edx, 0Dh
+     add     dl, byte ptr [esi+PART2]
+     mov     byte ptr [STOCK+esi], dl
+     inc     esi
+     cmp     esi, 4           <span style="color:#99CC66">; boucle 4 fois (pour 4 chars)</span>
+     jz      modulo2           <span style="color:#99CC66">; puis va preparer les buffers avec les variables suivantes</span>
+     jmp     modulo1           <span style="color:#99CC66">; sinon continue la routine</span>
+
+                 
+ modulo2:   <span style="color:#990000">; Changement des variables pour l'autre partie du mot</span>
+     test    ebx ,ebx           <span style="color:#99CC66">; si ebx == 0, alors c'est qu'il y a eu 2 passages</span> 
+                                <span style="color:#99CC66">; dans la routine modulo1</span>
+     jz      suite           <span style="color:#99CC66">; et donc qu'on peut continuer vers suite</span>
+     mov     dword ptr PART2, ebx
+     mov     dword ptr PART1, eax
+     mov     edi, dword ptr STOCK
+     mov     dword ptr BUFFER, edi
+     xor     ebx, ebx           <span style="color:#99CC66">; ebx ne sera initialise a 0 que si un passage dans la</span> 
+                                <span style="color:#99CC66">; routine modulo1 a deja eu lieu</span>
+     xor     esi, esi
+     xor     edi, edi
+     jmp     modulo1           <span style="color:#99CC66">; si ebx etait != de 0, on va jumper vers modulo1 pour</span>
+                               <span style="color:#99CC66">; s'occuper de l'autre partie du mot</span>
+ 
+ 
+ suite:     <span style="color:#990000">; Traitement des rol 0D, ror 0D et xor</span>
+     mov     eax, dword ptr STOCK
+     mov     ebx, dword ptr BUFFER               
+     ror     eax, 0Dh
+     rol     ebx, 0Dh
+     xor     ebx, eax
+     xor     ecx, ecx
+     mov     dword ptr STOCK, eax                
+     mov     dword ptr BUFFER, ebx
+                 
+             
+ table1:    <span style="color:#990000">; Traitement du rol 4</span>
+     mov     dl, byte ptr [STOCK+ecx]
+     rol     dl, 4
+     mov     byte ptr [STOCK+ecx], dl
+     inc     ecx
+     cmp     ecx, 4           <span style="color:#99CC66">; on boucle 4 fois pour faire 4 lettre</span>
+     jz      table2           <span style="color:#99CC66">; puis on va vers table2 pour initialiser les</span>
+                              <span style="color:#99CC66">; valeurs suivantes</span>
+     jmp     table1           <span style="color:#99CC66">; sinon on continue dans cette routine</span>
+                 
+                 
+ table2:    <span style="color:#990000">; Stockage dans un autre buffer pour pouvoir traiter l'autre partie du mot</span>
+     test    ebx, ebx           <span style="color:#99CC66">; ebx == 0 seulement si les 2 series de 4 chars ont ete</span>
+     jz      precorrespondance           <span style="color:#99CC66">; traitees, et donc on ira vers precorrespondance</span>
+     mov     edi, dword ptr STOCK
+     mov     esi, dword ptr BUFFER
+     mov     dword ptr STOCK, esi
+     xor     ecx, ecx
+     xor     ebx, ebx
+     jmp     table1
+
+
+ precorrespondance:
+     mov     dword ptr BUFFER, edi           <span style="color:#99CC66">; on met les 4 1eres valeurs dans le buffer</span>          
+                 
+
+ correspondance:     <span style="color:#990000">; recupere la lettre parmi les valeurs qu'on a calculees</span>
+     cmp     ebx, 4           <span style="color:#99CC66">; si on a passe 4 lettres on va tester si y'a eu un</span>
+     jz      testsortie           <span style="color:#99CC66">; ou deux passages</span> 
+     mov     al, byte ptr [BUFFER+ebx]
+     xor     ecx, ecx
+         
+                 
+ recherche:          <span style="color:#990000">; recherche de la valeur correspondante dans notre tableau</span>            
+     cmp     al, byte ptr [tableau2+ecx]           <span style="color:#99CC66">; cmp les valeurs a celles du tableau</span>
+     jz      ok           <span style="color:#99CC66">; si elle est trouvee, on va vers ok</span>
+     inc     ecx                                   
+     jmp     recherche           <span style="color:#99CC66">; sinon on boucle</span>
+ 
+ 
+ ok:                 <span style="color:#990000">; recupere la valeur correspondante</span>
+     mov     dl, byte ptr [tableau1+ecx]
+     mov     byte ptr [BUFFER+ebx], dl
+     xor     ecx, ecx
+     inc     ebx
+     jmp     correspondance           <span style="color:#99CC66">; puis on passe a la lettre suivante</span>
+   
+              
+ testsortie:          <span style="color:#990000">; teste si toutes les lettres ont ete trouvees</span>
+     test    edi, edi           <span style="color:#99CC66">; si edi == 0, y'a eu deux passages dans la recherche</span>
+     jz      fin           <span style="color:#99CC66">; des lettres correspondantes donc on a finit</span>
+
+                
+ correspondance2:    <span style="color:#990000">; change les contenu des buffer pour traiter les 4 valeurs suivantes</span>          
+     xor ebx, ebx
+     xor ecx, ecx
+     mov esi, dword ptr BUFFER
+     mov edi, dword ptr STOCK
+     mov dword ptr BUFFER, edi
+     xor eax, eax
+     xor edi, edi           <span style="color:#99CC66">; edi ne sera initialise a 0 uniquement si y'a deja eu</span>
+                            <span style="color:#99CC66">; un passage dans la routine correspondance</span>
+     jmp correspondance
+
+                              
+ fin:   <span style="color:#990000">; prepare pour l'affichage du mot de passe</span>
+     mov dword ptr STOCK, esi                     
+     
+     push     BUFFER
+     push     [BUFFER+1]
+     push     [BUFFER+2]
+     push     [BUFFER+3]
+     push     STOCK
+     push     [STOCK+1]
+     push     [STOCK+2]
+     push     [STOCK+3]
+     
+     invoke wsprintf, offset SERIAL, offset FILTRE1 
+     add      esp, 20h 
+         
+popad
+
+</pre>
+</blockquote>
+
+
+<p>Avec pour table d&eacute;clar&eacute;e dans mes .data : </p>
+
+
+<blockquote>
+<pre>
+FILTRE1    db "%c%c%c%c%c%c%c%cE",0
+tableau1   db "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O",
+              "P","Q","R","S","T","U","V","W","X","Y","Z",0
+tableau2   db 26 dup (18h,19h,07h,11h,01h,05h,04h,08h,15h,02h,12h,10h,03h,
+              4h,0Fh,0Dh,0Bh,06h,17h,0Ah,09h,0Ch,0Eh,13h,16h,10h)
+</pre>
+</blockquote>
+
+<p>Vous remarquerez que le 9eme caract&egrave;re impos&eacute; (le E) est pr&eacute;sent dans le filtre d'affichage du pass</p>
+<p>Et voilà ce que ça donne :</p>
+<p style="text-align:center">
+<img src="22.JPG" alt="Image 22" />
+</p>
+<p>Vous trouverez mon petit prog <a href="CrackMe_jB-Solution.exe">ICI</a></p>
+
+
+<h3>Calculs &agrave; la main</h3>
+
+<p>Etant donn&eacute; que j'ai d&eacute;j&agrave; fait les calculs &agrave; la main lors de l'&eacute;tude la routine, je ne vais pas les refaire ici. J'esp&egrave;re cependant que vous avez compris le principe.</p>
+
+
+  <h2>Le mot de la fin</h2>
+
+<p>Je souhaite sinc&egrave;rement avoir pu vous apprendre, ou au moins vous faire comprendre certaines choses. Je croise les doigts aussi pour ne pas avoir racont&eacute; trop de b&ecirc;tises ;p.<br />
+Voilou... ce tutorial s'ach&egrave;ve ici.</p>
+
+</div>
+
+
+
+</body>
+</html>

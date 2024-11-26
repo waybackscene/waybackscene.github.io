@@ -1,0 +1,184 @@
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
+    ²²    ____                     __       __           ²²ßÛ
+    ²²   /  _/_ _  __ _  ___  ____/ /____ _/ /           ²² ÛßÛ
+    ²²  _/ //  ' \/  ' \/ _ \/ __/ __/ _ `/ /            ²² Û Û
+    ²² /___/_/_/_/_/_/_/\___/_/  \__/\_,_/_/             ²² Û Û
+    ²²   ____                          __          __    ²² Û Û
+    ²²  / __ \___ ___ _______ ___  ___/ /__ ____  / /____²² Û Û
+    ²² / /_/ / -_|_-</ __/ -_) _ \/ _  / _ `/ _ \/ __(_-<²² Û Û
+    ²²/_____/\__/___/\__/\__/_//_/\_,_/\_,_/_//_/\__/___/²² Û Û
+    ²²                                                   ²² Û Û
+    ²²      Web: http://www.ImmortalDescendants.com      ²² Û Û
+    ²²                 Author: ACiD BuRN                 ²² Û Û
+    ²²                Date: 09/01/2000                   ²² Û Û
+    ²²         Topic: cracking TSCUBE's RSA CRACKME      ²² Û Û
+    ²²               Level: intermediate                 ²² Û Û
+    ²²                                                   ²² Û Û
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²² Û Û
+      ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ Û
+        ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ
+
+
+Crackme is here: http://www.infini.fr/~lkubaski/reverse/RSAcrkme10.zip
+
+
+Introduction:
+
+well , this crackme is RSA24 , so it is not that hard , but it is good to
+familiarise with RSA stuff ...
+I won't explain lot on how RSA works , but just explain how to reverse this crackme !
+There is already some docs on RSA , like the Lucifer48 'n Crackz ones ...
+you can find it at : http://www.multimania.com/lucifer48/ and http://www.wco.com/~micuan/
+
+
+Tools needed: 
+
+- Factor.exe (to calcul p and q when we know n) and ce.exe ... 
+  url: http://134.155.63.117/~quantico/ghiribizzo/rsa/rsa.html
+
+- abn.exe coded by TSCUBE, will be avaiable soon , i can't spread the beta version...
+
+****************
+* Basic of RSA:*
+****************
+
+p*q = n
+
+We know n and we need to find p and q (p and q are primes numbers)
+it is not evident when n=512 bits ..
+
+How to get "p" and "q" when we got "n" ?
+Well for this , i used "factor.exe"
+
+let's look the crackme itself !
+Desasm it and look in string data references ! we see some numbers :
+
+12790891
+5666933
+8483678
+9901
+...
+
+if we check the code in asm we see this:
+
+* Possible StringData Ref from Data Obj ->"9901"       <-- e
+                                  |
+:004029CD 68DC004200              push 004200DC
+:004029D2 8D8C24E4000000          lea ecx, dword ptr [esp+000000E4]
+:004029D9 E852E7FFFF              call 00401130
+
+* Possible StringData Ref from Data Obj ->"12790891"   <-- n (n > e so we know it is n)
+                                  |
+:004029DE 68D0004200              push 004200D0
+:004029E3 8D4C241C                lea ecx, dword ptr [esp+1C]
+:004029E7 C784246406000000000000  mov dword ptr [esp+00000664], 00000000
+:004029F2 E839E7FFFF              call 00401130
+
+* Possible StringData Ref from Data Obj ->"8483678"   <-- 1st uncrypted part of the serial
+                                  |
+:004029F7 68C8004200              push 004200C8
+:004029FC 8D8C2474020000          lea ecx, dword ptr [esp+00000274]
+:00402A03 C684246406000001        mov byte ptr [esp+00000664], 01
+:00402A0B E820E7FFFF              call 00401130
+
+* Possible StringData Ref from Data Obj ->"5666933"   <-- 2nd uncrypted part of the serial
+                                  |
+
+
+
+This crackme use RSA 2 times !
+the final serial is the 1st crypted part + the 2nd crypted part , added as string
+
+ok , enough blablabla , let's go
+
+
+1st , we want to have "p" and "q" , fire up "factor.exe" ...
+it show us how to use it:
+
+C:\rsa>factor.exe
+
+Usage: factor <number>
+OR
+factor -f <formula>
+e.g. factor -f 10#100-19
+
+To suppress the commentary, use flag -s
+To input from a file, use flag -i <filename>
+To input from a binary file, use flag -b <filename>
+To output to a file, use flag -o <filename>
+e.g. factor -f 10#100-7 -s -o factors.dat
+
+ok so: factor.exe n
+
+
+we do factor.exe 12790891 and we obtain this :
+
+
+C:\rsa>factor.exe 12790891
+first trying brute force division by small primes
+PRIME FACTOR     1667
+PRIME FACTOR     7673
+
+ok, good !! now we have p=1667 and q=7673
+
+
+We will need to calcul d now !
+For this we will use ce.exe !
+
+Fire up it and look :
+
+
+Exponent Calculator v1.3 _ Ghiribizzo [OR&L/uKC] 1999
+
+Usage: CE <p> <q> <e>
+
+p=1667 and q=7673 and e=9901 (we have found "e" in string data reference)
+
+let's enter this numbers:
+
+C:\rsa>CE 1667 7673 9901
+
+Exponent Calculator v1.3 _ Ghiribizzo [OR&L/uKC] 1999
+
+Inverse Exponent:
+10961333
+
+so d=10961333 ...
+
+ok, now we can finish our work !! we will cryp each uncrypted part of the crackme
+to make our final serial !!
+It is an serial only crackme , coz the name is not used for the calculation...
+
+( uncrypted ^ d ) % n = serial !
+
+As this crackme use 2 parts as serial here comes the caculation :
+
+
+* 1st Part: (we use abn.exe for this calcul a=8483678 , b=10961333 , n=12790891)
+
+(1st Message uncrypted ^ d ) mod n = 1st serial crypted
+
+For us :
+
+(8483678 ^ 10961333 ) mod 12790891  = 7167622 = 1st part
+
+
+
+* 2nd part: (we use abn.exe for this calcul a=5666933 , b=10961333 , n=12790891)
+
+(2nd Message uncrypted ^ d ) mod n = 1st serial crypted
+
+For us :
+
+(5666933 ^ 10961333 ) mod 12790891  = 3196885 = 2nd part
+
+
+so the final serial is: Part1 + Part2 (added as string)= Part1Part2
+
+The serial is: 71676223196885
+
+
+Enter your name , this serial and we obtain:
+
+Well done, ACiD BuRN ....
+Great , we did it !!!!!

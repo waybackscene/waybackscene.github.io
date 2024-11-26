@@ -1,0 +1,85 @@
+body {
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#titre_print {
+text-align: center;
+font-size : 50px;
+color : #1133aa;
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#titre_print p{
+text-align: right;
+font-size : 20px;
+color : #bb33aa;
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;
+}
+
+
+#contenu a {
+font-size:20px;
+color: #FF7700;
+text-decoration:none;
+}
+
+#fenetre div.page_suivante {
+display:none;}
+
+#fenetre p.w3c  {
+display:none;}
+
+#contenu a:hover {
+text-decoration:none;
+font-size:20px;
+color: #FF00FF;
+padding-left:30px;
+padding-top:20px;
+background: url(images/link1.jpg) bottom left no-repeat; }
+
+#titre {
+display:none;}
+
+#fenetre div.menu{
+display:none;}
+
+#contenu {
+float:none;
+font-size: 16px;
+margin: 20px;
+padding: 5px 5px 5px 15px; }
+
+#contenu h1{
+padding: 2px 2px 2px 2px;
+display:inline;
+font-size: 30px;
+color : white;
+background : #777777 ;
+}
+
+#contenu h2{
+padding: 2px 2px 2px 2px;
+text-indent: 30px;
+display:inline;
+font-size: 25px;
+color : white;
+background : #DDDDDD ;
+}
+
+#contenu p {
+text-indent: 50px;
+}
+
+#contenu pre{
+margin: 10px 0 10px 50px;
+padding: 5px 5px 5px 15px;
+border-left: 10px solid #EEEEFF;
+color: #007700;
+font-size: 15px;
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#contenu h6{
+float:none;
+text-align:center;
+}

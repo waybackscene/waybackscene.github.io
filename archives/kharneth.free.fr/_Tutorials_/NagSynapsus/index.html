@@ -1,0 +1,88 @@
+
+<!-- #08        28/05/04             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>Nag Screen Synapsus</title>
+<style type="text/css">
+<!--
+td { border-width:1px;border-style:solid;border-color:#FFFFFF;font-size:12px; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">Crackme Nag Screen Synapsus<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- OllyDbg 1.09d<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant avancé en Cracking<br>ayant de bonnes connaissances en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/CrackMe.exe">CrackMe.exe</a></td></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<!-- Start //-->
+
+<tr><td width="20%"><b>1 - Introduction</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il faut supprimer la MessageBox qui apparait au démarrage du programme.
+</p><center><img src="Captures/msgbox.gif" alt=""></center>
+</td></tr>
+
+<tr><td width="20%"><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc je charge le crackme sous <i>OllyDbg</i>. D'abord, je regarde un peu le code pour voir comment le programme est construit. Où se trouve la boucle de gestion des messages, la WNDProc(), la création de la fenêtre... On remarque toute une partie de code non interprétée par Olly. Pour y voir plus clair, il suffit de faire un click droit puis <i>Binary Copy</i> et <i>Binary Paste</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Après une brève analyse, on note les évènements gérés: WM_CREATE, WM_DESTROY, WM_PAINT, WM_KEYDOWN, WM_LBUTTONDBLCLK, WM_LBUTTONDOWN.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je commence par tracer le programme pas à pas. Rien de particulier si ce n'est une boucle qui décrypte un petit bout de code en 401573. Je continue donc jusqu'à tomber sur une jolie Exception en 401638, gérée par la routine juste au-dessus:
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En traçant pas à pas et avec <i>shift F8</i> pour passer les exceptions, on remarque que cette routine ainsi que le code décrypté précédemment sont là pour décrypter le début de la WNDProc() correspondant à la gestion du message WM_CREATE. 
+Pour ne pas me prendre la tête, je désactive la gestion des exceptions dans les <i>debugging options</i>.   
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je pose un BP sur <i>CreateWindowExA</i> puis relance le programme pour continuer tranquillement mon étude. Mais là je ne comprend pas pourquoi, le programme plante avant d'arriver sur le BP. Pourtant lorsque je l'ai tracé pas à pas, je n'ai trouvé qu'une seule exception.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je pose un nouveau BP sur le JMP en 40156D et après quelques secondes, l'exécution s'arrète sur CreateWindowsExA.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En survolant le nouveau code décrypté, on voit plusieurs chaines utilisées pour détecter des debuggers ("\\.\NTICE", "\\.\TRW"... Et là je suis content parce que je ne me sens pas du tout concerné!! :p). Je lance le prog et... gros plantage! Donc je me dis que s'il a mis des detect sice, il a surement mis un IsDebuggerPresent. J'active le plugin et là ça passe, la MsgBox s'affiche. En mettant un bpm en 7FFDF002, je tombe sur ces instructions:
+</p><center><img src="Captures/Olly03.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je ne cherche pas plus à comprendre la suite du code qui n'est surement là que pour nous embrouiller. D'ailleurs en regardant le début de la WNDProc(), on s'aperçoit que seul le code après 4016FD est décrypté. Le CALL juste avant le jmp extrait une image des ressources:
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En étudiant le programme, on remarque dans la fenêtre de dump plusieurs chaines décryptées au fur et à mesure. Entre autres les chaines de la MsgBox mais surtout 2 apis importantes MessageBoxA et ShowWindow.
+</p><center><img src="Captures/Olly05.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On en conclue que cette grande partie de code dans WM_CREATE charge l'image, affiche la MsgBox puis affiche la fenêtre. Donc il faut trouver comment contourner tout ce code. Par exemple en recodant l'évènement WM_CREATE.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour charger l'image, c'est simple il suffit de garder le code en 4016EB qui n'est pas crypté. Là où ça se complique, c'est pour afficher la fenêtre. En effet, l'api ShowWindow ne figure pas dans l'import table ni GetProcAddress. Il existe plusieurs solutions mais je ne vais pas me prendre la tête une fois de plus! :p Je vais simplement ajouter le style WM_VISIBLE à CreateWindowExA pour que la fenêtre s'affiche dès qu'elle est créée.<br>
+<br>
+</p></td></tr>
+<tr><td width="20%"><b>3 - Patch</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je modifie donc en 4016FD le JMP 00402306 pour qu'il sorte de la fonction WNDProc(). Ainsi toute la partie cryptée du code est sautée! Seulement c'est un long JMP donc utilisant 5 octets et non 2. Ce code étant décrypté au début, cela va poser quelques problèmes... Donc je vais également sauter la partie qui décrypte en modifiant le JMP en 40156D pour qu'il saute en 401645 juste après la 1ere exception.
+ Enfin, je modifie le style de CreateWindowExA en WM_POPUP or WM_VISIBLE or WM_SYSMENU (PUSH 90080000).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour finir, click droit --> Copy to Executable puis All Modifications et Save File en <a href="Cible/CrackMePatched.exe">CrackMePatched.exe</a> 
+ 
+
+</td></tr>
+<!-- End //-->
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+The snake is long, seven miles<br>
+Ride the snake...he's old, and his skin is cold
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

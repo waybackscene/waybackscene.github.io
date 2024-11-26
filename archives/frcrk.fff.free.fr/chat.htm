@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html dir="LTR">
+<head>
+	<title>phpMyChat</title>
+	<!--
+	The lines below are usefull for debugging purpose, please do not remove them!
+	Release: phpMyChat 0.14.5
+	© 2000-2001 The phpHeaven Team  (http://www.phpheaven.net/)
+	-->
+	<meta name="description" content="phpMyChat">
+	<meta name="keywords" content="phpMyChat">
+	<link rel="SHORTCUT ICON" href="chat/favicon.ico">
+	<link rel="stylesheet" href="chat/config/start_page.css.php3?Charset=iso-8859-1&amp;medium=10&amp;FontName=" type="text/css">
+	<script type="text/javascript" language="javascript">
+	<!--
+	var NS4 = (document.layers) ? 1 : 0;
+	var IE4 = ((document.all) && (parseInt(navigator.appVersion)>=4)) ? 1 : 0;
+	var ver4 = (NS4 || IE4) ? "H" : "L";
+
+	// Will update the "Ver" field in the form below according to the javascript abilities of
+	// the browser the users surf with
+	function defineVerField()
+	{
+		if (document.images && ver4 == 'L')
+			document.forms['Params'].elements['Ver'].value = 'M';	// js1.1 enabled browser
+		else document.forms['Params'].elements['Ver'].value = ver4;
+	}
+
+	// Open the tutorial popup
+	function tutorial_popup()
+	{
+		window.focus();
+		tutorial_popupWin = window.open("chat/tutorial_popup.php3?L=english&Ver="+ver4,"tutorial_popup","resizable=yes,scrollbars=yes,toolbar=yes,menubar=yes,status=yes");
+		tutorial_popupWin.focus();
+	}
+
+	// Open the users popup according to the DHTML capacities of the browser
+	function users_popup()
+	{
+		window.focus();
+		users_popupWin = window.open("chat/users_popup"+ver4+".php3?From=..%2Fchat.php&L=english","users_popup_80087bca867466dfa582b9f5339f5bdb","width=180,height=300,resizable=yes,scrollbars=yes");
+		users_popupWin.focus();
+	}
+
+	// Open popups for registration stuff
+	function reg_popup(name)
+	{
+		window.focus();
+		url = "chat/" + name + ".php3?L=english&Link=1";
+		pop_width = (name != 'admin'? 350:510);
+		pop_height = (name != 'deluser'? 470:190);
+		param = "width=" + pop_width + ",height=" + pop_height + ",resizable=yes,scrollbars=yes";
+		name += "_popup";
+		window.open(url,name,param);
+	}
+
+	// The three functions bellow allows to ensure an unique choice among rooms
+	function reset_R0()
+	{
+					document.forms['Params'].elements['R1'].options[0].selected = true;
+			document.forms['Params'].elements['T'].options[0].selected = true;
+			document.forms['Params'].elements['R2'].value = '';
+				}
+
+	function reset_R1()
+	{
+		document.forms['Params'].elements['R0'].options[0].selected = true;
+		document.forms['Params'].elements['T'].options[0].selected = true;
+		document.forms['Params'].elements['R2'].value = '';
+	}
+
+	function reset_R2()
+	{
+		document.forms['Params'].elements['R0'].options[0].selected = true;
+		document.forms['Params'].elements['R1'].options[0].selected = true;
+	}
+	// -->
+	</script>
+	</head>
+<body class="ChatBody">
+
+<table align="center" cellpadding="5" class="ChatBody"><tr><td class="ChatBody">
+
+<center>
+<form action="chat.php" method="POST" autocomplete="OFF" name="Params" onsubmit="defineVerField();">
+          <p><font color="#0000CC"><strong>Chat de Fighting For Fun</strong></font> 
+                      </p>
+          <p>&nbsp;</p>
+          <p>
+</p>
+<p class="ChatP1">
+Les messages sont supprimés après  48 heures,<br> les pseudo après 15 minutes ...</p>
+<p class="ChatP1">Il y a actuellement <a href="chat/users_popupL.php3?From=..%2Fchat.php&amp;L=english" class="ChatLink" onclick="users_popup(); return false" target="_blank">0 utilisateur</a> dans le chat.</p>
+<input type="hidden" name="Ver" value="L">
+<input type="hidden" name="Form_Send" value="1">
+<input type="hidden" name="L" value="english">
+<input type="hidden" name="N" value="30">
+<input type="hidden" name="D" value="10">
+
+<table border="0" cellpadding="3" class="ChatTable">
+<tr class="ChatCell">
+	<td align="CENTER" class="ChatCell">
+		<table border="0" class="ChatTable">
+				<tr class="ChatCell">
+			        <td colspan="2" align="CENTER" class="ChatCell"> <span class="ChatFlags"> 
+                      </span> </td>
+		</tr>
+				<tr class="ChatCell">
+			<th colspan="2" class="ChatTabTitle">Vos infos...</th>
+		</tr>
+		<tr class="ChatCell">
+			<td align="RIGHT" valign="TOP" class="ChatCell" nowrap>Pseudo :</td>
+			<td valign="TOP" class="ChatCell">
+				<input type="text" name="U" size="11" maxlength="10" value="" class="ChatBox">
+			</td>
+		</tr>
+		<tr class="ChatCell">
+			<td align="RIGHT" valign="TOP" class="ChatCell" nowrap>Mot de passe :</td>
+			<td valign="TOP" class="ChatCell" nowrap>
+				<input type="password" name="PASSWORD" size="11" maxlength="16" class="ChatBox">
+				&nbsp;<u>(seulement si vous êtes enregistré)</u>			</td>
+		</tr>
+
+		<tr class="ChatCell"><td class="ChatCell">&nbsp;</td></tr>
+
+		<tr class="ChatCell">
+			<th colspan="2" class="ChatTabTitle">Compte</th>
+		</tr>
+		<tr class="ChatCell">
+			<td align="center" colspan="2" class="ChatCell">
+				<br>| 
+                      <a href="chat/register.php3?L=english" class="ChatReg" onclick="reg_popup('register'); return false" target="_blank"> 
+                      S'enregistrer</a> | <a href="chat/edituser.php3?L=english" class="ChatReg" onclick="reg_popup('edituser'); return false" target="_blank">Editer votre profil</a> 
+                                            |<br>
+                      | <a href="chat/deluser.php3?L=english" class="ChatReg" onclick="reg_popup('deluser'); return false" target="_blank"> 
+                      Supprimer un utilisateur</a> 
+                                            | <a href="chat/admin.php3?L=english&amp;Link=1" class="ChatReg" onclick="reg_popup('admin'); return false" target="_blank">Administration</a> 
+                                            | </td>
+		</tr>
+					<tr class="ChatCell">
+				<td colspan="2" class="ChatCell">&nbsp;</td>
+			</tr>
+			<tr class="ChatCell">
+				<th colspan="2" class="ChatTabTitle">Selectionnez un chan :</th>
+			</tr>
+			</table>
+			<table border="0" class="ChatTable">
+			<tr class="ChatCell">
+				<td align="RIGHT" valign="TOP" class="ChatCell" nowrap>Chan par defaut :</td>
+				<td valign="TOP" class="ChatCell">
+					<select name="R0" class="ChatBox" onchange="reset_R0();">
+						<option value="">Faites votre choix...</option>
+						<option value="FFFpublic">FFFpublic</option>					</select>
+				</td>
+			</tr>
+						<tr class="ChatCell">
+				<td align="RIGHT" valign="TOP" class="ChatCell" nowrap>Chan publics créés :</td>
+				<td valign="TOP" class="ChatCell">
+					<select name="R1" class="ChatBox" onchange="reset_R1();">
+						<option value="">Faites votre choix...</option>
+											</select>
+				</td>
+			</tr>
+			<tr class="ChatCell">
+				<td align="RIGHT" valign="TOP" class="ChatCell" nowrap>
+					Créer 					<select name="T" class="ChatBox">
+						<option value="1">public</option>
+						<option value="0" selected>privé</option>
+					</select>
+					 chan :
+				</td>
+				<td valign="TOP" class="ChatCell">
+					<input type="text" name="R2" size="11" maxlength="10" class="ChatBox" onchange="reset_R2();">
+				</td>
+			</tr>
+					</table>
+		<p class="ChatP2">
+		  		<input type="submit" value="Go !" class="ChatBox"></p>
+	</td>
+</tr>
+</table>
+          <p>&nbsp;</p>
+          <p align="right"><span class="ChatCopy" dir="LTR"> &copy; 2000-2001 
+            <a href="http://www.phpheaven.net/" class="ChatLink">The phpHeaven 
+            Team</a><font size="-1"> </font></span> </p>
+        </form>
+</center>
+
+</td></tr></table>
+
+</body>
+</html>

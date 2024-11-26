@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//DE">
+<html>
+<head>
+
+<meta name="description" content="PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - Amiga - PC)">
+<meta name="author" content="Pha-Q/Paradox">
+<meta name="keywords" content="Paradox, PDX, Playstation, PSX, PC, Amiga, N64, Nintendo, Warez, CD, Cracking, Hacking, Phreaking, Patch, Trainer, Software, Hardware">
+<meta name="robots" content="nofollow">
+<meta name="revisit-after" content="07 days">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="de">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="pragma" content="no-cache">
+<link rel="FONTDEF" src="http://www.truedoc.com/pfrs/PosterBodoni.pfr">
+<script language="JavaScript" src="http://www.truedoc.com/activex/tdserver.js"></script>
+<link>
+<title>PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - Amiga - PC)</title>
+<script language="JavaScript">
+<!--
+function changeBack(newImage) {
+    document ['Back'].src = eval(newImage + ".src");
+}
+    bak0 = new Image();
+    bak0.src  = "../buttons/but_back.png";
+    bak1 = new Image();
+    bak1.src  = "../buttons/but_bacl.png";
+// -->
+</script>
+<script language="JavaScript" src="../javascript/pdx_fade.js"></script>
+</head>
+<body bgcolor="#000000" text="#F0F0F0" link="#BB8866" alink="#FF0000" vlink="#DFDFDF" onload="window.status=('Tips &amp; Tricks');">
+<script language="JavaScript">
+<!--
+fadein();
+// -->
+</script>
+<table width="540" bgcolor="#333333" align="CENTER" border="0" cellspacing="0" cellpadding="2">
+<tr><td align="CENTER" bgcolor="#191919"><img src="../buttons/but_htip.png" width="142" height="70" alt="Tips &amp; Tricks"></td></tr>
+<tr><td height="10" bgcolor="#000000">&nbsp;</td></tr>
+<tr><td align="CENTER" bgcolor="#191919"><font color="#555555" face="PosterBodoni BT">P</font><font color="#5C5C5C" face="PosterBodoni BT">a</font><font color="#636363" face="PosterBodoni BT">r</font><font color="#6A6A6A" face="PosterBodoni BT">a</font><font color="#717171" face="PosterBodoni BT">d</font><font color="#787878" face="PosterBodoni BT">o</font><font color="#7F7F7F" face="PosterBodoni BT">x</font>&nbsp;
+<font color="#868686" face="PosterBodoni BT">C</font><font color="#8D8D8D" face="PosterBodoni BT">o</font><font color="#949494" face="PosterBodoni BT">d</font><font color="#9B9B9B" face="PosterBodoni BT">i</font><font color="#A2A2A2" face="PosterBodoni BT">n</font><font color="#A9A9A9" face="PosterBodoni BT">g</font>&nbsp;<font color="#B0B0B0" face="PosterBodoni BT">R</font><font color="#B7B7B7" face="PosterBodoni BT">e</font><font color="#BEBEBE" face="PosterBodoni BT">p</font><font color="#C5C5C5" face="PosterBodoni BT">o</font><font color="#CCCCCC" face="PosterBodoni BT">r</font><font color="#D3D3D3" face="PosterBodoni BT">t</font></td></tr>
+<tr><td>
+<center><font size="5">LINKING INTROS INFRONT OF PSX GAMES</font></center>
+
+<p align="JUSTIFY">
+Many people would definitely like to link intros or trainer screens infront
+of PlayStation games. There are, like always, some little obstacles thou:
+
+<p align="JUSTIFY">
+Absolutely no PSX game is simply file-copyable. This is the simple reason why
+you <b>can't</b> just add your Intro.exe and LoadExec the root file afterwards.
+First reason for that are the .STR files and the like. Plenty of them get
+destroyed or modified when beeing filecopied, resulting in movies without
+tone, no movies at all or a simple crash. Second reason is the SONY license
+data contained in the first CD sectors. However, if you have a game that
+doesnt have .STR files, you could naturally simply add the license info into
+your remastered ISO with an appropriate tool and you are set. If you think
+that using Sony STR tools to extract and SONY CD tools to re-master let me
+know the result. I must admit that i never bothered because i can't stand
+Windows tools :).
+
+<p align="JUSTIFY">
+This brings us to a fairly better idea: Calculating the intro/trainer right
+into the ISO image. The problem is that you cannot easily append to the
+original file structure, so you want to re-place the original file by itself
+PLUS your intro/trainer/whatever. Only one little hint: <b>packing</b>. (If the root
+file IS already packed - bad luck. See if you can find a dummy file that
+could be replaced by your intro and alter the <b>system.cnf</b> file.) Now you just
+calculate your new <b>.exe</b> into the ISO.
+
+<p align="JUSTIFY">
+PAL/NTSC fixes, trainers, protections: Alter the root file before you pack it
+or just alter it to load the video mode from a different memory location that
+is not beeing occupied by the game. Video mode setting follows some easy
+'algorithm' you will figure sooner or later, so it's a few bytes patch in
+most of the cases. If you should need more complicated training (like
+pressing L2+R2 gives you 99 lifes or such), search for a frequently called
+routine like VSync() and hook your padcontrol/train routine up its neck.
+
+<p align="JUSTIFY">
+These are naturally only some basic things (and there <b>some</b> more troubles you
+will have to cope with). Needless to say that you need a good hexeditor, a
+good PSX debugger or dis-asm, knowledge about ISO9660-filesystem, PSX disc
+formats, PSX exe structures and a sum of other things that you may think are
+of minor importance, but that turn out to be quite bitchy in the end,
+resulting in a nice frisbee collection or a brand new PSX after you hit it
+hard with your fist :) I still wonder why noone figured some of the above
+stuff from the .blk patchfiles anyhow, maybe I set you on the right track
+now that you are done with this little text. Naturally this text could have
+been much more specific - but I think one can expect a little bit of own
+research and understanding. After all, i am sure there is more than one
+single way to reach the desired.
+<p>
+Have phun,<p>
+
+<u>Freefall/Paradox</u>
+</td></tr>
+<tr><td height="10" bgcolor="#000000">&nbsp;</td></tr>
+<tr><td bgcolor="#191919" align="CENTER">
+<img src="../buttons/but_back.png" name="Back" width="117" height="56" border="0" usemap="#Back">
+<map name="Back">
+<area shape="rect" alt="Back" coords="37,12,68,42" href="javascript:history.back();" onmouseover="changeBack('bak1');self.status='Back';return true" onmouseout="changeBack('bak0');self.status='';return true">
+</map></td></tr>
+
+</table>
+</body>
+</html>

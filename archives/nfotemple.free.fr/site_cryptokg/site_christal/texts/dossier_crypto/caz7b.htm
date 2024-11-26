@@ -1,0 +1,98 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>The Cracking of SecurityPlus</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<P>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of SecurityPlus</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">by</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">Part B</FONT></P>
+<P>Caz presents : The Crack of SecurityPlus! by SoftByte Labs</P>
+
+<P><BR>
+(known-plaintext attack on a proprietary cipher)</P>
+
+<P><BR>
+
+<HR ALIGN="CENTER">
+
+<H2 ALIGN="CENTER">PART B. ANALYSIS AND BREAKING OF SecurityPlus!</H2>
+<H2></H2>
+<P>Decryption process and transformations on Block are the same, so we let:</P>
+<PRE>       Block = Key_enc
+Transf_Block = Key_dec</PRE>
+<P>Given Key_enc, we are looking for Pwd and Pwd's length such as:</P>
+<PRE>Key_dec = function of (Key_enc, Pwd, Pwd's length)
+        = Key_chk
+</PRE>
+<P>Key_chk is 61 bytes long, so we can obtain 61 equations in order to recover password.<BR>
+As we do not know Pwd's length, we'll have to try out every possible length, until we find the correct one. We
+have: 4 &lt; Pwd's length &lt; 60.</P>
+<PRE>Let Input's length = l, we are looking for Pwd[1], Pwd[2],..., Pwd[l]
+such as, for each j:
+
+                       Key_dec[j] = Key_chk[j]
+                            
+So we have:
+
+Key_chk[1] = Key_enc[1] - Pwd[1] - Pwd[7] - 3D - Pwd[1]                 {1}
+
+Key_chk[2] = Key_enc[2] - Pwd[1] - Key_enc[1] - (3D-1) - (Pwd[1]+1)     {2}
+
+{2} &lt;=&gt; Pwd[1] = (Key_enc[2] - Key_enc[1] - Key_chk[2] - 3D)
+                 -------------------------------------------
+                                       2
+</PRE>
+<P>We found the Pwd[1], i.e. the first character from password. Once Pwd[1] is found, we can compute Pwd[2], Pwd[3],...,
+Pwd[l]:</P>
+<PRE>Key_chk[3] = Key_enc[3] - Pwd[2] - Key_enc[2] - (3D-2) - (Pwd[1]+1+2)   {3}
+
+{3} &lt;=&gt; Pwd[2] = Key_enc[3] - Key_enc[2] - Key_chk[3] - (3D-2) - (Pwd[1]+1+2) 
+
+Let Sum[j] = Pwd[1]+1+2+...+j:
+
+{l} &lt;=&gt; Pwd[l] = Key_enc[l+1] - Key_enc[l] - Key_chk[l+1] - (3D-l) - Sum[l]
+</PRE>
+<P>We recovered the whole password {:-) Now we must check that assumed Pwd's length (l) is correct. To do so, we
+use remaining equations:</P>
+<PRE>Key_chk[1] = Key_enc[1] - Pwd[1] - Pwd[7] - 3D - Pwd[1] ???             {1}
+
+With i = (j)modulo(Pwd's length):
+
+
+Pwd[i] = Key_enc[j+1] - Key_enc[j] - Key_chk[j+1] - (3D-j) - Sum[j] ??? {j}
+    .  =         .              .            .          .        .  ???  .
+    .  =         .              .            .          .        .  ???  .
+ 
+</PRE>
+<P>If we do not have any difference, then Pwd is good. Otherwise, we try next Pwd's length, and so on...</P>
+<P>=======================================
+<H3>Epilogue</H3>
+<P>=======================================</P>
+<P>As usual, when dealing with proprietary algorithms:
+
+<UL>
+	- don't trust doc files (&quot;...SecurityPlus! is simple to use and virtually uncrackable...&quot; [from General
+	Notes])<BR>
+	- don't trust so-called &quot;reviews&quot; from ZDNET, TUCOWS, etc...
+</UL>
+
+<P>Instead, trust in Winice to show you the Way {;-)</P>
+<P>Hope you enjoyed!</P>
+<P>Caz</P>
+<P>Here is <A HREF="caz7c.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/casimir/caz7c.htm">Part C, </A>source code for a cracker, the executable, and a few other small treats.</P>
+<P>Copyright December, 1999 by Casimir.</P>
+<P>Mail <A HREF="mailto:casimir2@club-internet.fr">Casimir</A></P>
+
+<P>Converted to hypertext by Joe Peschel December 13, 1999.
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,232 @@
+On commence par lancer le crackme qui nous affiche "You don't have access to this file.", et se 
+referme ensuite. Ca commence bien, la validation du crackme ne se fait pas en entrant un serial. 
+Il nous reste donc qu'à désassembler le crackme pour savoir ce qu'il nous cache.
+
+
+
+I. Recherche de l'emplacement du serial.
+----------------------------------------
+
+
+On commence comme d'habitude par rechercher la liste des text strings :
+
+---------- Text strings referenced in elooo3:.text ----------
+Address    Disassembly                               Text string
+00401000   PUSH 0                                    (Initial CPU selection)
+0040109E   PUSH elooo3.00403000                      ASCII "ooole"
+004010FB   PUSH elooo3.00403026                      ASCII "Tongue... "
+00401100   PUSH elooo3.0040301B                      ASCII "Pierced ! "
+00401111   PUSH elooo3.00403057                      ASCII ":o "
+00401116   PUSH elooo3.00403031                      ASCII "You don't have access to this file ! "
+---------- /Text strings referenced in elooo3:.text ---------
+
+
+On retrouve le message d'erreur nous signalant qu'on n'a pas l'accès au fichier à l'adresse 
+0x00401116. On suit donc cette adresse dans le débuggueur. C'est bien le code de l'appel à la 
+MessageBox qui s'affiche :
+
+---------- 0040110F : MessageBox("You don't have access to this file ! ", ":o ", NULL); ----------
+0040110F  |>  6A 00         PUSH 0                                   ; /Style = MB_OK|MB_APPLMODAL
+00401111  |.  68 57304000   PUSH elooo3.00403057                     ; |Title = ":o "
+00401116  |.  68 31304000   PUSH elooo3.00403031                     ; |Text = "You don't have access to this file ! "
+0040111B  |.  FF75 08       PUSH DWORD PTR SS:[EBP+8]                ; |hOwner
+0040111E  |.  E8 5D000000   CALL <JMP.&user32.MessageBoxA>           ; \MessageBoxA
+00401123  |.  6A 00         PUSH 0                                   ; /Result = 0
+00401125  |.  FF75 08       PUSH DWORD PTR SS:[EBP+8]                ; |hWnd
+00401128  |.  E8 47000000   CALL <JMP.&user32.EndDialog>             ; \EndDialog
+0040112D  |>  FF35 70304000 PUSH DWORD PTR DS:[403070]               ; /hObject = NULL
+00401133  |.  E8 5A000000   CALL <JMP.&kernel32.CloseHandle>         ; \CloseHandle
+--------- /0040110F : MessageBox("You don't have access to this file ! ", ":o ", NULL);  ---------
+
+On remarque que le crackme arrive à l'adresse 0x0040110F, lorsqu'il fait un saut depuis 0x004010AB 
+ou 0x004010F2. Observons ce qui se passe à ces adresses.
+
+
+---------- 004010AB ----------
+0040108C  |.  6A 00         PUSH 0                                   ; /hTemplateFile = NULL
+0040108E  |.  68 80000000   PUSH 80                                  ; |Attributes = NORMAL
+00401093  |.  6A 03         PUSH 3                                   ; |Mode = OPEN_EXISTING
+00401095  |.  6A 00         PUSH 0                                   ; |pSecurity = NULL
+00401097  |.  6A 01         PUSH 1                                   ; |ShareMode = FILE_SHARE_READ
+00401099  |.  68 00000080   PUSH 80000000                            ; |Access = GENERIC_READ
+0040109E  |.  68 00304000   PUSH elooo3.00403000                     ; |FileName = "ooole"
+004010A3  |.  E8 F0000000   CALL <JMP.&kernel32.CreateFileA>         ; \CreateFileA
+004010A8  |.  83F8 00       CMP EAX,-1
+004010AB  |.  74 62         JE SHORT elooo3.0040110F
+---------- /004010AB ---------
+
+On voit qu'avant 0x004010AB, la fonction CreateFileA est appelée. On sait naturellement que cette 
+fonction sert à créer ou ouvrir un fichier. Ici, Access = GENERIC_READ et FileName = "ooole", 
+donc le crackme cherche à ouvrir le fichier ooole. On continue le listing, lorsque le saut vers 
+0x0040110F n'est pas pris :
+
+
+---------- 004010AD ----------
+004010AD  |.  A3 70304000   MOV DWORD PTR DS:[403070],EAX
+004010B2  |.  6A 00         PUSH 0                                   ; /pOverlapped = NULL
+004010B4  |.  68 74304000   PUSH elooo3.00403074                     ; |pBytesRead = elooo3.00403074
+004010B9  |.  6A 14         PUSH 14                                  ; |BytesToRead = 14 (20.)
+004010BB  |.  68 60304000   PUSH elooo3.00403060                     ; |Buffer = elooo3.00403060
+004010C0  |.  FF35 70304000 PUSH DWORD PTR DS:[403070]               ; |hFile = FFFFFFFF
+004010C6  |.  E8 DF000000   CALL <JMP.&kernel32.ReadFile>            ; \ReadFile
+---------- /004010AD ---------
+
+La fonction Readfile est appelée, et lis 0x14 bytes du fichier ooole, c'est à dire 20 bytes en 
+décimal.
+Ok. On peut en déduire que le serial doit se trouver dans le fichier "ooole". La suite du code 
+nous confirme cette ingénieuse supposition :)
+
+
+
+
+II. Reverse de la vérification du serial.
+-----------------------------------------
+
+
+On continue le listing du serial (courage, c'est bientôt fini ;) :
+
+---------- 004010CB ----------
+004010CB  |.  33C9          XOR ECX,ECX				        ; ECX = 0
+004010CD  |>  B8 00100300   /MOV EAX,31000		    	        ; EAX = 0x31000
+004010D2  |.  50            |PUSH EAX                                   ; PUSH 0x31000
+004010D3  |.  FF348D 063040>|PUSH DWORD PTR DS:[ECX*4+403006]           ; PUSH [ECX*4+403006]
+004010DA  |.  8B1C8D 603040>|MOV EDX,DWORD PTR DS:[ECX*4+403060]        ; EBX = [ECX*4+403060]
+004010E1  |.  53            |PUSH EDX                                   ; PUSH EBX
+004010E2  |.  E8 65000000   |CALL elooo3.0040114C                       ; \elooo3.0040114C
+
+	---------- 0040114C ----------
+	0040114C  /$  55            PUSH EBP				; PUSH 0x0012FD60
+	0040114D  |.  8BEC          MOV EBP,ESP				; EBP = 0x0012FD4C
+	0040114F  |.  50            PUSH EAX				; PUSH 0x31000
+	00401150  |.  8B45 0C       MOV EAX,DWORD PTR SS:[EBP+C]	; EAX = [0x0012FD58]
+	00401153  |.  0345 10       ADD EAX,DWORD PTR SS:[EBP+10]	; EAX += [0x0012FD5C]
+	00401156  |.  C1C0 03       ROL EAX,3				; décalage d'EAX de 3 bits vers la gauche
+	00401159  |.  C1E0 05       SHL EAX,5				; décalage d'EAX de 3 bits vers la gauche
+	0040115C  |.  C1C8 02       ROR EAX,2				; décalage d'EAX de 2 bits vers la droite
+	0040115F  |.  2C 13         SUB AL,13				; AL -= 13
+	00401161  |.  3345 08       XOR EAX,DWORD PTR SS:[EBP+8]	; XOR EAX, [EBP+8]
+	00401164  |.  C1E8 02       SHR EAX,2				; décalage d'EAX de 2 bits vers la gauche
+	00401167  |.  8945 0C       MOV DWORD PTR SS:[EBP+C],EAX	; 0x0012FD58 = EAX
+	0040116A  |.  58            POP EAX				;
+	0040116B  |.  5D            POP EBP				;
+	0040116C  \.  C3            RETN				;
+	---------- /0040114C ----------
+
+004010E7  |.  83C4 0C       |ADD ESP,0C				        ; ESP += 0x0C
+004010EA  |.  41            |INC ECX				        ; ECX++
+004010EB  |.  817D F8 01060>|CMP DWORD PTR SS:[EBP-8],0A070601	        ; if ([EBP-8] != 0x0A070601)
+004010F2  |.  75 1B         |JNZ SHORT elooo3.0040110F		        ; goto 0x0040110F
+004010F4  |.  83F9 05       |CMP ECX,5				        ; if (ECX != 5)
+004010F7  |.^ 72 D4         \JB SHORT elooo3.004010CD		        ; goto 0x004010CD
+---------- /004010CB ----------
+
+Cette partie du crackme est en fait une boucle qui s'éxécute cinq fois de suite.
+Deux arguments sont pushés puis une fonction est appelée en 0x0040114C et retourne une chaine 
+de caractères. Si cette chaine de caractères est égale à 0x0A070601, alors la boucle continue. 
+Sinon, la boucle s'arrête, et la messagebox "You don't have access to this file !" est affichée.
+
+
+Analysons cette fonction :
+
+0x00403006 pointe vers une chaine de caractères : "ooolelooolel diablo!"
+0x00403060 pointe vers notre serial lu dans le fichier ooole.
+Les deux arguments pushés sont : [ECX*4+403006] et [ECX*4+403060], donc lors du premier passage 
+de la boucle, "oool" et les 4 premiers caractères de notre serial seront pushés. AU deuxième 
+passage, ce sera "eloo" et les caractères 5,6,7,8 de notre serial. Etc...
+
+La fonction en 0x0040114C est équivalente à :
+char *modif_serial(char serial[4], char supaire_phrase[4])
+{
+	MOV EAX,DWORD PTR SS:[supaire_phrase];
+	ADD EAX,0x31000
+	ROL EAX,0x3
+	SHL EAX,0x5
+	ROR EAX,0x2
+	SUB EAX,0x13
+
+	XOR EAX,serial
+	SHR EAX,2
+
+	return EAX;
+}
+
+Le résultat de la fonction est ensuite comparé à 0x0A070601, et la boucle continue 5 fois si 
+c'est égal.
+Maintenant que tout est clair (j'espère :p), il nous reste à créer le serial.
+
+
+
+III. Coding du keygen.
+----------------------
+
+
+Contrairement aux apparences, c'est pas compliqué :)
+Il suffit de faire un XOR 'notre super_phrase modifiée jusqu'à SUB EAX,0x13', 0x0A070601. Et 
+ceci cinq fois, et c'est bon.
+En C, ca nous donne :
+
+
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+	FILE *fp;
+	int i, j, nb, k[4];
+	char superphrase_tmp[5] = "";
+	char superphrase[5][5] = { "\x6F\x6F\x6F\x6C",	// oool
+				   "\x65\x6C\x6F\x6F",	// eloo
+				   "\x6F\x6C\x65\x6C",	// olel
+				   "\x20\x64\x69\x61",	//  dia
+				   "\x62\x6C\x6F\x21"	// blo!
+				 };
+
+	printf("*** Keygen for Elooo's crackme #3 - by SpaceMonkey ***\n\n");
+
+	fp = fopen("ooole", "w+");
+	if (!fp) {
+		printf("Impossible d'oubrir ooole.\n");
+		exit(-1);
+	}
+
+	for (i = 0; i < 5; i++)
+	{	
+		strncpy(superphrase_tmp, superphrase[i], 4);
+
+		__asm {
+			MOV EAX,DWORD PTR SS:[superphrase_tmp];
+			ADD EAX,0x31000
+			ROL EAX,0x3
+			SHL EAX,0x5
+			ROR EAX,0x2
+			SUB EAX,0x13
+			MOV nb,EAX
+
+			MOV EAX,0x0A070601;
+			SHL EAX,2
+			XOR EAX,nb
+			MOV nb, EAX
+		}
+
+		k[3] = (nb) / 0x1000000;
+		k[2] = (nb - k[3] * 0x1000000) / 0x10000;
+		k[1] = (nb - k[3] * 0x1000000 - k[2] * 0x10000) / 0x100;
+		k[0] = (nb - k[3] * 0x1000000 - k[2] * 0x10000 - k[1] * 0x100);
+
+		for (j = 0; j < 4; j++) {
+			fputc(k[j], fp);
+		}
+	}
+	fclose(fp);
+
+	system("elooo3.exe");
+
+	return 0;
+}
+
+
+Votre lecture se termine ici. J'espère avoir été clair dans mes explications et ne pas avoir 
+dit trop de conneries :)
+
+
+SpaceMonkey

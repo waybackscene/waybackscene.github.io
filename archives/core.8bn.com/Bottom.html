@@ -1,0 +1,75 @@
+<html>
+    <head>
+	<title>oOo CORE oOo</title>
+	<script language="JavaScript">
+            <!-- Beginning of JavaScript -
+	        if (document.images) {
+        	    AboutUsON = new Image();
+	            AboutUsON.src = "Images/Animations/AboutUsON.gif";
+	            HistoryON = new Image();
+	            HistoryON.src = "Images/Animations/HistoryON.gif";
+	            ApplyON = new Image();
+	            ApplyON.src = "Images/Animations/ApplyON.gif";
+	            RequestON = new Image();
+	            RequestON.src = "Images/Animations/RequestON.gif";
+	            GuestbookON = new Image();
+	            GuestbookON.src = "Images/Animations/GuestbookON.gif";
+		    DownloadON = new Image();
+		    DownloadON.src = "Images/Animations/DownloadON.gif";
+	            AboutUsOFF = new Image();
+	            AboutUsOFF.src = "Images/Animations/AboutUsOFF.gif";
+	            HistoryOFF = new Image();
+	            HistoryOFF.src = "Images/Animations/HistoryOFF.gif";
+	            ApplyOFF = new Image();
+	            ApplyOFF.src = "Images/Animations/ApplyOFF.gif";
+	            RequestOFF = new Image();
+	            RequestOFF.src = "Images/Animations/RequestOFF.gif";
+	            GuestbookOFF = new Image();
+	            GuestbookOFF.src = "Images/Animations/GuestbookOFF.gif";
+		    DownloadOFF = new Image();
+		    DownloadOFF.src = "Images/Animations/DownloadOFF.gif";
+	        }
+	        function AnimationON(imgName) {
+	            if (document.images) {
+			imgOn = eval(imgName + "ON.src");
+	        	document [imgName].src = imgOn;
+	            }
+	    	}
+	    	function AnimationOFF(imgName) {
+	            if (document.images) {
+	            	imgOff = eval(imgName + "OFF.src");
+	            	document [imgName].src = imgOff;
+	            }
+	    	}
+	    // - End of JavaScript - -->
+	</script>
+    </head>
+
+    <body text="#CE0000" bgcolor="#000000" link="#CE0000">
+	<center>
+	    <table border="0" cellspacing="0" cellpadding="0">
+		<tr>
+		    <td width="20"></td>
+		    <td>
+                        <a href="About.html" onmouseover="AnimationON('AboutUs')" onmouseout="AnimationOFF('AboutUs')" target="Top"><img name="AboutUs" src="Images/Animations/AboutUsOFF.gif" width="140" height="50" border="0" alt="about us"></a>
+		    </td>
+		    <td>
+			<a href="History.html" onmouseover="AnimationON('History')" onmouseout="AnimationOFF('History')" target="Top"><img name="History" src="Images/Animations/HistoryOFF.gif" width="140" height="50" border="0" alt="history"></a>
+		    </td>
+	            <td>
+			<a href="Apply.html" onmouseover="AnimationON('Apply')" onmouseout="AnimationOFF('Apply')" target="Top"><img name="Apply" src="Images/Animations/ApplyOFF.gif" width="140" height="50" border="0" alt="apply"></a>
+		    </td>
+		    <td>
+			<a href="Request.html" onmouseover="AnimationON('Request')" onmouseout="AnimationOFF('Request')" target="Top"><img name="Request" src="Images/Animations/RequestOFF.gif" width="140" height="50" border="0" alt="request"></a>
+		    </td>
+	            <td>
+			<a href="Guestbook.html" onmouseover="AnimationON('Guestbook')" onmouseout="AnimationOFF('Guestbook')" target="Top"><img name="Guestbook" src="Images/Animations/GuestbookOFF.gif" width="140" height="50" border="0" alt="guestbook"></a>
+		    </td>
+		    <td>
+			<a href="Download.html" onmouseover="AnimationON('Download')" onmouseout="AnimationOFF('Download')" target="Top"><img name="Download" src="Images/Animations/DownloadOFF.gif" width="140" height="50" border="0" alt="download"></a>
+		    </td>
+		</tr>
+	    </table>
+	</center>
+    </body>
+</html>

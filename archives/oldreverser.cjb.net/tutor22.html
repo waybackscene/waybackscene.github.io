@@ -1,0 +1,191 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+	VB keygening : ORDiX Mpack v1.X  by ACiD BuRN [ECLiPSE/CiA]
+
+
+
+
+well...
+i was lazy to make this tut , but it was requested by a friend so i will make it for
+help him.
+
+
+introduction:
+~~~~~~~~~~~~~
+
+this is my 1st VB keygening tut for a real app (not a crackme).
+It is not hard at all , kinda easy i can say..
+You will need : 
+
+- Smart check 6
+- a brain :)
+- some Beer
+- and this fucking ordix shit (see my ECL release to have it)
+
+i assume u know how to configure smart check and how to use it...
+don't come and bug me on IRC for this , i have others thing to do.
+look for an essay for this , or something but i am too busy for answer on irc..
+mail if there is a real prob..
+
+
+Lets start :
+~~~~~~~~~~~~
+
+Open the file with smart check and run it...
+in menu help , register enter :
+- as name: ACiD BuRN 
+- as code: 11223344
+
+click on ok , and this fucker say u : invalid shit , blablababla...
+
+
+anyway , end the programme , and go in smart check to look this bitch.
+i am to lazy to write all this shit so , look the pic :
+ 
+</PRE>
+<center><img SRC="tut22a.jpg"><img SRC="tut22b.jpg"</center></center>
+<PRE>
+now , i will explain you the algo:
+
+- 1st , u see in smart check your name.
+
+- 2nd , the prog take this length:
+in SC = Format(VARIANT:9,.....
+
+- 3rd , then , u see this : len(NACiD BuR9)returns :10
+
+so it take your name , take the last char of it (N for ACiD BuRN) and place it at first...
+then take the len of your name and place it at last place... (9 coz length of ACiD BuRN = 9)
+
+exemple : 
+
+********************************
+*     1st : Fuck you           *
+*     2nd : uFuck yo           *
+*     3rd : uFuck yo8          *
+********************************
+
+- 4th , take all ascii value in hex and add them as string (not addition)..
+
+exemple : NACiD BuR9
+
+N = 78 in decimal = 4E in hexa
+result = 4E
+A = 65 in decimal = 41 in hexa
+result = 4E41
+C = 67 in decimal = 43 in hexa
+result = 4E4143
+i = 105 in decimal = 69 in hexa
+result = 4E414369
+D = 68 in decimal = 44 in hexa
+result = 4E41436944
+" "= 32 in decimal = 20 in hexa
+result = 4E4143694420
+B = 66 in decimal = 42 in hexa
+result = 4E414369442042
+u = 117 in decimal = 75 in hexa
+result = 4E41436944204275
+R = 82 in decimal = 52 in hexa
+result = 4E4143694420427552
+9 = 57 in decimal = 39 in hexa
+result = 4E414369442042755239
+
+
+i hope u understand now !!
+
+well , result is the correct serial :)
+the serial length can't be more than 12 (u saw this when u enter your serial)
+but if the length of the serial is > 9 , u need to take the hex ascii value of the 2 digits of 
+the length.  (sorry for my lame english)
+.
+
+ACiD BuRN U          <--- length = 11
+
+
+so : UACiD BuRN 3131    <-- 31 = hex value of ascii value 49 of the digit 1.
+
+so the serial is : 5541436944204275524E203131
+
+now , u have understand i think and i hope :)
+
+
+
+i am lazy to code a keygen who work for name > 9 so , i will give you source for a keygen
+in VB who work with 9 chars max as name :
+i just coded it to show u , this source is not good coded , but i don't have time to make
+it better ...
+At least , it works !
+
+
+---------------------------VB Source of the Keygen-------------------------------
+
+
+Private Sub Command1_Click()
+Text3.Text = ""
+On Error GoTo sortie
+checksum = Mid(Text1.Text, Len(Text1.Text))
+dede = Asc(Mid$(Text1.Text, Len(Text1.Text)))
+check2 = Len(Text1.Text)
+code = checksum & Text1.Text & check2
+Text2.Text = code
+For x = 1 To Len(Text1.Text)
+    bignum = Hex(Asc(Mid$(Text2.Text, x, 1)))
+Text3.Text = Text3.Text & bignum
+Next x
+Last = Hex(Asc(Len(Text1.Text)))
+final = Text3.Text & Last
+Text3.Text = final
+sortie:
+Select Case Err.Number
+Case 5
+MsgBox "please enter your name !", vbOKOnly, Keygen
+End Select
+
+---------------------------END OF VB Source of the Keygen----------------------------
+
+
+to make this source work , u need to put 3 text box and a button :
+
+text1.text = where u enter the name
+text2.text = hidden text box
+text3.text = where u see the final serial
+
+
+like i said earlier , this was coded fast , so don't bug me for lame coding...
+if your not happy , FUCK YOU !
+
+
+Well , this tut is finish , hope u understand all this piece of shit, but if you have a 
+comment or one question, mail me to : ACiD_BuRN@CrackersInAction.org
+Enjoy!
+
+
+Greetings to my groups : ECLiPSE / CiA
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo....
+
+
+i want to greets PWA members , i left this group due to not enough time for them :(
+sorry Dudes ;) , i will back !!
+
+
+if your name is not here sorry !!! lot of men to greets !
+
+
+				ACiD BuRN [ECL/CiA]
+
+</PRE></left>
+</BODY>
+</HTML>

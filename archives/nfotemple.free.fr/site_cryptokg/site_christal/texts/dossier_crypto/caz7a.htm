@@ -1,0 +1,246 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>The Cracking of SecurityPlus</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<P>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of SecurityPlus</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">by</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">Part A</FONT></P>
+<P></P>
+
+<P>Caz presents : The Crack of SecurityPlus! by SoftByte Labs</P>
+<P><BR>
+(known-plaintext attack on a proprietary cipher)</P>
+<P><BR>
+
+<HR ALIGN="CENTER">
+
+<H2 ALIGN="CENTER">Abstract</H2>
+<H2></H2>
+<P>Classical known-plaintext attack: if password is correct, 61 bytes of encrypted file's header must decrypt to
+the following key:
+
+<UL>
+	*+*This file encrypted with SecurityPlus! (C)SoftByte Labs*+*
+</UL>
+
+<P><BR>
+(this key is always the same, and does not depend on content or password).</P>
+<P>Encryption algorithm is very simple, so the correct password can easily be found in less than one second in
+every case.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H2 ALIGN="CENTER">What do I need?</H2>
+<H2></H2>
+<P>
+<PRE>A target : SecurityPlus! v4.32 by SoftByte Labs
+           SecurityPlus!.exe : 128560 bytes 
+           <A HREF="javascript:if(confirm('http://www.softbytelabs.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.softbytelabs.com/'" tppabs="http://www.softbytelabs.com/">Softbytelabs.com</A>
+Some tools:
++a system-level debugger : Winice 3.01 by Nu-Mega, as usual {;-)
++an hexadecimal editor : HexWorkshop by BreakPoint Software
++a disassembler : Wdasm v8.5 by URSOFT
++an ASCII table with hexadecimal values of characters
++a good calculator : Excalibur 32-bit by David Bernazzani
+ This calculator has an amazing amount of built-in functions, such as the
+ unusual ROL and ROR asm features. Find it <A HREF="javascript:if(confirm('http://www.tiac.net/users/dber  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.tiac.net/users/dber'" tppabs="http://www.tiac.net/users/dber">here</A>, here
+ <A HREF="javascript:if(confirm('http://ftpsearch.lycos.com/cgi-bin/search?form=medium&query=ex32_*.zip&doit=Search&type=Case+insensitive+glob+search&hits=50&matches=&hitsprmatch=&limdom=&limpath=&f1=Count&f2=Mode&f3=Size&f4=Date&f5=Host&f6=Path&header=none&sort=none&trlen=20  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://ftpsearch.lycos.com/cgi-bin/search?form=medium&query=ex32_*.zip&doit=Search&type=Case+insensitive+glob+search&hits=50&matches=&hitsprmatch=&limdom=&limpath=&f1=Count&f2=Mode&f3=Size&f4=Date&f5=Host&f6=Path&header=none&sort=none&trlen=20'" tppabs="http://ftpsearch.lycos.com/cgi-bin/search?form=medium&query=ex32_*.zip&doit=Search&type=Case+insensitive+glob+search&hits=50&matches=&hitsprmatch=&limdom=&limpath=&f1=Count&f2=Mode&f3=Size&f4=Date&f5=Host&f6=Path&header=none&sort=none&trlen=20">here</A>, or <A
+HREF="javascript:if(confirm('http://members.fortunecity.com/jpeschel/ex32_105.zip  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://members.fortunecity.com/jpeschel/ex32_105.zip'" tppabs="http://members.fortunecity.com/jpeschel/ex32_105.zip"> here. </A>
+
+
+</PRE>
+<P>Note: You might want to look <A HREF="javascript:if(confirm('http://www.qualityimage.com/everything3/13277.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.qualityimage.com/everything3/13277.html'" tppabs="http://www.qualityimage.com/everything3/13277.html">here </A>for the correct
+version, as Softbytelabs has released a new version 4.33. <BR>
+-- Joe</P>
+<P>
+<H2 ALIGN="CENTER">Encrypted file's structure</H2>
+<H2></H2>
+<P>As the tremendous algorithm used by SecurityPlus! (SP! from now on) is proprietary, the structure of encrypted
+file is unknown. We'll have to discover it by ourselves. To do so, let's encrypt some files (text, binary, pictures...)
+with various content/content's size, filename/filename's length, password/password's length. Then we examine the
+encrypted files with our nice hex editor (you will seen nothing with an ascii editor such as notepad).</P>
+<P>For instance, here is file SECRET_TXT.SP$, which is the result of encryption of the file SECRET.TXT (content:
+&quot;A&quot; , password: &quot;CASIMIR&quot;):</P>
+<PRE>00000000 C0 2E 81 20 32 B4 C9 3B D9 9C C1 4E 1F E5 9A 66 ... 2..;...N...f
+00000010 A0 50 80 64 1F FB F2 AF E7 DA A7 4E 87 41 82 85 .P.d.......N.A..
+00000020 6B 6A D3 B0 ED F6 EE 06 2B BE E2 D1 8C 93 15 FD kj......+.......
+00000030 7C 79 93 CA 51 02 68 93 A5 EA 45 10 63 3F 2D 19 |y..Q.h...E.c?-.
+00000040 43 7A BA 05 0C 4A 8A E1 2A 36 88 F2 42 A0 19 82 Cz...J..*6..B...
+00000050 F7 5E D3 F5 6D EB 6D EB 22 9B 17 90 2F C4 58 F8 .^..m.m.&quot;.../.X.
+00000060 AC 28 BF 73 1E 7F E0 58 DC 45 EC A8 63 2D D4 A3 .(.s...X.E..c-..
+00000070 6C 3A BC 72 3E 1A F8 8C 35 D6 1A                l:.r&gt;...5..
+</PRE>
+<P>We quickly discover that SP! adds 122 bytes to every encrypted file, no matter which pwd (and which pwd's length)
+was used. S+ does not seem to add &quot;garbage&quot; (i.e: random characters) to the file to fool us. It does
+not compress file either.</P>
+<P>Encrypting various files with the same password, we notice that the 122 first bytes do not change. So encrypted
+content probably starts at byte 123.</P>
+<P>Moreover, encrypting the same file with various passwords, we find out that the 61 first bytes do not change.
+Maybe some static info on program release, algo used, etc. But the next 61 bytes block changes.</P>
+<P>So encrypted file's structure must look like this:</P>
+<PRE>  
+ &lt;-----------------header-----------------&gt;
+ &lt;----static info----&gt;&lt;-pwd-related block-&gt;&lt;---------encrypted data---------&gt; 
+       61 bytes             61 bytes         n bytes (original file's size)
+</PRE>
+<P>For instance, with file SECRET_TXT.SP$ we get:</P>
+<PRE><xmp>
+ &lt;-----------------header-----------------&gt;
+ <C0 2E 81...45 10 63>&lt;3F 2D 19...8C 35 D6&gt;&lt;1A&gt; 
+       61 bytes             61 bytes         1 byte (original file's size)
+</xmp></PRE>
+<P>We could examine encrypted data, looking for statistical correlations (how many times a character appears in
+file, etc). This method is called Cryptanalysis, but we won't need it to break SP!.</P>
+<P>Instead, we'll focus on the mysterious &quot;pwd-related block&quot; to try to guess the password used to encrypt
+the file.</P>
+<P>In PART A, we'll reverse SP! to find out what's going on with the pwd-related data.</P>
+<P>In PART B, we'll find and test a method to recover pwd.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H2 ALIGN="CENTER">PART A. REVERSING OF SecurityPlus!</H2>
+<H2></H2>
+<P>=======================================
+<H3>Input handling</H3>
+<P>=======================================</P>
+<P>OK, before we launch Winice, let's do some dead-listing on the main executable: SecurityPlus!.exe. We discover
+that it imports MS VisualBasic functions (MSVBVM50.DLL). In order to monitor them, we must load MSVBVM50.DLL as
+we launch Winice. To do so, we add the following line to Winice's parameter file (winice.dat):</P>
+<PRE>     EXP=c:\win95\system\msvbvm50.dll</PRE>
+<P>(change the path to appropriate drive and directory)</P>
+<P>Now we can launch Winice, then run SP!. Select file SECRET_TXT.SP$ for decryption, enter the wrong pwd : 1234567.
+Before checking the Decrypt button, let's enter Winice and try to figure out which function could collect or manipulate
+our input. This is a VB program, so I suggest: __vbaStrCopy, __vbaStrToAnsi, etc. Set a BPX on this function, and
+press Decrypt. Bingo! We arrive right into module SECURITYPLUS!, address 137:00429BE5.
+
+<UL>
+	137:00429BE4 PUSH EAX<BR>
+	137:00429BE5 CALL [MSVBVM50!__vbaStrToAnsi]
+</UL>
+
+<P>Just before call, SP! pushes an argument on the stack. So execute the call and then look at the value stored
+in DS:EAX (d ds:eax). Yes, this is our input {:-) Now we just have to monitor memory access to our input:
+
+<UL>
+	BPR ds:eax ds:eax+7 rw
+</UL>
+
+<P>=======================================
+<H3>Transformations on Block</H3>
+<P>=======================================</P>
+<P>We land on module SBL32SP!, address 137:4022E3. Input is stored in ds:esi. So we have: byte ptr [esi] = Input[i]</P>
+<P>Now look at ds:edi, here's what we have:</P>
+<PRE> ---------------------------------------------------------------------------
+ ds:edi   3F 2D 19 43 7A BA 05 0C 4A 8A E1 2A 36 88 F2 42   ?-.Cz...J..*6..B
+ ---------------------------------------------------------------------------</PRE>
+<P>Yes, you're right, this is the mysterious pwd-related block we detected (see above). The block is 61 bytes long
+(Block[1]=3F, Block[2]=2D, ... Block[61]=D6). So we have: byte ptr [edi] = Block[j].</P>
+<P>As usual, cl register is a counter. Its initial value is always 3D (61 in decimal), so we'll loop 61 times.
+Each time, cl decreases by one. When cl=0, we stop looping.<BR>
+When we stop at address 4022E3, bl contains Input's length (7).<BR>
+With Input=&quot;1234567&quot; (Input[1]=31, Input[2]=32, ... , Input[7]=37), we obtain:</P>
+<PRE>     :004022E3   mov dl,byte ptr [esi+ebx-01] ;dl=Input[7]=37
+     :004022E7   mov dh,byte ptr [esi] ;dh=Input[1]=31      
+     :004022E9   mov bh,bl ;bx=0707
+
+****&gt;:004022EB   lodsb ;al=byte ptr [esi]=Input[i], then esi++
+*    :004022EC   mov ah,byte ptr [edi] ;ah=Block[j] so ah=3F 2D ... D6
+*    :004022EE   xchg ah,al ;exchange ah and al
+*    :004022F0   sub al,ah ;al = al-ah
+* 6  :004022F2   sub al,dl ;al = al-dl = al-ah-dl
+* 1  :004022F4   sub al,cl ;al = al-cl = al-ah-dl-cl
+*    :004022F6   sub al,dh ;al = al-dh = al-ah-dl-cl-dh
+* L  :004022F8   mov dl,byte ptr [edi] ;dl=Block[j]
+* O  :004022FA   stosb ;byte ptr [edi]=Block[j]=al, then edi++
+* O  :004022FB   inc bl ;bl++, read next Input's character
+* P  :004022FD   cmp bl,bh ;tests if end of Input reached
+* S  :004022FF   jle 00402309 ;if not reached: go on
+*    :00402305   mov bl,01 ;resets bl
+*    :00402307   pop esi ;reset esi (i=1), so read first Input's char again
+*    :00402308   push esi                      
+*    :00402309   add dh,bl ;dh=dh+bl
+*****:0040230B   loop 004022EB ;cl--     loop 3D times (61 in decimal)</PRE>
+<P>At address 4022FA, we see that block is progressively overwritten by the successive values taken by register
+al. Let's examine how those values are built:</P>
+<PRE>        al = al       - ah       - dl       - cl - dh
+        
+loop 1: al = Block[1] - Input[1] - Input[7] - 3D - Input[1] 
+(bl=7)     = 3F       - 31       - 37       - 3D - 31
+           = 69 
+
+loop 2: al = Block[2] - Input[1] - Block[1] - 3C - (Input[1]+1)
+(bl=1)     = 2D       - 31       - 3F       - 3C - (31+1)
+           = 4F
+
+loop 3: al = Block[3] - Input[2] - Block[2] - 3B - (Input[1]+1+2)
+(bl=2)     = 19       - 32       - 2D       - 3B - (31+1+2)
+           = 4B          
+  ...
+      
+loop 8: al = Block[8] - Input[7] - Block[7] - 36 - (Input[1]+1+2+...+7)
+(bl=7)     = 0C       - 37       - 05       - 36 - (31+1+2+...+7)
+           = 4D
+
+loop 9: al = Block[9] - Input[1] - Block[8] - 35 - (Input[1]+1+2+...+7+1)
+(bl=1)     = 4A       - 31       - 0C       - 35 - (31+1+2+...+7+1)
+           = 8A
+
+  ... With i = (j)modulo(Input's length):
+
+loop j: al = Block[j]-Input[i]-Block[j-1]-(3D-(j-1))-(Input[1]+1+2+...+i)
+(bl=i)
+
+Once last loop is completed, dump Block:
+
+Block dump   (hex):  69 4F 4B 86 8F 93 98 4D 8A 8A 9E 8C ...    
+           (ASCII):  i  O  K  .  .  .  .  M  .  .  .  .  ...
+</PRE>
+<P>To sum up:<BR>
+Transformed Block = function of (Block, Input, Input's length)</P>
+<P>Ok, let's try to find out what Transformed Block is used for. As usual, we set a BreakPoint on Memory access
+on it.</P>
+<P>=======================================
+<H3>Final check on Input</H3>
+<P>=======================================</P>
+<P>We stop in module SBL32SP! again, at address 4043BC.</P>
+<PRE></PRE>
+
+<UL>
+	:004043BC repz cmpsb :004043BE jz 004043C7
+</UL>
+
+<P>A comparison at byte level takes place between 2 strings: our Transformed Block (ds:esi) and a check key (ds:edi).</P>
+<PRE>Transf_Block : iOK....M....J.........D....E........t...KEUgJ....o...Gv...K]Q 
+
+Key_chk      : *+*This file encrypted with SecurityPlus! (C)SoftByte Labs*+*
+</PRE>
+<P>If Transf_Block and Key_chk are the same then SP! accepts to decrypt the file. But if they differ, SP! does
+nothing and asks again for a password. We entered 1234567 as a password, so Transf_Block differs from Key_chk.
+Now enter the correct password, and you'll get Transf_Block=Key_chk.</P>
+<P>If password is correct, then we enter decryption process. Decryption process is exactly the same as Block's
+transformation we saw above. But instead of working on Block, it works on the encrypted data:
+
+<UL>
+	decrypted data = function of (encrypted data, Input, Input's length).
+</UL>
+
+<P>That means that we can't just disable the check to decrypt file. We <B>NEED</B> the correct password, otherwise
+we'll obtain garbage (try it).</P>
+<P>Ok, we've stolen a fair amount of information from SP!, now we can break it.</P>
+<P>Here is <A HREF="caz7b.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/casimir/caz7b.htm">Part B.</A></P>
+<P>Copyright December, 1999 by Casimir.</P>
+
+<P>Mail <A HREF="mailto:casimir2@club-internet.fr">Casimir</A>
+
+</BODY>
+
+</HTML>

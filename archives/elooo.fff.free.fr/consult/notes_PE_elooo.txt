@@ -1,0 +1,148 @@
+'MZ'+0x0 = début IMAGE_DOS_HEADER
+donc :
+* 'MZ'+ 0x00 = e_magic (IMAGE_DOS_SIGNATURE (0x5a4d)
+* 'MZ'+ 0x02 = e_cblp (Bytes on last page of file)
+* 'MZ'+ 0x04 = e_cp (Pages in file)
+* 'MZ'+ 0x06 = e_crlc (Relocations)
+* 'MZ'+ 0x08 = e_cparhdr (Size of header in paragraphs)
+* 'MZ'+ 0x0a = e_minalloc (Minimum extra paragraphs needed)
+* 'MZ'+ 0x0c = e_maxalloc (Maximum extra paragraphs needed)
+* 'MZ'+ 0x0e = e_ss (Initial (relative) SS value)
+* 'MZ'+ 0x10 = e_sp (Initial SP value)
+* 'MZ'+ 0x12 = e_csum (Checksum)
+* 'MZ'+ 0x14 = e_ip (Initial (relative) CS value)
+* 'MZ'+ 0x16 = e_cs (Initial (relative) CS value)
+* 'MZ'+ 0x18 = e_lfarlc (File address of relocation table)
+* 'MZ'+ 0x1a = e_ovno (Overlay number)
+* 'MZ'+ 0x1c = e_res[4] (4 words réservés)
+* 'MZ'+ 0x24 = e_oemid (OEM identifier)
+* 'MZ'+ 0x26 = e_oeminfo (OEM information)
+* 'MZ'+ 0x28 = e_res2[10] ( 10 words réservés)
+* 'MZ'+ 0x3c = e_lfanew (offset 'PE', 0x4550)
+
+
+'PE'+4 = début IMAGE_FILE_HEADER
+donc :
+* 'PE'+0x04 = Machine
+* 'PE'+0x06 = NumberOfSections
+* 'PE'+0x08 = TimeDateStamp
+* 'PE'+0x0c = PointerToSymbolTable
+* 'PE'+0x10 = NumberOfSymbols
+* 'PE'+0x14 = SizeOfOptionalHeader
+* 'PE'+0x16 = Characteristics
+
+
+'PE'+0x18 = début IMAGE_OPTIONAL_HEADER
+donc :
+* 'PE'+0x18 = Magic
+* 'PE'+0x1a = MajorLinkerVersion
+* 'PE'+0x1b = MinorLinkerVersion
+* 'PE'+0x1c = SizeOfCode
+* 'PE'+0x20 = SizeOfInitializedData
+* 'PE'+0x24 = SizeOfUninitializedData
+* 'PE'+0x28 = AddressOfEntryPoint
+* 'PE'+0x2c = BaseOfCode
+* 'PE'+0x30 = BaseOfData
+* 'PE'+0x34 = ImageBase
+* 'PE'+0x38 = SectionAlignment
+* 'PE'+0x3c = FileAlignment
+* 'PE'+0x40 = MajorOperatingSystemVersion
+* 'PE'+0x42 = MinorOperatingSystemVersion
+* 'PE'+0x44 = MajorImageVersion
+* 'PE'+0x46 = MinorImageVersion
+* 'PE'+0x48 = MajorSubsystemVersion
+* 'PE'+0x4a = MinorSubsystemVersion
+* 'PE'+0x4c = Win32VersionValue
+* 'PE'+0x50 = SizeOfImage
+* 'PE'+0x54 = SizeOfHeaders
+* 'PE'+0x58 = CheckSum
+* 'PE'+0x5c = Subsystem
+* 'PE'+0x5e = DllCharacteristics
+* 'PE'+0x60 = SizeOfStackReserve
+* 'PE'+0x64 = SizeOfStackCommit
+* 'PE'+0x68 = SizeOfHeapReserve
+* 'PE'+0x6c = SizeOfHeapCommit
+* 'PE'+0x70 = LoaderFlags
+* 'PE'+0x74 = NumberOfRvaAndSizes
+
+
+'PE'+0x78 = début IMAGE_DATA_DIRECTORY
+Si NumberOfRvaAndSizes ('PE'+0x74) = 0x10 (souvent le cas)
+alors :
+PE'+0x78 = début IMAGE_DIRECTORY_ENTRY_EXPORT
+donc :
+* 'PE'+0x78 = VirtualAddress
+* 'PE'+0x7c = Size
+PE'+0x80 = début IMAGE_DIRECTORY_ENTRY_IMPORT
+donc :
+* 'PE'+0x80 = VirtualAddress
+* 'PE'+0x84 = Size
+PE'+0x88 = début IMAGE_DIRECTORY_ENTRY_RESOURCE
+donc :
+* 'PE'+0x88 = VirtualAddress
+* 'PE'+0x8c = Size
+PE'+0x90 = début IMAGE_DIRECTORY_ENTRY_EXCEPTION
+donc :
+* 'PE'+0x90 = VirtualAddress
+* 'PE'+0x94 = Size
+PE'+0x98 = début IMAGE_DIRECTORY_ENTRY_SECURITY
+donc :
+* 'PE'+0x98 = VirtualAddress
+* 'PE'+0x9c = Size
+PE'+0xa0 = début IMAGE_DIRECTORY_ENTRY_BASERELOC
+donc :
+* 'PE'+0xa0 = VirtualAddress
+* 'PE'+0xa4 = Size
+PE'+0xa8 = début IMAGE_DIRECTORY_ENTRY_DEBUG
+donc :
+* 'PE'+0xa8 = VirtualAddress
+* 'PE'+0xac = Size
+PE'+0xb0 = début IMAGE_DIRECTORY_ENTRY_COPYRIGHT
+donc :
+* 'PE'+0xb0 = VirtualAddress
+* 'PE'+0xb4 = Size
+PE'+0xb8 = début IMAGE_DIRECTORY_ENTRY_GLOBALPTR
+donc :
+* 'PE'+0xb8 = VirtualAddress
+* 'PE'+0xbc = Size
+PE'+0xc0 = début IMAGE_DIRECTORY_ENTRY_TLS
+donc :
+* 'PE'+0xc0 = VirtualAddress
+* 'PE'+0xc4 = Size
+PE'+0xc8 = début IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG
+donc :
+* 'PE'+0xc8 = VirtualAddress
+* 'PE'+0xcc = Size
+PE'+0xd0 = début IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT
+donc :
+* 'PE'+0xd0 = VirtualAddress
+* 'PE'+0xd4 = Size
+PE'+0xd8 = début IMAGE_DIRECTORY_ENTRY_IAT
+donc :
+* 'PE'+0xd8 = VirtualAddress
+* 'PE'+0xdc = Size
+PE'+0xe0 = début IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT
+donc :
+* 'PE'+0xe0 = VirtualAddress
+* 'PE'+0xe4 = Size
+--> Si NumberOfRvaAndSizes ('PE'+0x74) > 0x10, chaque nouvelle IMAGE_DIRECTORY_ENTRY prendra 8 octets.
+
+
+'PE'+0x18 + ['PE'+0x14] = début IMAGE_SECTION_HEADER
+(quand NumberOfRvaAndSizes ('PE'+0x74) = 0x10,
+début IMAGE_SECTION_HEADER = 'PE'+0xf8
+donc :
+* 'PE'+0xf8 = Name Section1
+* 'PE'+0x100 = VirtualSize
+* 'PE'+0x104 = VirtualAddress
+* 'PE'+0x108 = SizeOfRawData
+* 'PE'+0x10c = PointerToRawData
+* 'PE'+0x110 = PointerToRelocations
+* 'PE'+0x114 = PointerToLinenumbers
+* 'PE'+0x118 = NumberOfRelocations
+* 'PE'+0x11a = NumberOfLinenumbers
+* 'PE'+0x11c = Characteristics
+
+* 'PE'+0x120 = Name Section2
+... etc ...
+Rajouter 0x28 pour tomber sur chaque nom de nouvelle section. 

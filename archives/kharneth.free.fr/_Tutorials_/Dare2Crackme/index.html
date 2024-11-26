@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!--	#12 		27/08/2004					 	 //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>dare2crackme By DooMeeR</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#600000;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+pre { width:680px;background:white;color:black;border-style:double;border-width:3px;border-color:#600000; }
+
+'img {  border-width:2;border-style:inset;border-color:#FFFFFF; }
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+
+<table style="color:#FFFFFF;" align="center" width="680px" cellspacing="8" cellpadding="6" border="0">
+
+<tr><th colspan="3" style="font-size:30;color:#900000;">dare2crackme By DooMeeR<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="3">&nbsp;</th></tr>
+<tr><th width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td>&nbsp;- PeID<br>&nbsp;- OllyDbg<br>&nbsp;- Compilateur<br>&nbsp;- Google<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant / avancé en Cracking<br>ayant de bonnes connaissances en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/dare2crackme.exe">dare2crackme.exe</a></td></tr>
+
+<tr><th colspan="3">&nbsp;</th></tr>
+
+<tr><td nowrap><b>I - PeID</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Un rapide scan avec PeID nous indique <i>Borland Delphi 6.0 - 7.0</i>, mais nous avions reconnu de toute façon l'icône caractéristique des programmes Delphi. Puisque le programme n'est pas compressé, nous allons l'attaquer de suite avec OllyDBG!
+</p>
+</td></tr>
+
+<tr><td nowrap><b>II - OllyDBG</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le problème avec Delphi et sa VCL (Visual Component Library / Bibliothèque de composants visuels), c'est que les apis classiques (MessageBox, GetWindowText...) ne fonctionnent pas! En effet, les MsgBox sont créées de toute pièce et les chaînes des champs texte sont récupérées par CallWindowProc(...WM_GETTEXT...). Le tout noyé dans d'innombrables Call! Mais heureusement pour nous, le compilateur Delphi est très bavard et laisse trainer plein de chaines intéressantes!! :)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En cherchant dans les String Data Ref, on ne trouve pas le texte de la MsgBox, "Invalid key!". Celui-ci est probablement crypté. On va donc chercher les noms des fonctions gérants les évènements (du type <i>Button1Click</i>).
+</p><center><img src="Captures/Olly01.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Après sélection de la ligne, on appuie sur la touche <i>Entrée</i> pour se retrouver dans le listing.
+</p><center><img src="Captures/Olly02.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On sélectionne l'adresse juste au dessus de la chaine puis on appuie sur <i>Entrée</i> pour se retrouver au début de la procédure de gestion de l'évènement <i>Button1.onClick()</i>.
+</p><center><img src="Captures/Olly03.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On remarque la chaîne affichée dans la MsgBox lorsque l'on click sur le bouton "Crackme's goal". La procédure appelée ensuite correspond à la fonction <i>ShowMessage()</i> qui va construire une MsgBox puis afficher la chaîne passée en paramêtre. On oublie pas de définir un Label (Click-droit --> Label) lorsque l'on a identifié une fonction pour voir plus facilement les différents appels à cette fonction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il existe 2 méthodes pour passer des paramêtres à une fonction, soit par la pile, soit par les registres. Delphi utilises les registres lorsque les options d'optimisation sont sélectionnées. Pour plus d'informations: <a href="http://nono40.developpez.com/tutoriel/delphi/asm/">http://nono40.developpez.com/tutoriel/delphi/asm/</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On réitère l'opération précédente avec les 2 autres chaînes intéressantes à savoir "OKBtnClick" et "FoncClick". (On verra plus tard qu'il y a un troisième bouton caché. Mais la fenêtre permet l'agrandissement, donc en la mettant en plein écran, on peut voir un texte ainsi que ce troisième bouton.). Il suffit de placer un BreakPoint au début de ces 2 procédures puis de lancer le programme.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On tape un serial bidon puis on click sur le bouton "OK". OllyDBG s'arrête alors au début de la procédure "OKBtnClick".
+</p><center><img src="Captures/Olly04.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;J'ai indiqué le nom des fonctions pour bien comprendre à quoi elles correspondent, malheureusement, Olly ne sait pas le faire! :( Oui je sais, il y a Dede mais c'est pour montrer que finalement Olly suffit! :p<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En étudiant la procédure, on voit qu'un Checksum est calculé sur le pass. Si cette valeur égale 432, le programme agrandit la fenêtre pour laisser apparaitre un texte ainsi qu'un nouveau bouton.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici la fonction de calcul du Checksum:
+</p><center><img src="Captures/Olly05.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elle multiplie chaque caractère entre eux (dans une variable 32 bits), divise le résultat par 1000 puis renvoit le reste. Et ce reste doit être égal à 432. Un petit brute force rapidement codé permet de trouver d'innombrables pass valides en se limitant à 4 caratères. Par exemple XMEN fonctionne! :)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant, on fait une pause cigarette, coca, tequila, pipe... Et une fois bien décontracté, on click sur le bouton "Some awsome fonctionnality". Et là Olly s'arrête puisqu'on avait placé un BP au début de la procédure "FoncClick".
+</p><center><img src="Captures/Olly06.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit l'importance des Labels car on peut ainsi identifier rapidement les différentes fonctions utilisées ailleurs dans le programme. On voit donc qu'on nous refait un coup de <i>(Checksum(pass) Modulo 1000) == 432</i>. Par contre, ensuite, ça se complique. On voit 2 appels à l'api <i>VirtualProtect</i> pour modifier les droits d'accès à une zone du code. En général pour écrire dedans en cas de code crypté par exemple. L'adresse en question est 00457078 (visible en haut de la capture). Le premier autorise l'écriture et le deuxième rétablit les droits d'origine.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit entre les 2 <i>VirtualProtect</i> que les 4 premiers caractères du pass subissent un XOR CAB8DB92 et que le DWORD résultant écrase les 4 octets à cette fameuse adresse. Et juste après le 2ème <i>VirtualProtect</i>, le programme appelle cette adresse dont le code vient d'être modifié. Evidemment, ça plante et l'aventure s'arrête là!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ou plutôt, c'est là qu'entre en scène la fameuse intuition du Cracker (sisi vous savez les trucs que vous faites des fois sans savoir pourquoi...)! :)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Un petit retour en arrière s'impose! Au début du programme il manque la chaine "Invalid key!". Hors elle est bien visible après exécution. Et on peut supposer qu'il existe également un message de félicitation. De plus, si l'on a été attentif / curieux, on a remarqué juste au-dessus de la fonction "ModChecksum" en 00456D64, la chaîne "You cracked me!". Il faut donc trouver l'endroit où elle est créée.
+</p><center><img src="Captures/Olly07.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rien de bien compliqué, Click-droit sur l'adresse 00456D64 puis "Follow in dump --> Constant", puis après sélection du premier caractère (Y), Click-droit puis "Breakpoint --> Hardware, on access --> Byte". Il suffit maintenant de relancer le programme avec Ctrl+F2 puis d'appuyer sur F9 tant que l'octet en 008B25A4 n'est pas 'Y'.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On arrive au milieu d'une procédure qui commence en 00457118 et qui place des octets à une adresse mémoire. Si l'on s'amuse à convertir ces octets en caractères on retrouve les 2 chaines "Invalid key!" et "You cracked me!". Mais ce n'est pas tout! A la fin de cette procédure, on retrouve 2 nouveaux appels à <i>VirtualProtect</i>.
+</p><center><img src="Captures/Olly08.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On remarque que l'adresse dont les octets vont être modifiés est 00456D64. C'est à dire, celle que l'on a vu précédemment qui contenait l'adresse de "You cracked me!". Et effectivement, au chargement du programme, cette adresse contient 4 nop (90909090).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bon et maintenant on fait quoi avec tout ça??? Récapitulons:<br>
+On sait que le modulo checksum doit être égal à 432 mais surtout que les 4 premiers caractères du pass xor constante doivent donner un code exécutable! Donc on va d'abord chercher quel code cela pourrait être, ensuite un brute force nous permettra de trouver un pass qui remplira la première condition.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En 00457078 nous avons 6 octets 89 D4 F8 8B FF C3. Les 4 premiers vont être remplacés, ce qui nous laisse FF et C3 (Retn). Nous avons aussi cette procédure en 00456D6C qui utilise la chaîne "You cracked me!" mais qui ne semble appelée de nulle part! De plus le Call n'est apparemment pas <i>ShowMessage</i>, sinon le Label apparaitrait. Après quelques réflexions et avec un peu d'expérience, on peut supposer que ce code inconnu correspondrait à un Call intermédiaire qui appellerait cette procédure.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D'abord, la procédure qui utilise "You cracked me!" se termine par un ret, donc il lui faut une adresse de retour et un Call convient puisqu'il fournit son adresse de retour. Ensuite, le dernier octet est FF ce qui est le cas quand un Call appelle une procédure pas trop éloignée de lui.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc en patchant sous olly, on se met à l'adresse 00457078, puis on tape Call 00456D6C. On obtient les 4 octets suivants:  E8 EF FC FF avec le FF C3 final, ça colle! :)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour retrouver les 4 premiers caractères du pass, on va appliquer le xor sur ces 4 octets (CAB8DB92 est mis à l'envers à cause de la notation Little endian 32bits). Ce qui donne:
+</p>
+<center><b>92DBB8CA</b> Xor <b>E8EFFCFF</b> = <b>7A344435</b> soit <b>z4D5</b></center>
+<p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le modulo Checksum de z4D5 n'étant pas correct, on va utiliser un brute force pour ajouter 1 ou plusieurs caractères à la fin jusqu'à avoir un modulo juste.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exemple de mot de passe valide: <b>z4D53M</b>.
+</p><center><img src="Captures/Cracked.png" alt=""></center><p align="justify">
+
+</p>
+</td></tr>
+
+<tr><td nowrap><b>III - Brute Force</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici un exemple de Brute Force codé sous Dev-C++, qui renvoit les résultats dans un fichier texte.
+
+
+<!--StartFragment-->
+<pre><code><font color="#C0C0C0">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+</font><font color="#800000"><b>int </b></font>main</font><font color="#808000">(</font><font color="#800000"><b>int </b></font>argc</font><font color="#808000">, </font><font color="#800000"><b>char </b></font><font color="#808000">*</font>argv</font><font color="#808000">[]) {
+
+    </font><font color="#800000"><b>int </b></font>a</font><font color="#808000">,</font>b</font><font color="#808000">,</font>c</font><font color="#808000">,</font>d</font><font color="#808000">, </font>i </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+    </font><font color="#800000"><b>unsigned int </b></font>sum </font><font color="#808000">= </font><font color="#FF0000">1</font><font color="#808000">;
+    </font><font color="#800000"><b>unsigned int </b></font>mod </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+    </font><font color="#800000"><b>char </b></font>pass</font><font color="#808000">[</font><font color="#FF0000">8</font><font color="#808000">] = </font><font color="#0000FF">&quot;z4D5&quot;</font><font color="#808000">;
+    </font>pass</font><font color="#808000">[</font><font color="#FF0000">6</font><font color="#808000">] = </font><font color="#FF0000">13</font><font color="#808000">;</font>pass</font><font color="#808000">[</font><font color="#FF0000">7</font><font color="#808000">] = </font><font color="#FF0000">10</font><font color="#808000">;  </font><font color="#008000"><i>// Retour à la ligne
+    </i></font>pass</font><font color="#808000">[</font><font color="#FF0000">8</font><font color="#808000">] = </font><font color="#FF0000">0</font><font color="#808000">;
+    </font>FILE </font><font color="#808000">*</font>pFile </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+    </font>pFile </font><font color="#808000">= </font>fopen</font><font color="#808000">(</font><font color="#0000FF">&quot;res.txt&quot;</font><font color="#808000">, </font><font color="#0000FF">&quot;wt&quot;</font><font color="#808000">);
+
+    </font><font color="#800000"><b>for </b></font><font color="#808000">(</font>a</font><font color="#808000">=</font><font color="#FF0000">0x30</font><font color="#808000">;</font>a</font><font color="#808000">&lt;</font><font color="#FF0000">0x7B</font><font color="#808000">;</font>a</font><font color="#808000">++) {    </font>pass</font><font color="#808000">[</font><font color="#FF0000">4</font><font color="#808000">] = </font>a</font><font color="#808000">;
+    </font><font color="#800000"><b>for </b></font><font color="#808000">(</font>b</font><font color="#808000">=</font><font color="#FF0000">0x30</font><font color="#808000">;</font>b</font><font color="#808000">&lt;</font><font color="#FF0000">0x7B</font><font color="#808000">;</font>b</font><font color="#808000">++) {    </font>pass</font><font color="#808000">[</font><font color="#FF0000">5</font><font color="#808000">] = </font>b</font><font color="#808000">;
+        </font>sum </font><font color="#808000">= </font><font color="#FF0000">1</font><font color="#808000">;
+        </font><font color="#800000"><b>for </b></font><font color="#808000">(</font>i</font><font color="#808000">=</font><font color="#FF0000">0</font><font color="#808000">;</font>i</font><font color="#808000">&lt;</font><font color="#FF0000">6</font><font color="#808000">;</font>i</font><font color="#808000">++) {
+            </font>sum </font><font color="#808000">*= </font>pass</font><font color="#808000">[</font>i</font><font color="#808000">];
+        }
+        </font>mod </font><font color="#808000">= </font>sum </font><font color="#808000">% </font><font color="#FF0000">0x3E8</font><font color="#808000">;
+        </font><font color="#800000"><b>if </b></font><font color="#808000">(</font>mod </font><font color="#808000">== </font><font color="#FF0000">0x1B0</font><font color="#808000">) {
+           </font>fputs</font><font color="#808000">(</font>pass</font><font color="#808000">, </font>pFile</font><font color="#808000">);
+        }
+    }
+    }
+    </font>fclose</font><font color="#808000">(</font>pFile</font><font color="#808000">);
+    </font>system</font><font color="#808000">(</font><font color="#0000FF">&quot;pause&quot;</font><font color="#808000">);
+    </font><font color="#800000"><b>return </b></font><font color="#FF0000">0</font><font color="#808000">;
+}
+</font></code></pre>
+<!--EndFragment-->
+
+
+</td></tr>
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+
+<tr><th colspan="3" style="font-family:Times;font-weight:normal;"><br><i>
+
+He went into the room where his sister lived,<br>
+and...then he
+
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="3"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="3"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

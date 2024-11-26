@@ -1,0 +1,104 @@
+body {
+font-family: Verdana; 
+font-size: 9px;
+color: #ffffff;
+}
+
+#pic {
+
+	background-color: #333333;
+	background-image: url(bg.jpg);
+	height: 100%;
+	left: 0px;
+	overflow: hidden;
+	position: relative;
+	right: +0px;
+	top: 0px;
+	width: 800px;
+	z-index: 1;
+}
+
+#recommended {
+	position:absolute;
+	left:520px;
+	top:102px;
+	width:250px;
+	height:106px;
+z-index: 22;
+}
+
+#welcome {
+	position:absolute;
+	left:30px;
+	top:106px;
+	width:251px;
+	height:244px;
+z-index: 20;
+}
+
+
+#mainstuff {
+	
+	position:absolute;
+	left:294px;
+	top:0px;
+	width:470px;
+	height:100%;
+        bottem: 400px;
+        z-index: 4;
+overflow:auto;
+}
+
+
+#mainnews {
+	position:absolute;
+	left:30px;
+	top:0px;
+	width:245px;
+	height:100%;
+overflow:auto;
+z-index: 5;
+}
+#head {
+	position:absolute;
+	left:314px;
+	top:10px;
+	width:185px;
+	height:158px;
+z-index: 7;
+}
+#art {
+	position:absolute;
+	left:0px;
+	top:0px;
+	width:800px;
+	height:300px;
+z-index: 22;
+}
+
+#flash {
+	position:absolute;
+	left:154px;
+	top:12px;
+	width:33px;
+	height:10px;
+z-index: 21;
+}
+
+#music {
+	position:absolute;
+	left:195px;
+	top:12px;
+	width:27px;
+	height:10px;
+z-index: 22;
+}
+
+#scene {
+	position:absolute;
+	left:230px;
+	top:12px;
+	width:33px;
+	height:10px;
+z-index: 23;
+}

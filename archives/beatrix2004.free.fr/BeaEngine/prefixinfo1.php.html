@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+	<title> Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" href="includes/style.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="titre">
+	<div class="barre_bleue"></div>
+	<div class="barre_bleue2"></div>
+	<div id="fretsdn"><a href="http://binary-reverser.org"></a></div>
+	<div class="menu"><ul>
+    <li><a href='prefixinfo.php.html'>&#62; voir en version Française</a></li>
+    </ul></div>
+</div>
+
+<div id="menu">
+	<div class="barre_bleue3"></div>
+	<div class="barre_grise"></div>
+		<ul>
+	<li><a href="index1.php.html">Home</a></li>
+	<li><a href="download1.php.html">Downloads</a></li>
+	<li> <a href="screenshots1.php.html">Screenshots</a></li>
+	<li> <a href="links1.php.html">Documentations</a></li>
+	<li><a href="support1.php.html">Support</a></li>
+	</ul>
+	<p><strong>BeaEngine documentation</strong></p>
+	<ul>
+	<li> <a href="fonction1.php.html">Disasm function</a></li>
+	<li><a href="structure1.php.html">_Disasm structure</a></li>
+	<li><a href="constants1.php.html">Constants</a></li>
+	<li><a href="exemples1.php.html">Examples</a></li>
+	<li><a href="licence1.php.html">License</a></li>
+	</ul>
+ 
+</div>
+
+<div id="contenu">
+	<div class="barre_bleue">Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </div>
+<h1>PREFIXINFO Structure</h1>
+<p>
+This structure gives informations on used prefixes. When can know if some prefixes are used properly or not.</p>
+</p>
+<pre>
+struct PREFIXINFO {
+   int Number;
+   int NbUndefined;
+   BYTE LockPrefix;
+   BYTE OperandSize;
+   BYTE AddressSize;
+   BYTE RepnePrefix;
+   BYTE RepPrefix;
+   BYTE FSPrefix;
+   BYTE SSPrefix;
+   BYTE GSPrefix;
+   BYTE ESPrefix;
+   BYTE CSPrefix;
+   BYTE DSPrefix;
+   BYTE BranchTaken;
+   BYTE BranchNotTaken;
+   REX_Struct REX;
+};
+</pre>
+<p>Membres</p>
+<p class="champ"><strong>Number</strong></p>
+<p class="explanation">[out] Indicates the number of prefixes used.</p>
+
+<p class="champ"><strong>NbUndefined</strong></p>
+<p class="explanation">[out] Indicates the number of prefixes used in a wrong way (illegal use).</p>
+
+<p class="champ"><strong>LockPrefix</strong></p>
+<p class="explanation">[out] Concerns the LOCK prefix. It can takes one of the following values :</p>
+<pre>
+	NotUsedPrefix = 0
+	InUsePrefix = 1
+	SuperfluousPrefix = 2
+	InvalidPrefix = 4
+	MandatoryPrefix = 8
+</pre>
+
+<p class="champ"><strong>OperandSize</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the size of operands.</p>
+
+<p class="champ"><strong>AddressSize</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the AddressSize</p>
+
+<p class="champ"><strong>RepnePrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the REPNE. </p>
+
+<p class="champ"><strong>RepPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the REP. </p>
+
+<p class="champ"><strong>FSPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the FS segment . </p>
+
+<p class="champ"><strong>SSPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the SS segment . </p>
+
+<p class="champ"><strong>GSPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the GS segment . </p>
+
+<p class="champ"><strong>ESPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the ES segment . </p>
+
+<p class="champ"><strong>CSPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the CS segment . </p>
+
+<p class="champ"><strong>DSPrefix</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the DS segment . </p>
+
+<p class="champ"><strong>BranchTaken</strong></p>
+<p class="explanation">[out] Concerns branch hint prefix 0x3E (taken). </p>
+
+<p class="champ"><strong>BranchNotTaken</strong></p>
+<p class="explanation">[out] Concerns branch hint prefix 0x2E (not taken). </p>
+
+<p class="champ"><strong>REX</strong></p>
+<p class="explanation">[out] Concerns the prefix used to define the REX in 64 bits mode. The structure sended back is :</p>
+<pre>
+struct REX_Struct {
+   BYTE W_;
+   BYTE R_;
+   BYTE X_;
+   BYTE B_;
+   BYTE state;
+}; 
+</pre>
+<p>Fields W_, R_, X_, B_ are set to 1 if the prefix is used. The field state is set to 1 if a REX prefix is used.</p>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

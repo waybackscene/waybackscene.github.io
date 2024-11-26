@@ -1,0 +1,355 @@
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²
+    ²²    ____                     __       __           ²²ßÛ
+    ²²   /  _/_ _  __ _  ___  ____/ /____ _/ /           ²² ÛßÛ
+    ²²  _/ //  ' \/  ' \/ _ \/ __/ __/ _ `/ /            ²² Û Û
+    ²² /___/_/_/_/_/_/_/\___/_/  \__/\_,_/_/             ²² Û Û
+    ²²   ____                          __          __    ²² Û Û
+    ²²  / __ \___ ___ _______ ___  ___/ /__ ____  / /____²² Û Û
+    ²² / /_/ / -_|_-</ __/ -_) _ \/ _  / _ `/ _ \/ __(_-<²² Û Û
+    ²²/_____/\__/___/\__/\__/_//_/\_,_/\_,_/_//_/\__/___/²² Û Û
+    ²²                                                   ²² Û Û
+    ²²      Web: http://www.ImmortalDescendants.org      ²² Û Û
+    ²²                Author: ACiD BuRN                  ²² Û Û
+    ²²                Date: 23/05/2000                   ²² Û Û
+    ²²         Topic: Adding function to a program!      ²² Û Û
+    ²²               Level: intermediate                 ²² Û Û
+    ²²                                                   ²² Û Û
+    ²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²²² Û Û
+      ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ Û
+        ÛÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÛ
+
+
+	Reverse Engineering: Reversing my little exemple :)
+
+
+tools used: 
+		- Soft ice 3.23 (best version for me :)
+		- Hexeditor (hexworkshop or hview)
+		- Wdasm32 8.9x
+		- Procdump 1.6
+		- a brain
+		- Some good music :)
+
+Note: I assume you know how to use this tools , else you gotta find some easy
+tutorials that teach you how to use them and come back once your ready :)
+
+
+
+Oh yeah , another tutor from your lil ACiD BuRN :) the frog is back from hell heh!
+You may wonder where the heck i was...
+Well , i don't have Internet anymore, phone bills get me this time :((
+i won't be back online until 6 months or more..That sucks bigtime!!
+And the worse is that i am still sick (ill as hell since december)
+Doctors don't even know what the fuck i got and my illness has since worsened..
+Anyway , i'm trying to get back in cracking and reversing stuff!
+I am back to kick some ass hehe :) 
+Info: I am finishing my keygen for the Official and *Final* CORE's Crackme !
+Ph34R !
+
+In this tut , i will show you how to add some new code to an app.
+i have wrotte a lil reverse me for this tut!
+It ain't a C++ or asm32 file !
+This time it's a delphi32 exe ! i choose this , coz it is full of garbage in it !
+delphi does pretty big exe files! (i.e : one dialog and a button = 300kb !!)
+looks more real (like an application) than a 3kb asm file totaly clean !
+
+
+So, when we run our target we can see one button in the form.
+Push on it , and we see a messagebox telling us our Goal which is to kill the messagebox
+and to make the button end the process instead of showing us this hint !
+Of course, we ain't gonna redirect the action to a call on Exitprocess but we will add code
+to the target instead!
+
+
+
+1) Looking where to put a jmp to our new added code:
+
+
+
+Disasm the target with wdasm32 and look in the string data references! 
+We'r looking for the msg it gives us when we press the button!
+Ok , i think you found it and it looks like that :
+
+-------------------------------Snip----------------------------
+
+:0043F053 6A00                    push 00000000
+:0043F055 6A00                    push 00000000
+:0043F057 33C0                    xor eax, eax
+:0043F059 55                      push ebp
+:0043F05A 68A9F04300              push 0043F0A9
+:0043F05F 64FF30                  push dword ptr fs:[eax]
+:0043F062 648920                  mov dword ptr fs:[eax], esp
+:0043F065 8D45FC                  lea eax, dword ptr [ebp-04]
+
+* Possible StringData Ref from Code Obj ->"Rulez"
+                                  |
+:0043F068 BABCF04300              mov edx, 0043F0BC
+:0043F06D E8DA48FCFF              call 0040394C
+:0043F072 8D45F8                  lea eax, dword ptr [ebp-08]
+
+* Possible StringData Ref from Code Obj ->"Kick the msgbox and add code to "
+                                        ->"this exe to make the Button exit "
+                                        ->"!"
+                                  |
+:0043F075 BACCF04300              mov edx, 0043F0CC
+:0043F07A E8CD48FCFF              call 0040394C
+:0043F07F 6A00                    push 00000000
+:0043F081 FF75FC                  push [ebp-04]   ;'Rulez'
+:0043F084 FF75F8                  push [ebp-08]   ;'Kick the msgbox and add code to ...'
+:0043F087 6A00                    push 00000000
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:0043F018(C)
+|
+
+* Reference To: user32.MessageBoxA, Ord:0000h
+                                  |
+:0043F089 E83275FCFF              Call 004065C0       ;call the messagebox!
+:0043F08E 33C0                    xor eax, eax
+:0043F090 5A                      pop edx
+:0043F091 59                      pop ecx
+:0043F092 59                      pop ecx
+:0043F093 648910                  mov dword ptr fs:[eax], edx
+
+
+Ok! so now what to do ?! we don't want the nag to come pissing us off and we want to redirect the 
+button on our new added code...
+
+
+let's have a closer look near the messagebox and we see this:
+
+
+:0043F075 BACCF04300              mov edx, 0043F0CC
+:0043F07A E8CD48FCFF              call 0040394C
+:0043F07F 6A00                    push 00000000
+:0043F081 FF75FC                  push [ebp-04]  ;'Rulez'
+:0043F084 FF75F8                  push [ebp-08]  ;'Kick the msgbox and add code to ...'
+:0043F087 6A00                    push 00000000  ;why not puting a jmp here ?(to our code area)
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:0043F018(C)
+|
+
+* Reference To: user32.MessageBoxA, Ord:0000h
+                                  |
+:0043F089 E83275FCFF              Call 004065C0       ;call the messagebox!
+:0043F08E 33C0                    xor eax, eax
+
+
+
+Ok, we have to redirect before the nag is shown, so we will patch on the push 00...
+double click on the line ":0043F087 6A00        push 00000000 " and look the offset ...
+We got it , it is 3E487.Writte it down on a paper we will use it later!
+
+
+
+
+
+2)Finding where we are gonna put the new code ! 
+
+
+
+
+Hexedit your file and go at the offset we have just found !
+Go at 3E487 and start scrolling down.we'r looking for free space (i.e: place full of '00')
+Scroll down 'till you see that:
+
+---------------------- Snip --------------------------------------
+
+0003E6D0  008B 15CC EE43 00E8 6CE5 FFFF A1D8 0B44 .....C..l......D
+0003E6E0  008B 00E8 E0E5 FFFF E88F 44FC FF8D 4000 ..........D...@.
+0003E6F0  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E700  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E710  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E720  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E730  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E740  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E750  0000 0000 0000 0000 0000 0000 0000 0000 ................
+0003E760  0000 0000 0000 0000 0000 0000 0000 0000 ................
+
+---------------------- Snip --------------------------------------
+
+As you can see , we started to scroll down at 3E487 and we can see a place full of 00
+not so far of it ! Good...
+So, where to add our code ? i propose the offset 3E700...
+Ok , we will add new code at 3E700! and we will call this location with a jmp !
+we already have the jmp emplacement ! let's Rock :)
+Good , we know where to put the jump , and where it must go ! but hell, in soft ice
+we can't put "jmp 3E487" so how to have the good place ?!!
+Easy.. Fire up procdump and use the PE editor! open our target and look the 1st section
+Here , it's .Code...
+We need some value like : virtual offset , Raw offset.
+
+Here comes the formula:
+
+Good place in memory = Imagebase + Virtual offset + offset we found - Raw offset
+(note for dummies: use the windows calculator in scientist mode and select hex !)
+
+
+give us:
+
+400000 + 1000 + 3E700 - 400 = 43F300
+
+Goody eheh ! we got it :)
+
+
+
+
+3)Setting the jump !
+
+
+
+
+With your hexeditor go at 3E487 ( the place we will use to redirect...) and put a CC (int3)
+we will use this to break at the good place in soft ice (there are several ways to break though)
+Ctrl+D and sice is back :) put a "Bpint 3" and press F5 (Bpint 3 = break point on int 3h)
+Run our target and we are back in soft ice!
+
+you don't have to type the ' '.
+
+Now enter 'A' and press 'enter'.
+enter : 'jmp 43F300' press enter
+you now see the hex of this jmp.It is "E9 74 02 00 00"
+writte them down and now do this :
+
+A eip "enter"
+jmp eip "enter"
+F5
+
+this will make the app loop in memory... You may wonder why i do this.
+It is simple. we redirected the app on a location filled with '00' and it was gonna Crash
+like hell ehe!!
+We didn't patch the file yet , so better to make a infinite loop in memory and then
+kill the process using Procdump !
+Run procdump , right click on our target in the process list and click on 'kill Process'.
+Done ! process killed , no crash and we have the opcode of the jump !
+Life is great heheh!
+
+Now, we go back in our hex editor and we go at the offset where we are going to put
+the jump (3E487).we see: CC00E83275FCFF ( originally it was : 6A00E83275FCFF).
+CC = int 3 remember ?! hehe
+So we patch here:
+
+CC00E83275 become E974020000 ( the opcode we found with soft ice !)
+
+Save your exe now ! But don't run it , else it will crash miserably!!
+Still because of the redirection to '00' place !
+
+
+
+
+
+4)Adding the NEW code :)
+
+
+ok , the final part is to add the new code !
+We have a free emplacement , but it just has '00'.
+Here will come the code to add! 
+ermmmm, what the hell are we going to add to make it close the process ?!
+hehe, time to be back in Wdasm and look for kernel32.ExitProcess in 'import references'
+found it ? ok double click on it and we land here :
+
+
+
+* Referenced by a CALL at Address:
+|:00403859   
+|
+
+* Reference To: kernel32.ExitProcess, Ord:0000h
+                                  |
+:0040122C FF2564214400            Jmp dword ptr [00442164]  <-- hmm , intresting !!
+:00401232 8BC0                    mov eax, eax
+
+
+
+
+let's have a look at 403859:
+
+
+* Reference To: kernel32.ExitProcess, Ord:0000h
+                                  |
+:00403859 E8CED9FFFF              Call 0040122C      <-- it calls the exitprocess function...
+
+
+ok, it is enough for us ;)
+we will use the line :
+
+0040122C FF2564214400            Jmp dword ptr [00442164] 
+
+writte down the opcode on a paper: FF2564214400
+
+now , back in the hex editor and go to the offset where we are going to add some code :)
+
+0003E700  0000 0000 0000 0000 0000 0000 0000 0000 ................
+
+
+you see this! 1st before writting the code of the jump to the exitprocess function
+we have to put a 'push 00'! opcode is '6A00'
+
+so it becomes:
+
+0003E700  6A00 FF25 6421 4400 0000 0000 0000 0000 j..%d!D.........
+
+
+(for dummies: 000000000000 become FF2564214400)
+
+Save your target and run it... Press the button and enjoy !!
+WOW!! it closed the fucker :) hehe
+we did it , the button doesn't show us that ugly messagebox but exit the app instead !
+Rulez :)
+
+
+This tutorial is over and i hope you learnt something from it...
+I don't think it is too hard to understand for the newbies too
+Anyway , as i don't have internet anymore, don't mail me your question coz i don't 
+know when i would read them!
+But Go on #Cracking4newbies and go nag an OP there ;-Þ
+i don't say nick of the ones who can help you hehe, i don't wanna have some problems :)
+But , if you want to send feedbacks , no problem! just do it :) hehehe
+
+
+This tutorial is dedicated to my girly! 
+Celine , you own me !:)
+
+
+Greets fly out to:
+
+no specific order)
+
+CyberBlade,R!SC , ^INFeRNo^ , AB4DS , Klefz , Volatility ,
+TORN@DO , T4D , Jeff , [Virus] , JaNe , Appbusta , Duelist , tKC , BuLLeT ,
+Lucifer48 , MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio ,
+SiFLyiNG , Fire Worx , CrackZ , neural_en , WarezPup , _y , SiONIDE ,
+SKORPIEN , Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux ,
+Carpathia , K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD , ytc ,
+Kwai_lo , Killer_3K , TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine ,
+WarezPup , zoltan , [yAtes] , TarGon , Icecream , Punkguy2 , Sortof ,
+TRDdonjuan , Lord Soth , Judged , G-Rom , Quantico , Christal , psike , Leo0n ,
+Albator , +Spath , +Frog's Print , toutim , Pulsar , Night , psike , Uno , F|SH ,
+Lixus , LosT , RD-116 , Ben0 , Whizkid , [MandKind] , alpine , Alsindor ,
+Stone , Elraizer , Fravia+ , Iczelion , nody , Asphalt , Rhythm ,
+rudeboy , X-Calibre , Cirus , shaoni...
+...
+"Put your name here! :P" ...
+
+
+
+last words:
+
+i hope i will finish to keygen that goddamn CORE official Crackme i am working on!
+hehehe ;)
+
+last words2:
+
+hehe , CORE crackme Keygened ;)
+i worked on it all the night and this morning as well.. And guess what ?! i got it eheh
+Took me Ages to keygen it , but i own it now ;) Keygen Works on all Puters i tested it on!
+(4 PC !!)
+Ph34r! and enjoy The day ;)
+
+
+Take Care,
+
+
+			ACiD BuRN [Immortal Descendants / ECLiPSE ]
+                                            

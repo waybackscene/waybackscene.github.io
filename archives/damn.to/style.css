@@ -1,0 +1,214 @@
+a {
+	color : #B0B0B0;
+	font-family : Tahoma, "MS Sans Serif", "Comic Sans MS", sans-serif;
+	font-weight : bold;
+	font-size : 10pt;
+	text-decoration : none;
+}
+
+a:link    { color : #B0B0B0 }
+a:visited { color : #707070 }
+a:hover   { color : #E0E0E0; background-color : #383838 }
+a:active  { color : #E0E0E0 }
+
+body {
+	background : url(/web/20011101033208im_/http://www.damn.to/images/background.jpg) Black repeat-y;
+	color : #A0A0A0;
+	font-size : 10pt;
+	font-family : Tahoma, Arial, "MS Sans Serif", sans-serif;
+	margin-right: 30px;
+	margin-left: 155px;
+	margin-top : 0px;
+
+	scrollbar-face-color: #383838;
+ 	scrollbar-shadow-color: #505050;
+ 	scrollbar-highlight-color: #686868;
+	scrollbar-3dlight-color: #505050;
+	scrollbar-darkshadow-color: #000000;
+ 	scrollbar-track-color: #303030;
+	scrollbar-arrow-color: #909090;
+}
+
+#bodyText {
+/*	width: 100%;*/
+	position: absolute;
+	height: auto;
+	top: auto;
+	right: 30px;
+	bottom: auto;
+	left: 155px;
+	text-align : justify;
+}
+
+h1 {
+	color : #606060;
+	font-size : 16pt;
+	font-style : italic;
+	font-weight : bold;
+	line-height : 2em;
+	text-align : left;
+}
+
+h2 {
+	/* gee, netscape is stupid, gotta set fonts again */
+	font-family : Tahoma, Arial, "MS Sans Serif", sans-serif;
+	color : #A0A0A0;
+	font-size : 13pt;
+	line-height : 2em;
+	text-align : left;
+	font-weight : bold;
+	font-style : italic;
+}
+
+h3 {
+	color : #A8A8A8;
+	font-size : 10pt;
+	line-height : 1em;
+	text-align : left;
+	font-weight: bold;
+}
+
+p {
+	color : #A0A0A0;
+	font-size : 10pt;
+	font-family : Tahoma, Arial, "MS Sans Serif", sans-serif;
+}
+
+p:first-line {
+	text-indent: 4ex;
+}
+
+/* TABLES */
+
+td {
+	color : Silver;
+	font-size : 10pt;
+	font-family : Tahoma, Arial, "MS Sans Serif", sans-serif;
+}
+
+th {
+	color : #909090;
+	background-color : #181818;
+	font-weight : bold;
+	font-size : 10pt;
+	font-family : Tahoma, Arial, "MS Sans Serif", sans-serif;
+}
+
+table.generic {
+	background-color : #383838;
+}
+
+table.generic td {
+	background-color : #282828;
+	color : #a0a0a0;
+}
+
+table.stylish1 td {
+	background-color : #282828;
+	color : #a0a0a0;
+	font-size : 8pt;
+}
+
+.f {
+	font-family : "Courier New", monospace;
+}
+
+.f p {
+	font-family : "Courier New", monospace;
+}
+
+.fb {
+	font-family : "Courier New", monospace;
+	font-weight : bold;
+}
+
+.fc {
+	font-family : "Courier New", monospace;
+	text-align : center;
+}
+
+.fc9 {
+	font-family : "Courier New", monospace;
+	text-align : center;
+	font-size: 9pt;
+}
+
+.fu {
+	font-family : "Courier New", monospace;
+	font-weight : bold;
+	text-decoration : underline;
+}
+
+.xs {
+	font-size : 8pt;
+}
+
+.copyright {
+	font-size : 8pt;
+	font-family : Tahoma, Arial, "MS Sans Serif", sans-serif;
+	color: #A0A0A0;
+}
+
+#pageTitle {
+	background : #202020;
+	color : #606060;
+	font-size : 16pt;
+	font-style : italic;
+	font-weight : bold;
+	text-decoration : underline;
+	text-align : right;
+	line-height : 2em;
+}
+
+#divLinkButton {
+	position : absolute;
+	left : 13px;
+	width : 95px;
+}
+
+#divMenu {
+	position : absolute;
+	left : 14px;
+	width : 92px;
+}
+
+/*
+input, select {
+	font-family : Tahoma, Arial, sans-serif;
+	color : #b0b0b0;
+	border-color : #808080 #808080;
+	border-style : solid;
+	background-color : #404040;
+}
+
+input.radio {
+	font-family : Tahoma, Arial, sans-serif;
+	border-color : #808080;
+	border-style : none;
+	color : #b0b0b0;
+	background-color : transparent;
+}
+*/
+/*
+     FILE ARCHIVED ON 03:32:08 Nov 01, 2001 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 06:49:06 Sep 11, 2019.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  PetaboxLoader3.resolve: 21.1
+  captures_list: 142.114
+  exclusion.robots.policy: 71.848
+  exclusion.robots: 71.861
+  xauthn.chkprivs: 0.061
+  xauthn.identify: 71.496
+  RedisCDXSource: 1.762
+  esindex: 0.016
+  load_resource: 81.204
+  PetaboxLoader3.datanode: 81.786 (4)
+  LoadShardBlock: 49.93 (3)
+  CDXLines.iter: 15.444 (3)
+*/

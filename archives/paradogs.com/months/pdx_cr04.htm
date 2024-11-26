@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.0//DE">
+
+<html>
+  <head>
+
+    <meta name="description" content="PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - Amiga - PC)">
+    <meta name="author" content="Pha-Q/Paradox">
+    <meta name="keywords" content="Paradox, PDX, Playstation, PSX, PC, Amiga, N64, Nintendo, Warez, CD, Cracking, Hacking, Phreaking, Patch, Trainer, Software, Hardware">
+    <meta name="robots" content="nofollow">
+    <meta name="revisit-after" content="07 days">
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="content-language" content="de">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="pragma" content="no-cache">
+    <link rel="FONTDEF" src="http://www.truedoc.com/pfrs/PosterBodoni.pfr">
+<script type="text/javascript" language="JavaScript" src="http://www.truedoc.com/activex/tdserver.js">
+</script>
+    <link>
+
+    <title>PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - GBC - Amiga - PC)</title>
+<script type="text/javascript" language="JavaScript">
+<!--
+function changeBack(newImage) {
+    document ['Back'].src = eval(newImage + ".src");
+}
+function changeSource(newImage) {
+    document ['Source'].src = eval(newImage + ".src");
+}
+
+    src0 = new Image();
+    src0.src  = "../buttons/but_dldi.png";
+    src1 = new Image();
+    src1.src  = "../buttons/but_dldj.png";
+    src2 = new Image();
+    src2.src  = "../buttons/but_dldk.png";
+    bak0 = new Image();
+    bak0.src  = "../buttons/but_back.png";
+    bak1 = new Image();
+    bak1.src  = "../buttons/but_bacl.png";
+// -->
+</script>
+<script type="text/javascript" language="JavaScript" src="../javascript/pdx_fade.js">
+</script>
+  </head>
+
+  <body bgcolor="#000000" text="#F0F0F0" link="#BB8866" alink="#FF0000" vlink="#DFDFDF" onload="window.status=('Tips &amp; Tricks');">
+<script type="text/javascript" language="JavaScript">
+<!--
+fadein();
+// -->
+</script>
+
+    <table width="540" align="CENTER" border="0" cellspacing="0" cellpadding="1">
+      <tr>
+        <td align="CENTER" bgcolor="#191919"><img src="../buttons/but_htip.png" width="142" height="70" alt="Tips &amp; Tricks"></td>
+      </tr>
+
+      <tr>
+        <td height="10">&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td align="CENTER" bgcolor="#191919"><font color="#555555" face="PosterBodoni BT">P</font><font color="#5C5C5C" face="PosterBodoni BT">a</font><font color="#636363" face="PosterBodoni BT">r</font><font color="#6A6A6A" face="PosterBodoni BT">a</font><font color="#717171" face="PosterBodoni BT">d</font><font color="#787878" face="PosterBodoni BT">o</font><font color="#7F7F7F" face="PosterBodoni BT">x</font>  <font color="#868686" face="PosterBodoni BT">C</font><font color="#8D8D8D" face="PosterBodoni BT">o</font><font color="#949494" face="PosterBodoni BT">d</font><font color="#9B9B9B" face="PosterBodoni BT">i</font><font color="#A2A2A2" face="PosterBodoni BT">n</font><font color="#A9A9A9" face="PosterBodoni BT">g</font> <font color="#B0B0B0" face="PosterBodoni BT">R</font><font color="#B7B7B7" face="PosterBodoni BT">e</font><font color="#BEBEBE" face="PosterBodoni BT">p</font><font color="#C5C5C5" face="PosterBodoni BT">o</font><font color="#CCCCCC" face="PosterBodoni
+        BT">r</font><font color="#D3D3D3" face="PosterBodoni BT">t</font></td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#191919" align="CENTER"><font face="PosterBodoni BT" size="5">How to make a N64 Trainer</font></td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#333333">
+          <p>Ladies and gentleman,</p>
+
+          <p align="JUSTIFY"> Welcome to my &quot;How to make a N64-Trainer&quot; documentation.</p>
+
+          <p align="JUSTIFY">The reason why i did this doc is very simple: I am quitting all my activities in the &quot;N64-scene&quot; for many reasons, I think you don't care for so I won't go into that any further.
+          <br>
+           Furthermore it would be nice to see more groups doing trainers. So i hope this will help some dudes to start!</p>
+
+          <p align="JUSTIFY"> So however, let's come to the real documentation.</p>
+
+          <p align="JUSTIFY">First i want to explain how my trainers are working.. I think you all know the hardware game-enhancers like &quot;Action Replay&quot;, &quot;Gameshark&quot;, &quot;Gamebuster&quot; and so on... with this hardware stuff you can enter codes like this e.g.:</p>
+<pre>
+8003567C 0067
+</pre>
+
+          <p> If <b>yes</b> i will explain what the fuck this codes mean:</p>
+
+          <p><u>Explanation:</u> </p>
+<pre>
+<u>8003567C</u> 0067 &lt;-- Value to be written
+         ****
+   ^
+   |
+Memorylocation in N64 RAM
+</pre>
+
+          <p align="JUSTIFY">If you enter such a code the Gameshark hardware or whatever will do the following: It updates the <b>memory location</b> with the <b>value</b> very often (don't know exactly how often i a second but this doesn't matter now! :-) )</p>
+
+          <p align="JUSTIFY">And exactly this is how my trainers work. So in a strictly definition my trainer versions are no <b>real</b> trainers, like I did them on e.g. the Amiga. On Amiga for example it was better to find the <b>routine</b> in the <b>game code</b> which was responsible for subtracting your Lives or Health etc.. and once you found this routine, you had the possibility to kill it with a NOP or something..</p>
+
+          <p align="JUSTIFY">On N64 you can say its emulating a Gameshark. Unfortunately I must do it like this way but the fact is that i just dont have this much possiblities with hard and software like on my good ol' Amiga;) NMI-shit and stuff..</p>
+
+          <p align="JUSTIFY">But the result is the same so... its not a clean way but it works also.</p>
+
+          <p align="JUSTIFY">So basically what we have to emulate a Gameshark and this is very easy!:</p>
+
+          <p align="JUSTIFY">1. We need a routine which is called <b>very often</b> to replace <b>values</b> in N64-MEMORY while the user is playing the game.</p>
+
+          <p align="JUSTIFY">Okay, if you still know what i am talking about, <b>continue reading</b>! If you don't know what i am talking about, <b>quit reading now</b>. :)</p>
+
+          <p>So first step:</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td height="10">&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#191919" align="CENTER"><font face="PosterBodoni BT" size="4"><u>How to find a place for your &quot;update-rountine&quot; in the N64-gamecode</u></font></td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#333333">
+          <p align="JUSTIFY">We must try to find a routine in the <b>game-ROM</b> which is called very often.. here we can hook up our own <b>update-code</b> which will do the rest (=the &quot;trainer&quot; itself).</p>
+
+          <p align="JUSTIFY">Personally i use &quot;OsViSwap&quot; but you also can use &quot;WriteBackDCacheAll&quot;, or &quot;__osRestoreInt&quot;... i just tested my trainers with the above mentioned three functions and it works perfectly.</p>
+
+          <p align="JUSTIFY">To find this routines get the tool &quot;LFE&quot; from www.dextorse.com (LFE = [Libary-Function-Extractor] (c) Ravemax of Dextrose)</p>
+
+          <p align="JUSTIFY">Then get the library &quot;libultra.lib&quot; from the PSY-Q-N64-Devkit..</p>
+
+          <p align="JUSTIFY">Swap your gamerom now to Z64/CD64 format and make a backup of the rom... now <b>resize</b> the ROM to 8 Megabit and use LFE to find out where the functions are in the ROM.</p>
+
+          <p>The commandline for this is:</p>
+
+          <p></p>
+<pre>
+LFE.EXE [ROM.Z64] libultra.lib 
+</pre>
+
+          <p>This will take a while now.. - then LFE gives u back a &quot;.COD&quot; file!</p>
+
+          <p> Here i included such a .COD file just for example:</p>
+
+          <p></p>
+<pre>
+[============BEGIN TEST.COD==============]
+0x8005e860,osSetIntMask
+0x8005e980,osWritebackDCacheAll   &lt;--- THIS ONE MAYBE
+0x8005fee0,alSynDelete
+0x800660b0,osGetCount
+0x800660c0,__osGetSR
+0x80066150,__osDisableInt
+0x80066170,__osRestoreInt         &lt;--- THIS ONE MAYBE, TOO
+0x80066190,__osProbeTLB
+0x80066250,__osSetCompare
+0x80066260,__osSetFpcCsr
+0x80066270,__osSetSR
+0x80066280,osMapTLBRdb
+0x800663b0,osGetThreadPri
+0x80068dc0,alFilterNew
+0x8006d560,__osGetCause
+0x8008e876,__osThreadTail
+0x8008e87e,__osRunQueue
+0x8008e882,__osActiveQueue
+0x8008e886,__osRunningThread
+0x8008e88a,__osFaultedThread
+0x80091f20,osViModeNtscLpn1
+0x80091f70,osViModeNtscLpf1
+[=============END TEST.COD===============]
+</pre>
+
+          <p align="JUSTIFY">So now search for one of the above mentioned functions. Hmm... in this game we dont have a OSViSwap.. so we could use the &quot;osWritebackDCacheAll&quot;-function for our example.</p>
+
+          <p align="JUSTIFY">Now take the resized 8-Mbit-ROM again and disassemble it with N64PSX by NAGRA! (get it from www.blackbag.org or www.dextrose.com)</p>
+
+          <p>The commandline will look like this:</p>
+
+          <p></p>
+<pre>
+N64PSX.EXE -n64 [ROM.Z64] &gt;ROM.ASM
+</pre>
+
+          <p align="JUSTIFY">This nice tool will use the .COD file created by LFE and will mix it together with the disassembled code so you can exactly see where the functions begin.. my example will bring ROM.ASM as a result.</p>
+
+          <p align="JUSTIFY">Now, open &quot;ROM.ASM&quot; in your favorite editor and search for the function we want to use (&quot;osWritebackDCacheAll&quot;).</p>
+
+          <p></p>
+<pre>
+[============BEGIN ROM.ASM==============]
+8005e974: 00000000 .... nop 
+8005e978: 00000000 .... nop 
+8005e97c: 00000000 .... nop 
+8005e980: 3c088000 &lt;... lui $t0,32768 ; osWritebackDCacheAll
+8005e984: 240a2000 $. . li $t2,0x2000
+8005e988: 010a4821 ..H! addu $t1,$t0,$t2
+8005e98c: 2529fff0 %).. addiu $t1,$t1,0xfffffff0
+8005e990: bd010000 .... cache 0x1,0x0000($t0)
+8005e994: 0109082b ...+ sltu $at,$t0,$t1
+8005e998: 1420fffd . .. bnez $at,0x8005e990
+8005e99c: 25080010 %... addiu $t0,$t0,0x0010
+8005e9a0: 03e00008 .... jr $ra  &lt;--THIS IS THE END OF THE FUNCTION!
+8005e9a4: 00000000 .... nop 
+8005e9a8: 00000000 .... nop 
+[=============END ROM.ASM===============]
+</pre>
+
+          <p align="JUSTIFY">Now, we must search for the end of the function, this must be a &quot;jr $ra&quot;. Once you found it, keep the memory-address where it is located. (In our example its: $8005e9a0) At this address we will hook up our trainer-routine. Let's move to the next chapter!</p>
+
+          <p></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td height="10">&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#191919" align="CENTER"><font face="PosterBodoni BT" size="4"><u>The trainer-routine</u></font></td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#333333">
+          <p align="JUSTIFY">Okay, here we go with the main-routine which is responsible for updating the values in N64 RAM!</p>
+
+          <p>This routine is very simple</p>
+
+          <p>Just Imagine you got a Gameshark-Code like this:
+          <br>
+          </p>
+<pre>
+8003567F 0064
+</pre>
+
+          <p align="JUSTIFY">As I said above this means for the Gameshark nothing else than: WRITE THE VALUE $0064 TO ADRESS $8003567F.</p>
+
+          <p align="JUSTIFY">So here a neat code which will do this for us in ASSEMBLER and this will be the code which will be hooked to the Function we found before, to go sure our routine will be executed every time the function osWriteBackDCacheAll is called.</p>
+
+          <p></p>
+<pre>
+            sub     sp,28       ;Get som Stackspace
+            sw      s0,0(sp)    ;Better save this regs
+            sw      t0,4(sp)    ;coz our routine below
+            sw      t1,8(sp)    ;will trash them!
+            sw      t2,12(sp)   ;t1 and t2 is for additional stuff
+
+
+        li  t0,$8003567F    ;Memory-Address
+        li  s0,$64          ;Value
+        nop
+        sb  s0,(t0)         ;Write it into Memory.
+
+
+            lw      s0,0(sp)    ;Okay.. lets restore the
+            lw      t0,4(sp)    ;regs..!
+            lw      t1,8(sp)
+            lw      t2,12(sp)
+            add     sp,28       ;Free our Stackspace!
+        nop
+        jr  ra                  ;This will jump back
+        nop                     ;to osWriteBackDCacheAll!
+</pre>
+
+          <p>That's IT!</p>
+
+          <p></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td height="10">&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#191919" align="CENTER"><font face="PosterBodoni BT" size="4"><u>Coding a &quot;loader&quot; for hooking up our trainer-routine</u></font></td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#333333">
+          <p align="JUSTIFY">Above we just coded our trainer-routine. But now we must attach this routine to the &quot;osWritebackDCacheAll&quot;-function we found in the gamerom in order to get the trainer working.</p>
+
+          <p align="JUSTIFY">This is a very simple routine, too so take a look at the following ASM code:</p>
+
+          <p></p>
+<pre>
+        org $BXXXXXXX   ;Orged in ROM see explanation
+
+        la  t0,patchstart   ;patchstart
+        li  t1,$A0000200    ;This is place our Trainerroutine
+                    ;will stay
+        la  t2,patchend-patchstart+4    ;Lenght to copy
+loop:
+        lw  t3,(t0)     ;this loop will copy our
+        sw  t3,(t1)     ;patchroutine to $A0000200
+        add t0,t0,4     ;so easy.
+        add t1,t1,4
+        bne t2,zero,loop
+        sub t2,t2,4
+
+        li  t0,$A005E9A0    ; our osWritebackDCacheAll function!!
+
+        li  t1,$3c088000    ; Patch the function
+        sw  t1,(t0)
+        li  t1,$35080200    ; Patch the function
+        sw  t1,4(t0)
+        li  t1,$01000008
+        sw  t1,8(t0)
+
+        li  ra,$b0000008    ;This is the universial backjump
+        lw  ra,(ra)     ;routine.. explanation follows.
+        nop
+        add ra,ra,$10
+        nop
+        jr  ra      ;Back to the game!!
+        nop
+
+patchstart:
+        ;here is the patchroutine (see above) :)
+patchend:
+</pre>
+
+          <p>Okay, what does this routine now?</p>
+
+          <p align="JUSTIFY">First of all i have to say something about the &quot;org&quot;. Before you assemble this little loader you must search in the Gamerom for a nice unused place. Take your favorite hex-editor and load up your gamerom again and take a look.. - if you found freespace at e.g. $7FC000 in the rom and want to place your loader there, you have to ORG it to $B07FC000.</p>
+
+          <p align="JUSTIFY">Then our neat code will copy our &quot;trainer routine&quot; (patchstart) to a safe memory-location. (its $A0000200)</p>
+
+          <p align="JUSTIFY">After that it will patch the routine located at $A005E9A0. Yeees, you are right.. this $A005E9A0 is our osWritebackDCacheAll, we found some chapters ago! but be sure to replace the &quot;8&quot; with an &quot;A&quot;. (We found $8005E9A0 and we will patch $A005E9A0)!!!</p>
+
+          <p align="JUSTIFY">Yeah, all done!, our trainer-routine is in a safe memory loaction where it can operate from, the osWritebackDCacheAll points now to our trainer-routine, so it will be called everytime the function is called.</p>
+
+          <p align="JUSTIFY">So we can jump back to game code: I have made a nice routine, which will do it universial, so no need to change something for every game.</p>
+
+          <p></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td height="10">&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#191919" align="CENTER"><font face="PosterBodoni BT" size="4"><u>Last words and other stuff</u></font></td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#333333">
+          <p align="JUSTIFY">So.. finally we made it! we have the Trainer. The only thing you have to do now is to patch the ROM-Start at $1000, save the orig-code from this location, jump to your loaderroutine ($B07FC000) and before you jump back, execute the orig-code you saved from $1000. And <b>ofcourse</b>, doing a nice trainermenu in Assembler (get Titaniks excellent sources from www.dextrose.com or get my trainermenu-source at dextrose.com, too) Thats it.. get movin'!!!!!!!!!!</p>
+
+          <p align="JUSTIFY">I hope i helped you with this document a little bit. Maybe this method will be nonsense, if new hardware appeares, where you can set Breakpoints and other usefull stuff.. But in this current point of time i think its a good way to do trainers.. - not the best way... but <b>works</b> :)</p>
+
+          <p align="JUSTIFY">All infos, n64-sources etc can be obtained from www.paradogs.com, too.</p>
+
+          <p>To make a trainer version is an <b>art</b> not a <b>race</b>! :D</p>
+
+          <p>Signed,</p>
+
+          <p><u>Icarus/Paradox</u></p>
+        </td>
+      </tr>
+
+      <tr>
+        <td height="10">&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td bgcolor="#191919" align="CENTER"><img src="../buttons/but_back.png" name="Back" width="117" height="56" border="0" usemap="#Back"><map name="Back">
+          <area shape="rect" alt="Back" coords="37,12,68,42" href="javascript:history.back();" onmouseover="changeBack('bak1');self.status='Back';return true" onmouseout="changeBack('bak0');self.status='';return true">
+        </map></td>
+      </tr>
+    </table>
+  </body>
+</html> 

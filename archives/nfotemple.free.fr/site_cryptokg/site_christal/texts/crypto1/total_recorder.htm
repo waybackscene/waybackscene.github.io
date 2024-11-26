@@ -1,0 +1,471 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0060)http://christal.suidzer0.org/dossier10/fichiers/totalrec.htm -->
+<HTML><HEAD><TITLE>untitled</TITLE>
+<META content=text/html;CHARSET=iso-8859-1 http-equiv=Content-Type>
+<META content="MSHTML 5.00.3105.105" name=GENERATOR></HEAD>
+<BODY background="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crypto1/total_recorder_fichiers/spirbind2.gif" bgColor=#ffffcc>
+<P>
+<P align=center><BR><BR><B><FONT color=maroon face=Arial size=4>How To Keygen 
+Total Recorder v3.2 (petite approche de la cryptographie)</FONT></B></P>
+<P align=center>&nbsp;</P>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>Est-il réellement necessaire d'écrire de nouveau 
+  tuts ? Je ne penses pas, étant donné le nombre impressionant qui existe déjà 
+  et qui raconte tous la même chose. Cependant dans son nouveau dossier, 
+  Christal aborde la cryptographie et ceci est assez innovant (notament par la 
+  manière dont il a décidé de le traiter). C'est pour cela que j'ai décidé de 
+  rédiger ce dernier tutorial qui je l'espère montrera à certaines personnes 
+  comment la crypto a envahi le monde du keygening ;-). Je dedie donc ce tut à 
+  tous mes potes crackers que j'ai connu et qui m'ont fait découvert le cracking 
+  (TeeJi entre autre), et spécialement à Christal qui n'a jamais perdu cette 
+  passion pour réussir à venir à bout d'une protection ;-).</FONT></P>
+  <P><B><FONT color=maroon face=Arial size=4>Première approche de Total 
+  Recorder</FONT></B></P>
+  <P><FONT face=Arial size=2>On va tout d'abord commencer par désassembler ce 
+  petit prog sous IDA (ici le 4.04). Ensuite on rentre un nom et un serial bidon 
+  et le classique bpx hmemcpy sous sice, puis ok puis quelques F12 pour remonter 
+  le code (je passe vite car je ne suis pas là pour vous apprendre les bases du 
+  keygening il y a bien assez de tuts) et on arrive en 4276B6. On remarquera au 
+  passage dans l'aide une copie d'écran avec la forme d'un serial à rentrer 
+  (TR30.62QM.T6AX.BMRY.BNL6) qu'on utilisera comme serial de test :</FONT></P>
+  <P><FONT face="Courier New" size=2>004276B6 call sub_4587AF<BR>004276BB lea 
+  eax, [esi+60h]<BR>004276BE lea ecx, [esp+24h+var_18]<BR>004276C2 push 
+  eax<BR>004276C3 call sub_455203<BR>004276C8 lea ecx, 
+  [esp+24h+var_18]<BR>004276CC call sub_4534A6<BR>004276D1 lea ecx, 
+  [esp+24h+var_18]<BR>004276D5 call sub_45345A<BR>004276DA lea ecx, 
+  [esi+5Ch]<BR>004276DD push ecx<BR>004276DE lea ecx, 
+  [esp+28h+var_1C]<BR>004276E2 call sub_455203<BR>004276E7 lea ecx, 
+  [esp+24h+var_1C]<BR>004276EB call sub_4534A6<BR>004276F0 lea ecx, 
+  [esp+24h+var_1C]<BR>004276F4 call sub_45345A<BR>004276F9 mov edx, 
+  [esp+24h+var_18]<BR>004276FD cmp [edx-8], ebx ; compare la taille du nom à 
+  0<BR>00427700 jnz short loc_427711<BR>00427702 push ebx<BR>00427703 push 
+  45h<BR>00427705 push 1<BR>00427707 push 0EF1Fh<BR>0042770C jmp 
+  loc_4277C4<BR>00427711 ; 
+  ---------------------------------------------------------------------------<BR>00427711 
+  <BR>00427711 loc_427711: ; CODE XREF: sub_427680+80&amp;#24;j<BR>00427711 mov 
+  eax, [esp+24h+var_1C]<BR>00427715 cmp dword ptr [eax-8], 18h ; compare la 
+  taille du serial à 18h<BR>00427719 jnz loc_4277BA<BR>0042771F push 
+  ecx<BR>00427720 lea edx, [esp+28h+var_1C]<BR>00427724 mov ecx, esp<BR>00427726 
+  mov [esp+28h+var_14], esp<BR>0042772A push edx<BR>0042772B call 
+  sub_454E8B<BR>00427730 push ecx<BR>00427731 lea eax, 
+  [esp+2Ch+var_18]<BR>00427735 mov ecx, esp<BR>00427737 mov [esp+2Ch+var_10], 
+  esp<BR>0042773B push eax<BR>0042773C mov byte ptr [esp+30h+var_4], 
+  2<BR>00427741 call sub_454E8B<BR>00427746 mov byte ptr [esp+2Ch+var_4], 
+  1<BR>0042774B call sub_438460<BR>00427750 add esp, 8<BR>00427753 cmp eax, 
+  ebx<BR>00427755 jz short loc_4277BA ; saute si mauvais serial</FONT></P>
+  <P><FONT face=Arial size=2>J'ai détaillé ce que l'on appercoit en tracant en 
+  petit peu, et notamment le fait que le serial soit de 24 (18h) caractères, 
+  soit autant que dans le serial donné en exemple. On s'apercoit également que 
+  le call sub_438460 est déterminant pour verifier si le serial est correct ou 
+  non. On va donc regarder ce qu'il y a. On y trouve 3 appels de fonctions, en 
+  regardant les 2 derniers sous ida, on s'apercoit qu'ils servent à gérer les 
+  erreurs, on va donc regarder le premier (call sub_435550) de plus près 
+  :</FONT></P>
+  <P><FONT face="Courier New" size=2>0043559D push ecx<BR>0043559E push 
+  edx<BR>0043559F push eax<BR>004355A0 push offset aTr30 ; "TR30"<BR>004355A5 
+  push offset a00c311839b88e5 ; "00c311839b88e5f9345c7a"<BR>004355AA push offset 
+  a00147bd8cb6e9c ; "00147bd8cb6e9c0429c8a7"<BR>004355AF push offset 
+  a00b96ee50831 ; "00b96ee50831"<BR>004355B4 push offset a00ce6b643be352 ; 
+  "00ce6b643be35209b435a1"<BR>.......<BR>00435640 call sub_4351A0<BR>00435645 
+  add esp, 4Ch<BR>00435648 retn<BR>00435648 sub_435550 endp</FONT></P>
+  <P><FONT face=Arial size=2>Je n'ai laissé que la partie interressante de cette 
+  fonction. Cependant on n'en sait pas plus sur le serial pour le moment. On va 
+  donc aller dans cette fonction en 4351A0 qui est la seule ici (on remarquera 
+  au passage les 5 strings passées en paramètres à cette fonction et nottament 
+  les chiffres). Dans cette fonction (4351A0) il y en a une multitude d'autres 
+  ainsi qu'un assez long code. Cependant si on rentre ds certaines d'entre elles 
+  on trouve des messages du style :bigMod: modulus is zero., ou bigDivide: 
+  divisor is zero. Et là on voit qu'il fait des calculs sur des big numbers. Le 
+  plus simple (au lieu de tout tracer) serait de trouver la lib qu'il utilise. 
+  En faisant une petite recherche sur ces strings sous google, j'ai découvert 
+  qu'il s'agissait de la CryptoLib.</FONT></P>
+  <P><FONT face=Arial size=2>C'est ici que IDA va être d'un grand recourt, on va 
+  utiliser cette librarie et créer un fichier de reconnaissance de lib pour ida, 
+  comme cela il va reconnaitre les fonctions utilisées et ce sera plus simple de 
+  comprendre le code. On recupère d'abord cette lib (ici CryptoLib v1.1) sur le 
+  net. On a les sources en C, on les compile donc en librairie static avec 
+  Visual C++ 6.0 (ou 5.0) car le programme utilise VC++ (ida nous l'apprend au 
+  début du disasm). Ensuite on va utiliser FLAIR (un programme fournit avec la 
+  version complète d'ida, ou alors il faut se débrouiller pour le récupérer). On 
+  fait les manip suivantes :</FONT></P>
+  <P><FONT face=Arial size=2>PCF cryptolib.lib cryptolib.pat</FONT></P>
+  <P><FONT face=Arial size=2>sigmake cryptolib.pat cryptolib.sig</FONT></P>
+  <P><FONT face=Arial size=2>Et on a maintenant un fichier .sig qui va permettre 
+  à ida de reconnaitre les fonctions de cette librairie. On met les .sig dans le 
+  rep d'ida concu à cette effet, puis on le charge pour qu'ida reconnaisse les 
+  fonctions (File-&gt;Load File-&gt;Flirt Signature File), et voilà notre 
+  fonction (4351A0) revu et corrigé :</FONT></P>
+  <P><FONT face="Courier New" size=2>004351A0 sub_4351A0 proc near ; CODE XREF: 
+  sub_435550+F0&amp;#25;p<BR>004351A0 <BR>004351A0 var_4C = dword ptr 
+  -4Ch<BR>004351A0 var_48 = dword ptr -48h<BR>004351A0 var_44 = dword ptr 
+  -44h<BR>004351A0 var_40 = word ptr -40h<BR>004351A0 var_38 = dword ptr 
+  -38h<BR>004351A0 var_34 = byte ptr -34h<BR>004351A0 var_33 = byte ptr 
+  -33h<BR>004351A0 var_1C = dword ptr -1Ch<BR>004351A0 var_18 = dword ptr 
+  -18h<BR>004351A0 var_14 = dword ptr -14h<BR>004351A0 var_10 = dword ptr 
+  -10h<BR>004351A0 arg_0 = dword ptr 4<BR>004351A0 arg_4 = dword ptr 
+  8<BR>004351A0 arg_8 = dword ptr 0Ch<BR>004351A0 arg_C = dword ptr 
+  10h<BR>004351A0 arg_14 = dword ptr 18h<BR>004351A0 arg_18 = dword ptr 
+  1Ch<BR>004351A0 arg_1C = dword ptr 20h<BR>004351A0 arg_20 = dword ptr 
+  24h<BR>004351A0 <BR>004351A0 sub esp, 4Ch<BR>004351A3 push ebx<BR>004351A4 
+  push ebp<BR>004351A5 push esi<BR>004351A6 push edi<BR>004351A7 push 
+  18h<BR>004351A9 call _clib_malloc<BR>004351AE mov esi, eax<BR>004351B0 mov 
+  eax, [esp+60h+arg_0]<BR>004351B4 push eax<BR>004351B5 call _atobig &lt;-- 
+  convertis les 4 hex strings passé en param en nombre<BR>004351BA mov ecx, 
+  [esp+64h+arg_4]<BR>004351BE mov ebp, eax<BR>004351C0 push ecx<BR>004351C1 call 
+  _atobig<BR>004351C6 mov edx, [esp+68h+arg_8]<BR>004351CA mov ebx, 
+  eax<BR>004351CC push edx<BR>004351CD mov [esp+6Ch+var_4C], ebx<BR>004351D1 
+  call _atobig<BR>004351D6 mov [esp+6Ch+arg_4], eax<BR>004351DA mov eax, 
+  [esp+6Ch+arg_C]<BR>004351DE push eax<BR>004351DF call _atobig<BR>004351E4 mov 
+  [esp+70h+arg_8], eax<BR>004351E8 mov eax, [esp+70h+arg_18]<BR>004351EF add 
+  esp, 14h<BR>004351F2 cmp byte ptr [eax], 20h<BR>004351F5 jnz short 
+  loc_435200<BR>004351F7 <BR>004351F7 loc_4351F7: ; CODE XREF: 
+  sub_4351A0+5E&amp;#25;j<BR>004351F7 mov cl, [eax+1]<BR>004351FA inc 
+  eax<BR>004351FB cmp cl, 20h<BR>004351FE jz short loc_4351F7<BR>00435200 
+  <BR>00435200 loc_435200: ; CODE XREF: sub_4351A0+55&amp;#24;j<BR>00435200 mov 
+  ecx, [eax+5]<BR>00435203 mov edx, [eax+0Ah]<BR>00435206 mov [esp+5Ch+var_1C], 
+  ecx<BR>0043520A mov ecx, [eax+0Fh]<BR>0043520D mov [esp+5Ch+var_18], 
+  edx<BR>00435211 mov edx, [eax+14h]<BR>00435214 lea eax, 
+  [esp+5Ch+var_1C]<BR>00435218 mov [esp+5Ch+var_14], ecx<BR>0043521C push 
+  eax<BR>0043521D lea ecx, [esp+60h+var_38]<BR>00435221 push 10h<BR>00435223 
+  push ecx<BR>00435224 push 5<BR>00435226 mov [esp+6Ch+var_10], edx<BR>0043522A 
+  call sub_434A00 &lt;-- après quelques modifications notre serial (sans les . 
+  et le 4 premier char est passé en param à cette fonction). On constate qu'il 
+  en ressort un grand buffer buf.<BR>0043522F push 8<BR>00435231 call 
+  _clib_malloc<BR>00435236 push 0<BR>00435238 mov edi, eax<BR>0043523A call 
+  _itobig<BR>0043523F push eax<BR>00435240 push ebp<BR>00435241 mov [esi], 
+  eax<BR>00435243 call _bigCopy<BR>00435248 push 0<BR>0043524A call 
+  _itobig<BR>0043524F push eax<BR>00435250 push ebx<BR>00435251 mov [esi+4], 
+  eax<BR>00435254 call _bigCopy<BR>00435259 push 0<BR>0043525B call 
+  _itobig<BR>00435260 mov edx, [esp+8Ch+arg_4]<BR>00435267 push eax<BR>00435268 
+  push edx<BR>00435269 mov [esi+8], eax<BR>0043526C call _bigCopy<BR>00435271 
+  push 0<BR>00435273 call _itobig<BR>00435278 mov [esi+0Ch], eax<BR>0043527B 
+  push eax<BR>0043527C mov eax, [esp+9Ch+arg_8]<BR>00435283 push eax<BR>00435284 
+  call _bigCopy<BR>00435289 mov ecx, [esi+4]<BR>0043528C mov eax, 
+  [esi]<BR>0043528E add esp, 44h<BR>00435291 mov edx, [ecx+4]<BR>00435294 mov 
+  ecx, [esi+8]<BR>00435297 shl edx, 3<BR>0043529A push edx<BR>0043529B push 
+  eax<BR>0043529C push ecx<BR>0043529D call _g16_bigpow<BR>004352A2 mov edx, 
+  [esi+4]<BR>004352A5 mov ecx, [esi]<BR>004352A7 mov [esi+10h], eax<BR>004352AA 
+  mov eax, [edx+4]<BR>004352AD mov edx, [esi+0Ch]<BR>004352B0 shl eax, 
+  3<BR>004352B3 push eax<BR>004352B4 push ecx<BR>004352B5 push edx<BR>004352B6 
+  call _g16_bigpow<BR>004352BB push 0<BR>004352BD mov [esi+14h], eax<BR>004352C0 
+  call _itobig<BR>004352C5 push 0<BR>004352C7 mov [edi], eax<BR>004352C9 call 
+  _itobig<BR>004352CE mov [edi+4], eax<BR>004352D1 mov eax, [edi]<BR>004352D3 
+  push eax<BR>004352D4 lea ecx, [esp+80h+var_38]<BR>004352D8 push 5<BR>004352DA 
+  push ecx<BR>004352DB call _bufToBig &lt;-- convertit la première partie de 
+  notre buffer buf en big<BR>004352E0 mov edx, [edi+4]<BR>004352E3 lea eax, 
+  [esp+88h+var_33]<BR>004352E7 push edx<BR>004352E8 push 5<BR>004352EA push 
+  eax<BR>004352EB call _bufToBig &lt;-- puis la deuxième partie<BR>004352F0 push 
+  0<BR>004352F2 call _itobig<BR>004352F7 mov ecx, [esp+98h+arg_14]<BR>004352FE 
+  lea edx, [esp+98h+var_48]<BR>00435302 push ecx<BR>00435303 push 
+  edx<BR>00435304 mov ebx, eax<BR>00435306 call loc_434AC0<BR>0043530B add esp, 
+  44h<BR>0043530E lea eax, [esp+5Ch+var_48]<BR>00435312 push 1<BR>00435314 push 
+  ebx<BR>00435315 push 10h<BR>00435317 push eax<BR>00435318 call 
+  _bigMessageDigest &lt;-- un message digest sur notre nom, qui en ressort un 
+  digest sur 160bits<BR>0043531D mov ecx, [esp+6Ch+arg_20]<BR>00435324 push 
+  ecx<BR>00435325 push esi<BR>00435326 push edi<BR>00435327 push ebx<BR>00435328 
+  call sub_4353F0 &lt;-- call très important<BR>0043532D push esi<BR>0043532E 
+  mov [esp+80h+arg_0], eax<BR>00435335 call _freeEGPrivateKey<BR>0043533A push 
+  edi<BR>0043533B call _freeRSAPublicKey<BR>00435340 push ebx<BR>00435341 call 
+  _freeBignum<BR>00435346 push ebp<BR>00435347 call _freeBignum<BR>0043534C mov 
+  edx, [esp+8Ch+var_4C]<BR>00435350 push edx<BR>00435351 call 
+  _freeBignum<BR>00435356 mov eax, [esp+90h+arg_4]<BR>0043535D push 
+  eax<BR>0043535E call _freeBignum<BR>00435363 mov ecx, 
+  [esp+94h+arg_8]<BR>0043536A push ecx<BR>0043536B call _freeBignum<BR>00435370 
+  mov esi, [esp+98h+arg_1C]<BR>00435377 xor edx, edx<BR>00435379 mov 
+  [esp+98h+var_48], edx<BR>0043537D add esp, 3Ch<BR>00435380 mov 
+  [esp+5Ch+var_44], edx<BR>00435384 mov ecx, 5<BR>00435389 mov [esp+5Ch+var_40], 
+  dx<BR>0043538E lea edi, [esp+5Ch+var_48]<BR>00435392 xor edx, edx<BR>00435394 
+  mov eax, esi<BR>00435396 repe cmpsw<BR>00435399 jz short 
+  loc_4353DE<BR>0043539B mov dl, [esp+5Ch+var_34]<BR>0043539F mov ebx, 
+  [esp+5Ch+var_38]<BR>004353A3 <BR>004353A3 loc_4353A3: ; CODE XREF: 
+  sub_4351A0+23C&amp;#25;j<BR>004353A3 mov ecx, 5<BR>004353A8 mov edi, 
+  eax<BR>004353AA lea esi, [esp+5Ch+var_38]<BR>004353AE xor ebp, ebp<BR>004353B0 
+  repe cmpsw<BR>004353B3 jnz short loc_4353C9<BR>004353B5 mov ecx, 
+  [esp+5Ch+arg_20]<BR>004353BC mov [esp+5Ch+arg_0], ebp<BR>004353C0 test ecx, 
+  ecx<BR>004353C2 jz short loc_4353C9<BR>004353C4 mov [ecx], ebx<BR>004353C6 mov 
+  [ecx+4], dl<BR>004353C9 <BR>004353C9 loc_4353C9: ; CODE XREF: 
+  sub_4351A0+213&amp;#24;j<BR>004353C9 ; sub_4351A0+222&amp;#24;j<BR>004353C9 
+  add eax, 0Ah<BR>004353CC mov ecx, 5<BR>004353D1 lea edi, 
+  [esp+5Ch+var_48]<BR>004353D5 mov esi, eax<BR>004353D7 xor ebp, ebp<BR>004353D9 
+  repe cmpsw<BR>004353DC jnz short loc_4353A3<BR>004353DE <BR>004353DE 
+  loc_4353DE: ; CODE XREF: sub_4351A0+1F9&amp;#24;j<BR>004353DE mov eax, 
+  [esp+5Ch+arg_0]<BR>004353E2 pop edi<BR>004353E3 pop esi<BR>004353E4 pop 
+  ebp<BR>004353E5 pop ebx<BR>004353E6 add esp, 4Ch<BR>004353E9 retn<BR>004353E9 
+  sub_4351A0 endp<BR>004353E9</FONT></P>
+  <P><FONT face=Arial size=2>Le premier call (43a440) convertit notre serial 
+  (sans les . et les 4 premiers char) en un buffer. On remarque que les valeurs 
+  vont de 00 à FF (256 cas), et que dans ce call il utilise la chaine 
+  "23456789ABCDEFGHJKLMNPQRSTUVWXYZ" (32 char différents) pour effectuer cette 
+  conversion. Si on analyse de plus près cette fonction il s'agit en fait d'un 
+  conversion de Base : Base32 vers Base256. Donc on devrait encrypter un buffer 
+  vers une Base32 avec cette string dans notre Keygen. Pour être sur qu'il 
+  s'agit bien d'une conversion Base32-&gt;hex buffer, la seule facon est bien 
+  entendu de tester en encodant un buffer en base32, en le mettant en serial et 
+  en verifiant si cette fonction decrypte bien en nous donnant le même buffer 
+  qu'au départ ;-).</FONT></P>
+  <P><FONT face=Arial size=2>Ensuite si on analyse le </FONT><FONT 
+  face="Courier New" size=2>call _bigMessageDigest </FONT><FONT face=Arial 
+  size=2>avec le param 1 qui lui est passé, on constate qu'il appel la fonction 
+  _bigShsDigest, c'est donc la fonction de hashage à sens unique SHA-1 qui est 
+  appelé avec en paramètre notre nom (en fait notre nom est modifié avant). Il 
+  va en résulter un buffer digest de 160bits. Ensuite on voit qu'il convertit 
+  notre buffer resultant de la conversion Base32 -&gt; Base256 (hex number) en 2 
+  big number différents (la moitié du buffer est utilisé pour chaque big qu'il 
+  créé).</FONT></P>
+  <P><FONT face=Arial size=2>Maintenant il reste cela :</FONT></P>
+  <P><FONT face=Arial size=2>00435324 push ecx<BR>00435325 push esi<BR>00435326 
+  push edi<BR>00435327 push ebx<BR>00435328 call sub_4353F0</FONT></P>
+  <P><FONT face=Arial size=2>Avec les deux nouveaux big créé + le digest passé 
+  en paramètres (on le trouve en tracant sous sice ou en étudiant cahque 
+  paramètres de chaque fonction sous IDA). Si on trace ce call on voit cela 
+  :</FONT></P>
+  <P><FONT face="Courier New" size=2>0435470 call _bigMultiply<BR>00435475 add 
+  esp, 40h<BR>00435478 push esi<BR>00435479 push edi<BR>0043547A push 
+  esi<BR>0043547B call _bigMod<BR>00435480 mov ecx, [ebx+8]<BR>00435483 push 
+  0<BR>00435485 mov [esp+38h+arg_0], ecx<BR>00435489 call _itobig<BR>0043548E 
+  mov edx, [esp+38h+var_14]<BR>00435492 mov ecx, [esp+38h+var_C]<BR>00435496 mov 
+  ebx, eax<BR>00435498 mov eax, [esp+38h+var_10]<BR>0043549C push 
+  ebx<BR>0043549D push edx<BR>0043549E push esi<BR>0043549F push ebp<BR>004354A0 
+  push eax<BR>004354A1 push ecx<BR>004354A2 call 
+  _double_brickell_bigpow<BR>004354A7 push ebx<BR>004354A8 push edi<BR>004354A9 
+  push ebx<BR>004354AA call _bigMod</FONT></P>
+  <P><FONT face=Arial size=2>En analysant le code source de Cryptolib, on 
+  constate que cette fonction n'est autre que DSAVerify de la lib (IDA ne la pas 
+  reconnu à cause du différence au début du code). On est donc en présence du 
+  système DSA. Avant d'aller plus loin je vais vous le présenter.</FONT></P>
+  <P><B><FONT color=maroon face=Arial size=4>DSA (Digital Signature 
+  Algorithm)</FONT></B></P>
+  <P><FONT face=Arial size=2>Je vais essayer de présenter le système de 
+  signature DSA. Pour de plus ample informations lire Cryptographie appliquée de 
+  Bruce Schneier qui est incontournable. Supposons qu'une personne A veuille 
+  signer un message m, pour montrer qu'elle en est bien l'auteur à l'aide du 
+  DSA. Pour cela elle doit d'abord créer des clefs publiques et privées qui vont 
+  servir pour la signature.</FONT></P>
+  <P><FONT face=Arial size=2>Clef Publique :</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>p nombre premier de 512 à 1024 bits</FONT> 
+    <DD><FONT face=Arial size=2>q facteur premier de p-1de 160 bits</FONT> 
+    <DD><FONT face=Arial size=2>g = h ^ ((p-1)/q) mod p, où h est inferieur à 
+    p-1 et (((p-1)/q) mod p) &gt; 1</FONT> 
+    <DD><FONT face=Arial size=2>y = g ^ x mod p</FONT> </DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>Clef Privée :</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>x &lt; q (160bits)</FONT> 
+    <DT> 
+    <DT><FONT face=Arial size=2>A diffuse ses clefs publiques mais garde sa clef 
+    privée. Ensuite pour signer son message m, il doit d'abord le hasher (avec 
+    SHA-1 comme standard pour le dsa) puis il fait :</FONT> 
+    <DD><FONT face=Arial size=2>k nombre aléatoire &lt; q</FONT> 
+    <DD><FONT face=Arial size=2>r = (g ^ k mod p) mod q</FONT> 
+    <DD><FONT face=Arial size=2>s = (k ^ (-1)) * (H(m) + x*r) mod q</FONT> 
+  </DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>Le couple (r,s) est la signature du message m. Pour 
+  que la personne B puisse verfier que A a bien signer le message m, il doit 
+  faire les opérations suivantes :</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>w = s ^ (-1) mod q</FONT> 
+    <DD><FONT face=Arial size=2>u1 = (H(m) * w) mod q</FONT> 
+    <DD><FONT face=Arial size=2>u2 = r*w mod q</FONT> 
+    <DD><FONT face=Arial size=2>v = ((g ^u1 * y ^u2) mod p) mod q</FONT> 
+</DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>Si v = r alors la signature est correcte et A est 
+  bien l'auteur de m.</FONT></P>
+  <P>Supposons maintenant qu' un utilisateur C veuille se faire passer pour A et 
+  signer le message M. Plusieurs possibilité se présente à lui (bien entendu 
+  dans la mesure où ceci est réalisable), il peut soit trouver la clef privé de 
+  A, soit forger une signature qui verifiera l'équation (je ne présenterais pas 
+  ici les techniques). Comment C peut t' il trouver x ? et bien il lui suffit de 
+  résoudre y = g^x mod p : c' est le porblème des logarithmes discrets (ou DLP). 
+  Il existe plusieurs algortihmes pour les résoudres (pollard rho, index 
+  calculus algorithm ...) mais il est bien evident qu'avec des nombres de 
+  512bits ou 1024bits ceci est impossible.</P>
+  <P><B><FONT color=maroon face=Arial size=4>Retour à Total 
+  Recorder</FONT></B></P>
+  <P><FONT face=Arial size=2>J'espère que cette petite explication sur le DSA 
+  vous a permis d'y voir plus clair ? non ? alors je vais tout expliquer. Si on 
+  ananlyse bien chque paramètre de la fonction DSAVerify (on etudie avec les 
+  codes sources de la lib CryptoLib) on constate ceci :</FONT></P>
+  <P><FONT face=Arial size=2>Il verifie la signature du message m qui est ici 
+  notre nom (avec qq modifs). Il le hash donc avec sha-1 pour la verification de 
+  la signature. Ensuite on constate que les 2 valeurs de la signature (r,s) sont 
+  en fait les deux différentes parties du serial decrypté en base256 
+:</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>s = partie 1 de Base32Decrypt(serial)</FONT> 
+    <DD><FONT face=Arial size=2>r = partie 2de Base32Decrypt(serial)</FONT> 
+  </DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>Ensuite il nous reste à determiner la clef publique 
+  qu'il utilise pour la verif : et bien ce sont les 4 hex string qui sont passé 
+  en paramètres. En tracant sous sice et en analysant le code source de 
+  DSAVerify, on parvient à identifier les différentes valeurs (on aurait pu le 
+  faire sans le code source, mais comme on l'a autant en profiter) 
+:</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>p = 00ce6b643be35209b435a1</FONT> 
+    <DD><FONT face=Arial size=2>q = 00b96ee50831</FONT> 
+    <DD><FONT face=Arial size=2>g = 00147bd8cb6e9c0429c8a7</FONT> 
+    <DD><FONT face=Arial size=2>y = 00c311839b88e5f9345c7a</FONT> </DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>Maintenant comment peut - on créer un serial valide 
+  pour notre nom ? il faut donc hasher notre nom (il faut faire qq modifs avant 
+  qui sont également ds le prog), ensuite il faut le signer avec la clef privé x 
+  'que l'on n'a pas), convertir s et r (signature) en un buffer où ils sont 
+  accolés, le convertir en Base32, puis créer notre serial (rajouté les 4 
+  premiers char TR30 et les . , TR30 pour total recorder 3.0 on le constate avec 
+  le serial donné en exemple ds l'aide ;-).</FONT></P>
+  <P><FONT face=Arial size=2>Donc pour pouvoir créer un serial pour notre nom il 
+  va falloir obtenir la clef privée X. Pour cela il nous faut résoudre le DLP, 
+  or ici comme la taille de p n'est que de 80bits c'est tout à fait faisable. 
+  Pour ce faire on va utiliser la librairie C Miracl qui permet de faire des 
+  calculs sur les big numbers. On a avec cette librairie un fichier index.c qui 
+  permet de résoudre les dlps. Or comme il faut utiliser un autre fichier avec 
+  cette source (qui contient les facteurs premiers de p-1) on va utiliser la 
+  version modifier par tHE EGOiSTE (http://egoiste.cjb.net, également incluse 
+  dans les sources dlp.c), où l'on n'a plus qu'à mettre p, q, g, y et les 
+  facteurs premiers de p-1 pour résoudre le DLP (pour obtenir les facteurs 
+  premiers de p-1 on utilise factor.exe qui est fournit avec la lib 
+  miracl).</FONT></P>
+  <P><FONT face=Arial size=2>Après quelques instants de calcul on obtient la 
+  clef privée :</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>x = 4935E89076E03CA1CA60</FONT> </DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>On est maintenant presque en mesure de faire le 
+  keygen. Je vous ai dit qu'il modifiait le nom avant de le hasher. Il se trouve 
+  là (juste avant le hash) :</FONT></P>
+  <P><FONT face="Courier New" size=2>352EB call _bufToBig<BR>004352F0 push 
+  0<BR>004352F2 call _itobig<BR>004352F7 mov ecx, [esp+98h+arg_14]<BR>004352FE 
+  lea edx, [esp+98h+var_48]<BR>00435302 push ecx<BR>00435303 push 
+  edx<BR>00435304 mov ebx, eax<BR>00435306 call loc_434AC0 &lt;-- modif du nom 
+  (il est passé en param)<BR>0043530B add esp, 44h<BR>0043530E lea eax, 
+  [esp+5Ch+var_48]<BR>00435312 push 1<BR>00435314 push ebx<BR>00435315 push 
+  10h<BR>00435317 push eax<BR>00435318 call _bigMessageDigest</FONT></P>
+  <P><FONT face=Arial size=2>On va donc analyser cette routine et on trouve cela 
+  :</FONT></P>
+  <P><FONT face="Courier New" size=2>3514F loc_43514F: ; CODE XREF: 
+  sub_434E2F+327&amp;#25;j<BR>0043514F mov [eax+edx], al &lt;-- Créé un buffer 
+  avec les valeur de 0 à Fh (donc 16 bytes)<BR>00435152 inc eax<BR>00435153 cmp 
+  eax, 10h<BR>00435156 jl short loc_43514F<BR>00435158 push esi<BR>00435159 mov 
+  esi, [esp+4+arg_104]<BR>00435160 xor eax, eax<BR>00435162 cmp byte ptr [esi], 
+  0<BR>00435165 jz short loc_435192 &lt;-- Xor les valeurs de ce buffer avec la 
+  valeur à la case correspondant du nom (sauf si espace)<BR>00435167 push 
+  ebx<BR>00435168 <BR>00435168 loc_435168: ; CODE XREF: 
+  sub_434E2F+360&amp;#25;j<BR>00435168 mov cl, [esi]<BR>0043516A cmp cl, 
+  20h<BR>0043516D jz short loc_435189<BR>0043516F mov bl, [eax+edx]<BR>00435172 
+  and ecx, 0FFh<BR>00435178 mov cl, [esp+ecx+8]<BR>0043517C xor bl, 
+  cl<BR>0043517E mov [eax+edx], bl<BR>00435181 inc eax<BR>00435182 cmp eax, 
+  10h<BR>00435185 jnz short loc_435189<BR>00435187 xor eax, eax<BR>00435189 
+  <BR>00435189 loc_435189: ; CODE XREF: sub_434E2F+33E&amp;#24;j<BR>00435189 ; 
+  sub_434E2F+356&amp;#24;j<BR>00435189 mov cl, [esi+1]<BR>0043518C inc 
+  esi<BR>0043518D test cl, cl<BR>0043518F jnz short loc_435168<BR>00435191 pop 
+  ebx<BR>00435192 <BR>00435192 loc_435192: ; CODE XREF: 
+  sub_434E2F+336&amp;#24;j<BR>00435192 pop esi<BR>00435193 add esp, 
+  100h<BR>00435199 retn<BR>00435199 sub_434E2F endp ; sp = 
+  100h<BR>00435199</FONT></P>
+  <P><FONT face=Arial size=2>Donc il est très simple d'obtenir ce buffer qui va 
+  être utilisé pour le hash (il le passe en param avec 10h qui est la taille du 
+  buffer). Voici le code source en C :</FONT></P>
+  <P><FONT face=Arial size=2>void CreateBuffer(unsigned char Name[], unsigned 
+  char buffer[])</FONT></P>
+  <P><FONT face=Arial size=2>{</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>int i,j;</FONT> 
+    <DT> 
+    <DD><FONT face=Arial size=2>for (i = 0; i &lt; 16; i++)</FONT> 
+    <DD><FONT face=Arial size=2>buffer [i] = (unsigned char) i;</FONT> 
+    <DD> 
+    <DD><FONT face=Arial size=2>for(i = j = 0; i &lt; strlen(Name) ; i++)</FONT> 
+
+    <DD><FONT face=Arial size=2>if (Name[i] != ' ')</FONT> 
+    <DD><FONT face=Arial size=2>{</FONT> 
+    <DD><FONT face=Arial size=2>buffer [j] ^= Name[i];</FONT> 
+    <DD><FONT face=Arial size=2>j++;</FONT> 
+    <DD><FONT face=Arial size=2>}</FONT> </DD></DL></DL>
+<BLOCKQUOTE>
+  <P><FONT face=Arial size=2>}</FONT></P>
+  <P><FONT face=Arial size=2>On peut maintenant créer notre keygen (ceci es 
+  schématique et ne constitue en rien un code):</FONT></P></BLOCKQUOTE>
+<DL>
+  <DL>
+    <DD><FONT face=Arial size=2>CreateBuffer(Name,buffer);</FONT> 
+    <DD><FONT face=Arial size=2>sha1(buffer,10,digest); (+ qq chgt pour qu'il 
+    soit le même que ds le prog voir source)</FONT> 
+    <DD><FONT face=Arial size=2>DSASign(digest, privateKey+publicKey, s, 
+    r);</FONT> 
+    <DD><FONT face=Arial size=2>CoppyToBuffer(s,r,Buffer2);</FONT> 
+    <DD><FONT face=Arial size=2>Base32(Buffer2, szSerial1);</FONT> 
+    <DD><FONT face=Arial size=2>ConvertSerial(szSerial1, szSerial);</FONT> 
+  </DD></DL></DL>
+<BLOCKQUOTE>
+  <P>&nbsp;</P>
+  <P><FONT face=Arial size=2>Voici maintenant le Code source en C pour créer le 
+  serial (pour plus de détail regarder le code source dispo avec </FONT><A 
+  href="http://christal.suidzer0.org/dossier10/fichiers/source.zip"><FONT 
+  face=Arial size=2>source.zip</FONT></A><FONT face=Arial size=2>) . Il faut 
+  faire attention au fait que CryptoLib utilise directement un buffer en little 
+  endian quand il le convertit en big, alors que Miracl (utilisé pour le keygen) 
+  le récupère en big endian, il va donc falloir faire qq changements en plus 
+  ;-). :</FONT></P>
+  <P><FONT face=Arial size=2>void GenerateCode(HWND hwndname, HWND hwndserial, 
+  HWND hwndcomp)<BR>{<BR>static char szG[] = "147BD8CB6E9C0429C8A7";<BR>static 
+  char szP[] = "CE6B643BE35209B435A1";<BR>static char szQ[] = 
+  "B96EE50831";<BR>static char szX[] = "4935E89076E03CA1CA60";<BR>static char 
+  szK[] = "10001" ; //65537<BR><BR><BR>unsigned char szR[100] = {0};<BR>unsigned 
+  char szS[100] = {0};<BR><BR><BR>miracl *mip;<BR>big 
+  p,q,g,x,y,k,m,r,s,temp1,temp2;<BR><BR>unsigned int len,i;<BR><BR>unsigned char 
+  buffer2[10];<BR>unsigned char temp[10];<BR>unsigned char 
+  buffer[16];<BR>unsigned char Name[100] = {0};<BR>unsigned char 
+  digest[20];<BR>unsigned char digest2[20];<BR>unsigned char 
+  szSerial[40];<BR>unsigned char szSerial2[100];<BR><BR>SHA1_CTX context; 
+  <BR><BR>if (GetWindowText(hwndname, Name,70) &lt;= 0) 
+  <BR>{<BR>SetWindowText(hwndserial, "");<BR>return ;<BR>}<BR><BR>/* On créer le 
+  buffer à partir du nom */<BR>CreateBuffer(Name, buffer);<BR><BR>/* Et on le 
+  hash avec le SHA-1 */<BR>SHA1Init(&amp;context);<BR>SHA1Update(&amp;context, 
+  buffer, 16);<BR>SHA1Final(digest, &amp;context); <BR><BR>InvertDWORD(digest); 
+  /* Pour obtenir le resultat du hash comme le prog */<BR>InvertBuff(digest); /* 
+  On le convertit en big endian */<BR><BR>/* Initialize Miracl System 
+  */<BR>mip=mirsys(100,0);<BR><BR>p=mirvar(0);<BR>q=mirvar(0);<BR>g=mirvar(0);<BR>x=mirvar(0);<BR>y=mirvar(0);<BR>k=mirvar(0);<BR>m=mirvar(0);<BR>r=mirvar(0);<BR>s=mirvar(0);<BR>temp1=mirvar(0);<BR>temp2=mirvar(0);<BR><BR><BR>/* 
+  Set IO-BASE = 16 */<BR>mip-&gt;IOBASE=16;<BR><BR>/* Input Bignumbers 
+  */<BR>cinstr(p, szP) ;<BR>cinstr(q, szQ);<BR>cinstr(g, szG);<BR>cinstr(x, 
+  szX);<BR>cinstr(k, szK);<BR><BR>bytes_to_big(20,digest,m);<BR><BR>/* calcul de 
+  r: (g^k mod p)mod q */<BR>powmod(g,k,p,r);<BR>divide(r,q,temp2);<BR><BR>/* 
+  calcul de s: (k^(-1) *(m+x*r)) mod q */<BR><BR>multiply(x,r,temp1);<BR>add(m, 
+  temp1, 
+  temp2);<BR>divide(temp2,q,temp1);<BR>xgcd(k,q,k,k,k);<BR>multiply(temp2,k,s);<BR>divide(s,q,temp2);<BR><BR>big_to_bytes(5,r,buffer2); 
+  /* on copie r ds le buffer */<BR>big_to_bytes(5,s,buffer2+5); /* puis s 
+  */<BR><BR>mirkill(p);<BR>mirkill(q);<BR>mirkill(g);<BR>mirkill(x);<BR>mirkill(y);<BR>mirkill(m);<BR>mirkill(temp1);<BR>mirkill(temp2);<BR>mirkill(r);<BR>mirkill(s);<BR><BR>/* 
+  On convertit en little endian car Cryptolib traite les buffer comme étant en 
+  little endian */<BR>strncpy(temp, buffer2, 
+  10);<BR>for(i=0;i&lt;5;i++)<BR>buffer2[i] = 
+  temp[4-i];<BR>for(i=5;i&lt;10;i++)<BR>buffer2[i] = temp[14-i];<BR><BR>/* on 
+  convertit en base32 */<BR>i = ConvertToBase32(szSerial, buffer2, 
+  10);<BR>szSerial[i] = 0;<BR><BR>/* et on met le serial sous sa forme finale 
+  */<BR><BR>strcpy(szSerial2, "TR30.");<BR>strncpy(szSerial2+5, szSerial, 
+  4);<BR>szSerial2[9] = '.';<BR>strncpy(szSerial2+10, szSerial+4, 
+  4);<BR>szSerial2[14] = '.';<BR>strncpy(szSerial2+15, szSerial+8, 
+  4);<BR>szSerial2[19] = '.';<BR>strncpy(szSerial2+20, szSerial+12, 
+  4);<BR>szSerial2[24] = 0;<BR><BR>SetWindowText(hwndserial, 
+  szSerial2);</FONT></P>
+  <P><B>&nbsp;<A 
+  href="http://christal.suidzer0.org/dossier10/programmes/kgntotalrec.zip">Download</A></B>: 
+  kgntotalrec.exe + sources</P>
+  <P><BR><B><FONT color=maroon face=Arial size=4>Conclusion</FONT></B></P>
+  <P>Voilà j'espère que cette explication sur comment keygener Total Recorder, 
+  vous aura permis soit de comprendre un peu mieux le rapport entre la 
+  cryptographie et le monde du cracking, soit vous aura donné envie de découvrir 
+  de nouvelle protection basée sur de la crypto, qu'il ne tient qu'à vous de 
+  casser (bien entendu si cela est possible ;-) .</P>
+  <P>Pour me contacter : <A 
+  href="mailto:city_of_bitch@caramail.com">city_of_bitch@caramail.com</A> .</P>
+  <P align=center>(c) 2001 - LuTiN NoIR [TMG] </P></BLOCKQUOTE></BODY></HTML>

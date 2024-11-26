@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>D&eacute;tection de Noyau - Emplacement de Kernel32.dll</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+
+function MM_initTimelines() { //v4.0
+    //MM_initTimelines() Copyright 1997 Macromedia, Inc. All rights reserved.
+    var ns = navigator.appName == "Netscape";
+    var ns4 = (ns && parseInt(navigator.appVersion) == 4);
+    var ns5 = (ns && parseInt(navigator.appVersion) > 4);
+    document.MM_Time = new Array(1);
+    document.MM_Time[0] = new Array(1);
+    document.MM_Time["clignote"] = document.MM_Time[0];
+    document.MM_Time[0].MM_Name = "clignote";
+    document.MM_Time[0].fps = 2;
+    document.MM_Time[0][0] = new String("behavior");
+    document.MM_Time[0][0].frame = 3;
+    document.MM_Time[0][0].value = "MM_timelineGoto('clignote','1')";
+    document.MM_Time[0].lastFrame = 3;
+    for (i=0; i<document.MM_Time.length; i++) {
+        document.MM_Time[i].ID = null;
+        document.MM_Time[i].curFrame = 0;
+        document.MM_Time[i].delay = 1000/document.MM_Time[i].fps;
+    }
+}
+//-->
+</script>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%">
+  <tr> 
+    <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <p align='justify'><font face="Fixedsys" size="2">:)</font></p>
+            </td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999">
+  <tr> 
+    <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_reflechie.gif" width="91" height="126" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="95%"> <div align="center"><font face="Fixedsys" size="6" color="#33CC33">D&eacute;tection 
+                    du Noyau<br>
+                    <font size="2">-=&curren; Emplacement m&eacute;moire de Kernel32.dll 
+                    &curren;=- </font></font><font face="Fixedsys" size="2"><u><br>
+                    </u>(version 1.01)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_reflechie.gif" width="91" height="126" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p align="justify"><font face="Fixedsys" size="2">Une multitude de 
+              diff&eacute;rences existe entre un process ouvert sous un Noyau 
+              NT ou un Noyau 9x. Dans la m&eacute;thode pr&eacute;sent&eacute;e 
+              ici, l'emplacement de la dll &quot;Kernel32.dll&quot; est pris en 
+              compte.</font></p>
+            <p align="justify"><font face="Fixedsys" size="2">A chaque processus 
+              ouverts, le syst&egrave;me alloue 4 Go d'espace d'adressage virtuel. 
+              La partition d'un espace virtuel varie suivant le noyau. Dans cette 
+              partition il existe la zone &quot;Mode Utilisateur&quot; :</font></p>
+            <ul>
+              <li><font face="Fixedsys" size="2"> Noyau NT : de 0x00010000 &agrave; 
+                0x7FFEFFFF</font></li>
+              <li><font face="Fixedsys" size="2">Noyau 9x : de 0x00400000 &agrave; 
+                0x7FFFFFFF</font></li>
+            </ul>
+            <p align="justify"><font face="Fixedsys" size="2">Sous un Noyau NT, 
+              tous les .exe, toutes les dll ainsi que les fichiers mapp&eacute;s 
+              sont charg&eacute;s dans la zone &quot;Mode Utilisateur&quot;. Alors 
+              que sous un Noyau 9x, les dll principales (Kernel32.dll, Usuer32.dll, 
+              Gdi32.dll et Advapi32.dll) ainsi que les fichiers mapp&eacute;s 
+              sont charg&eacute;s dans la zone &quot;Mode Utilisateur Partag&eacute;&quot; 
+              :</font></p>
+            <ul>
+              <li><font face="Fixedsys" size="2">Noyau 9x (uniquement) : de 0x80000000 
+                &agrave; 0xBFFFFFFF</font></li>
+            </ul>
+            <p align="justify"><font face="Fixedsys" size="2">Avec une adresse 
+              quelconque de Kernel32.dll, il devient facile de d&eacute;tecter 
+              le type de Noyau en regardant son emplacement par rapport &agrave; 
+              l'adresse 0x80000000. Une adresse plus grande ou &eacute;gale &agrave; 
+              0x80000000 indique un Noyau 9x sinon un Noyau NT.</font></p>
+            <p align="left"><font face="Fixedsys" color="#33CC33" size="2"><u>Comment 
+              obtenir une adresse quelconque de Kernel32.dll ?</u></font></p>
+            <p align="justify"><font face="Fixedsys" size="2">Lorsqu'un process 
+              est ouvert, le syst&egrave;me lui affecte une fonction SEH g&eacute;r&eacute;e 
+              par Kernel32.dll. Cette fonction est enregistr&eacute;e en premi&egrave;re 
+              position dans la liste cha&icirc;n&eacute;e des SEH.<br>
+              Il suffit donc de remontrer cette liste cha&icirc;n&eacute;e jusqu'&agrave; 
+              cette fonction pour obtenir une adresse quelconque de Kernel32.dll. 
+              Cette m&eacute;thode est la plus fiable et la plus g&eacute;n&eacute;rique 
+              que j'ai pu trouver. Elle a la particularit&eacute; de fonctionner 
+              sous tous les Noyaux et de pouvoir &ecirc;tre appliqu&eacute;e n'importe 
+              o&ugrave; dans le code. Cette m&eacute;thode est aussi tr&egrave;s 
+              utile pour la g&eacute;n&eacute;ration d'un ShellCode.</font></p>
+            <p align="left"><font face="Fixedsys" size="2"><u>voici la routine 
+              :</u> </font></p>
+            <table border="0">
+              <tr valign="top"> 
+                <td nowrap><font face="Fixedsys" size="2"><br>
+                  @@ :</font></td>
+                <td nowrap><font face="Fixedsys" size="2">mov eax, fs:[0]<br>
+                  <br>
+                  xchg eax,ebx<br>
+                  mov eax, [ebx]<br>
+                  cmp eax, 0FFFFFFFFh<br>
+                  jne @B<br>
+                  mov eax, [ebx+04] &lt;- eax=adresse quelconque de Kernel32.dll</font></td>
+              </tr>
+            </table>
+            <p>&nbsp;</p>
+            <p><font face="Fixedsys" size="2">Voici un petit exemple avec source 
+              : <a href="../../../telecharger/window$/detecte_noyau_krl32_place.zip" onFocus="if(this.blur)this.blur()" target="_blank"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a> 
+              </font></p>
+            <div align="center"> 
+              <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr> 
+                  <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td>
+                </tr>
+              </table>
+              <font face="Fixedsys" size="2">Illustrations : Bill WATTERSON - 
+              &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+              <tr> 
+                <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                    <tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 08/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+            </font> </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<HTML><HEADER>
+<TITLE>fleur.web site - articles::fleur patcher tutorial</TITLE>
+<LINK REL=StyleSheet HREF="fleur.css" tppabs="http://www.effervescence.com/fleur/fleur.css" TYPE="text/css"></HEADER>
+<BODY CLASS=text><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 CLASS=text WIDTH=80%><TR><TD VALIGN=top><DIV CLASS=text ALIGN=justify>
+
+<SPAN CLASS=title>fleur patcher tutorial</SPAN><BR><BR>
+<B>informations</B><BR>
+the fleur patcher is a generic patcher that permits to add functionalities to any pe file. the patcher
+has been written for masm.<BR><BR>
+<B>required files</B><BR>
+<A HREF="patcher.zip" tppabs="http://www.effervescence.com/fleur/archive/files/projects/patcher.zip">patcher</A> - the generic patcher files and the patcher generator<BR>
+<A HREF="target.zip" tppabs="http://www.effervescence.com/fleur/archive/files/articles/target.zip">target</A> - a simple pe file target<BR><BR>
+<B>linked files</B><BR>
+<A HREF="npatchersrc.zip" tppabs="http://www.effervescence.com/fleur/archive/files/projects/npatchersrc.zip">notepad 98 patcher</A> - an sample of patcher made with the fleur patcher<BR>
+<A HREF="tpatcher.zip" tppabs="http://www.effervescence.com/fleur/archive/files/articles/tpatcher.zip">target patcher</A> - the files of the target patcher that we create in this tutorial<BR><BR>
+<B>tools used</B><BR>
+masm<BR>
+patcher<BR>
+patcher generator<BR>
+softice<BR><BR>
+<B>tutorial</B><BR><BR>
+
+<B>I.</B> <SPAN CLASS=title>purpose of the tutorial</SPAN><BR>
+this tutorial is meant to show you how you can easily add functions to an already compiled executable using your own
+patcher, and what are the advantages of this method.<BR>
+i assume you are using masm, you have the required tools, and you know how to use softice.<BR><BR>
+<B>II.</B> <SPAN CLASS=title>presentation</SPAN><BR>
+our target will be a small program, wich has a good code understandability. however, you can add functionalities to any
+program you want. to show you an example of what can be done, you can try the notepad patcher that you can download
+in the linked file section. this tutorial will teach you all the knowledge you have to get in order to use all the
+possibilities of the patcher. making a patcher like the notepad 98 patcher will the be just a matter of time and
+perseverance.<BR><BR>
+
+the patcher will allow you to have a clear code, that is stored in a file, and compilable when you want. if we were
+using the comparing byte patching method, that is, you change the code directly with an hexeditor like hiew, and then
+let a program find wich bytes have been changed into what, then generate a patch that automatize these changes, we would
+have to recode everything if we forgot to code something, or if we want to add something.<BR><BR>
+
+the patcher adds a section at the end of the executable, and change some code in the target to jumps that jump to our
+code. instead of having the patcher try to localize the last section, and compute all the offsets needed to add that
+section, i coded another program, patcher generator, that you can download in the required files section. this program
+gives you the important informations about the target that are needed by the patcher and gives you the list of the
+imported functions you can use. this program also permits you to add your own imports to the target.<BR><BR>
+
+the patcher files you will have to modify are stored in the root directory of the patcher. ASMcode.asm is the file where
+you put your added code, ASMcodechange.asm is the file where you put your direct code change, ASMlocations.asm is the file
+where you put the addresses of the jumps to our code, or the addresses of the direct code changes, DATcodedata.asm is the
+data of your code, and there is also a conf directory that contains DATpatcher.asm wich holds informations to customize
+the patcher, and the patcher resource files.<BR><BR>
+
+<B>III.</B> <SPAN CLASS=title>configuration</SPAN><BR>
+copy the entire directory of the patcher, that you can download in the required files section, to your patcher directory,
+for example in a myPatcher directory. <SPAN CLASS=hl>do not edit the files in the patcher directory</SPAN>, because it is a template, edit them
+only after having copied the directory to your patcher directory.<BR><BR>
+you can edit !!comm.bat to change all the references to app by the name of the executable you want to patch. the reason
+why there is a reference to !!app.exe is that i always copy the original executable to a !!app.exe copy so there' s always
+an unpatched copy of the program in the directory. the batch automatically copies !!app.exe to app.exe, so you can directly
+patch app.exe.<BR><BR>
+open DATpatcher.asm in the conf directory. change the name in bfFile by target.exe. this name is the default name that is shown
+in the edit boxes of the patcher, if there' s no file on the commandline. change dtSectionName to the name of the section
+that will be added on the target. this name <SPAN CLASS=hl>must be 8 characters long</SPAN>, for example, if the name is .mySec, you will have to
+change it to :
+<PRE>
+dtSectionName		db	'.mySec',0,0
+</PRE>
+then you can change the about caption and text, the patcher caption, szPatched is the the message shown in the messagebox
+that indicates a sucessful patch, szSuccess is it' s caption, szOpenCaption is the caption of the browse dialog.<BR><BR>
+
+you can delete the patcherversion.txt file if you want, but <SPAN CLASS=hl>do not delete the patcher.ver file</SPAN>.<BR><BR>
+
+launch patcher generator. click on browse and select the !!target.exe file. <SPAN CLASS=hl>always choose the backup
+copy</SPAN>, because if you choose the file that has been patched, the informations retrieved by the patcher generator will
+be the wrong ones. now click save and save the project in your patcher directory. click on generate files and choose the
+patcher.ver file at the root of your patcher directory. the program has generated some information files about the target,
+and has created a TXTpeinfo.txt file at the root of your patcher directory, that shows the informations you can access by
+clicking the pe informations button. later, we' ll see how to add imports.<BR><BR>
+
+<B>IV.</B> <SPAN CLASS=title>code</SPAN><BR>
+now we will see two aspects of the patcher. the first is the direct code change. i mean that we will directly change the
+code of the target to another code, to avoid the messagebox that pops-up when we click the button. the second is code adding.
+we will jump from the code of the target to our section. we will use this method to make a messagebox pops-up when the
+program starts, and then we will see how to add imports in order to make the program beeps before showing the messagebox.<BR><BR>
+
+we will start by avoiding the messagebox when clicking the button. so bpx messageboxa and click the button. softice will
+break. you see that at 00401063 there' s a cmp ax,64h that checks if the button has been clicked, if not, it continues, if
+yes, there' s a call to messageboxa, and the a jump to 0040104c that returns to the proc. so we' ll have to change the code
+at 00401069 in a jump to 0040104c.<BR><BR>
+
+open ASMlocations.asm. you see a generic ccode and a generic wjmp. since we don' t use the code adding yet, comment out the
+wjmp, open ASMcode.asm and comment out the fjmpb for now, so if you compile the patcher, there won' t be any problem with the
+undeclared startrva and destinationrva constants, that you' ll have to change to the one you want.<BR><BR>
+
+now, we have to get the offsets of the location of the code, 00401069, so open TXTpeinfo.txt. look at the sections :
+
+<PRE>
+name     vSize     vAddress  rSize     rOffset   characteristics
+.text    000000d8h 00001000h 00000200h 00000400h 60000020h
+.rdata   00000108h 00002000h 00000200h 00000600h 40000040h
+.data    00000018h 00003000h 00000200h 00000800h c0000040h
+.rsrc    00000480h 00004000h 00000600h 00000a00h 40000040h
+</PRE>
+
+if we look at the vAddresses, we see that 1069h belongs to the .text section, wich is the code section of the target, because
+1000h (vAddress of .text)<1069h (vAddress of code)<2000h (vAddress of .rdata). so the offset of our code is
+vAddress(code) - vAddress(.text) + rOffset(.text), 1069h-1000h+400h=469h.<BR><BR>
+
+in ASMlocations.asm, change the :
+
+<PRE>
+		ccode	change1start,change1end,codeoffset
+</PRE>
+
+to :
+
+<PRE>
+		ccode	jumpmessageboxstart,jumpmessageboxend,469h
+</PRE>
+
+beware, if the offset begins with a letter, like for example b56h, <SPAN CLASS=hl>don' t forget to put a 0 before</SPAN>,
+you would write :
+
+<PRE>
+		ccode	jumpmessageboxstart,jumpmessageboxend,0b56h
+</PRE>
+
+the syntax of the ccode macro is the following :
+
+<PRE>
+		ccode	startcodelabel,endcodelabel,offset of code
+</PRE>
+
+and in the ASMcodechange.asm, add the following lines :
+
+<PRE>
+jumpmessageboxstart:	jmp	$+(104ch - 1069h)
+
+jumpmessageboxend:
+</PRE>
+
+the jump is jmp $+(rva of destination - rva of start). here we just needed a jump, but you could add anything you want. just
+proceed the same way : add your code in ASMcodechange.asm, between a mycodestart and a mycodeend labels, and add the
+following line in ASMlocations.asm :
+
+<PRE>
+		ccode	mycodestart,mycodeend,myoffset
+</PRE>
+
+now we' ll add the messageboxa when the program launches. to add code, we need to jump from the program to our code. the
+jump will modify 5 bytes of the program, that we will have to execute at the end of our code. to jump, we need to have the
+offset of the start of the jump and it' s virtual address. to add the code, we' ll have to use the wjmp macro to jump to our
+code, and the fjmpb macro to jump back to the code. the syntax of these macros is the following :
+
+<PRE>
+		wjmp	codesnippet,offset of start,rva of start
+		fjmpb	rva of destination
+</PRE>
+
+bpx getmodulehandlea, and launch the program. softice breaks. note that the handle is stored in the dword at [00403014], we
+will use it to show how to use variales stored by the program. there' s a push 0040102bh at 0040100e wich is exactly 5 bytes,
+so we can replace it exactly with a jmp and then return from our code to 00401013. so the rva of start is 100eh, it' s offset
+is 100eh-1000h+400h=40eh, and the rva of destination of the return jump is 1013h. uncomment the wjmpb and the fjmpb and
+change the :
+
+<PRE>
+		wjmp	snip1start,locationoffset,locationrva
+</PRE>
+
+to :
+
+<PRE>
+		wjmp	snip1start,40eh,100eh
+</PRE>
+
+edit ASMcode.asm. you will see a standard function code. the getdelta is a macro that gets the delta offset of the code.
+uncomment the fjmpb and change the :
+
+<PRE>
+		fjmpb	locationrva
+</PRE>
+
+to :
+
+<PRE>
+		fjmpb	1013h
+</PRE>
+
+the messageboxa api is imported in the program. you can check it by looking at the list of the imports in TXTpeinfo.txt. to
+call an api, we need to have the address of the thunk of this api in the program. the addresses of the thunks of the imported
+apis or of the apis you add are automatically generated by the patcher generator as constants. the constant name is the full
+name of the api, in capital letters, with an underscore before the name to prevent error of already declared constants. the
+ordinals are imported with the prefix _ORD followed by the address in capitals of the ordinal. to call the apis, we' ll use
+the callpr macro, whose syntax is the following :
+
+<PRE>
+		callpr	_APINAME
+</PRE>
+
+since we' ll use the handle of the instance, stored in the dword at [00403014], add the following line in DATcodedata.asm :
+
+<PRE>
+HTARGET			equ	3014h
+</PRE>
+
+we also need to add the data of the messagebox, the caption and the text, so add the following lines too :
+
+<PRE>
+szMessageCaption	db	'my caption',0
+szMessageText		db	'my text',0
+</PRE>
+
+we have all we want for the messageboxa. beware that the variable you use in the code
+<SPAN CLASS=hl>must not have been already declared in the patcher data</SPAN>.<BR><BR>
+
+edit ASMcode.asm. getdelta puts the delta offset of our code in ebp. i usually add a pushad before my code and a popad after,
+so i' m sure the registers will not cause problems when returning to the code. but note that you can also add code without
+pushad, popad and getdelta, anyway, getdelta is needed to use the variables of your added code. so after getdelta, add the
+following lines :
+
+<PRE>
+		push	MB_ICONINFORMATION
+		pushl	szMessageCaption
+		pushl	szMessageText
+		push	[ebp + offset codestart - VIRTUALADDRESS + HTARGET]
+		callpr	_MESSAGEBOXA
+</PRE>
+
+you see, at first, the patcher might seem a bit hard to use, but calling functions is very easy. there are several macros
+described in the lines. these are :
+
+<PRE>
+		pushl variable
+</PRE>
+
+push the offset of the variable of your added code, <SPAN CLASS=hl>beware, this macro uses edx</SPAN>.
+
+<PRE>
+		pushv variable
+</PRE>
+
+not used here, push the value of the variable of your added code. the line :
+
+<PRE>
+		push	[ebp + offset codestart - VIRTUALADDRESS + HTARGET]
+</PRE>
+
+pushes the value at the offset HTARGET in the notepad code. if you want to push the location of the variable instead of the
+variable itself, you would add these lines :
+
+<PRE>
+		lea	eax,[ebp + offset codestart - VIRTUALADDRESS + HTARGET]
+		push	eax
+</PRE>
+
+as we replaced the push 0040102bh, we will have to add it in our code. add the following
+line after the popad :
+
+<PRE>
+		push	0040102bh
+</PRE>
+
+<SPAN CLASS=hl>do never forget to replace the code you have overwritten</SPAN>, or the program might crash. you better try
+to choose correctly the places were you jump from, because some instructions that are overwritten are hard to rewrite in our
+code. you better jump on a mov eax,something or a push something, or instructions like that. you can try to compile the
+patcher.<BR><BR>
+
+now we' ll see how to add imports. open the patcher generator, and load the project. in the dll editbox, write kernel32.dll,
+the push the add button. to delete a dll, select it and push del, and to rename it, select it, change the name in the
+editbox, and push ren. it' s the same process to add, delete or rename a function. make sure that kernel32.dll is selected,
+and in the function editbox, type Beep. <SPAN CLASS=hl>beware, the apis names must be the exact ones</SPAN>, with all the
+capital letters. for example, you can add MessageBoxA, but not messageboxa, nor MessageBox. click the add button, save the
+project, and click on generate files and select the patcher.ver file in the root of your patcher directory.<BR><BR>
+
+now, just before the code that calls the messagebox, write the following line :
+
+<PRE>
+		callpr	_BEEP
+</PRE>
+
+you can compile the patcher.<BR><BR>
+
+to use variables located in your data, you will do that :<BR>
+
+<PRE>
+		mov	[ebp + offset myvar],eax
+</PRE>
+
+to store eax in the variable myvar
+
+<PRE>
+		mov	eax,dword ptr [ebp + offset myvar]
+</PRE>
+
+to put in eax the content of the variable myvar, or you could also do that :
+
+<PRE>
+		lea	eax,[ebp + offset myvar]
+		mov	dword ptr [eax],ebx
+</PRE>
+
+to store ebx in the variable myvar<BR><BR>
+
+<B>V.</B> <SPAN CLASS=title>final words</SPAN><BR>
+you can use and modify the patcher as you like.<BR><BR><BR>
+
+<DIV ALIGN=right><A HREF="mailto:blair@effervescence.com">roy</A>, <B>fleur</B><BR></DIV>
+
+<BR><BR><BR><BR>
+
+<DIV ALIGN=right>main::<A HREF="index.htm" tppabs="http://www.effervescence.com/fleur/index.htm">fleur</A><BR>
+comment::<A HREF="mailto:blair@effervescence.com">roy</A></DIV>
+
+</DIV></TD><TD WIDTH=20%></TD></TR></TABLE>
+</BODY></HTML>

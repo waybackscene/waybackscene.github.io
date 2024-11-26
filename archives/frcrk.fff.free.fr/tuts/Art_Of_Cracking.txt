@@ -1,0 +1,451 @@
+(Optimisé pour la police Arial taille 11 Style : normal; en 1027*768)	| 30/06/2001
+
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+ __.:[Art Of Cracking]:.__
+
+°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+
+J'ai remarqué que les articles sur le cracking destinés aux débutants étaient trop rapides et n'expliquaient pas (voir mal)
+les bases, je vais essayer d'y remédier. Ce tutoriel est dédié à ceux qui ne savent rien du cracking, mais ayant toutefois
+quelques bases en programmation, assembleur surtout, ce qui est vraisemblablement inévitable.
+
+
+<=={ Partie 1 }==>
+
+[Definition]
+Première chose, pour pas que vous vous posiez des questions comme ca dans le vide je vais donner une ptite explication :
+le cracking consiste à modifier un programme exécutable dans le but de changer sa manière de fonctionner.
+En fait on s'en sert pour, par exemple enregistrer un logiciel sans avoir de license (ce ki est interdit !), pour ca,
+on modifie le programme de maniere telle qu'il accepte tout numéro d'enregistrement sans nous balancer un message du style
+"Numéro d'enregistrement incorrect !".
+
+[Les outils]
+- Si vous avez déjà eu la curiosité d'ouvrir un fichier exécutable dans votre traitement de texte favori, vous avez du 
+apercevoir une suite de caractères étranges. Pour éviter ce genre de désagrément, nous allons utiliser W32Dasm (cherchez sur
+altavista.box.sk), un logiciel qui permet de désassembler les programmes à cracker et ainsi de transformer la foule de 
+caractères incompréhensibles le constituant en une suite d'instructions assembleur déjà beaucoup plus compréhensible par 
+l'homme.
+
+- Vous aurez aussi besoin d'un éditeur hexadécimal pour modifer le programme à cracker. Personnelement j'utilise HexEdit,
+c'est le premier éditeur hex. que j'ai eu. Ce genre de logiciel vous permet de modifier les instructions du programme à
+cracker sans avoir à le recompiler en entier ...
+
+[Notions]
+Bon, la solution pour apprendre à cracker c'est de pratiquer. Le point sur lequel ce tutoriel se différencie le plus des 
+autres est sur la question du programme à cracker. Habituellement on vous fait plancher sur un soft du style Winzip/... ou 
+autre prog pas trop dur à cracker. Mais même facile à cracker, le programme reste du moins obscur (vous ne savez pas comment 
+tourne sa protection). Alors, j'ai fait le choix de vous montrer comment cracker votre propre programme (Nan nan, j'vous jure
+c sérieux). 'A koi ca va me servir, si c'est le mien j'en fait ce que je veux !' je sais, c'est ce que vous allez me dire. 
+Mais l'avantage c'est que vous savez comment votre programme fonctionne et donc que vous n'aurez pas à comprendre la 
+protection du programme puisque c'est la votre. Et donc d'entrée ca limite déjà les difficultées. Le programme que nous 
+allons étudier est écrit en C/C++. Vous pouvez télécharger son code source (pour Visual C++ 6) et la version compilée sur
+HTTP://...OnVerra...  Je ne vais pas m'attarder sur l'architecture globale du programme car c'est du C++ pour Win32 habituel.
+
+Etudions maintenant le coeur de la protection du programme :
+
+  //Code source de la protec :
+  char str[32];  //Création d'une chaine de caractères destinée à contenir ce que
+		 //l'utilisateur à entré comme mot de passe (maximum 32 caracteres)
+
+  GetDlgItemText(hDlg,IDC_txtPass1,str,32); //Grace à l'API GetDlgItemText on récupère le        
+					    //contenu du champs Mot de passe
+					    //que l'on stoque dans la variable str
+
+  resultat = strcmp(str,"2057"); // Si str vaut "2057"(le mot de passe correct)
+			  //et donc resultat = 0
+
+  if(! resultat) 		//Si résultat = 0, donc si mot de passe correct ...
+  {
+   MessageBox(NULL,"Mot de passe correct !","Reponse",MB_OK); 	// Mot de passe correct
+  }
+  else //Sinon
+  {
+   MessageBox(NULL,"Mauvais mot de passe !","Reponse",MB_OK); 	// Mauvais mot de passe !
+  }
+
+  '(Pour ceux qui ne connaissent pas le C, ca donne le programme suivant en Basic :
+  'Code source de la protec :
+  Dim str As string * 32  'Création d'une chaine de caractères destinée à contenir ce que
+			  'l'utilisateur à entré comme mot de passe (maximum 32 caracteres)
+  str = txtPass1.Text     'on récupère le contenu du champs Mot de passe
+
+  If(str = "2057") then
+   MsgBox "Mot de passe correct !"
+  Else
+   MsgBox "Mauvais mot de passe !"
+  End If
+
+  ')
+
+
+Nos efforts vont donc se porter sur comment changer le déroulement du programme pour que n'importe quel mot de passe soit
+interpreté comme correct par la routine de protection.
+
+[Désassemblage]
+Maintenant que vous connaissez le type de protection (un simple test de comparaison entre celui que vous entrez et le vrai),
+nous allons pouvoir faire comme si nous n'avions pas son code source pour le cracker. En premier lieu, nous allons le 
+désassembler, pour obtenir son code source en Assembleur (ASM).
+Pour cela, lancer W32dsmxx.exe (avec xx la version du soft). Cliquez sur l'onglet #Open file to disassemble# du menu 
+#Disassembleur#, ce qui a pour effet de vous afficher une fenetre vous demandant le fichier à désassembler.
+Choisissez le fichier "CrackMe.exe" et appuyez sur Ouvrir. W32dasm va mettre quelques secondes pour désassembler et hop! vous
+allez apercevoir le code source du programme (vous pouvez changer la police par défaut si elle n'est pas bonne : 
+Disassembler->Font...->Select Font). Bon maintenant il va falloir se repérer parmis toutes ces instructions. Il existe une 
+fonction dans W32dasm qui vous permet de localiser l'endroit du programme où semble etre utilisée telle ou telle chaine de
+caracteres : String Data References. Notre but étant de casser de la protection, on va donc chercher un moyen de la localiser :
+lorsque vous entrez un mauvais mot de passe vous avez droit à une boite de message "Mauvais mot de passe". 
+Bingo, il ne nous reste plus qu'à aller là où elle est utilisée par le programme. Pour cela, cliquez sur le 2eme
+bouton de la barre d'outil de W32dasm en partant de la droite (il est facilement repérable à son icone #Strn Ref#).
+Là, vous apercevez la liste de toutes les chaines de caracteres qu'a trouvé W32dasm dans le programme. Double cliquez sur
+"Mauvais mot de passe !" et vous arrivez à '* Possible StringData Ref from Data Obj -> "Mauvais mot de passe !"', en plein 
+dans la protection du programme ! Observons les alentours ... On obtient ca :
+
+______________________________________________________________________________________________________
+(1)* Possible Reference to Dialog: DialogID_0067, CONTROL_ID:03E9, "" ;On arrive LA en cliquant sur le bouton OK du programme
+:00401354	68e9030000	push 000003e9
+:00401359	51		push ecx
+
+(2)* Reference To: USER32.GetDlgItemTextA, Ord:0104h		    ;Appelle l'API GetDlgItemText pour récupérer le pass que vous avez entré
+:0040135A	FF1594404000	Call dword ptr [00404094]
+
+(3)* Possible StringData Ref from Data Obj -> "2057"		    ; tiens, tiens, le VRAI mot de passe
+:00401360	BE68504000	mov esi, 00405068
+:00401365	8D442408	lea eax, dword ptr [esp+08]
+
+;_________________________________
+(4); !! strcmp !!
+;Notre fonction strcmp codéee en Assembleur :
+;Elle teste caractere par caractere si les deux chaines sont semblables donc si votre mot de passe est correct.
+;S'il l'est, le programme jump vers 0040138D (je 0040138D) sinon il jump vers 00403391 (jne 00403391)
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:0040138B
+|
+:00401369	8A10		mov dl, byte ptr [eax]	;met la valeur de eax dans dl avec eax le mot de passe que vous avez entré
+:0040136B	8A1E		mov bl, byte ptr [esi]	;met la valeur de esi dans bl avec esi le vrai mot de passe 2057
+:0040136D	8ACA		mov cl, dl			;met la valeur de dl donc de eax donc du mot de passe que vous avez entré dans bl
+:0040136F	3AD3		cmp dl, bl			;compare dl et bl : cad compare le mot de passe que vous avez entré et le vrai
+(5a):00401371	751E		jne 00403391		;!! branchement vers 00403391 si ils sont différents, donc si c'est pas le bon pass !!
+:00401373	84C9		test cl, cl			;teste si cl AND (ET LOGIQUE) cl = 1 
+(6):00401375	7416		je 0040138D		;Si oui(donc si cl=1 , -> 1 AND 1 = 1)  alors on jump vers 0040138D
+:00401377	8A5001		mov dl, byte ptr [eax+01]	;met le bit eax+1 dans dl
+:0040137A	8A5E01		mov bl, byte ptr [esi+01]	;idem, met le bit esi+1 dans bl
+:0040137D	8ACA		mov cl, dl			;met dl dans cl					} Recommence la 
+:0040137F	3AD3		cmp dl, bl			;compare dl et bl					}comparaison caractere
+(5b):00401381	750E		jne 00401391		;si dl n'est pas égal à bl alors on jump vers 00401391	}par caractere
+:00401383	83C002		add eax, 00000002		; ajoutte 2 à eax
+:00401386	83C602		add esi, 00000002		; ajoutte 2 à esi
+:00401389	84C9		test cl, cl			;teste si cl AND cl = 1 donc si cl=0 ou si cl=1
+:0040138B	75DC		jne 00401369		;si eax n'est pas égal à 0 alors on jump vers 00401369 (15 lignes + haut)
+;Fin de strcmp, ca fait long quand meme, non ?
+;_________________________________
+___________
+(7);On arrive ici uniquement si le mot de passe est correct !
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:00401375(C)
+|
+(8):0040138D	33C0		xor eax, eax		; effectue un XOR sur eax donc le met à 0 (1 XOR 1 = 0 et 0 XOR 0 = 0)
+(9):0040138F	EB05		jmp 00401396		; jump vers 00401396 (10 lignes + bas pour les neuneux ;)
+
+___________
+(10);On arrive ici uniquement si le mot de passe est INcorrect, et ouais, pas de chance !
+* Referenced by a (U)nconditional or (C)onditional Jump at Addresses:
+|:00401371(C), :00401381(C)
+|
+(11a):00401391	1BC0		sbb eax, eax		;met eax à 0 (soustrait eax à eax, en gros ca fait eax = eax - eax donc eax = 0 !)
+(11b):00401393	83D8FF		sbb eax, FFFFFFFF	;soustrait 4294967295 ( FFFFFFFF en hexadécimal) à eax d'où eax= -4294967295
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:0040138F(U)
+|
+:00401396	5E		pop esi			; ici, on viens de 0040138F (10 lignes + haut !) ou de juste au dessus
+:00401397	5B		pop ebx
+:00401398	85C0		test eax, eax		;teste si eax=0 ou si eax différent de 0
+:0040139A	6A00		push 00000000
+
+* Possible StringData Ref from Data Obj -> "Reponse"		; le titre de la MessageBox !!
+				|
+:0040139C	6860504000	push 00405060
+(12):004013A1	7515		jne 004013B8		;!! LE JUMP CONDITIONNEL qui décide si le mot de passe est bon :
+							;Si eax n'est pas égal à 0 (jne->jum if not egal) alors on jump à 004013B8
+							;ce qui affiche "Mot de passe incorrect", sinon on continue et on affiche 
+							;"Mot de passe correct !"
+							;Ca ne vous rappelle pas le schémas de notre test conditionnel en C++ ?
+
+(13)* Possible StringData Ref from Data Obj -> "Mot de passe correct ! ; Le programme se sert ICI de la chaine de caracteres "Mot de passe correct !"
+				|
+:004013A3	6848504000	push 00405048		;met 00405048 sur la pile  } les paramètres adéquats 
+:004013A8	6A00		push 00000000		;met 00000000 sur la pile  } pour appeler MessageBoxA
+
+(14)* Reference To: USER32.MessageBoxA, Ord:01BEh		;Appelle l'API MessageBoxA pour afficher le message "Mot de passe correct !"
+				|
+:004013AA	FF1598404000	Call dword ptr [00404098]
+:004013B0	33C0		xor eax, eax
+:004013B2	83C420		add esp, 00000020
+:004013B5	C21000		ret 0010			;retourne au programme (repasse la main à Windows) pour gérer d'autres 
+							;évènements
+
+
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:004013A1(C)
+|
+(15)* Possible StringData Ref from Data Obj -> "Mauvais mot de passe !" ; Le programme se sert ICI de la chaine de caracteres "Mauvais mot de passe !"
+							 ;(devinez pour faire quoi ...)
+				|
+:004013B8	6830504000	push 00405030		;met 00405030 sur la pile  } les paramètres adéquats 
+:004013BD	6A00		push 00000000		;met 00000000 sur la pile  } pour appeler MessageBoxA
+
+(16)* Reference To: USER32.MessageBoxA, Ord:01BEh		;Appelle l'API MessageBoxA pour afficher le message "Mauvais mot de passe !"
+				|
+:004013BF	FF1598404000	Call dword ptr [00404098]
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Addresses:
+|:00401323(C), :00401345(C)
+|
+:004013C5	33C0		xor eax, eax
+:004013C7	83C420		add esp, 00000020
+:004013CA	C21000		ret 0010			;retourne au programme (repasse la main à Windows) pour gérer d'autres 
+							;évènements
+
+______________________________________________________________________________________________________
+Donc, plus clairement, on se trouve face à ce schémas de protection :
+
+   (1)- Click sur le bouton OK 
+   (2)- GetDlgItemTextA récupère le contenu du champs de texte, cad le mot de passe que vous avez entré
+   (3)- Le vrai mot de passe (2057) est mis dans esi
+   (4)- On rencontre l'équivalent de notre fonction strcmp en assembleur :
+          les 2 chaines ( le mot de passe entré et le vrai) sont comparées caractere par caractere.  Dès lors il y a 2 possibilités :
+ 	- le test cmp dl, bl affirme que les 2 caracteres sont différents donc que les mots de passe le sont; le programme jump en 
+ 	  00403391 (jne 00403391), branchement qui peut se faire aussi bien en (5a) qu'en (5b)
+ 	- le test test cl, cl nous indique que nous sommes arrivés à la fin d'une des deux chaines sans avoir quitté la boucle, c'est donc
+	  que les 2 chaines de caracteres sont identiques, et donc que le mot de passe entré est bon. Le programme jump alors en (6)
+	  vers 0040138D
+#  (7)- On arrive là uniquement si le mot de passe est correct
+           (8)+ le xor eax, eax met eax à 0
+           (9)+ le jmp 00401396 nous fait éviter la routine mauvais mot de passe (10)
+
+# (10)- On entre dans la routine Mauvais mot de passe appelée en (5a) ou en (5b)
+ (11a)- le sbb eax, eax met eax à 0 
+ (11b)- et sbb eax, FFFFFFFF soustrait 4294967295 ( FFFFFFFF en hexadécimal) à eax d'où eax= -4294967295
+
+(12)- C'est LE JUMP CONDITIONNEL qui décide si le mot de passe est bon :
+         Si eax n'est pas égal à 0 (jne->jum if not egal), ce qui se produit lorqu'on vient de directement de (11b) alors on jump à 004013B8 (15)
+         ce qui affiche "Mauvais mot de passe !" en (16) et ret 0010 retourne au programme (repasse la main à Windows) pour gérer d'autres évènements
+         sinon on continue en (13) et on affiche "Mot de passe correct !" en (14) avant de rendre la main au programme avec ret 0010
+         Ca ne vous rappelle pas le schémas de notre test conditionnel en C++ ?
+
+[Dead Listing]
+La phase de désassemblage terminée, il faut passer au crack proprement dit : cad repérer les instructions à modifier pour changer la facon dont le
+programme s'exécute, donc pour qu'il accepte n'importe quel mot de passe.
+Note : lorsque vous effectuez la recherche du code hexadécimal d'une instruction dans un programme, il est conseillé de l'accompagner
+de ceux des autres instructions à proximité, pour la simple et bonne raison qu'il peut exister à plusieurs endoits dans le programme.
+Par exemple dans le cas où on rechercherait le jump conditionnel jne 004013B8 de code hexadécimal 7515 :
+
+D'abord, on regarde les instructions aux alentours et on note leurs codes hexadécimaux :
+:0040139C	6860504000	push 00405060	; on note le code hexadécimal de l'instruction : 6860504000
+:004013A1	7515		jne 004013B8	;on note le code hexadécimal de l'instruction que l'on recherche : 7515
+Et enfin on les met bout à bout, ce qui nous donne la séquence hexadécimale suivante : 68605040007515. Maintenant, si vous recherchez ca
+à la place de 7515, votre recherche à beaucoup plus de chance d'aboutir au bon endroit du premier coup.
+
+Comme nous l'avons vu ci-dessus, le jump décisif s'effectue en 004013A1 :
+(12):004013A1	7515		jne 004013B8
+On pourrait etre tenté de d'inverser ce jump, ce qui donnerait 7415 je 004013B8, mais il existe toujours la possibilité que la personne entre le vrai mot de 
+passe, il serait alors dans ce cas le seul à etre refusé. LA SOLUTION est plus simple : il suffit que le jump vers 004013A1 n'aie jamais lieu pour que le
+mot de passe soit toujours accepté. Nous allons donc nopper ce jump, c'est à dire l'annuler, en le remplacant par l'instruction assembleur nop
+(instruction nulle). Pour cela, il suffit de remplacer 7515 (code hexadécimal de jne 004013B8) par 9090, c'est à dire 2 fois le code hexadécimal de nop.
+Ouvrez CrackMe.exe avec votre héditeur hexadécimal et recherchez en hexadécimal 68605040007515 (à ce propos, en hexadécimal il faut que vous 
+fassiez attention à ne pas prendre le 0 : zéro pour la lettre O majuscule qui n'existe pas en hexa). Une fois que vous y etes, remplacez 68605040007515
+par 68605040009090 et enregistrez. Voila, le programme est cracké, tout mot de passe entré est interpreté comme correct.
+
+
+<=={ Partie 2 }==>
+
+[Diffusion du crack]
+Vous aurez peut etre envie de diffuser un programme que vous avez cracké. Mais parfois ils peuvent atteindre des tailles de plusieurs Mo, meme zippés,
+ce qui est long à transmettre, surtout par modem ;) En fait il existe un bon moyen pour pallier à ce genre de problème : l'utilisation de cracks. Les cracks
+sont de petits programmes ( en général moins de 100 Ko) qui modifient le programme à cracker bit par bit comme vous le feriez avec un héditeur
+hexadécimal. Leur programmation est relativement simple en C/C++. Voila, en premier lieu, les sources du crack de CrackMe.exe :
+
+//###
+//				Le programme <CrackerK> v1.0 en C++
+//Pour réussir du premier coup à compiler utilisez (heum..., j'ai honte de le dire ;) plutot Micro$oft Visual C++
+//-Créez un projet application console, choisissez un "A simple application" et collez ces sources dans la feuille principale.
+//-Appuyez sur F5 pour compiler et lancer le prog
+//-Enjoy !!
+
+#include "stdafx.h"
+#include "stdio.h"
+#include "fstream.h"
+#include "conio.h" //pour getchar
+
+int main(int argc, char* argv[])
+{
+	try	//debut du bloc try, bloc de gestion d'erreur (en basic ca équivaut en gros à On erro goto GestionErreurs)
+	{
+	printf("        -= CrackerK. v1.0 by KicKEr =-\n");	//}	;)
+	printf("        kickerman@caramail.com\n\n\n");	//}	;)
+	ofstream ofs("CrackMe.exe", ios::in|ios::binary);   //(1) Ouvre le fichier CrackMe.exe en mode binaire
+
+	if(ofs.fail()){	// Si erreur, alors explications ...
+		printf("Erreur a l'ouverture du fichier CrackMe.exe\n\n");
+		printf("Veuillez verifier :\n");
+		printf("- que vous avez bien place ce crack dans le meme repertoire ");
+		printf("que le fichier \nCrackMe.exe\n");
+		printf("- que le fichier CrackMe.exe n'est ni en lecture seule ni en fichier cache\n\n");
+		return 0;	//Quitte et renvoie 0
+	}
+
+	printf("Fichier CrackMe.exe ouvert...\n");  // affiche Fichier CrackMe.exe ouvert... à l'écran
+
+	int pos = ((0x13a*16)+1);	//(2) Calcul le No de l'octet débutant la séquence à patcher
+	ofs.seekp(pos);		//(3) Positionne le "curseur" d'écriture dessus
+
+ 	printf("Positionnement sur le debut de la sequence d'octets a patcher : en %Xh \neffectue ...\n",pos); //Affiche le msg
+	//Note : le spécificateur de format %Xh permet d'afficher un nombre décimal en hexdécimal (ici pos)
+
+	__int8 aCrack[] = {0x90, 0x90};		// (4) tableau stoquant les octets à écrire| note :  __int8 a deux fois _	;)
+	ofs.write( (char*) aCrack, sizeof(aCrack)); 	// (5) écris ces octets à la suite, par dessus ceux à patcher
+
+
+	printf("\nOctets patches !\n");
+	ofs.close(); 	//Ferme le fichier
+
+	printf("Crack termine avec succes : OK !\n\n");
+	printf("Appuyez sur une touche pour continuer ...\n");
+
+	int wait = getch();	//Attend que la personne appuie sur une touche
+	}
+
+	catch(...){		//Intercepte toutes les erreurs survenue dans le bloc try
+		printf("Une erreur est survenue pendant le crack ...\n");
+		printf("Impossible de cracker.\n Bye !");
+		return 0; //Quitte et renvoie 0
+	}
+
+	return 0; //Quitte le programme : tout s'est bien passé.
+}
+//###
+
+Le principe du crack : 
+Comme nous l'avons vu plus haut, les octets '75' et '15' en hexadécimal du jump décisif jne 004013B8 (cf partie 1) deviennent respectivement '90' et '90' 
+(toujours en hexadécimal). Mais si le patch avec un éditeur hexadécimal ne requiert que la séquence hex. à modifier pour la localiser parmis tout le reste 
+du programme, le crack #par programmation# reste moins simple à mettre en place : la recherche et la localisation des octets à modifier requiert un 
+algorythme avancé, ce qui n'est pas abordable dans un tutoriel qui se veux accessible aux débutants. Alors une fois de plus j'ai du faire un choix ( c mon
+choix ;) : un compromis entre la simplictité d'une part et la rapidité et l'agréabilité(!) d'emploi d'autre part : le repérage des octets à patcher n'est pas 
+obtenu par une recherche au moment de l'exécution dans le fichier mais par le codage en dur de leur position depuis le début du fichier dans notre crack.
+Bon, c'est dur d'etre clair, prenons un exemple et vous allez comprendre. Mettons que nous ayons ouvert un fichier avec un éditeur hex. et que ca nous
+donne ca : (Pour recréer l'expérience, mettez "Tutoriel par KicKEr : Art Of Cracking" dans un fichier texte et ouvrez le avec votre éditeur hex)
+_____________________________________________________________________________________________
+Offset			Hexadécimal						String
+_____________________________________________________________________________________________
+0			54 75 74 6f 72 69 65 6c 20 70 61 72 20 4b 69 63			Tutoriel par Kic
+1			4b 45 72 20 3a 20 41 72 74 20 4f 66 20 43 72 61 			KEr : Art Of Cra
+2			63 6b 69 6e 67 00 						cking
+_____________________________________________________________________________________________
+
+{Remplacement}
+Mettez que nous voulions patcher ce fichier et remplacer "KicKEr" par "xyzefg". Avec votre éditeur vous iriez sur la lettre K et vous taperiez
+xyzefg, ce qui transformerait 4b 69 63 4b 45 72  en 78 79 7a 65 66 67( je ne l'ai pas inventé, tapez le vous meme et vous verrez).
+Avec le crack, c'est une autre histoire, la méthode diffère. En premier lieu, il faut positionner le "curseur d'écriture" dans le fichier sur 4b (lettre K) et
+ensuite écrire les nouveaux octets par dessus les anciens. Ainsi KicKEr devient progressivement :
+0-KicKEr  1-xicKEr  2-xycKEr 3-xyzKEr 4-xyzeEr  5-xyzefr et enfin 6-xyzefg.
+Jusque là, rien de bien compliqué. Mais le plus dur reste à faire : pour positionner le "curseur d'écriture" sur 4b il faut que nous sachions quel est sa
+position par rapport au début du fichie (en gros : "c'est le 'combientième' octet depuis le début du fichier ?"). 'On peut compter !', celle là je la vois déjà
+arriver. Ok, ca marche avec les tout petits fichiers mais pas avec les .exe normaux. Ce fichier fait 37 octets (je fait confiance à Windowz), mais imaginez
+un exe de 100 Ko ! Environ 102 400  octets ! (1024x100 ;). 
+Donc LA technique c'est de trouver une formule qui permet de trouver le No de l'octet par rapport au début du fichier en connaissant seulement 
+l'offset (ici 0) et la position du premier octet à patcher dans cet offset. On sait qu'il ya 16 octets par ligne (cf schémas ci-dessus) et que le 1er offset
+commence à 0, le second à 1,... On tire rapidement la formule (enfin surtout moi ;)   : Numéro de l'octet = (Offset x 16) + éloignement du bord de 
+l'offset - 1. Ainsi si nous voulons savoir quel est le Numéro de l'octet 4b (le 1er K de KicKEr) :
+Numéro de l'octet 4b = (0 x 16)+ 14 - 1 =14 - 1 = 13. En fait si vous comptez vous tombez sur 14, mais le compte des octets s'effectue à partir de 0 et non
+de 1, c'est donc le 14ème mais c'est le numéro 13. De facon analogue, Numéro de l'octet 3a(les :)= (1x16)+5-1=16+4=20 (bien que ce soit le 21ème).
+
+La formule marche parfaitement, passons maintenant à ce qui nous intéresse vraiment: le Numéro de l'octet 75 de jne 004013B8 dans CrackMe.exe
+premièrement recherchons son offset : avec votre éditeur hex cherchez 68605040007515 (cf partie 1 pour ceux qui sont perdus), vous tombez sur ca :
+_____________________________________________________________________________________________
+Offset			Hexadécimal					String
+_____________________________________________________________________________________________
+139			05 1b c0 83 d8 ff 5e 5b 85 c0 6a 00 |68 60 50 40 		ÀƒØÿ^[…Àj
+13a			00 75 15| 68 48 50 40 00 6a 00 ff 15 98 40 40 00 		.uhHP@.ÿ˜@@
+_____________________________________________________________________________________________
+
+Placez vous sur la seconde ligne(là ou il y a 7515). Tout à gauche de l'écran vous pouvez voir 13a (si il y a 13a0 enlevez le 0 c'est en trop)
+et bien c'est l'offset, mais en hexadécimal donc convertissez le en décimal (utilisez la calculatrice de Windows en mode scientifique), ce qui nous donne
+314 en décimal (en C vous pouvez directement mettre le nombre en hex. dans une équation, il suffit de le faire précéder de 0x comme ceci : 0x13a)
+Maintenant comptons l'éloignement du bord de l'offset de 75 : deux. Et grace à la petite formule : 
+Numéro de l'octet 75 = (314x16)+2-1=5024+1=5025 et voila, pas plus compliqué que ca !! Vous venez de comprendre à quoi sert l'instruction 
+int pos = ((0x13a*16)+1); //(2) dans le programme CrackerK !
+
+Certaines instructions méritent quelques explications :
+
+- ofstream ofs("CrackMe.exe", ios::in|ios::binary);   //(1) Ouvre le fichier CrackMe.exe en mode binaire pour l'écriture. fos restant un identificateur
+permettant d'accéder plus tard au fichier pour l'écriture par exemple...
+
+- int pos = ((0x13a*16)+2-1);	//(2)Notre fameuse formule qui calcule le No de l'octet 75 débutant la séquence à patcher (=5025)
+
+- ofs.seekp(pos);		//(3) Positionne tout simplement le "curseur" d'écriture sur l'octet 75 de No d'octet 5025, la prochaine opération d'écriture
+dans le fichier aura lieu à partir de cet octet voir {Remplacement}.
+
+- __int8 aCrack[] = {0x90, 0x90};		// (4) tableau stoquant les octets à écrire : ici on stoque les valeurs 0x90 et 0x90 c'est à dire deux fois
+la valeur 90 en hexadécimal. Le 0x (zéro et lettre x) est une convention pour désigner une valeur hex dans tout programme C. Si vous voulez stoquez plus
+de valeurs par exemple modifier les octets lors de l'écriture par 147590 et bien vous devez remplacer :
+  __int8 aCrack[] = {0x90, 0x90}; par  __int8 aCrack[] = {0x14, 0x75, 0x90};
+Note : j'utilise un __int8 c'est à dire un small integer codé sur 8 bits, donc sur un octet car c'est le format idéal pour écrire en hexadécimal.
+
+- ofs.write( (char*) aCrack, sizeof(aCrack)); 	// (5) écris les octets contenus dans le tableaux aCrack à la suite, par dessus ceux à patcher.
+Pour les curieux, le prototype de write est : ofstream::write(const E *s, streamsize n);, ce qui implique donc de caster aCrack en chaine de caracteres,
+en pointeur sur char grace à (char*) aCrack et de donner la taille à écrire dans le fichier grace à sizeof(aCrack).
+
+-Et enfin int wait = getch(); attend que la personne appuie sur une touche et la stoque dans wait. J'utilise getch() pour que la personne aie le temps de voir
+les messages à l'écran avant que le programme ne quitte.
+
+Une dernière chose, pour les programmes qui nécessitent plusieurs patchs dans des endroits différents, voila la marche à suivre :
+
+	// 1er patch
+	prinf("1er patch ...");
+	int pos1 = ((???*16)+Eloignement -1);		//(2) Calcul le No de l'octet débutant la 1ère séquence à patcher
+	ofs.seekp(pos1);				//(3) Positionne le "curseur" d'écriture dessus
+	__int8 aCrack1[] = {0xValeurHex, 0xValeurHex};
+	ofs.write( (char*) aCrack1, sizeof(aCrack1)); 	// (5) écris ces octets à la suite, par dessus ceux à patcher
+
+	//2eme patch
+	prinf("2eme patch ...");
+	int pos2 = ((???*16)Eloignement -1);	 	//(6) Calcul le No de l'octet débutant la 1ère séquence à patcher
+	ofs.seekp(pos2);				//(7) Positionne le "curseur" d'écriture dessus
+	__int8 aCrack2[] = {0xValeurHex, 0xValeurHex,........}; //... bref vous pouvez en mettre plus si vous le désirez ...
+	ofs.write( (char*) aCrack2, sizeof(aCrack2)); 	// (9) écris ces octets à la suite, par dessus ceux à patcher
+	
+	//3eme patch... et ainsi de suite.. en gros changez le nom des variables comme je l'ai fait.
+
+	prinf("Crack terminé !!");
+
+	
+[THE END]
+Bon, pour conclure cet article qui fait pres de 30ko (- je vous laisse réfléchier à combien ca fait d'octets -), sachez qu'il existe deux sortes de crackeurs :
+-les crackeurs qui mettent leur savoir au service du piratage, pour l'argent ou le fun et -ceux qui pratiquent le reverse engeneering par plaisir, souvent par
+jeux et qui sont des crackeurs 'positifs', aidant parfois au développement de nouvelles protections. La distinction n'est pas tres marquée tout simplement
+parce que la grande majorité des crackeurs que vous rencontrerez sur le web seront ceux qui s'affichent en tant que crackers de la première catégorie,
+et non des reverseurs qui préfèrent garder le silence. Pensez y, ne vous méprenez pas sur mon compte, ne vous méprenez pas sur leur compte.
+
+Et pour finir, quelques urlz pour que vous puissiez trouver un peu d'aide si besoin :
+-www.Multiprog.fr.st : mon site, avec des tutoriels sur comment programmer vos propres outils de hack, de crack et des articles sur plusieurs 
+thèmes pour ceux qui débutent en programmation, aussi bien C/C++, PHP, Basic, ...
+-www.Hackoustik.org : le site officiel du zine underground Hackoustik. Venez télécharger le #2 !
+
+'//Begin PGP Fake
+pgp = "Hsffu{!up![zdlfs-!Tojqfs-!UIF!MPSE-!Ebsl`Bohfm-!upvu!mf!dsfx!e(Ibdlpvtujl/psh!fu!upvu!dfvy!rvf!kf!o(bj!qbt!qv!djufs!gbvuf!ef!qmbdf/"
+For i = 1 To Len(pgp)
+a = (Asc(Mid(pgp, i, 1)) - 1)
+gz = gz + Chr(a)
+Next i
+Msgbox gz
+'//End PGP
+
+_____________________________
+__--==Knowledge is power ! ==--__
+greetz to 2057 ! 
+By KicKEr.
+kickerman@caramail.com
+_____________________________
+
+[EOF]
+

@@ -1,0 +1,275 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Translator" content="Michel Arboi">
+<meta name="Description"
+      content="Traduction française de la FAQ de sci.crypt">
+<meta name="Keywords" content="cryptologie, cryptographie, cryptanalyse,
+      cryptology, cryptography, sci.crypt, FAQ, traduction, français,
+      traduction française, base, texte clair, libellé, texte chiffré, 
+      cryptanalyse différentielle,    
+      cryptogramme, force brute, incassable, casser, DES,
+      texte clair connu, texte chiffré seul, texte clair choisi,
+      texte chiffré choisi, texte clair choisi adaptatif, 
+      libellé connu, cryptogramme seul, libellé choisi,
+      cryptogramme choisi, libellé choisi adaptatif">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FAQ de sci.crypt, Chapitre 3: cryptologie de base</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><FONT SIZE="5" FACE="Arial">Cryptologie de base</FONT></H1>
+<P><STRONG><FONT FACE="Arial">Table des mati&egrave;res</FONT></STRONG>
+
+<UL>
+	<LI><FONT SIZE="2" FACE="Arial">1.1. </FONT><A HREF="scicryptFR3.htm#1"><FONT SIZE="2" FACE="Arial">Qu'est-ce que la cryptologie?
+	La cryptographie? Un texte clair? Un texte chiffr&eacute;? Le chiffrement? Une cl&eacute;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.2. </FONT><A HREF="scicryptFR3.htm#2"><FONT SIZE="2" FACE="Arial">Avec quels livres puis-je
+	d&eacute;marrer en cryptographie?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.1. </FONT><A HREF="scicryptFR3.htm#3"><FONT SIZE="2" FACE="Arial">Comment fait-on de la cryptanalyse?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.4. </FONT><A HREF="scicryptFR3.htm#4"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une recherche
+	par force brute et quelle est sa signification?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.5. </FONT><A HREF="scicryptFR3.htm#5"><FONT SIZE="2" FACE="Arial">Quelles sont les propri&eacute;t&eacute;s
+	v&eacute;rifi&eacute;es par tous les syst&egrave;mes de chiffrements forts</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.6. </FONT><A HREF="scicryptFR3.htm#6"><FONT SIZE="2" FACE="Arial">Si un syst&egrave;me de chiffrement
+	est th&eacute;oriquement incassable, alors l'est-il en pratique?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.7. </FONT><A HREF="scicryptFR3.htm#7"><FONT SIZE="2" FACE="Arial">Pourquoi tant de gens utilisent-ils
+	encore des syst&egrave;mes relativement faciles &agrave; casser?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">1.8. </FONT><A HREF="scicryptFR3.htm#8"><FONT SIZE="2" FACE="Arial">Quelles sont les types de
+	cryptanalyses de base?</FONT></A>
+</UL>
+
+
+<BLOCKQUOTE>
+	<H2><A NAME="1"></A><FONT SIZE="4" FACE="Arial">1.1. Qu'est-ce que la cryptologie? La cryptographie? Un texte clair?
+	Un texte chiffr&eacute;? Le chiffrement? Une cl&eacute;?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Le d&eacute;but de l'histoire: quand Jules C&eacute;sar envoyait des messages, il
+	ne faisait pas confiance aux messagers. Alors il rempla&ccedil;ait chaque A par un D, chaque B par un E et ainsi
+	de suite. Seuls ceux qui connaissaient la r&egrave;gle </FONT><CITE><FONT SIZE="2" FACE="Arial">d&eacute;calage
+	de 3</FONT></CITE><FONT SIZE="2" FACE="Arial"> pouvaient d&eacute;chiffrer le message. <BR>
+	<BR>
+	Un cryptosyst&egrave;me ou un syst&egrave;me de chiffrement est une m&eacute;thode permettant de camoufler des
+	messages de telle fa&ccedil;on que seules certaines personnes puissent les lire. La cryptographie est l'art de
+	cr&eacute;er et d'utiliser de tels syst&egrave;mes. La cryptanalyse est l'art de casser ces cryptosyst&egrave;mes
+	-- de voir &agrave; travers le camouflage. La cryptologie est l'&eacute;tude de la cryptographie et de la cryptanalyse.
+	<BR>
+	<BR>
+	Le texte original est appel&eacute; texte clair ou libell&eacute;. Le texte camoufl&eacute; est appel&eacute; texte
+	chiffr&eacute; ou cryptogramme. Le chiffrement est la m&eacute;thode qui convertit le texte clair en cryptogramme.
+	Le d&eacute;chiffrement est l'inverse. <BR>
+	<BR>
+	Un cryptosyst&egrave;me est g&eacute;n&eacute;ralement un ensemble d'algorithmes. Ces algorithmes sont &eacute;tiquet&eacute;s;
+	les &eacute;tiquettes sont appel&eacute;es cl&eacute;s. Par exemple, C&eacute;sar a probablement utilis&eacute;
+	la m&eacute;thode d&eacute;calage de N avec des valeurs de N diff&eacute;rentes. Il est naturel de dire que N est
+	la cl&eacute;. <BR>
+	<BR>
+	Les gens qui re&ccedil;oivent les messages sont les destinataires. Les autres sont les ennemis, les adversaires,
+	les intercepteurs, les espions...</FONT>
+	<H2><A NAME="2"></A><FONT SIZE="4" FACE="Arial">1.2. Avec quels livres puis-je d&eacute;marrer en cryptographie?</FONT></H2>
+	<P><EM><FONT SIZE="2" FACE="Arial">The Codebreakers</FONT></EM><FONT SIZE="2" FACE="Arial"> de Kahn [</FONT><EM><FONT
+	SIZE="2" FACE="Arial">la guerre des codes secrets</FONT></EM><FONT SIZE="2" FACE="Arial">] est encyclop&eacute;dique
+	aussi bien sur le plan technique qu'historique jusqu'au milieu des ann&eacute;es 60. <BR>
+	<BR>
+	Gaines ou Sinkov sont des introductions &agrave; la cryptanalyse. Ils sont recommand&eacute;s &agrave; ceux qui
+	veulent inventer leurs algorithmes car c'est une erreur courante d'essayer de faire un syst&egrave;me sans savoir
+	comment en casser un. <BR>
+	<BR>
+	La s&eacute;lection d'un algorithme pour le DES a attir&eacute; l'attention de nombreux chercheurs sur les probl&egrave;mes
+	de cryptologie. De nombreux manuels ont &eacute;t&eacute; publi&eacute;s suite &agrave; &ccedil;a. Le livre de
+	Denning est une bonne introduction &agrave; un large &eacute;ventail de techniques de s&eacute;curit&eacute; comprenant
+	les algorithmes de chiffrement, la s&eacute;curit&eacute; des bases de donn&eacute;es, le contr&ocirc;le d'acc&egrave;s
+	et les mod&egrave;les formels de s&eacute;curit&eacute;. M&ecirc;me commentaires pour les livres de Price &amp;
+	Davies et Pfleeger. <BR>
+	<BR>
+	Les livres de Konheim et Meyer &amp; Matyas sont tr&egrave;s techniques. Konheim et Meyer ont &eacute;t&eacute;
+	tous deux directement impliqu&eacute;s dans le d&eacute;veloppement du DES et les deux livres pr&eacute;sentent
+	une analyse minutieuse du DES. Le livre de Konheim est tr&egrave;s math&eacute;matique, avec une analyse d&eacute;taill&eacute;e
+	de nombreux syst&egrave;mes classiques. Meyer et Matyas se concentrent sur les m&eacute;thodes modernes, tout particuli&egrave;rement
+	la gestion de cl&eacute;s et l'int&eacute;gration de fonctions de s&eacute;curit&eacute; dans les ordinateurs et
+	les r&eacute;seaux. Essayez G. Simmons dans si vous cherchez une documentation plus r&eacute;cente. <BR>
+	<BR>
+	Les livres de Rueppel et Koblitz se concentrent sur l'application de la th&eacute;orie des nombres et de l'alg&egrave;bre
+	&agrave; la cryptographie.</FONT>
+	<H2><A NAME="3"></A><FONT SIZE="4" FACE="Arial">1.1. Comment fait-on de la cryptanalyse?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">La cryptanalyse classique met en oeuvre une combinaison int&eacute;ressante de raisonnement
+	analytique, d'utilisation d'outils math&eacute;matiques, de recherche de motifs, de patience, de d&eacute;termination
+	et de chance. Le meilleur manuel disponible sur ce sujet est </FONT><EM><FONT SIZE="2" FACE="Arial">the Military
+	Cryptanalytics series</FONT></EM><FONT SIZE="2" FACE="Arial">. Il est clair que la comp&eacute;tence en cryptanalyse
+	est acquise pour l'essentiel en cassant des syst&egrave;mes. Une telle exp&eacute;rience est consid&eacute;r&eacute;e
+	comme si pr&eacute;cieuse que certaines cryptanalyses effectu&eacute;es par les Alli&eacute;s durant la seconde
+	guerre mondiale sont toujours classifi&eacute;es. <BR>
+	<BR>
+	La cryptanalyse des syst&egrave;mes modernes &agrave; cl&eacute;s publiques peut consister &agrave; factoriser
+	un entier ou extraire un logarithme discret. Ce n'est pas le domaine traditionnel du cryptanalyste. Ce sont les
+	sp&eacute;cialistes de th&eacute;orie des nombres qui ont le plus de succ&egrave;s contre les syst&egrave;mes &agrave;
+	cl&eacute;s publiques.</FONT>
+	<H2><A NAME="4"></A><FONT SIZE="4" FACE="Arial">1.4. Qu'est-ce qu'une recherche par force brute et quelle est sa
+	signification?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Vite fait: si f(x) = y et que vous connaissez y et que vous pouvez calculer f, vous
+	pouvez trouver x en essayant toutes les valeurs possibles. C'est la recherche brutale. <BR>
+	<BR>
+	Exemple: un cryptanalyste a trouv&eacute; un texte clair et le cryptogramme correspondant, mais il ne connait pas
+	la cl&eacute;. Il peut essayer de chiffrer le texte clair avec chacune des cl&eacute;s possibles jusqu'&agrave;
+	ce que le cryptogramme corresponde -- ou bien il peut d&eacute;chiffrer le cryptogramme pour retrouver le texte
+	clair si c'est plus rapide ainsi. <BR>
+	Dans un cryptosyst&egrave;me bien con&ccedil;u, le nombre des cl&eacute;s est si grand que la force brute est inutilisable.
+	<BR>
+	<BR>
+	Les avanc&eacute;es technologiques modifient parfois ce qui est per&ccedil;u comme &quot;possible&quot;. Par exemple,
+	le DES qui est utilis&eacute; depuis plus de 10 ans maintenant a 2^56 (soit environ 10^17) cl&eacute;s diff&eacute;rentes.
+	Un calcul n&eacute;cessitant autant d'op&eacute;rations &eacute;tait quasiment infaisable au milieu des ann&eacute;es
+	70. La situation est bien diff&eacute;rente maintenant avec les processeurs actuels et la baisse terrible du co&ucirc;t
+	par instruction. <BR>
+	Des sc&eacute;narios sont d&eacute;crits par Garron et Outerbridge. <BR>
+	[NdT: r&eacute;cemment, l'Electronic Frontier Foundation a cass&eacute; un DES en moins de trois jours avec une
+	machine sp&eacute;cialis&eacute;e qui a co&ucirc;t&eacute; moins de 250000 $. Cf. </FONT><A HREF="javascript:if(confirm('http://www.eff.org/descracker.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.eff.org/descracker.html'" tppabs="http://www.eff.org/descracker.html"><FONT
+	SIZE="2" FACE="Arial">http://www.eff.org/descracker.html</FONT></A><FONT SIZE="2" FACE="Arial">] <BR>
+	<BR>
+	Une version plus sophistiqu&eacute;e peut consister &agrave; effectuer une recherche exhaustive sur un petit ensemble
+	de cl&eacute;s possibles.</FONT>
+	<H2><A NAME="5"></A><FONT SIZE="4" FACE="Arial">1.5. Quelles sont les propri&eacute;t&eacute;s v&eacute;rifi&eacute;es
+	par tous les syst&egrave;mes de chiffrement forts?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">La s&eacute;curit&eacute; d'un syst&egrave;me solide r&eacute;side dans le secret
+	qui entoure la cl&eacute; plut&ocirc;t que dans le secret cens&eacute; entourer l'algorithme. <BR>
+	<BR>
+	Un syst&egrave;me robuste produira certainement des cryptogrammes qui paraissent al&eacute;atoires &agrave; tous
+	les tests statistiques standards.. <BR>
+	Un syst&egrave;me robuste r&eacute;sistera &agrave; toutes les attaques connues pr&eacute;c&eacute;demment. Un
+	syst&egrave;me qui n'a jamais &eacute;t&eacute; analys&eacute; est suspect. <BR>
+	<BR>
+	Si un syst&egrave;me r&eacute;ussit tous ces tests, est-il n&eacute;cessairement s&ucirc;r ? <BR>
+	Certainement pas. De nombreux syst&egrave;mes faibles ont eu l'air bons de prime abord. Toutefois, il est parfois
+	possible de d&eacute;montrer math&eacute;matiquement qu'un syst&egrave;me est fort. &quot;Si on peut casser ce
+	syst&egrave;me, alors on peut aussi r&eacute;soudre le probl&egrave;me difficile bien connu de factorisation des
+	nombres&quot;.</FONT>
+	<H2><A NAME="6"></A><FONT SIZE="4" FACE="Arial">1.6. Si un syst&egrave;me de chiffrement est th&eacute;oriquement
+	incassable, alors l'est-il en pratique?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Les m&eacute;thodes cryptanalytiques incluent ce qu'on appelle la cryptanalyse pratique:
+	l'ennemi ne va pas juste contempler le cryptogramme jusqu'&agrave; ce qu'il devine le texte clair. Par exemple,
+	il peut deviner des fragments probables du texte clair. Si le fragment est correct il peut en d&eacute;duire la
+	cl&eacute; et d&eacute;chiffrer le reste du message. Ou il peut exploiter des &quot;isologs&quot; -- le m&ecirc;me
+	libell&eacute; chiffr&eacute; avec plusieurs syst&egrave;mes ou plusieurs cl&eacute;s. Ainsi il peut trouver une
+	solution m&ecirc;me si la th&eacute;orie dit qu'il n'a pas la moindre chance. <BR>
+	<BR>
+	Quelquefois, les cryptosyst&egrave;mes fonctionnent mal ou sont mal utilis&eacute;s. Le masque jetable, par exemple,
+	perd toute sa s&eacute;curit&eacute; s'il est utilis&eacute; plus d'une fois! M&ecirc;me l'attaque &agrave; texte
+	clair choisi, o&ugrave; l'ennemi envoie des textes clairs dans le syst&egrave;me de chiffrement jusqu'&agrave;
+	en d&eacute;duire la cl&eacute;, a &eacute;t&eacute; utilis&eacute;e.</FONT>
+	<H2><A NAME="7"></A><FONT SIZE="4" FACE="Arial">1.7. Pourquoi tant de gens utilisent-ils encore des syst&egrave;mes
+	relativement faciles &agrave; casser?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Certains n'en connaissent pas de meilleurs. Les amateurs pensent souvent qu'ils
+	peuvent concevoir des syst&egrave;mes s&ucirc;rs sans savoir ce qu'un cryptanalyste averti peut faire. Et quelquefois
+	personne n'a la motivation suffisante pour passer du temps &agrave; cracker un syst&egrave;me.</FONT>
+	<H2><A NAME="8"></A><FONT SIZE="4" FACE="Arial">1.8. Quelles sont les types de cryptanalyses de base?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Une attaque cryptanalytique standard consiste &agrave; conna&icirc;tre un texte
+	clair et le cryptogramme correspondant et d'en d&eacute;duire la cl&eacute;. Ce texte clair peut &ecirc;tre connu
+	parce qu'il est standard (une formule de politesse, un en-t&ecirc;te ou une phrase connu...) ou parce qu'il a &eacute;t&eacute;
+	devin&eacute;. Si on devine qu'un texte est contenu dans un message, sa position est probablement inconnue, mais
+	le message est souvent assez court pour que le cryptanalyste puisse essayer toutes les positions possibles et attaque
+	chaque cas en parall&egrave;le. Dans ce cas, le texte connu peut &ecirc;tre quelque chose de si commun qu'on est
+	s&ucirc;r qu'il sera dans le message. <BR>
+	<BR>
+	Un syst&egrave;me de chiffrement robuste sera incassable non seulement via la cryptanalyse &agrave; texte clair
+	connu (en supposant que l'ennemi connaisse tout le texte clair pour un cryptogramme donn&eacute;) mais &eacute;galement
+	face au texte clair choisi adaptatif -- une attaque qui rend la vie du cryptanalyste beaucoup plus facile. Dans
+	cette attaque, l'ennemi choisit quel va &ecirc;tre le texte clair N+1 seulement apr&egrave;s avoir analys&eacute;
+	le cryptogramme N. <BR>
+	<BR>
+	Par exemple, d'apr&egrave;s ce que l'on sait, le DES est raisonnablement robuste m&ecirc;me face &agrave; une attaque
+	&agrave; texte clair choisi adaptatif -- l'attaque que Biham et Shamir ont utilis&eacute;e. <BR>
+	Bien s&ucirc;r, nous n'avons pas acc&egrave;s aux secrets des services de cryptanalyse du gouvernement. On suppose
+	que le DES est raisonnablement robuste face &agrave; l'attaque &agrave; texte clair connu et que le triple DES
+	est tr&egrave;s robuste face &agrave; toutes les attaques. <BR>
+	<BR>
+	En r&eacute;sum&eacute;, les types de bases d'attaques dans l'ordre de difficult&eacute; pour le cryptanalyste
+	(la plus dure d'abord) sont:</FONT>
+</BLOCKQUOTE>
+
+
+<OL>
+	<OL>
+		<LI>
+	</OL>
+</OL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Cryptogramme seul: l'attaquant poss&egrave;de seulement le message chiffr&eacute;
+	et doit d&eacute;terminer le texte clair, sans aucune connaissance sur son contenu. <BR>
+	On consid&egrave;re en g&eacute;n&eacute;ral que cette attaque est possible, et la r&eacute;sistance d'un syst&egrave;me
+	face &agrave; elle est la base de la s&eacute;curit&eacute; cryptographique.</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Texte clair connu: l'attaquant poss&egrave;de le texte clair et le cryptogramme
+	correspondant d'un message qu'il n'a pas choisi. Le message est dit compromis. <BR>
+	Dans certains syst&egrave;mes, une seule paire libell&eacute;/cryptogramme compromet tout le syst&egrave;me, y
+	compris les communications pass&eacute;es et futures, et la r&eacute;sistance &agrave; cette attaque est caract&eacute;ristique
+	d'un code s&ucirc;r. <BR>
+	Dans les attaques suivantes, l'attaquant a la possibilit&eacute; de &quot;sugg&eacute;rer&quot; &agrave; l'envoyeur
+	de chiffrer ou d&eacute;chiffrer des textes arbitraires. Les codes qui r&eacute;sistent &agrave; ces attaques ont
+	la s&eacute;curit&eacute; la plus &eacute;lev&eacute;e.</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Texte clair choisi: l'attaquant a la possibilit&eacute; de trouver le cryptogramme
+	correspondant &agrave; un libell&eacute; de son choix.</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Cryptogramme choisi: l'attaquant peut choisir des cryptogrammes et trouver les libell&eacute;s
+	correspondants. Cette attaque peut &ecirc;tre utilis&eacute;e dans des syst&egrave;mes &agrave; cl&eacute; publique,
+	elle r&eacute;v&egrave;le la cl&eacute; priv&eacute;e.</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Texte clair choisi adaptatif: l'attaquant peut d&eacute;terminer les cryptogrammes
+	correspondant &agrave; une s&eacute;rie de textes clairs choisis de fa&ccedil;on interactive ou it&eacute;rative,
+	en se basant sur les r&eacute;sultats pr&eacute;c&eacute;dents. C'est le nom g&eacute;n&eacute;ral pour une m&eacute;thode
+	d'attaque des chiffres produits appel&eacute;e cryptanalyse diff&eacute;rentielle.</FONT>
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

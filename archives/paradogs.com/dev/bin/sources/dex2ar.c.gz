@@ -1,0 +1,194 @@
+/* 
+ * dex2ar.c v0.01 Andrew Kieschnick <andrewk@mail.utexas.edu>
+ *
+ * converts dexdrive savegames to caetla/ar format
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
+/*
+ * quick file format info:
+ *
+ * Dex file format
+ *
+ *  - filesize always 134976 bytes
+ *  - magic is 123-456-STD
+ *  - psx filename is at 0xfca
+ *  - psx data is at 0x2f40
+ *  - number of blocks is at offsets 0x16 - 0x24, starting at 0x16, 
+ *     count bytes != 0xa0
+ *
+ *  - There is other crap in a dex file, it might be necessary to make
+ *     a Caetla/AR to Dex converter.
+ *
+ *
+ * Caetla/AR format
+ *
+ *  - filename at 0x0
+ *  - data at 0x36
+ *
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void usage(void)
+{
+  printf("Usage: dex2ar <dexfile> <caeltafile>\n\n");
+  printf("\t<dexfile>\tthe dex savegame file\n");
+  printf("\t<caetlafile>\tthe caetla/ar savegame file\n\n");
+  exit(0);
+}
+
+void main(int argc, char *argv[])
+{
+  FILE *dex;
+  FILE *caetla;
+  char temp[256];
+  char filename[256];
+  int i;
+  int size;
+  unsigned char foobar;
+  char *data;
+
+  printf("dex2ar v0.01 Andrew Kieschnick <andrewk@mail.utexas.edu>\n\n");
+
+  if (argc!=3)
+    usage();
+
+  strncpy(filename,argv[1],256);
+
+  dex=fopen(filename, "rb");
+
+  if (!dex)
+    {
+      printf("ERROR: Can't open %s\n",filename);
+      exit(-1);
+    }
+
+  for(i=0;i<11;i++)
+    fscanf(dex, "%c", &temp[i]);
+  temp[11]=0;
+
+  if (strncmp(temp, "123-456-STD", 11))
+    {
+      printf("ERROR: %s does not appear to be a dex savegame file\n",filename);
+      exit(-1);
+    }
+  
+  fseek(dex, 0, SEEK_END);
+  
+  size=ftell(dex);
+
+  if (size < 134976) /* All dex files are 134976 bytes */
+    {
+      printf("ERROR: %s appears to be truncated\n",filename);
+      exit(-1);
+    }
+  else if (size > 134976)
+    {
+      printf("ERROR: %s appears to be corrupt (file too long)\n",filename);
+      exit(-1);
+    }
+
+  strncpy(filename,argv[2],256);
+
+  caetla=fopen(filename, "wb");
+
+  if (!caetla)
+    {
+      printf("ERROR: Can't open %s\n",filename);
+      exit(-1);
+    }
+
+  fseek(dex, 0xfca, SEEK_SET); /* The filename is at offset 0xfca in dex */
+
+  fscanf(dex, "%c", &temp[0]);
+  i=0;
+  
+  while(temp[i]!=0)
+    {
+      i++;
+      fscanf(dex, "%c", &temp[i]);
+    }
+
+  printf("PSX filename is: %s\n", temp);
+
+  fprintf(caetla, "%s", temp); /* The filename is at the start in caetla/ar */
+
+  fseek(caetla, 0x36, SEEK_SET); /* Data starts at 0x36 in caetla/ar */
+
+  fseek(dex, 0x16, SEEK_SET); /* Info on number of blocks is at 0x16 in dex */
+
+ /* count the number of bytes != 0xa0 starting from offset 0x16 to get the 
+  * number of blocks in a dex save.
+  */
+
+  size=0;
+  fscanf(dex, "%c", &foobar);
+  
+  while (foobar != 0xa0)
+    {
+      size++;
+      fscanf(dex, "%c", &foobar);
+    }
+
+  if (size==0)
+    {
+      printf("ERROR: dex savegame appears to be empty\n");
+      fclose(caetla);
+      unlink(filename);
+      exit(-1);
+    }
+
+  if (size>15)
+    {
+      printf("ERROR: dex savegame appears to have more than 15 blocks\n");
+      fclose(caetla);
+      unlink(filename);
+      exit(-1);
+    }
+  
+  printf("File is %d blocks (%d bytes)\n",size,size*8192);
+
+  fseek(dex, 0x2f40, SEEK_SET); /* data is at offset 0x2f40 in dex */
+
+  data = malloc(size*8192);
+
+  if (!data)
+    {
+      printf("ERROR: could not malloc %d bytes\n",size*8192);
+      fclose(caetla);
+      unlink(filename);
+      exit(-1);
+    }
+
+  fread(data, 8192, size, dex);
+  fwrite(data, 8192, size, caetla);
+
+  free(data);
+
+  fclose(dex);
+  fclose(caetla);
+}
+
+
+  
+  
+
+  

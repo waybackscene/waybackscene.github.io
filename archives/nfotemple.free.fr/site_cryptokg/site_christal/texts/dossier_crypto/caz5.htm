@@ -1,0 +1,456 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Keeper Reversing</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<P>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of Keeper</FONT></H1>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">by</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P>
+<P>I found another proprietary crap on my way. This one was just too easy to break in, so i just give a simplified
+solution, with source code, as usual {;-) Maybe one day i should create my own page, and stop invading yours!!!
+But it's a good thing to have all the stuff gathered in one location.</P>
+<P>I received <A HREF="javascript:if(confirm('http://www.amazon.com/exec/obidos/ASIN/0079137598/comsecsolutionsc/002-8867828-3465825  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.amazon.com/exec/obidos/ASIN/0079137598/comsecsolutionsc/002-8867828-3465825'" tppabs="http://www.amazon.com/exec/obidos/ASIN/0079137598/comsecsolutionsc/002-8867828-3465825"
+target="blank">Randy's book</A> last week, it's great!</P>
+<P>
+<H3>Note:</H3>
+<P>The book Caz refers to is the <I>ICSA Guide to Cryptography</I>, by Randy Nichols. In chapter 21, pp. 617-624
+Nichols discusses &quot;Reverse Engineering to Snag the Password,&quot; which includes part of Casimir's Essay,
+<A HREF="javascript:if(confirm('http://www.fortunecity.com/skyscraper/coding/379/caz2a.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.fortunecity.com/skyscraper/coding/379/caz2a.htm'" tppabs="http://www.fortunecity.com/skyscraper/coding/379/caz2a.htm">&quot;CRACKING OF ENCRYPT-IT FOR WINDOWS.&quot;
+</A>--JP</P>
+<P>How are you doing with the paper for Bruce?</P>
+<P>
+<H3>Note:</H3>
+<P>A while ago, Bruce Schneier asked me to summarize Caz's reversal and cracking of WinXFiles for his &quot;Cryptogram.&quot;
+I summarized it, but I am not sure he will use it -- it is pretty technical...--JP</P>
+<P>Looks like Bruce had Mike Stay, a cryptographer at AccessData, write a cryptographic summary of WinXFiles to
+use in lieu of my somewhat esoteric reversal-assembly essay for Counterpane's February &quot;CRYPTO-GRAM.&quot;
+You should subscribe to it at: <A HREF="javascript:if(confirm('http://www.counterpane.com/crypto-gram.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.counterpane.com/crypto-gram.html'" tppabs="http://www.counterpane.com/crypto-gram.html">Counterpane Systems.</A> It's
+free and informative. The February issue is primarily on snake oil. --JP</P>
+<P>A la prochaine</P>
+<P>Caz</P>
+<P>
+<HR ALIGN="CENTER">
+</P>
+<P>YAC by</P>
+<PRE>                         
+      +++++                  +++          +       +
+     +            +++       +   +   +++   ++     ++         ++++ 
+    +            +   +       +       +    + +   + +   +++   +   +
+    +          +++++++++      +      +    +  +++  +    +    +   +
+     +         +       +       +     +    +   +   +    +    ++++   
+      +++++   +         +   +   +   +++   +   +   +    +    +  +
+                             +++                      +++   +   +
+
+</PRE>
+<P>defenceless target: Keeper v3.0 by VictoryServices</P>
+<P>location: <A HREF="javascript:if(confirm('http://www.innovators.com/products/PlanetGroup/planetkeeper.asp  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.innovators.com/products/PlanetGroup/planetkeeper.asp'" tppabs="http://www.innovators.com/products/PlanetGroup/planetkeeper.asp">PlanetKeeper</A></P>
+<P>I decided cracking this program after reading their hilarious help file:</P>
+
+<BLOCKQUOTE>
+	<P>Why should I use Keeper?</P>
+	<P>There once was a man at the Zoo that had so many animals he did not know what to do. He would get them them,
+	he would lose them and he would eventually find them. He called his friend the Keeper and ask him what to do.</P>
+	<P>Keeper said to him, &quot;Let me watch over them and I will tell you what to do&quot;. Well, Keeper watched
+	and he thought and he watched and he thought, and after a while he learned what he should do;</P>
+	<P>&quot;Each type of animal that lives in the Zoo should have its own place - we will make them houses so we know
+	where they are too.&quot; he explained to the owner. From that day on, the Zoo owner never had problems with lost
+	or missing animals - and the Keeper was happy that he could be of service.</P>
+	<P>Like the owner of the Zoo, we have a lot of animals to keep track of - except our animals come in the form of
+	digital information. There are many different digital animals out there - the Password, the Serial Number and the
+	Registration number just to name a few of them. Although they may be digital, they are like the zoo animals - they
+	can not be found when you really need them.</P>
+	<P>Wouldn't it be great if there was a digital Zoo Keeper to keep track of these digital animals? Well, now there
+	is and it goes by the name of Keeper.</P>
+	<P>Taken from the Keeper Help file - copyright (c) Geoffrey Steffens.
+</BLOCKQUOTE>
+
+<P>Well, i would not give a penny for their crypto-software, but i'd really like to know what drug(s) they're using
+{:-)</P>
+<P>Anyway, this app doesn't deserve a fully-documented cracking procedure with tons of asm listing. If for some
+obscure reason you're interested in such details, e-mail <A HREF="mailto:casimir2@club-internet.fr">Casimir</A>
+me, i'll tell you the whole story.</P>
+<P>Launch Keeper, enter pwd: CASIMIR. Keeper creates a file called keeper.dat in same directory. Now exit Keeper
+without storing anything inside, and edit keeper.dat. The 9 first characters are:</P>
+<P>
+<PRE>			8hMAn=LAe
+</PRE>
+<P>Then we have many 00 and 8hMAn=LAe again. Nothing else. We can assume that 8hMAn=LAe is a sort of fingerprint
+of correct password.</P>
+<P>Here is the important stuff:</P>
+<P>Keeper uses a table to perform encryption and decryption of both password and data.</P>
+<P>Table : 97 ASCII characters, all different</P>
+<PRE>		8x3p5Beabcdfghij	
+		klmnoqrstuvwyzAC
+		DEFGHIJKLMNOPQRS
+		TUVWXYZ 1246790-     //position 56: SPACE
+		.#/\!@$&amp;*()[]{
+		}';:,?=+~`^|%_       //position 95: Carriage Return
+                &quot;                    //position 96: Line Feed
+</PRE>
+<P>We start at position 1 with 8 and we end up at position 97 with &quot;: Table[01]=8 Table[97]=&quot;</P>
+<P>
+<PRE>To check if input=pwd, Keeper also uses a check string which is 9 characters long: 
+Check string:	ClearText 
+
+If input equal     good pwd, then Check string equal:     ClearText
+If input not equal good pwd, then Check string not equal: ClearText
+
+
+     Check string  -&gt;  C   l   e   a   r   T   e   x   t
+Position in Table  -&gt;  32  18  07  08  23  49  07  02  25
+</PRE>
+<H2 ALIGN="CENTER">How check works</H2>
+<P>Suppose you enter 123456 instead of CASIMIR. How can Keeper tell this is not the good pwd?
+<H3>1. Keeper looks up respective positions in Table for Fingerprint:</H3>
+<P>
+<PRE>      Fingerprint  -&gt;  8   h   M   A   n   =   L   A   e
+Position in Table  -&gt;  01  14  42  31  20  87  41  31  07
+</PRE>
+<H3>2. Keeper looks up respective positions in Table for Input:</H3>
+<P>
+<PRE>            Input  -&gt;  1   2   3   4   5   6
+Position in Table  -&gt;  57  58  03  59  05  60
+</PRE>
+<P>But Keeper needs 9 characters to perform check. So if Input is &lt; 9 characters, it starts reading it again
+from the beginning:</P>
+<PRE> Input (extended)  -&gt;  1   2   3   4   5   6   1   2   3
+Position in Table  -&gt;  57  58  03  59  05  60  57  58  03
+</PRE>
+<H3>3. Keeper subtracts Fingerprint'positions from extended Input'positions::</H3>
+<P>
+<PRE>New position in    -&gt;  57-01 58-14 03-42 59-31 05-20 60-87 57-41 58-31 03-07
+    Table          -&gt;  56    44    -39   28    -15   -27   16    27    -04       
+</PRE>
+<H3>4. Two cases::</H3>
+<P>
+<PRE>	* position &lt;  0 : position = position + 1 + 97
+	* position &gt;= 0 : position = position + 1 
+</PRE>
+<P>So we obtain:</P>
+<PRE>Position in Table  -&gt;  57  45  59  29  83  71  17  28  94         
+</PRE>
+<H3>5. Keeper reads Table at specific positions to obtain Check string::</H3>
+<P>
+<PRE>     Check string  -&gt;  1   P   4   y   ;   $   k   w   _
+Position in Table  -&gt;  57  45  59  29  83  71  17  28  94   
+</PRE>
+<H3>6. Keeper compares Check string::</H3>
+<P>1P4y;$kw_ to: ClearText. They differ, so Input is wrong. With Input: CASIMIR we would obtain Check string: ClearText,
+and Keeper would let us in.</P>
+<P>
+<H2 ALIGN="CENTER">How we break it</H2>
+<P>Given a Fingerprint and knowing that Check string is: ClearText, we can easily guess what good input is.</P>
+<P>
+<PRE>Fingerprint is made of 9 known characters:   f1 f2 f3 f4 f5 f6 f7 f8 f9
+    Input is made of 9 unknown characters:   i1 i2 i3 i4 i5 i6 i7 i8 i9
+
+We look for i1,...,i9.
+
+      Fingerprint  -&gt;  f1    f2    f3    f4    f5    f6    f7    f8    f9
+Position in Table  -&gt;  pf1   pf2   pf3   pf4   pf5   pf6   pf7   pf8   pf9
+
+            Input  -&gt;  i1    i2    i3    i4    i5    i6    i7    i8    i9
+Position in Table  -&gt;  pi1   pi2   pi3   pi4   pi5   pi6   pi7   pi8   pi9
+
+New position in Table 
+-&gt; pi1-pf1 pi2-pf2 pi3-pf3 pi4-pf4 pi5-pf5 pi6-pf6 pi7-pf7 pi8-pf8 pi9-pf9
+
+
+To obtain ClearText, we must have:  positions = good positions (respectively 
+32, 18, ... , 25)
+
+	pi1 - pf1 = 32 -&gt; pi1 = 32 + pf1 
+	pi2 - pf2 = 18 -&gt; pi2 = 18 + pf2
+	pi3 - pf3 = 07 -&gt; pi3 = 07 + pf3
+	pi4 - pf4 = 08 -&gt; pi4 = 08 + pf4 
+	pi5 - pf5 = 23 -&gt; pi5 = 23 + pf5
+	pi6 - pf6 = 49 -&gt; pi6 = 49 + pf6
+	pi7 - pf7 = 07 -&gt; pi7 = 07 + pf7 
+	pi8 - pf8 = 02 -&gt; pi8 = 02 + pf8
+	pi9 - pf9 = 25 -&gt; pi9 = 25 + pf9
+
+
+And we have 2 cases again:
+
+	* position &lt;= 98 : position = position - 1
+	* position  &gt; 98 : position = position - 1 - 97 
+ 
+For instance, let's recover pwd whose Fingerprint is: 8hMAn=LAe  
+
+      Fingerprint  -&gt;  8   h   M   A   n   =   L   A   e
+Position in Table  -&gt;  01  14  42  31  20  87  41  31  07
+
+   pi1 = 32+pf1 = 32+01 = 33&lt;=98  -&gt; i1 = Table[33-1]     = Table[32] = C 
+   pi2 = 18+pf2 = 18+14 = 32&lt;=98  -&gt; i2 = Table[32-1]     = Table[31] = A
+   pi3 = 07+pf3 = 07+42 = 49&lt;=98  -&gt; i3 = Table[49-1]     = Table[48] = S
+   pi4 = 08+pf4 = 08+31 = 39&lt;=98  -&gt; i4 = Table[39-1]     = Table[38] = I
+   pi5 = 23+pf5 = 23+20 = 43&lt;=98  -&gt; i5 = Table[43-1]     = Table[42] = M  
+   pi6 = 49+pf6 = 49+87 = 136&gt;98  -&gt; i6 = Table[136-1-97] = Table[38] = I 
+   pi7 = 07+pf7 = 07+41 = 48&lt;=98  -&gt; i7 = Table[48-1]     = Table[47] = R 
+   pi8 = 02+pf8 = 02+31 = 33&lt;=98  -&gt; i8 = Table[33-1]     = Table[32] = C  
+   pi9 = 25+pf9 = 25+07 = 32&lt;=98  -&gt; i9 = Table[32-1]     = Table[31] = A
+
+</PRE>
+<P>Because of wrap, we have 2 pwds possible: CASIMIR and CASIMIRCA. Keeper will stupidly accept both of them, but
+only one will correctly decrypt data. So if data looks weird, try the other pwd found! (there will never be more
+than TWO possible pwds)</P>
+<P>
+<H2 ALIGN="CENTER">Conclusions</H2>
+<P>Obviously, Keeper can't check pwd longer than 9 characters. Anyway, it doesn't matter 'cause Keeper keeps only
+the first 9 characters from your pwd !!! Yes, the encryption key is only 9 bytes long... quite short!</P>
+<P>You probably noticed there is no extended character in Table: in fact Keeper just can't handle extended characters
+set.</P>
+<P>Well, you may understand now why i recommend NOT using this big crap!</P>
+<P>And now, TARATATA!!! C source-code for CRKEEPER.EXE -----------------------------------------------------------------------------
+
+<UL>
+	<PRE>#include &lt;stdio.h&gt;
+#include &lt;io.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;dir.h&gt;
+#include &lt;string.h&gt;
+#include &lt;dos.h&gt;
+#include &lt;alloc.h&gt;
+#include &lt;malloc.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+#include &lt;conio.h&gt;
+#include &lt;math.h&gt;
+
+#define TRUE 1
+#define FALSE 0
+
+const int table_size=97;
+const int check_size=9;
+
+//table used by Keeper v3.0
+static int Table[table_size]={0x38,0x78,0x33,0x70,   0x35,0x42,0x65,0x61,
+                              0x62,0x63,0x64,0x66,   0x67,0x68,0x69,0x6A,
+                              0x6B,0x6C,0x6D,0x6E,   0x6F,0x71,0x72,0x73,
+                              0x74,0x75,0x76,0x77,   0x79,0x7A,0x41,0x43,
+                              0x44,0x45,0x46,0x47,   0x48,0x49,0x4A,0x4B,
+                              0x4C,0x4D,0x4E,0x4F,   0x50,0x51,0x52,0x53,
+                              0x54,0x55,0x56,0x57,   0x58,0x59,0x5A,0x20,
+                              0x31,0x32,0x34,0x36,   0x37,0x39,0x30,0x2D,
+                              0x2E,0x23,0x2F,0x5C,   0x21,0x40,0x24,0x3C,
+                              0x3E,0x26,0x2A,0x28,   0x29,0x5B,0x5D,0x7B,
+                              0x7D,0x27,0x3B,0x3A,   0x2C,0x3F,0x3D,0x2B,
+                              0x7E,0x60,0x5E,0x7C,   0x25,0x5F,0x0D,0x0A,
+                              0x22};
+
+//check_string used by Keeper v3.0: ClearText
+static int Good_pos[check_size]={32,18,7,8,23,49,7,2,25};
+
+/****************************** PROTOTYPES *********************************/
+void Fill_pattern(int , int ** , int *);
+void Print_pwd(int , int *);
+int Multiple(int , int);
+int Redundant(int , int , int * , int *);
+void Hi_folks(void);
+void Calc_finger_pos(int , unsigned char * ,int **);
+void Calc_pwd_pos(int , int * , int **);
+void Wait_key(void);
+void Read_fingerprint(unsigned char ** , int);
+
+/********************************* MAIN ************************************/
+main()
+{
+const int finger_size=9;
+int pat_size,redund,i;
+int *Pattern,*Password,*Finger_pos,*Pwd_pos;
+unsigned char *Fingerprint;
+
+Pattern=(int *)malloc(sizeof(int)*finger_size);
+Fingerprint=(unsigned char *)malloc(sizeof(char)*finger_size);
+
+Hi_folks();
+
+//read Fingerprint from file: keeper.dat
+Read_fingerprint(&amp;Fingerprint,finger_size);
+
+//calculate positions in Table for Fingerprint
+Calc_finger_pos(finger_size,Fingerprint,&amp;Finger_pos);
+
+//calculate positions in Table for Password
+Calc_pwd_pos(finger_size,Finger_pos,&amp;Pwd_pos);
+
+//fill Password
+for(i=0;i&lt;finger_size;i++)
+   {
+   Password[i]=Table[Pwd_pos[i]-1];
+   }
+
+//check if we have a redundand pwd (ex: 123123123)
+redund=FALSE;
+for(pat_size=1;pat_size&lt;finger_size;pat_size++)
+   {
+   Fill_pattern(pat_size,&amp;Pattern,Password);
+   if(Redundant(pat_size,finger_size,Pattern,Password))
+      {
+      redund=TRUE;
+      Print_pwd(pat_size,Pattern);
+      if(!Multiple(pat_size,finger_size)) {Print_pwd(finger_size,Password);}
+      break;
+      }
+   }
+
+if(redund==FALSE) {Print_pwd(finger_size,Password);}
+
+Wait_key();
+exit(0);
+}
+
+
+/****************************** FUNCTIONS **********************************/
+
+/***************************************************************************/
+/*          we have: Pwd_pos[i] = Good_pos[i] +  Finger_pos[i]             */
+void Calc_pwd_pos(int finger_size,int *Finger_pos,int **Pwd_pos)
+{
+int i,j,pos;
+
+for(i=0;i&lt;finger_size;i++)
+   {
+   pos=Good_pos[i]+Finger_pos[i];
+   if(pos&lt;=(table_size+1)) {(*Pwd_pos)[i]=pos-1;}
+   else {(*Pwd_pos)[i]=pos-table_size-1;}
+   }
+}
+
+/***************************************************************************/
+/*   find positions in Table for Fingerprint'characters                    */
+/*   ex: &quot;a&quot; = 0x61 -&gt; position = 8                                        */
+void Calc_finger_pos(int finger_size,unsigned char *Fingerprint,
+		     int **Finger_pos)
+{
+int i,j;
+
+for(i=0;i&lt;finger_size;i++)
+   {
+   for(j=0;j&lt;table_size;j++)
+      {
+      if(Fingerprint[i]==Table[j])
+	 {
+	 (*Finger_pos)[i]=j+1;
+	 break;
+	 }
+      }
+   }
+}
+
+/***************************************************************************/
+/*   returns 1 if pattern is redundant (even if only partially), 0 if not  */
+/*     for instance with pattern=ABC:                                      */
+/*     ABCABCABC  -&gt; redundant                                             */
+/*     ABCABCABCA -&gt; redundant                                             */
+/*     ABCDABCABC -&gt; not redundant                                         */
+int Redundant(int pat_size,int pwd_size,int *Pattern,int *Password)
+{
+int i;
+
+for(i=pat_size;i&lt;pwd_size;i++)
+   {
+   if(Password[i]!=Pattern[fmod(i,pat_size)]) {return(0);}
+   }
+return(1);
+}
+
+/***************************************************************************/
+/* Read the first pat_size characters from Block and store them in Pattern */
+void Fill_pattern(int pat_size,int **Pattern,int *Password)
+{
+int i;
+
+for(i=0;i&lt;pat_size;i++) {(*Pattern)[i]=Password[i];}
+}
+
+/***************************************************************************/
+/*                        display password along with ASCII values         */
+void Print_pwd(int pwd_len,int *Pwd)
+{
+int i;
+
+printf(&quot;\n\n ASCII seq: &quot;);
+for(i=0;i&lt;pwd_len;i++)
+   {
+   printf(&quot;[%d]&quot;,Pwd[i]);
+   if((i+1)%10==0) {printf(&quot;\n            &quot;);}
+   }
+
+printf(&quot;\n\n  PASSWORD: &gt;&gt;&gt;&quot;);
+for(i=0;i&lt;pwd_len;i++)
+   {
+   printf(&quot;%c&quot;,Pwd[i]);
+   }
+printf(&quot;&lt;&lt;&lt; (%d characters)\n\n&quot;,pwd_len);
+printf(&quot;(don't type &gt;&gt;&gt; and &lt;&lt;&lt;)\n&quot;);
+}
+
+/***************************************************************************/
+/*     return 1 if b = n*a   with n integer                                */
+/*     return 0 otherwise                                                  */
+int Multiple(int a,int b)
+{
+int remain;
+
+remain=fmod(b,a);
+if(remain==0) {return(1);}
+return(0);
+}
+
+/***************************************************************************/
+void Hi_folks(void)
+{
+printf(&quot;\n\nYet Another Password Cracker by CASIMIR {;-)&quot;);
+printf(&quot;\n-&gt; Target: Keeper v3.0 by VictoryServices\n&quot;);
+}
+
+/***************************************************************************/
+/*   Called only once, reads first finger_size characters from keeper.dat  */
+/*   This string is the Fingerprint we rely on to recover password         */
+void Read_fingerprint(unsigned char **Fingerprint,int finger_size)
+{
+int fn;
+// try to open file keeper.dat
+fn=open(&quot;keeper.dat&quot;,O_BINARY|O_RDONLY);
+switch(fn)
+   {
+   case -1:printf(&quot;\nFILE keeper.dat NOT FOUND!&quot;);
+   printf(&quot;\nkeeper.dat MUST be in SAME directory as Cracker!\n&quot;);
+   Wait_key(); exit(0);
+   }
+
+//(*Buffer)=(unsigned char *)malloc(sizeof(char)*buf_size);
+// read first check_size characters of file
+read(fn,*Fingerprint,finger_size);
+close(fn);
+}
+
+/***************************************************************************/
+/*                   wait for key pressed                                  */
+void Wait_key()
+{
+printf(&quot;\n\n&quot;);
+printf(&quot;              XXXXXXXXXXXXXXXXXXXXXXX\n&quot;);
+printf(&quot;              X hit any key to eXit X\n&quot;);
+printf(&quot;              XXXXXXXXXXXXXXXXXXXXXXX\n&quot;);
+getch();       //kbhit
+}
+</PRE>
+	If you need more info, contact me at: <A HREF="mailto:casimir2@club-internet.fr">Casimir</A>
+	<P>Converted to hypertext by Joe Peschel Feb. 14, 1999.
+</UL>
+
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,141 @@
+body {
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;}
+
+
+#titre_print {
+display:none;}
+
+
+#contenu a {
+font-size:20px;
+color: #FF7700;
+text-decoration:none;
+}
+
+#contenu .page_suivante {
+float:right;}
+
+#contenu .page_suivante  a{
+text-decoration:none;
+color: #000000;}
+
+#contenu .page_suivante  img{
+text-decoration:none;
+border:none;
+color: #000000;}
+
+
+#contenu .page_suivante  a:hover{
+text-decoration:none;
+color: #000000;
+background:none;}
+
+#contenu p.w3c  a{
+text-decoration:none;
+color: #000000;}
+
+#contenu p.w3c  img{
+text-decoration:none;
+border:none;
+color: #000000;}
+
+
+#contenu p.w3c  a:hover{
+text-decoration:none;
+color: #000000;
+background:none;
+padding-left:0;}
+
+#contenu a:hover {
+text-decoration:none;
+font-size:20px;
+color: #FF00FF;
+padding-left:30px;
+padding-top:20px;
+background: url(images/link1.jpg) bottom left no-repeat; }
+
+#titre {
+position: absolute;
+top: 0px; 
+left: 0;
+height: 287px; 
+width: 810px;
+white-space :nowrap;
+background: url(images/HEADER.gif) top left no-repeat; }
+
+#menu {
+position: absolute;
+top: 287px; 
+left: 0;
+height: 349px; 
+width: 250px;
+white-space :nowrap;
+background: url(images/menu.jpg) top left no-repeat;
+font-size: 18px; }
+
+#menu ul {list-style:none; margin: 150px 0px 0px 65px; padding :0;}
+
+#menu a {text-decoration:none; color: #000000;}
+
+#menu a:hover {
+color: white; 
+background: #FF7700; 
+border-bottom:3px solid #000000;
+border-top:3px solid #000000;}
+
+#contenu {
+position: absolute;
+top: 300px; 
+left: 250px;
+font-size: 16px;
+margin: 20px;
+border-left: 2px solid #006600;
+background: #FCFCFF;
+padding: 5px 5px 5px 15px; }
+
+#contenu h1{
+padding: 2px 2px 2px 2px;
+display:inline;
+font-size: 30px;
+color : white;
+background : #777777 ;
+}
+
+#contenu h2{
+padding: 2px 2px 2px 2px;
+text-indent: 30px;
+display:inline;
+font-size: 25px;
+color : white;
+background : #DDDDDD ;
+}
+
+#contenu p {
+text-indent: 50px;
+}
+
+#contenu pre{
+margin: 10px 0 10px 50px;
+padding: 5px 5px 5px 15px;
+border-left: 10px solid #EEEEFF;
+color: #007700;
+font-size: 15px;
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#contenu .definition {
+margin: 10px;
+padding: 5px 5px 5px 15px;
+border: 2px dotted #000000;
+color: #007700;
+background: #FFFFDD;
+font-size: 15px;
+font-family:Trebuchet MS,Tahoma, Arial, Helvetica, sans-serif;
+}
+
+
+
+#contenu h6{
+float:none;
+text-align:center;
+}

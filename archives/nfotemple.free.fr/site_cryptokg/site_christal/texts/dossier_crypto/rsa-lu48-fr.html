@@ -1,0 +1,289 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Cracking Tutorial, (c) Lucifer48 / ID</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="black" BGCOLOR="#FFFFCC" LINK="blue" ALINK="red" VLINK="purple">
+
+<P ALIGN="CENTER"><B><FONT SIZE="6"></FONT></B></P>
+
+<P ALIGN="CENTER"><B><FONT SIZE="6"><BR>
+R.S.A.<BR>
+(#rsa4newbies)</FONT></B><BR>
+<BR>
+<FONT SIZE="5">(v1.2) par Lucifer48 [Immortal Descendants]<BR>
+(5 F&eacute;vrier 2000)</FONT>
+<P><BR>
+
+<HR ALIGN="CENTER">
+Ron <U>R</U>ivest, Adi <U>S</U>hamir et Leonard <U>A</U>dleman ont invent&eacute; ce syst&egrave;me en <B>1978</B>.
+Il est bas&eacute; sur la difficult&eacute; de factoriser un nombre qui est le produit de deux nombres premiers.<BR>
+<BR>
+<U>Sommaire:</U>
+
+<BLOCKQUOTE>
+	<P><A HREF="rsa-lu48-fr.html#principe">Principe du RSA</A><BR>
+	<A HREF="rsa-lu48-fr.html#resume">RSA en 8 lignes</A><BR>
+	<A HREF="rsa-lu48-fr.html#exemples">Un peu de pratique</A><BR>
+	<A HREF="rsa-lu48-fr.html#conclusion">Conclusion</A>
+</BLOCKQUOTE>
+
+<P><BR>
+
+<HR ALIGN="CENTER">
+<!-- ***************************************************************************** --> <A NAME="principe"></A><B><U><FONT
+SIZE="5">Principe du RSA</FONT></U></B><BR>
+<BR>
+Soient <B>p</B> et <B>q</B>, deux nombres premiers. Posons: <B>n = p * q</B><BR>
+<BR>
+<U>Remarque</U>: Il est conseill&eacute; de choisir des <I>grands</I> nombres premiers. En effet, il est facile
+de retrouver <B>p</B> et <B>q</B> lorque <B>n</B> est petit...<BR>
+<BR>
+<B>n</B> est la seconde partie de la clef (publique et priv&eacute;e). On doit maintenant trouver un nombre <B>e</B>,
+tel que <B>e</B> et <B>(p-1)*(q-1)</B> soient premiers entre eux.<BR>
+<BR>
+<U>Remarque</U>: Le PGCD (GCD en anglais) d&eacute;signe le <U>P</U>lus <U>G</U>rand <U>C</U>ommun <U>D</U>iviseur.
+Pour trouver le pgcd de deux entiers positifs, on utilise l'algorithme d'<B>Euclide</B>. Ansi:</P>
+<PRE><FONT COLOR="green">PGCD(a,b) = PGCD(b,a) = PGCD(b, a mod b)
+et PGCD(c,0) = c
+</FONT></PRE>
+<P>On dit que a et b sont premiers entre eux si PGCD(a,b)=<B>1</B>. Il est aussi possible de trouver la notation:
+a est premier <B>avec</B> b.<BR>
+<BR>
+<U>Remarque2</U>: Les seuls &eacute;l&eacute;ments inversibles de <B><I>Z</I>/(p-1)(q-1)<I>Z</I></B> sont les &eacute;l&eacute;ments
+premiers avec <B>e</B>. Lisez la suite pour mieux comprendre.<BR>
+<BR>
+<B>e</B> est tr&egrave;s important, car il sera utilis&eacute; lors du cryptage. Calculons maintenant la premi&egrave;re
+composante de la clef priv&eacute;e (notons la <B>d</B>).</P>
+<PRE><FONT COLOR="blue">    d = inv(e) [(p-1)*(q-1)]
+&lt;=&gt; d = inv(e) dans </FONT><B><I><FONT COLOR="blue">Z</FONT></I><FONT COLOR="blue">/(p-1)(q-1)</FONT><I><FONT
+COLOR="blue">Z</FONT></I></B><FONT COLOR="blue">
+&lt;=&gt; e*d = 1 [(p-1)*(q-1)]
+&lt;=&gt; d = e^-1 mod ((p-1)*(q-1))
+</FONT></PRE>
+<P>Ces quatre notations sont &eacute;quivalentes.<BR>
+<BR>
+Plus pratiquement, on peut utiliser le th&eacute;or&egrave;me de <B>Bezout</B> pour obtenir l'inverse de <B>e</B>:</P>
+<PRE><FONT COLOR="blue">e * </FONT><B><FONT COLOR="blue">U</FONT></B><FONT COLOR="blue"> + ((p-1)*(q-1)) * </FONT><B><FONT
+COLOR="blue">V</FONT></B><FONT COLOR="blue"> = PGCD(e,(p-1)*(q-1)) = 1         (U et V sont des entiers)
+</FONT></PRE>
+<P>et donc,</P>
+<PRE><B><FONT COLOR="blue">U</FONT></B><FONT COLOR="blue"> mod ((p-1)*(q-1)) = inv(e) = e^-1
+</FONT></PRE>
+<P><U>Exemple</U>: Utilisation (manuelle) du th&eacute;or&egrave;me de <B>Bezout</B>:</P>
+<PRE><FONT COLOR="green">31 div 13 = 2 reste 5
+13 div 05 = 2 reste 3
+05 div 03 = 1 reste 1
+02 div 01 = 2 reste 0
+
+PGCD(31,13)= 1		;31 et 13 sont premiers entre eux
+
+1 = 3 - 2
+1 = 3 - (5 - 3)
+1 = 3*2 - 5
+1 = 2*(13 - 5*2) - 5
+1 = 2*13 - 4*5 - 5
+1 = 2*13 - 5*5
+1 = 2*13 -5*(31 - 13*2)
+</FONT><B><FONT COLOR="green">1 = 12*13 - 5*31</FONT></B><FONT COLOR="green">
+
+Et donc: </FONT><B><FONT COLOR="green">inv(13)=12</FONT></B><FONT COLOR="green"> (dans </FONT><B><I><FONT COLOR="green">Z</FONT></I><FONT
+COLOR="green">/31</FONT><I><FONT COLOR="green">Z</FONT></I></B><FONT COLOR="green">)
+</FONT></PRE>
+<P>Il est ensuite facile d'obtenir <B>d</B>.<BR>
+<BR>
+La clef publique est: <B>(e,n)</B>.<BR>
+La clef priv&eacute;e est: <B>(d,n)</B>.<BR>
+<BR>
+<U>Encryption</U>: Le message <B>M</B> a encrypter doit &ecirc;tre un nombre appartenant &agrave; <B><I>Z</I>/n<I>Z</I></B>
+(d&eacute;couper le texte <I>converti en chiffre</I> en petits blocs de longueur strictement inf&eacute;rieur au
+nombre de d&eacute;cimale de <B>n</B>).</P>
+<PRE><B><FONT COLOR="blue"> C = M^e [n]</FONT></B><FONT COLOR="blue">
+</FONT></PRE>
+<P><U>Remarque</U>: w appartient &agrave; <B><I>Z</I>/n<I>Z</I></B> si w &lt; n.<BR>
+<BR>
+<U>D&eacute;cryption</U>: C'est tout aussi simple.</P>
+<PRE><B><FONT COLOR="blue"> M = C^d [n]</FONT></B><FONT COLOR="blue">
+</FONT></PRE>
+<P><U>Remarque</U>: Le message aurait pu &ecirc;tre crypt&eacute; avec <B>d</B> et d&eacute;crypt&eacute; avec
+<B>e</B>. En pratique, on utilise une clef publique (d) courte et une clef priv&eacute;e (e) longue, ce qui rend
+le d&eacute;cryptage plus rapide que le cryptage.<BR>
+<BR>
+<U>Pourquoi &ccedil;a marche</U>? Courte d&eacute;monstration. Les calculs suivants sont effectu&eacute;s dans
+<B><I>Z</I>/n<I>Z</I></B>.</P>
+<PRE><FONT COLOR="green">C^d = (M^e)^d = M^(ed)
+de plus, e*d = 1 [(p-1)*(q-1)] &lt;=&gt; ed - 1 = k*(p-1)*(q-1)    </FONT><B><FONT COLOR="green">k</FONT></B><FONT
+COLOR="green"> est dans </FONT><B><I><FONT COLOR="green">N*</FONT></I></B><FONT COLOR="green">
+par suite, M^(ed) = M^(k*(p-1)*(q-1) + 1)
+Posons </FONT><B><FONT COLOR="green">u</FONT></B><FONT COLOR="green">= k*(p-1)*(q-1) + 1
+si M^u = M [p] et M^u = M [q] alors, M^u = M [p*q]
+et comme n=p*q, il s'ensuit que
+C^d = M
+</FONT></PRE>
+<P><U>Remarque</U>: On aurait pu aussi utiliser le th&eacute;or&egrave;me d'<B>Euler</B> (mais n'est pas valable
+tout le temps):</P>
+<PRE><FONT COLOR="green">Si PGCD((p-1)*(q-1),M) = 1 alors </FONT><B><FONT COLOR="green">M^((p-1)*(q-1)) = 1</FONT></B><FONT
+COLOR="green">
+et donc, M^(k*(p-1)*(q-1) + 1) = M.1^k = M = C^d
+(valable uniquement si </FONT><B><FONT COLOR="green">(p-1)*(q-1)</FONT></B><FONT COLOR="green"> et </FONT><B><FONT
+COLOR="green">M</FONT></B><FONT COLOR="green"> sont premiers entre eux)
+</FONT></PRE>
+<P><BR>
+
+<HR ALIGN="CENTER">
+<!-- ***************************************************************************** --> <A NAME="resume"></A><B><U><FONT
+SIZE="5">RSA en 8 lignes</FONT></U></B><BR>
+
+
+<BLOCKQUOTE>
+	<PRE><B>n = p * q</B>  (p et q sont premiers)
+PGCD(e,(p-1)*(q-1)) = 1
+<B>d = e^-1 mod ((p-1)*(q-1))</B>
+(e,n): clef publique.
+(d,n): clef priv&eacute;e.
+p et q ne servent plus...
+<B>M^e mod n = M_crypt&eacute;</B>  (M &lt; n)
+<B>M_crypt&eacute;^d mod n = M</B></PRE>
+</BLOCKQUOTE>
+
+<P><BR>
+
+<HR ALIGN="CENTER">
+<!-- ***************************************************************************** --> <A NAME="exemples"></A><B><U><FONT
+SIZE="5">Un peu de pratique</FONT></U></B><BR>
+<BR>
+Pour tous les calculs, j'ai utilis&eacute; le logiciel <B>Mathematica</B>. Petit aper&ccedil;u:</P>
+<PRE><FONT COLOR="blue">in[1]:=</FONT>
+ <B>PrimeQ[2000]</B>
+<FONT COLOR="blue">out[1]=</FONT>
+ False
+<FONT COLOR="blue">in[2]:=</FONT>
+ <B>{ Prime[1], Prime[2], Prime[3], Prime[4], Prime[2000] }</B>
+<FONT COLOR="blue">out[2]=</FONT>
+ { 2, 3, 5, 7, 17389 }
+<FONT COLOR="blue">in[3]:=</FONT>
+ <B>PowerMod[157,-1,2668]</B>
+<FONT COLOR="blue">out[3]=</FONT>
+ 17
+<FONT COLOR="blue">in[4]:=</FONT>
+ <B>Mod[1234^31,466883]</B>
+<FONT COLOR="blue">out[4]=</FONT>
+ 446798
+<FONT COLOR="blue">in[5]:=</FONT>
+ <B>FactorInteger[519920418755535776857] //Timing</B>
+<FONT COLOR="blue">out[5]=</FONT>
+ {13.35 Second, {{22801763489, 1}, {22801763513, 1}}}
+<FONT COLOR="blue">in[6]:=</FONT>
+ <B>Needs[&quot;NumberTheory`FactorIntegerECM`&quot;]</B>
+<FONT COLOR="blue">in[7]:=</FONT>
+ <B>$Packages</B>
+<FONT COLOR="blue">out[7]=</FONT>
+ {NumberTheory`FactorIntegerECM`, Global`, System`}
+<FONT COLOR="blue">in[8]:=</FONT>
+ <B>FactorIntegerECM[519920418755535776857] //Timing</B>
+<FONT COLOR="blue">out[8]=</FONT>
+ {3.07 Second, 22801763513}
+<FONT COLOR="blue">in[9]:=</FONT>
+ <B>breakRSA[x_]:= Module[{i}, i=FactorIntegerECM[x]; List[i, x/i] ]</B>
+<FONT COLOR="blue">in[10]:=</FONT>
+ <B>breakRSA[519920418755535776857] //Timing</B>
+<FONT COLOR="blue">out[10]=</FONT>
+ {3.07 Second, {22801763513, 22801763489}}
+<FONT COLOR="blue">in[11]:=</FONT>
+ <B>GCD[31,13]</B>
+<FONT COLOR="blue">out[11]=</FONT>
+ 1
+<FONT COLOR="blue">in[12]:=</FONT>
+ <B>ExtendedGCD[31,13]</B>
+<FONT COLOR="blue">out[11]=</FONT>
+ {1, {-5, 12}}
+</PRE>
+<P><U>Remarque (importante)</U>: Pour les calculs du genre: <B>a^b [n]</B> (b positif), ne surtout pas utiliser
+la fonction <U>Mod[a^b, n]</U> mais <B>PowerMod[a,b,n]</B> qui est carr&eacute;ment plus rapide.<BR>
+<BR>
+<U>Quelques exemples</U>:
+
+<UL>
+	<LI>
+	<PRE>p = <B>113</B> ; q = <B>541</B> ; n = p * q = <B>61133</B> ; (p-1)*(q-1) = <B>60480</B>.
+Je choisis e = <B>121</B> (GCD[121,60480]=1)
+inv(e) = 57481 (inf&eacute;rieur &agrave; (p-1)*(q-1)) donc d = <B>57481</B>.
+Pour crypter <B>M=1234567890</B>, je dois donc d&eacute;couper M en petits morceaux de longueur
+inf&eacute;rieur &agrave; n (4 est ici le maximum): M1=1234, M2=5678, M3=90.
+C1 = M1^e [n] = 1234^121 [61133] = 40691
+C2 = M2^e [n] = 5678^121 [61133] = 19203
+C3 = M3^e [n] =   90^121 [61133] = 32121
+<B>C = 406911920332121</B>
+Pour d&eacute;crypter, je d&eacute;coupe le message (crypt&eacute;) en morceaux de longueur <B>n</B> (ici 5).
+M1 = C1^d [n] = 40691^57481 [61133] = 1234
+M2 = C2^d [n] = 19203^57481 [61133] = 5678
+M3 = C3^d [n] = 32121^57481 [61133] = 90
+<B>M = 1234567890</B>
+</PRE>
+	<LI>
+	<PRE>p = <B>3571</B> ; q = <B>7919</B> ; n = p * q = <B>28278749</B> ; (p-1)*(q-1) = <B>28267260</B>.
+Je choisis e = <B>213889</B> (GCD[213889,28267260]=1)
+inv(e) = 2241409 (inf&eacute;rieur &agrave; (p-1)*(q-1)) donc d = <B>2241409</B>.
+<B>M =&quot;Hello world&quot; = 7210110810811132119111114108100</B>, je d&eacute;coupe en morceaux de longueur 7:
+M1 = 7210110, M2 = 8108111, M3 = 3211911, M4 = 1114108, M5 = 100.
+C1 = M1^e [n] = 7210110^213889 [28278749] = 12840449
+C2 = M2^e [n] = 8108111^213889 [28278749] = 16339096
+C3 = M3^e [n] = 3211911^213889 [28278749] = 25181491
+C4 = M4^e [n] = 1114108^213889 [28278749] = 24666021
+C5 = M5^e [n] =     100^213889 [28278949] = 17846443
+<B>C = 1284044916339096251814912466602117846443</B>
+On d&eacute;coupe le C en morceaux de 8 chiffres.
+M1 = C1^d [n] = 12840449^2241409 [28278749] = 7210110
+M2 = C2^d [n] = 16339096^2241409 [28278749] = 8108111
+M3 = C3^d [n] = 25181491^2241409 [28278749] = 3211911
+M4 = C4^d [n] = 24666021^2241409 [28278749] = 1114108
+M5 = C5^d [n] = 17846443^2241409 [28278749] = 100
+<B>M = 7210110810811132119111114108100</B>
+</PRE>
+	<LI>
+	<PRE>p = <B>10007</B> ; q = <B>53239</B> ; n = p * q = <B>532762673</B> ; (p-1)*(q-1) = <B>532699428</B>.
+Je choisis e = <B>17</B> (GCD[17,532699428]=1)
+inv(e) = 62670521 (inf&eacute;rieur &agrave; (p-1)*(q-1)) donc d = <B>62670521</B>.
+<B>M = 123</B>
+C = M^e [n] =       123^17       [532762673] = 270099428
+M = C^d [n] = 270099428^62670521 [532762673] = 123
+</PRE>
+</UL>
+
+<PRE><FONT COLOR="blue">in[1]:=</FONT>
+ <B>solveRSA[n_, e_]:= Module[{j},  j=breakRSA[n]; PowerMod[e, -1, (First[j]-1)*(Last[j]-1)]]</B>
+<FONT COLOR="blue">in[2]:=</FONT>
+ <B>solveRSA[532762673, 17]</B>
+<FONT COLOR="blue">out[2]=</FONT>
+ Out[12]= 62670521
+</PRE>
+<P>
+<HR ALIGN="CENTER">
+<!-- ***************************************************************************** --> <A NAME="conclusion"></A><B><U><FONT
+SIZE="5">Conclusion</FONT></U></B><BR>
+<BR>
+Le RSA n'est donc pas un syst&egrave;me parfait, sa lenteur en est son principal d&eacute;faut. Le choix de <B>e</B>
+et <B>d</B> ne doit pas se faire au hasard. Cependant, il est d'une &eacute;tonnante simplicit&eacute;.<BR>
+<BR>
+Je voudrais juste terminer en disant que j'ai essay&eacute; d'expliquer les choses le plus simplement possible,
+en gardant un minimun de rigueur dans l'&eacute;criture; j'esp&egrave;re que les <I>matheux</I> n'auront pas trop
+les cheveux qui se h&eacute;risseront sur la t&ecirc;te en lisant ceci ;) toutefois, s'il y avait une erreur ou
+quelques impr&eacute;cisions, merci de bien vouloir m'&eacute;crire (je vous accorde que ma d&eacute;monstration
+est un peu incompl&egrave;te...) ; je serais ravi d'am&eacute;liorer ce tutorial :)<BR>
+<BR>
+<B><U>Greetings</U></B>: All ID members (Volatility, Torn@do, alpine, ...), SiFLyiNG, Eternal Bliss, ACiD BuRN,
+Duelist, LaZaRuS, ... and wonderful people in #cracking4newbies &amp; #win32asm (WazerPup, X-Calibre, MisterE,
+...).<BR>
+<BR>
+
+<HR ALIGN="CENTER">
+<BR>
+(c) <FONT COLOR="green">Lucifer48</FONT>. All rights reserved &amp; reversed <!-- ***************************************************************************** -->
+
+</BODY>
+
+</HTML>

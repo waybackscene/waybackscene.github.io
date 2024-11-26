@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>BeatriX - Reverse Engineering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="shortcut icon" href="images/icone.ico" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+
+</head>
+
+<body>
+<div id="fenetre">
+<div class="titre"></div>
+<div class="menu">
+<ul>
+<li><a href='index.html'>Home</a></li>
+<li><a href='articles.html'>Articles</a></li>
+<li><a href='tools.html'>Tools</a></li>
+<li><a href='minitools.html'>MiniTools</a></li>
+<li><a href='challenges.html'>Challenges</a></li>
+<li><a href='beatrix.xml'><img src="images/rss.png" title="RSS" alt="" /></a></li>
+</ul>
+</div>
+
+<div class="contenu">
+<p class="droite">  </p>
+<p class="droite">  </p>
+<div class="ligne"></div>
+
+
+<!-- ========================================================================================= -->
+<a id="yobfuscator1"></a>
+<div class="titre_tuto" >
+Obfuscation : YO-bfuscator1 - avril 2008
+</div>
+<div class="texte_tuto">
+<p>Ce petit binaire codé par YoleJedi est un exemple d’obfuscation lourde. L’objectif ici était de nettoyer le programme pour retrouver le code source originel.</p>
+<p>Pour la première fois, j’ai vraiment axé mon travail sur la mise en place d’une méthode d’analyse systématique. Pour cela, je me suis inspiré des travaux de Wroblewski sur l’obfuscation. J’ai ainsi utilisé des techniques d’attaque éprouvées comme :</p>
+<ul>
+<li>1. Analyse statistique sur les instructions du binaire</li>
+<li>2. Etude du data-flow et du control-flow</li>
+<li>3. Réalisation de slices par dynamic backward slicing..</li>
+</ul>
+<div class="download">
+<ul class="simple" >
+<li><a href="YO1/index.html">read the article</a></li>
+</ul>
+</div>
+</div>
+
+
+
+<!-- ========================================================================================= -->
+<div class="titre_tuto" >
+Guetta#5 - moult algos ! - 21 mai 2007
+</div>
+<div class="texte_tuto">
+<p>Voici un petit article qui détaille le fonctionnement d'un défi de crypto proposé par Guetta. La solution a été rédigée conjointement par waganono et moi-même. C'est un défi pour débutants qui utilise des algorithmes de cryptographie à profusion <strong>( RSA 64 et RSA 100 - SHA1 - CAST 128 bits - CRC32 - CRC16 - XTEA - BASE64)</strong>. Malgré cette imposante liste, le défi reste très simple. </p>
+<div class="download">
+<ul class="simple">
+<li><a href="keyme5/keyme5.rar">download keyme.rar</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================================================================= -->
+<div class="titre_tuto" >
+Meloquynthe - 8 mai 2007
+</div>
+<div class="texte_tuto">
+<p>J'ai réalisé une petite analyse du keygenme Meloquynthe de YoleJedi et ++meat. Je propose une analyse des fonctions <strong>waveOut</strong> qu'il utilise de façon intensive. Il est à noter que le code de ce binaire est difficile a analyser puisqu'il a été obfusqué à l'aide d'un moteur maison et qu'il est réparti sur plusieurs threads. Je propose un petit outil "DeObfuscator" qui permet de se débarasser de ce junk. Enfin, je propose une solution avec keygen pour résoudre l'algorithme de protection. </p>
+
+<div class="download">
+<ul class="simple">
+<li><a href="meloquynthe/index.html">read the article</a></li>
+</ul>
+</div>
+
+</div>
+
+<!-- ========================================================================================= -->
+<div class="titre_tuto" >
+Multi-Thread - CrkGenMe.exe - 30 juin 2006
+</div>
+<div class="texte_tuto">
+<p>CrkGenMe est un binaire codé en C++ qui utilise 9 threads pour valider le serial entré. Parmis ces threads, 2 sont des <strong>WatchDogs</strong> qui se chargent de surveiller le bon fonctionnement de tout ce petit monde. L'usage de JunkCode et d'anti-debugs rend l'analyse un peu plus difficile. J'explique ma démarche pour produire un générateur de clés valides (keygen).</p>
+<div class="download">
+<ul class="simple">
+<li><a href="crkgenme/index.html">read the article</a></li>
+</ul>
+</div>
+
+</div>
+
+
+<!-- ========================================================================================= -->
+<div class="titre_tuto" >
+Visual Basic 6 - AntiHack.exe - 20 juin 2006
+</div>
+<div class="texte_tuto">
+<p>Je propose un petit survol d'un binaire codé en VB6. L'épreuve consiste à patcher le binaire afin de faire apparaître la fenêtre de félicitations quelque soit le mot de passe entré. Un petit trick anti-debug bien sympa est utilisé ici et permet au programme de se détacher d'un debuggueur. J'ai étudié les appels aux fonctions qui sous-tendent cette technique et j'ai montré que l'utilisation du VB n'est pas suffisante a priori en matière de protection.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="antihack/index.html">read the article</a></li>
+</ul>
+</div>
+
+</div>
+
+<!-- ========================================================================================= -->
+<div class="titre_tuto" >
+Securitech 2006 - challenge 10 - 26 mai 2006
+</div>
+<div class="texte_tuto">
+<p>Cette année, le challenge de reversing de securitech nous permet d'aborder les obfuscations de code et nous oblige à coder de petits bruteforcers. J'ai choisi cette fois d'attaquer ce genre de binaire à l'aide d'une technique que j'ai baptisé le "Back-stepping" et qui consiste, tout simplement, à exécuter le binaire à l'envers.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="securitech2006/index.html">read the article</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Esoquynthe de ++meat - solution - 27 novembre 2005 
+</div>
+<div class="texte_tuto">
+<p>Esoquynthe est un petit keygenme codé en asm. Il utilise un petit moteur de nombres pseudo-aléatoires pour générer 3 bytes à chaque lancement du binaire. Combinés à une TABLE, ces octets sont utilisés pour vérifier le serial. Je propose ici un rapide aperçu des nombres pseudo-aléatoires et une analyse complète du fonctionnement de ce binaire.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="esoquynthe/intro.html">read the article</a></li>
+</ul>
+</div>
+
+</div>
+
+<!-- ========================================================================================= -->
+
+
+<div class="titre_tuto" >
+MIRACL : pamplemousse Bigbang - solution - 3 octobre 2005 
+</div>
+<div class="texte_tuto">
+<p>Voici donc la solution coomplète du crypto-keygenme Pamplemousse. Il utilise la lib MIRACl pour gérer les Bignums. L'intérêt de ce keygenme réside dans sa richesse cryptographique : SHA-1, DLP, RSA 222. L'équation à résoudre est assez impressionnante également. Bref, il s'agit bien du keygenme fait pour ceux qui aiment l'arithmétique modulaire.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="pamplemousse/intro.html">read the article</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Kaine#5 - solution du crackme - 12 juillet 2005 
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici un article détaillé qui explique le fonctionnement du crackme de Kaine, le Kaine#5. Au menu : layers, crc, redirections d'imports, tricks (inédits !) anti-debuggers ring3, tricks anti-SI, drivers de protection, machine virtuelle avec pcode obfusqué etc... vous l'aurez compris, il s'agit d'un crackme phénoménal ! </p>
+<div class="download">
+<ul>
+<li><a href="K5.pdf">read K5.pdf</a></li>
+<li><a href="K5.rar">download K5.rar</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+
+<div class="titre_tuto" >
+Securitech 2005 - Challenge de reverse de Nicolas Brulez - 5 juillet 2005 
+</div>
+<div class="texte_tuto">
+<p>Le challenge securitech étant achevé, la FRET vous propose un petit article d'analyse du binaire forwarder.exe issu
+du challenge 7 (reversing) proposé par Nicolas Brulez.</p>
+<div class="download">
+<ul>
+<li><a href="SECU2005.pdf">read SECU2005.pdf</a></li>
+<li><a href="http://beatrix2004.free.fr/forwarder.exe">download forwarder.exe</a></li>
+</ul>
+</div>
+
+</div>
+
+
+<!-- ========================================================================================= -->
+
+
+<div class="titre_tuto" >
+BugTrack#1 - exemple d'analyse virale - 28 mars 2005 
+</div>
+<div class="texte_tuto">
+<p>J'ai rédigé ce petit article à l'occasion d'un défi proposé par Neitsa et Kaine. Il s'agit d'une analyse d'un petit malware. J'explique une approche possible en statique et je vous propose les outils construits pour l'occasion. </p>
+
+<div class="download">
+<ul>
+<li><a href="bugtrack/bugtrack.pdf">read bugtrack.pdf</a></li>
+<li><a href="bugtrack/decrypteur_virus.asm">decryptor_virus.asm</a></li>
+</ul>
+</div>
+
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Analyse du ReverseMe 1 de Neitsa - 13 décembre 2004 -
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici une étude du reverseme1 proposé par Neitsa pour un défi sur ForumCrack.</p>
+
+<div class="download">
+<ul>
+<li><a href="revme1.pdf">read revme1.pdf</a></li>
+<li><a href="Revme1.rar">download Revme1.rar</a></li>
+</ul>
+</div>
+
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Comprendre FSG et l'algo de décompression de l'ApLib- 15 octobre 2004 -
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici une étude du packer FSG ainsi qu'une analyse de la compression par dictionnaire.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="FSG.pdf">read FSG.pdf</a></li>
+</ul>
+</div>
+</div>
+
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+	Comprendre le CheckSum du Header - Septembre 2004 -
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici une comparaison du calcul du checksum par Windows et WinHex.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="checksum.html">read checksum.html</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Comprendre tElock 0.98 et private version - Septembre 2004 -
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici une étude des packers tElock 0.98 et celles baptisées private versions.</p>
+<div class="download">
+<ul class="simple">
+<li><a href="TELOCK98.pdf">read TELOCK98.pdf</a></li>
+</ul>
+</div>
+</div>
+
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+Comprendre tElock 0.51 - Août 2004 -
+</div>
+<div class="texte_tuto">
+<p>Je vous propose ici une étude du packer tElock 0.51.</p>
+<div class="download">
+<ul>
+<li><a href="Comprendre&#32;tElock&#32;0.51.pdf">Comprendre tElock 0.51.pdf</a></li>
+<li><a href="TELOCK51.zip">download TELOCK51.zip</a></li>
+</ul>
+</div>
+</div>
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+	Crackme5 de _julien_ solution et keygen- juillet 2004 -
+</div>
+<div class="texte_tuto">
+<div class="download">
+<ul class="triple">
+<li><a href="crackme5.pdf">read crackme5.pdf</a></li>
+<li><a href="Keygen.zip">download Keygen.zip</a></li>
+<li><a href="crackme5.exe">download crackme5.exe</a></li>
+</ul>
+</div>
+</div>
+
+
+<!-- ========================================================================================= -->
+
+<div class="titre_tuto" >
+	Crackme1 de Mars solution - juillet 2004 -
+</div>
+<div class="texte_tuto">
+
+<div class="download">
+<ul>
+<li><a href="Crackme1-mars/Crackme1-mars.html">read the article</a></li>
+<li><a href="crackme1m.exe">download crackme1m.exe</a></li>
+</ul>
+</div>
+</div>
+
+
+<p class="griser"> Copyright (C)- BeatriX (2008)</p>
+
+
+<p class="w3c">
+<a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml11"
+        alt="Valid XHTML 1.1" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+</div>
+</div>
+</body>
+</html>

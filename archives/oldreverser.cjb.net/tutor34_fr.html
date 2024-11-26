@@ -1,0 +1,291 @@
+<html>
+<!- Notepad, the best html editor !!!  !->
+<!- what else ? !->
+
+<head><title>Cracking Tutorial, (c) ACiD BuRN / ID</title></head>
+<BODY bgcolor="#C0C0C0" text="#000000" link="#008000" vlink="#800080" alink="#FF0000">
+<center>
+<font size="+3"><b>Muad'dib Keygen Crackme #1<br></B><br></font></center><hr>
+<font size="+0">
+<pre><br>          - Afficher le bon serial &agrave; la place du msg d'erreur
+<br>          - r&eacute;-&eacute;crire une routine de contr&ocirc;le du serial (oui, je me fais chier)
+</pre>
+<br>
+<center>
+  <font size="+2">Tutorial by ACiD BuRN [Immortal Descendants]<br>
+  </font> 
+</center>
+<br>
+<br>
+<hr>
+<pre>
+
+
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S -- - м   њ     њ
+     А    м  А      м м  м       А мА          А м     м         олм   м А
+  мллВпплллнмВлппплллнолнолллппплВмоВллпплллмАмВлн пм  олллпплллмАВллм олВм
+  лллн АВллнллл Апппп ппп ллл А лллнллл  оллВАВлл А ллнолллн оллВ лллплмлллн
+  ВллппплллнлллнА АВлнлллнллл А лллнлллпппллмоллл А лллолллппВллм лллн плллн
+ АВллнА ллл ВллнА лллнлллАВлл Аолллнлллн млллолллнААВллАВллн олллнлллнА лллм
+ олллнА лллолллнА лллоллВоллл АолллАВллнАолллолллн олллнлллнА лллнлллнА ллВпм
+ олллнА лллолллнА лллоллВоллл Аолллоллл Аолллолллн олллнлллнААВлл ВллнА ллн
+ оллВ АоллВпБллмммлллБллВолллммллБпВлллммллллпллллмВлллпВлБм олп АВллл олп
+  п      пА  п    п    п       п          п         п   А    п      п  п
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S --  -    њ     њ
+                                SRT - CRO
+</pre>
+<pre>
+
+
+
+Introduction:
+Pour commencer, je fais rarement des cours en fran&ccedil;ais, on va changer &ccedil;a :)
+Je pense bient&ocirc;t &eacute;crire un cours sur le dernier Armadillo, en Fran&ccedil;ais bien s&ucirc;r :P
+et je vais bient&ocirc;t convertir tout mes tuts !!! donc voil&agrave; pour les cours en fran&ccedil;ais,
+finis de mails pour &ccedil;a ok ?? :PP
+
+Parlons de ce crackme, il faut faire un keygen, les keygens &ccedil;a commence &agrave; me gonfler, on
+va pas coder un keygen (qui d'ailleurs est tr&egrave;s simple &agrave; faire) mais forcer le crackme
+&agrave; afficher le bon serial &agrave; la place du message: "try again , Blablabla.."
+
+
+utils n&eacute;cessaires:  
+
+	- Soft-ice (it r0x)
+	- &eacute;diteur hexad&eacute;cimal
+
+
+
+
+Let's kick some ass =)
+
+
+Bon, d&eacute;j&agrave; on lance ce con de crackme, et on entre son nom: ACiD BuRN et un serial
+&agrave; 2 francs: 0800
+Ensuite dans Soft-ice (ctrl+d), on tape: Bpx hmemcpy
+On click sur Register et on arrive dans Soft-ice.. F12 pour sortir dans dlls et d&egrave;s 
+qu'on est dans le crackme on commence &agrave; tracer.
+On arrive assez vite &agrave; une routine qui contr&ocirc;le le type de nom entr&eacute; (minuscules,
+majuscules, espaces, chiffres ...) mais il y a d'abord un check sur la longueur du nom:
+
+025F:004010A3  83F804              CMP     EAX,04     <-- compare la taille du nom &agrave; 4
+025F:004010A6  7304                JAE     004010AC   <-- ok si sup&eacute;rieur ou &eacute;gal &agrave; 4
+025F:004010A8  C9                  LEAVE
+025F:004010A9  C21000              RET     0010
+
+Apres &ccedil;a, il y a le contr&ocirc;le des caract&egrave;res :
+
+025F:004010AC  BA00000000          MOV     EDX,00000000
+025F:004010B1  8A8200314000        MOV     AL,[EDX+00403100]
+025F:004010B7  3C00                CMP     AL,00
+025F:004010B9  7426                JZ      004010E1
+025F:004010BB  3C20                CMP     AL,20
+025F:004010BD  7408                JZ      004010C7
+025F:004010BF  3C41                CMP     AL,41
+025F:004010C1  7C07                JL      004010CA
+025F:004010C3  3C5A                CMP     AL,5A
+025F:004010C5  7F03                JG      004010CA
+025F:004010C7  42                  INC     EDX
+025F:004010C8  EBE7                JMP     004010B1
+025F:004010CA  6A00                PUSH    00
+025F:004010CC  687D304000          PUSH    0040307D
+025F:004010D1  684D304000          PUSH    0040304D
+025F:004010D6  6A00                PUSH    00
+025F:004010D8  E8BD000000          CALL    USER32!MessageBoxA
+
+
+Cette merde check si notre nom a des minuscules, majuscules, espaces ...
+Si c'est pas ok, &ccedil;a jump &agrave; 4010CA, et un message box nous dit d'enter que des majuscules
+et espaces...
+Merci, mais on avait compris ;)
+
+
+Donc, on sort de Soft-ice, on mets: ACID BURN comme nom, et 0800 tjs pour le serial
+et on y retourne. On trace et on tombe sur la comparaison finale:
+
+025F:0040112D  68F6304000          PUSH    004030F6      <- d 4030f6 = fake serial
+025F:00401132  6800314000          PUSH    00403100      <- d 403100 = bon serial
+025F:00401137  E840000000          CALL    KERNEL32!lstrcmp  
+025F:0040113C  83F800              CMP     EAX,00
+025F:0040113F  7517                JNZ     00401158
+025F:00401141  6A00                PUSH    00
+025F:00401143  68D3304000          PUSH    004030D3   <- d 4030D3 = Good (titre de la msg box)
+025F:00401148  6889304000          PUSH    00403089   <- d 403089 = Bon message qd tu as le serial
+025F:0040114D  6A00                PUSH    00
+025F:0040114F  E846000000          CALL    USER32!MessageBoxA
+025F:00401154  C9                  LEAVE
+025F:00401155  C21000              RET     0010
+025F:00401158  6A00                PUSH    00
+025F:0040115A  68EA304000          PUSH    004030EA   <- d 4030EA = Bad (titre de la msgbox)
+025F:0040115F  68DD304000          PUSH    004030DD   <- d 4030DD = bad boy ;p pas le bon pass
+025F:00401164  6A00                PUSH    00
+025F:00401166  E82F000000          CALL    USER32!MessageBoxA
+
+
+
+En r&eacute;sume, on voit une comparaison bon serial/mauvais serial ex&eacute;cut&eacute; par l'API
+lstrcmp, qui compare des strings. On voit un CMP EAX,00 : si la comparaison est ok 
+le serial est bon, donc EAX = 0 et on affiche le bon messagebox :)
+Sinon, &ccedil;a saute &agrave; la mauvaise box !!
+
+Ok donc pour nous, ici :
+
+025F:0040112D  68F6304000          PUSH    004030F6      <- d 4030f6 = fake serial
+025F:00401132  6800314000          PUSH    00403100      <- d 403100 = bon serial
+
+
+d 4030f6 nous donne: 0800
+d 403100 nous donne: XZP]P[LKW
+
+Le bon serial ok, mais c'est pas &ccedil;a qu'on veut :)
+On veut forcer le prog &agrave; montrer le bon serial &agrave; la place du message d'erreur :)
+Pour cela, on voit que juste avant la msg box Bad serial il y a 2 push:
+
+le caption du titre de la title bar = push 4030EA
+le texte du message du msgbox  = push 4030DD
+
+Il push ces merdes, et ensuite il affiche le message &agrave; la con !
+Donc pour lui faire afficher le bon serial tu prends l'address du push 'bon serial' et tu la
+copies &agrave; la place du push 'message comme quoi tu as foir&eacute;' !!
+
+025F:0040115A  68EA304000          PUSH    004030EA 
+025F:0040115F  68DD304000          PUSH    004030DD 
+025F:00401164  6A00                PUSH    00
+025F:00401166  E82F000000          CALL    USER32!MessageBoxA
+
+
+cela devient:
+
+
+025F:0040115A  68EA304000          PUSH    004030EA   
+025F:0040115F  6800314000          PUSH    00403100   <-- push bon serial
+025F:00401164  6A00                PUSH    00
+025F:00401166  E82F000000          CALL    USER32!MessageBoxA
+
+
+On a maintenant plus qu'&agrave; modifier physiquement notre crackme, et le bon pass appara&icirc;tra
+&agrave; la place de l'erreur :) et voil&agrave; notre super keygen pour branleurs :)
+hehe, c'est rapide, efficace, et on se fatigue pas :P
+
+on cherche donc dans l'exe: 68EA30400068DD304000 
+on remplace dans l'exe par: 68EA3040006800314000
+
+Tu saves le fichier, et tu lances, mets un serial en majuscules et goodie :))
+Le good serial appara&icirc;t, Facile ....
+
+Remarques on a toujours le titre : erreur code dans la msg box, rien ne vous emp&ecirc;che
+de le changer en: Keygen ;)
+
+
+
+Voil&agrave; c'&eacute;tait facile, je me fais chier l&agrave; donc, je vais vous montrer comment contr&ocirc;ler 
+si le serial est valide ou pas, mais d'une autre mani&egrave;re (simple aussi).
+On va donc recoder le check du serial dans Soft-ice pour s'occuper,
+&ccedil;a va prendre 10 secs, mais bon ;)
+C'est juste pour montrer qu'on peut faire bcp de choses en fait....
+
+				notre routine de base:
+
+
+025F:0040112D  68F6304000          PUSH    004030F6      <- d 4030f6 = fake serial
+025F:00401132  6800314000          PUSH    00403100      <- d 403100 = bon serial
+025F:00401137  E840000000          CALL    KERNEL32!lstrcmp  
+025F:0040113C  83F800              CMP     EAX,00
+025F:0040113F  7517                JNZ     00401158
+025F:00401141  6A00                PUSH    00
+025F:00401143  68D3304000          PUSH    004030D3   <- d 4030D3 = Good (titre de la msg box)
+025F:00401148  6889304000          PUSH    00403089   <- d 403089 = Bon message qd tu as le serial
+025F:0040114D  6A00                PUSH    00
+025F:0040114F  E846000000          CALL    USER32!MessageBoxA
+025F:00401154  C9                  LEAVE
+025F:00401155  C21000              RET     0010
+025F:00401158  6A00                PUSH    00
+025F:0040115A  68EA304000          PUSH    004030EA   <- d 4030EA = Bad (titre de la msgbox)
+025F:0040115F  68DD304000          PUSH    004030DD   <- d 4030DD = bad boy ;p pas le bon pass
+025F:00401164  6A00                PUSH    00
+025F:00401166  E82F000000          CALL    USER32!MessageBoxA
+
+
+Comparaison gr&acirc;ce &agrave; l'api lstrcmp.
+On va transcrire &ccedil;a en :
+
+
+025F:0040112D  A1F6304000          MOV     EAX,[004030F6]
+025F:00401132  8B1500314000        MOV     EDX,[00403100]
+025F:00401138  3BC2                CMP     EAX,EDX
+025F:0040113A  7405                JZ      00401141
+025F:0040113C  EB1A                JMP     00401158
+025F:0040113E  90                  NOP
+025F:0040113F  90                  NOP
+025F:00401140  90                  NOP
+025F:00401141  6A00                PUSH    00
+025F:00401143  68D3304000          PUSH    004030D3
+025F:00401148  6889304000          PUSH    00403089
+025F:0040114D  6A00                PUSH    00
+025F:0040114F  E846000000          CALL    USER32!MessageBoxA
+025F:00401154  C9                  LEAVE
+025F:00401155  C21000              RET     0010
+025F:00401158  6A00                PUSH    00
+025F:0040115A  68EA304000          PUSH    004030EA
+025F:0040115F  68DD304000          PUSH    004030DD
+025F:00401164  6A00                PUSH    00
+025F:00401166  E82F000000          CALL    USER32!MessageBoxA
+
+
+Ceci fait exactement la m&ecirc;me chose, mais n'utilise pas d'API pour comparer.
+On mets en EAX: l'adresse du serial entr&eacute;, et en EDX le bon serial.
+On les compare via : CMP EAX, EDX
+ensuite un saut conditionnel &agrave; la con et un Jump...
+Les nop n'&eacute;taient pas utile, mais &ccedil;a fait plus clean ;)
+Voil&agrave;, le prog contr&ocirc;le si le serial est valide d'une autre mani&egrave;re, &ccedil;a sert &agrave;
+rien, c'&eacute;tait juste pour montrer ce qu'on peut faire avec de l'imagination, hehe
+comme les messages box, on peut en ajouter dans un programme aussi, il suffit
+de mettre les bons param&egrave;tres (les push)...
+
+
+Les mots de la fin:
+
+
+Bref, j'esp&egrave;re que ce cours vous a plus et que vous avez appris une ou deux petites choses.
+Bien s&ucirc;r, le cours &eacute;tait destin&eacute; aux d&eacute;butants, donc tous les crackers "avanc&eacute;s" ne vous
+plaignent pas ;) 
+Et lisez mon cours sur cdilla si ce n'est pas d&eacute;j&agrave; fait :p
+
+Pour les questions et autres commentaires :
+ACiD_BuRN@nema.com ou acid2600@hotmail.com
+
+Tous mes cours sont disponibles ici: http://acidburn2000.cjb.net
+
+
+Greetings: 
+group greetings: ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE - CC
+
+Also greetingz to: (no specific order)
+
+R!SC, ^INFeRNo^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , CrackZ , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo ,
+Killer_3K, TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup, 
+zoltan , [yAtes], TarGon , Icecream , Punkguy2 , Sortof, TRDdonjuan,
+Lord Soth, Judged, G-Rom, Quantico, Christal, psike, Leo0n, Albator,
++Spath, +Frog's Print, toutim et tous ceux que je connais mais que j'ai oublie
+ les nicks ;p desole ...
+
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+
+		
+				http://www.immortaldescendants.com/
+
+</pre>
+<br>
+<hr>
+<br>
+<div align="center"><font face="Times New Roman, Times, serif" size="3">Copyright 
+  1999 <a href="mailto:acid2600@hotmail.com">ACiD BuRN</a> and the <a href="http://www.ImmortalDescendants.com">Immortal 
+  Descendants</a></font></div>
+</font>
+</BODY></html>

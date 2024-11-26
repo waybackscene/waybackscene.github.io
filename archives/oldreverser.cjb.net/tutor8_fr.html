@@ -1,0 +1,123 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="ACiD BuRN">
+   <meta name="GENERATOR" content="Mozilla/4.6 [fr] (Win98; I) [Netscape]">
+   <title>Tutor #8 Duelist Crackme (fr)</title>
+</head>
+<BODY text="#FF0000" bgcolor="#000000">
+Comment cracker Crack Duelist Crackme 1 par
+<br><img SRC="burn.jpg" >
+<pre>
+
+Ok, je suis de retour pour m'amuser avec un CrackMe!
+C'est un CrackMe Windows &eacute;crit par Duelist.
+La protection se r&eacute;sume &agrave; un serial &agrave; entrer!
+
+GO GO GO !!
+
+
+Ok, posez un BPX GetWindowTextA et GetDlgItemTextA &lt;ENTER>
+Choisissez un faux serial genre: 123456789
+Pressez CHECK et vous &ecirc;tes de retour dans SI!
+Vous devriez voir :
+
+:00401107&nbsp; E855020000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CALL&nbsp;&nbsp;&nbsp; USER32!GetDlgItemTextA
+:0040110C&nbsp; 33C0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XOR&nbsp;&nbsp;&nbsp;&nbsp; EAX,EAX
+:0040110E&nbsp; 80B8F720400000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CMP&nbsp;&nbsp;&nbsp;&nbsp; BYTE PTR [EAX+004020F7],00&nbsp; &lt;= Serial entre?
+:00401115&nbsp; 7418&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JZ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0040112F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;= Si NON goto bad cracker&nbsp;
+:00401117&nbsp; 80B0F720400043&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XOR&nbsp;&nbsp;&nbsp;&nbsp; BYTE PTR [EAX+004020F7],43&nbsp; &lt;= xor avec 43h
+:0040111E&nbsp; 80B0F72040001E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XOR&nbsp;&nbsp;&nbsp;&nbsp; BYTE PTR [EAX+004020F7],1E&nbsp; &lt;= xor avec 1Eh
+:00401125&nbsp; 80B0F720400055&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XOR&nbsp;&nbsp;&nbsp;&nbsp; BYTE PTR [EAX+004020F7],55&nbsp; &lt;= xor avec 55h
+:0040112C&nbsp; 40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INC&nbsp;&nbsp;&nbsp;&nbsp; EAX
+:0040112D&nbsp; E2DF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LOOP&nbsp;&nbsp;&nbsp; 0040110E&nbsp; &lt;= boucle pour chaque caract&egrave;re
+
+
+
+Donc nous voyons que le CrackMe fait un XOR 43h puis 1Eh puis 55h !!
+Mais qu'est ce qu'il XOR?
+Pressez F10 pour tracer et vous voyez:
+
+:0040114E&nbsp; 68D3204000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  PUSH&nbsp;&nbsp;&nbsp; 004020D3
+:0040114E&nbsp; 68F7204000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  PUSH&nbsp;&nbsp;&nbsp; 004020F7
+
+Tapez D 4020D3 ... vous voyez ceci:
+
+:004020D3 7B 61 65 78 64 6D 26 6B-7A 69 6B 63 65 6D 26 3C&nbsp; {aexdm&amp;kzikcem&amp;&lt;
+:004020E3 26 66 6D 7F 6A 61 6D 7B-26 6A 71 26 6C 7D 6D 64&nbsp; &amp;fmjam{&amp;jq&amp;l}md
+:004020F3 61 7B 7C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a{|
+
+C'est peut-&ecirc;tre ce qui est XOR&eacute;!
+
+tapez D 4020F7 :
+
+Vous voyez dans la fen&ecirc;tre des DATA 9:;&lt;=>
+Ce n'est pas important, c'est le serial entr&eacute; apr&egrave;s le XOR...
+
+Donc vous avez la cl&eacute;, nous allons appliquer le XOR dessus!
+Pour trouver le bon code, il faudra inverser l'ordre du XOR: donc XORer dans cet ordre:
+55h ; 1Eh et 43h.
+Calculons maintenant le serial!
+
+Pour 55h:
+
+7B 61 65 78 64 6D 26 6B 7A 69 6B 63 65 6D 26 3C 26 66 6D 7F 6A 61 6D 7B 26 6A 71 26 6C 7D 6D 64 61 7B 7C
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XOR
+
+55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55 55
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+2E 34 30 2D 31 38 73 3E 2F 3C 3E 36 30 38 73 69 73 33 38 2A 3F 34 38 2E 73 3F 24 73 39 28 38 31 34 2E 29
+
+
+
+Pour 1Eh:
+
+2E 34 30 2D 31 38 73 3E 2F 3C 3E 36 30 38 73 69 73 33 38 2A 3F 34 38 2E 73 3F 24 73 39 28 38 31 34 2E 29
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; XOR
+
+1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E 1E
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+30 2A 2E 33 2F 26 6D 20 31 22 20 28 2E 26 6D 77 6D 2D 26 34 21 2A 26 30 6D 21 3A 6D 27 36 26 2F 2A 30 37
+
+
+
+Pour 43h:
+
+30 2A 2E 33 2F 26 6D 20 31 22 20 28 2E 26 6D 77 6D 2D 26 34 21 2A 26 30 6D 21 3A 6D 27 36 26 2F 2A 30 37
+
+43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+73 69 6D 70 6C 65 2E 63 72 61 63 6B 6D 65 2E 34 2E 6E 65 77 62 69 65 73 2E 62 79 2E 64 75 65 6C 69 73 74
+
+
+Mais maintenant, qu'est ce que ce nombre?
+On va le convertir en une cha&icirc;ne ASCII...
+
+73696D706C652E637261636B6D652E342E6E6577626965732E62792E6475656C697374 est &eacute;quivalent &agrave;:
+
+
+73 69 6D 70 6C 65 2E 63 72 61 63 6B 6D 65 2E 34 2E 6E 65 77 62 69 65 73 2E 62 79 2E 64 75 65 6C 69 73 74&nbsp;
+s&nbsp; i&nbsp; m&nbsp; p&nbsp; l  e&nbsp; .&nbsp; c  r&nbsp; a&nbsp; c&nbsp; k  m&nbsp; e&nbsp; .&nbsp; 4&nbsp; .  n&nbsp; e&nbsp; w&nbsp; b&nbsp; i&nbsp; e&nbsp; s&nbsp; .&nbsp; b&nbsp; y&nbsp; .  d&nbsp; u&nbsp;&nbsp;e&nbsp; l  i&nbsp; s&nbsp; t
+
+Le bon code est: simple.crackme.4.newbies.by.duelist
+
+hehe !!
+Nous avons r&eacute;ussi!
+J'esp&egrave;re que vous avez tout compris &agrave; ce tut!
+C'&eacute;tait vraiment simple. Vous pouvez m'&eacute;crire &agrave;:
+
+<a href="mailto:acid2600@hotmail.com">acid2600@hotmail.com</a>
+
+@+
+
+(traduction par Secret Agent James Bond 007 : <a href="mailto:snipernet_1@yahoo.com?subject=Traduction Tutor #8 d'Acid Burn">snipernet_1@yahoo.com</a>)
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ACiD BuRN [ReFLeXZ'99 &amp; ECLiPSE'99]
+</pre>
+</BODY>
+</html>

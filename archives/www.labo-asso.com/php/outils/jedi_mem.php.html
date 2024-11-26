@@ -1,0 +1,198 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+          <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+                
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center">
+				  <p><font size="5">Jedi Memory</font><br>
+                    (version 1.0.0.0)<br>
+					-=¤ Lionel d'Hauenens ¤=-</p>
+					<p><table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                      <tr> 
+                        <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                            <tr> 
+                              <td><a href="../../download/jedi_mem_v1.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table></p>					
+                  </div></td>
+                <td width="1"> <div align="right"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>
+            <br>
+			<table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td colspan="2"><div align="center"> 
+                          <p align="justify"><font color="#33CC33">Introduction</font></p>
+                          <p align="left">Cette dll propose des fonctions permettant 
+                            de manipuler toute la m&eacute;moire virtuelle (<font color="#00FFFF">0x00000000-0xFFFFFFFF</font>) 
+                            &agrave; partir du mode user.</p>
+                          <p align="left"><font color="#33CC33">Compatibilit&eacute;</font></p>
+                          <p align="left">jedi_mem est compatible avec les syst&egrave;mes 
+                            fonctionnant avec des pages m&eacute;moire de <font color="#00FFFF">4Ko</font> 
+                            ou de <font color="#00FFFF">4Mo</font>.<br>
+                            -&gt; Fonctionne sous <font color="#00FFFF">Windows 
+                            2000/XP/Server 2003 SP0</font><br>
+                            -&gt; Ne fonctionne pas sous <font color="#00FFFF">Windows 
+                            Server 2003 SP1</font></p>
+                          <p align="left"><font color="#33CC33">note :</font></p>
+                          <p align="left">Pour pouvoir manipuler toute la m&eacute;moire 
+                            virtuelle, jedi_mem mappe la m&eacute;moire physique 
+                            en m&eacute;moire virtuelle &agrave; l'aide de l'objet 
+                            <font color="#00FFFF">\Device\PhysicalMemory</font>.<br>
+                            Malheureusement, le <font color="#00FFFF">Service 
+                            Pack 1</font> de <font color="#00FFFF">Windows Server 
+                            2003</font> bride cet objet en le rendant inaccessible 
+                            &agrave; partir du mode user. Cette dll ne peut donc 
+                            pas, &agrave; l'heure actuelle, fonctionner dans cet 
+                            environnement. Un driver permettant de d&eacute;brider 
+                            l'objet <font color="#00FFFF">\Device\PhysicalMemory</font> 
+                            sous <font color="#00FFFF">Windows Server 2003 SP1</font> 
+                            est en cours de d&eacute;veloppement et devrait &ecirc;tre 
+                            publi&eacute; tr&egrave;s bient&ocirc;t.</p>
+                          <p align="left"><font color="#33CC33">Attention</font></p>
+                          <p align="left">La port&eacute;e de cette dll d&eacute;passant 
+                            la simple m&eacute;moire utilisateur, il est fortement 
+                            conseill&eacute; de travailler en connaissance de 
+                            cause.</p>
+                          <p align="left"><font color="#00FFFF">Vous &ecirc;tes 
+                            seul responsable de l'utilisation que vous en faites 
+                            !</font></p>
+                        </div>
+			<table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                    <tr> 
+                      <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                          <tr> 
+                            <td nowrap><font color="#339999" size="2" face="Fixedsys">Lionel 
+                              d'Hauenens</font></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table><br>
+						  </td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>  
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="jedi_mem.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+             
+          </td>
+              </tr>
+            </table></td>
+        </tr>
+  </table>
+</body>
+</html>

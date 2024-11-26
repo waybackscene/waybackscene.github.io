@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+<head>
+<title>Pamplemousse - Analyse de BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="titre"></div>
+<div id="menu">
+	<ul>
+	<li> <a href="intro.html">1. Intro</a></li>
+	<li><a href="schema.html">2. Schéma</a></li>
+	<li><a href="tricks.html">3. Tricks du keygen</a></li>
+	<li><a href="equation.html">4. Résoudre l'équation</a></li>
+	<li><a href="keygen.html">5. Créer le keygen</a></li>
+	<li><a href="greetz.html">6. Greetz</a></li>
+	</ul>
+</div>
+
+<div id="contenu">
+<h1> 5. Créer le keygen</h1>
+<p> Je vais à présent vous exposer comment j'ai codé le keygen de pamplemousse. J'ai compilé les sources à l'aide de masm32 et lcc en m'inspirant fortement des sources de keygens proposées par jB. Vous remarquerez d'ailleurs sans doute la structure de ses keygens dans le source proposé. Vous pouvez récupérer les sources <a href="sources.zip">ICI</a>.J'ai commencé par décomposer le travail :</p>
+<h3> PHASE 1 :</h3>
+<ul>
+<li> D'abord, j'initialise les constantes harcodées dans le binaire.</li>
+<li> Puis, je calcule le sha-1 sur le NOM.</li>
+<li> Je résoud alors la première équation linéaire de degré 1.</li>
+<li> Je résoud ensuite le DLP grâce à l'algo de Pohlig-Hellman proposé par MIRACL.</li>
+<li> Je résoud le RSA en utilisant les valeurs obtenues par bruteforce et je trouve num1.</li>
+</ul>
+<h3> PHASE 2:</h3>
+<ul>
+<li> Je détermine num2 en choisissant la base 9</li>
+<li> Je concatène "num1-num2" et j'affiche le résultat.</li>
+</ul>
+
+<h2>5.1. Initialisation des constantes.</h2>
+<p>Voici donc le début de mon keygen. Je vous propose le code source complet de <strong>antipamplemousse.c</strong> <a href="AntiPamplemousse.c">ICI</a></p>
+
+<pre>
+	GetDlgItemText(hwnd,IDC_NAME, p_NOM, 60);
+
+/* ========================================================= Trouver SERIAL1 */
+	SetDlgItemText(hwnd,ETAT_AVANCEMENT, processing);
+   
+/* Initialise les variables */
+
+	a=mirvar(0);
+	b=mirvar(0);
+	b1=mirvar(0);
+	b2=mirvar(0);
+	b3=mirvar(0);
+	b4=mirvar(0);
+	N0=mirvar(0);
+	N2=mirvar(0);
+	N3=mirvar(0);
+	N4=mirvar(0);
+	N6=mirvar(0);
+	N8=mirvar(0);
+	inverse_N5=mirvar(0);
+	N14=mirvar(0);
+	cinstr(a,"3000012301762800807161335896594829130123128277845811946826175383306");
+	cinstr(b1,"107934260319485690713060975931053201049500286139199425849288934983536562755607610662295641078287074255916116739234490190367978714");
+	cinstr(b4,"2577865265484846370773601313426443784103258023509115421165898570275904997645739799493774925041813783466075337343829729951941428057625105100134328259190683835690307460760001634083736165098430989875");
+	cinstr(N6,"3208758980294089871636889325639601519765013105042818745876534106523");
+	cinstr(inverse_N5,"1938701814751868903212309238562151988937449697899016678578381173907");
+	cinstr(N3,"4109509431769244994089516623957980949881759417131294476885470163057");
+	cinstr(N14,"126374750002268624037501633220404518782674114480658933505173173047");
+</pre>
+
+
+<h2>5.2. Calculer le sha-1 sur le NOM : inclusion d'asm dans un source C.</h2>
+<p> J'ai opté ici pour la solution la plus sûre à mon sens. En effet, sachant que le binaire utilise du sha-1, il est très facile de récupérer une source C d'un sha-1 et de l'utiliser telle quelle ici.Cependant, si l'auteur est pervers, il a très bien pu légèrement modifier son sha-1 (je ne parle même pas des constantes mais de la routine elle-même) et nous devrons passer du temps à chercher le "truc". J'ai donc choisi de "ripper" la routine du sha-1 de pamplemousse avec <strong>IDA</strong>, c'est-à-dire que j'ai fait un copier/coller du code asm moyennant quelques petites modifications. J'obtiens donc au final le code source C de mon keygen appelé AntiPamplemousse.c et un module externe qui contient le sha1 sha1.asm.</p>
+<p> Pour que tout ceci fonctionne bien, je dois donc, au moment de la compilation de mon keygen, compiler le code source du keygen avec le code du sha-1. Voilà donc à quoi ressemble mon make.bat :</p>
+<pre>
+set name=AntiPamplemousse
+echo Compilation de SHA1.asm...
+<strong>\masm32\bin\ml /c /coff SHA_1.asm</strong>
+echo Compilation en cours...
+<strong>\lcc\bin\lcc -O -I\lcc\include %name%.c</strong>
+echo.
+echo Linkage en cours...
+<strong>\lcc\bin\lcclnk -s -subsystem windows %name%.obj rsrc.obj SHA_1.obj ms32.lib</strong>
+</pre>
+
+<p> Vous pouvez voir le fichier make.bat complet <a href="make.bat">ICI</a>. Comme vous le voyez, je compile séparément sha1.asm et antipamplemousse.c pour obtenir les fichiers sha1.obj et antipamplemousse.obj que je linke ensuite ensemble.</p>
+
+<p> Dans le code source du keygen, je commence par définir ma fonction externe asm comme ceci :</p>
+
+<pre>
+#include &#60;stdio.h&#62;
+#include &#60;stdlib.h&#62;
+#include &#60;windows.h&#62; 	
+#include &#60;windowsx.h&#62;
+#include "resource.h"
+#include "miracl.h"
+extern void SHA_1 (char *valeur_init,char *nom,char *hash); 
+</pre>
+
+<p> et je l'utilise comme ceci :</p>
+<pre>
+<strong>/* Calculer le SHA-1 sur le NOM */</strong>
+	SHA_1(p_valeurs_init,p_NOM,p_HASH);
+	bytes_to_big(0x14,p_HASH,N2);
+</pre>
+<p> Quant à mon fichier sha1.asm, il commence comme ceci :</p>
+
+<pre>
+.386  
+.model FLAT,c
+.Data
+	aA  BYTE    80h,0
+	byte_414B9C BYTE    0
+.CODE
+<strong>PUBLIC SHA_1</strong>
+; Appel de SHA_1
+; SHA_1(Chaine_N2,nom,Valeurs_initiales)
+SHA_1 PROC
+	pushad
+	mov ebp, esp
+	...
+</pre>
+<p> Si vous voulez jeter un oeil à la source complète de sha1.asm, allez <a href="SHA_1.asm">ICI</a>.</p>
+
+<h2>5.3. Résoudre l'équation du premier degré.</h2>
+<p> Je n'entre pas dans les détails. La valeur N8 correspond à notre valeur X :</p>
+<pre>
+/* Résoudre équation du premier degré : Calculer N8 */
+	multiply(N14,N2,N14);
+	premult(N14,42,b2);
+	multiply(b1,b2,b1);
+	power(N2,2,b3,b3);
+	add(b1,b3,b);
+	subtract(b,b4,b);
+	multiply(b,a,N8);
+	power(N8,1,N6,N8); 
+</pre>
+
+<h2>5.4. Résoudre le DLP par la méthode de Pohlig-Hellman.</h2>
+
+<p> Je donne ici la routine principale sans la fonction Rho de Pollard. Vous pouvez consulter les sources pour plus d'infos.</p>
+<pre>
+/* Calculer le logarithme discret par la méthode de Polhig_Hellman */
+
+/* N8 = PROOTS^x mod N6 */
+SetDlgItemTextA(hwnd,ETAT_AVANCEMENT, pollard );
+for (i=0;i&#60;NPRIMES;i++) 
+{
+	pp[i]=mirvar(0);
+	rem[i]=mirvar(0);
+}
+q=mirvar(0);
+Q=mirvar(0);
+R=mirvar(0);
+w=mirvar(0);
+m=mirvar(0);
+n=mirvar(0);
+x=mirvar(0);
+p=mirvar(0);
+p1=mirvar(1);
+order=mirvar(0);
+lim1=mirvar(0);
+lim2=mirvar(0);
+PROOTS=mirvar(0);
+cinstr(PROOTS, "1248310966923498661164204883260437277137373139593887776277032788073");
+/* décomposition de l'ordre de Z/(N6)Z en 8 facteurs premiers (np) */
+np=8;
+cinstr(pp[0],"2");
+cinstr(pp[1],"5751247");
+cinstr(pp[2],"81514567");
+cinstr(pp[3],"273749507");
+cinstr(pp[4],"2255442769");
+cinstr(pp[5],"85717369999");
+cinstr(pp[6],"254289208463");
+cinstr(pp[7],"254289209159");
+for (i=0;i&#60;np;i++) multiply(p1,pp[i],p1);
+incr(p1,1,p);
+subdiv(p,3,lim1);					/* lim1 &#60;- p/3 */
+premult(lim1,2,lim2);				/* lim2 &#60;- lim1 * 2 */
+for (i=1;i&#60;np;i++) 
+{
+	cotstr(pp[i],mip->IOBUFF);
+}
+crt_init(&#38;bc,np,pp);
+for (i=0;i&#60;np;i++) 
+{                          /* accumulate solutions for each pp */
+	copy(p1,w);					/* w &#60;- p1 */
+	divide(w,pp[i],w);			/* w &#60;- w / pp[i] */
+	powmod(N8,w,p,Q);				/* Q &#60;- N8^w mod p */
+	powmod(PROOTS,w,p,R);			/* R &#60;- PROOTS^w mod p */
+	copy(pp[i],order);			/* order &#60;- pp[i] */
+	iter=rho(Q,R,m,n);			/* find Q^m = R^n */
+	xgcd(m,order,w,w,w);			/* w &#60;- 1/m mod order */
+	mad(w,n,n,order,order,rem[i]);	/* rem[i] &#60;- n*w mod order */
+}
+
+crt(&#38;bc,rem,x);   /* apply Chinese remainder thereom */
+
+crt_end(&#38;bc);  
+ 
+SetDlgItemText(hwnd,ETAT_AVANCEMENT, processing);
+</pre>
+
+
+<h2> 5.5 Résoudre le RSA 222 </h2>
+<p> Voici donc le simple calcul à faire où inverse_N5 représente l'inverse de 65793:</p>
+<pre>
+/* Résolution d'une équation de type RSA */
+	powmod(x,inverse_N5,N3,x);
+</pre>
+
+
+<h2> 5.6 Trouver num2 et concaténer num1 et num2</h2>
+<p> La fin du keygen est très simple :</p>
+<pre>
+cotstr(x,serial_prefixe);
+strcat(serial_prefixe,"-");
+
+/* **********************************Trouver SERIAL2 */
+GetDlgItemText(hwnd,IDC_NAME,p_NOM , 60);
+len=strlen (p_NOM);
+mip->IOBASE=9;
+N0=mirvar(1);
+memset(&#38;lettre,0,4);
+for (i=0; i&#60;len; i++)
+{
+	memcpy(&#38;lettre,p_NOM+i,1);
+	premult(N0,lettre, N0);
+}
+
+/* Concaténer SERIAL1 et SERIAL2 */
+cotstr(N0,serial_generated);
+strcpy (serial_final,serial_prefixe);
+strcat (serial_final,serial_generated);
+
+/* Afficher SERIAL */
+SetDlgItemText(hwnd,IDC_SERIAL, serial_final);
+
+</pre>
+
+
+
+<div class="page_suivante">
+<a href="greetz.html"><img class ="noborder" src = "images/hand.jpg" alt="Page suivante" title="Page suivante" /></a>
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+
+</div>
+</body>
+</html>

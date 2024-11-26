@@ -1,0 +1,310 @@
+<!doctype html>
+
+<!-- header: debut -->
+<html>
+ <head>
+	<title>Le modeste site de SeVeN</title>
+	<meta name="revisit-after" content="15 days"/>
+	<meta name="robots" content="index,follow"/>
+	<meta name="description" content="la modeste page de SeVeN..."/>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Style-Type" content="text/css"/>
+	<meta http-equiv="Content-Script-Type" content="text/javascript"/>	
+	<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+ </head>
+<body>
+<div id="page">
+<a name="haut" id="haut"></a>
+<div id="logo">
+	 <a href="../index.html" title="Retour &agrave; la page d'accueil">
+	 <img src="../img/ts_seven.gif" alt="logo par lord ts" height="100" width="185"/></a>
+</div>
+<div id="shoutbox">
+	<a href="mailto:seven[at]geek.li" title="Envoyer un mail"><img src="../img/email.png" height="15" width="80" alt="Envoyer un mail"/></a>
+</div>
+<!-- header: fin -->
+<!-- OllyView Keygenme 3: debut -->
+	<div id="texte">
+	<h2>OllyView Keygenme 3</h2>
+
+	<div class="abstract">
+	<span class="auteur">Tutorial redig&eacute; le 08.09.2004 par SeVeN / FFF</span>
+	<h4>Outils</h4>
+	<ul>
+	 <li>OllyDbg</li>
+	 <li>Un &eacute;diteur hexad&eacute;cimal (ici: Winhex)</li>
+	 <li>c'est tout...</li>
+	</ul>
+	</div>
+	
+	<h4>Introduction</h4>
+	<span class="paragraphe">
+	Avant de faire autre chose, j'ouvre toujours un keygenme sous PEiD, pour verifier s'il est pack&eacute; ou non. Ici, ce n'est pas le cas: PEiD nous indique "Borland Delphi 6.0 - 7.0".
+	On execute donc le keygenme sous OllyDbg, et l&agrave;, c'est le drame, le debuggeur se ferme l&acirc;chement.
+	</span>
+	
+	<h4>Analyse</h4>
+	
+	<h5>Enlever les Anti-Debug...</h5>
+	<span class="paragraphe">
+	Intuitivement, on peut se dire que le keygenme recherche dans les titres des fen&ecirc;tres le texte 'OllyDbg' (c'est une d&eacute;tection de OllyDbg classique). On cherche &agrave; tout hasard dans le binaire &agrave; l'aide d'un &eacute;diteur hexad&eacute;cimal, et en effet on tombe sur "OllyDbg", "DeDe" et "URSoft W32Dasm", que l'on patch b&ecirc;tement en "XllyDbg", "XeDe" et "XRSoft W32Dasm".
+	Ca fonctionne, maintenant le keygenme se lance sous OllyDbg sans aucun soucis.
+	<br/>
+	<br/>
+	Cependant, en tra&ccedil;ant la routine de v&eacute;rification du serial, on remarque un 2&egrave;me Anti-Debug. Je vais l'expliquer maintenant m&ecirc;me si on ne le rencontrera que plus tard :
+	<br/>
+	<br/>
+	<object>
+	<div style="text-align:center">
+	<img src="OllyView_Keygenme_3_files/olly0.png" width="722" height="17" alt="OllyDbg ScreenCapture 0"/>
+	</div>
+	</object>
+	<br/>
+	Quand le debuggeur est d&eacute;tect&eacute;, alors BYTE PTR DS:[457C0D] vaut 01, sinon il vaut 00. Ce byte est ensuite utilis&eacute; dans le calcul du serial.
+	<br/><br/>
+	En posant un hardware breakpoint en 457C0D, et en relan&ccedil;ant le keygenme, OllyDbg break ici :
+    <a name="x454744" id="x454744"></a>
+	<br/>
+	<br/>
+	<object>
+	<div style="text-align:center">
+    <img src="OllyView_Keygenme_3_files/olly1.png" width="722" height="510" alt="OllyDbg ScreenCapture 1"/>
+	</div>
+	</object>
+	<br/>
+	Ici il r&eacute;cup&egrave;re donc les noms des classes des fen&ecirc;tres, &agrave; l'aide de l'API <a href="http://msdn.microsoft.com/library/en-us/winui/WinUI/WindowsUserInterface/Windowing/WindowClasses/WindowClassReference/WindowClassFunctions/GetClassName.asp" title="MSDN GetClassName">GetClassNameA</a>, et les compare avec des noms pr&eacute;definis (OLLYDBG, HexworksClass, TDeDeMainForm, ...). S'il d&eacute;tecte une de ces classes, il ne se ferme pas, mais met &agrave; 1 la variable utilis&eacute;e plus tard. Pour contrer cet anti-debug, il suffit de poser un <acronym title="$C3">ret</acronym> au debut de la fonction, en <a href="#x454744">454744</a>.
+	</span>
+	
+	<h5>Forme du serial</h5>
+	<span class="paragraphe">
+	On continue donc, et on entre un nom et un serial au hasard. Pour moi &ccedil;a sera mon tradionnel <em>SeVeN/123456</em>. On valide, une MessageBox apparait ('Have a nice day !') et le keygenme se ferme. On ouvre donc de nouveau tout &ccedil;a, et on recherche "Have a nice day" dans les <b>referenced text strings</b>.
+	La r&eacute;ference &eacute;tant en 45435F, on pose un breakpoint en -presque- d&eacute;but de routine, c'est &agrave; dire en 4542A1, juste apres que le keygenme ai verifi&eacute; si on a bien entr&eacute; quelque chose.
+	<br/>
+	<br/>
+	Voila &agrave; quoi ressemble le code ici:
+	<br/>
+	<br/>
+	<object>
+	<div style="text-align:center">
+	<img src="OllyView_Keygenme_3_files/olly2.png" width="722" height="492" alt="OllyDbg ScreenCapture 2"/>
+	</div>
+	</object>
+	<br/>
+	On remarque tout de suite une boucle qui effectue des operations sur le nom et sur une constante, "e_"{R1ds\[N*@y=&amp;", que j'ai nomm&eacute;e key. L'op&eacute;ration effectu&eacute;e est la suivante:
+	<br/>
+	<br/>
+	<span style="font-weight:bold">
+	pour i de 1 &agrave; Taille(nom)<br/>
+	&nbsp;&nbsp;&nbsp;resultat[i] = caract&egrave;re(((((valeur_ascii(nom[i]) - $20) + i) + valeur_ascii(key[i])) modulo $5F) + $20)
+	</span>
+	<br/>
+	<br/>
+	A la fin de cette boucle, on a donc une chaine de caract&egrave;res, de la m&ecirc;me taille que le nom.<br/>
+	Pour SeVeN, on obtient <span style="font-weight:bold">Zg{&amp;F</span>. Continuons &agrave; tracer...
+	<br/>
+	<br/>
+	En 454346, un call nous renvoit la taille du serial, et en 454350, celle du nom, qu'il place en EAX. EAX subit deux op&eacute;rations (shl eax, 2 et add eax, 7), et est compar&eacute; &agrave; la taille du serial. Je relance donc OllyDbg en prenant soins de mettre un serial de 27 caract&egrave;res pour mon pseudo. (5 shl 2 = 20, 20 + 7 = 27) 
+	<br/>
+	<br/>
+	Ensuite, il v&eacute;rifie si le serial commence par 'CrK-' et se termine bien par '-666'. Si c'est le cas, on arrive ici :
+	<br/>
+	<br/>
+	<br/>
+	<object>
+	<div style="text-align:center">
+	<img src="OllyView_Keygenme_3_files/olly3.png" width="722" height="189" alt="OllyDbg ScreenCapture 3"/>
+	</div>
+	</object>
+	<br/>
+	Cette boucle v&eacute;rifie si tous les 4 caract&egrave;res on trouve un tiret ($2D). Ceci nous permet donc de dire que le serial pour SeVeN sera de la forme <span style="font-weight:bold">CrK-xxx-xxx-xxx-xxx-xxx-666</span>.
+	<br/>
+	</span>
+
+	<h5>V&eacute;rification du serial</h5>
+	<span class="paragraphe">
+	Je vais donc recommencer avec SeVeN/CrK-012-345-678-901-234-666.
+	<br/>
+	<br/>
+	<object>
+	<div style="text-align:center">
+	<img src="OllyView_Keygenme_3_files/olly4.png" width="774" height="612" alt="OllyDbg ScreenCapture 4"/>
+	</div>
+	</object>
+	<br/>
+	La boucle d&eacute;bute en 454430, et se termine en 4544FB. Dans cette boucle, le keygenme va r&eacute;cuperer les triplets ainsi d&eacute;limit&eacute;s (012, 345, 678, ...) et effectuer des op&eacute;rations dessus, op&eacute;rations que l'on peut r&eacute;sumer par:
+	<br/>
+	<br/>
+	<span style="font-weight:bold">
+	pour i de 1 &agrave; nombre_de_triplets<br/>
+	&nbsp;&nbsp;&nbsp;resultat[i] = caract&egrave;re(((((a + b) * c) - $20) mod $5F) + $20)</span>
+	<br/>
+	<br/>
+	o&ugrave; :<br/>
+	a = valeur ascii du 1er caract&egrave;re<br/>
+	b = valeur ascii du 2nd caract&egrave;re<br/>
+	c = 3&egrave;me caract&egrave;re (c &eacute;tant donc une valeur num&eacute;rique)<br/>
+	<br/>
+	C'est ici qu'apparait le second Anti-Debug, en 4544BB. A la fin des op&eacute;rations, on obtient une chaine de caract&egrave;res, ici <span style="font-weight:bold">c(piw</span>.
+	<br/><br/>
+	Finalement, cette chaine est compar&eacute;e avec la chaine pr&eacute;cedemment g&eacute;ner&eacute;e &agrave; partir du nom. Si les deux chaines sont identiques, alors le serial est valide.
+	<br/>
+	<br/>
+	</span>
+
+	<h4>Conclusion</h4>
+	<span class="paragraphe">
+	On a en premier lieu un calcul &agrave; effectuer sur le nom, afin d'obtenir une chaine de caract&egrave;res.<br/>
+	On doit faire en sorte que le calcul sur le serial nous donne le m&ecirc;me resultat. Pour cela, je propose un mini-bruteforce.<br/>
+	<br/>
+	Pour chaque caract&egrave;re du r&eacute;sultat du calcul sur le nom, on va chercher le triplet qui r&eacute;soud l'&eacute;quation. Pour cela, on essaie toutes les valeurs possibles:<br/>
+	<object>
+	<ul>
+	 <li>le 1er caract&egrave;re peut &ecirc;tre n'importe quel caract&egrave;re,</li>
+	 <li>le 2nd caract&egrave;re aussi,</li>
+	 <li>le 3&egrave;me ne peut &ecirc;tre qu'un chiffre.</li>
+	</ul>
+	</object>
+	</span>
+		
+	<br/>
+	<h4>Algorithme (Delphi)</h4>
+	<pre>
+<a name="IntToStr" id="IntToStr">function IntToStr(Num: Integer): string;</a>
+begin
+  Str(Num, result);
+end;
+
+<a name="First" id="First">function First(nom: string): string;</a>
+var
+  key: string;
+  i: integer;
+begin
+  key := 'e_"{R1ds\[N*@y=&amp;';
+  while (length(key) &lt; length(nom)) do key := key + key;
+  for i := 1 to length(nom) do
+    Result := Result + chr(((((ord(nom[i]) - $20) + i) + ord(key[i])) mod $5F) + $20);
+end;
+
+<a name="Second" id="Second">function Second(crc: byte): string;</a>
+var
+  a, b, c, x: integer;
+begin
+  for <acronym title="le 1er caract&egrave;re entre 0 et 9">a := $30 to $39</acronym> do
+    for <acronym title="le 2nd caract&egrave;re entre 0 et Z">b := $30 to $5A</acronym> do
+      for <acronym title="le 3&egrave;me caract&egrave;re entre 0 et 9">c := 0 to 9</acronym> do
+        if (((((a + b) * c) - $20) mod $5F) + $20 = crc) then
+        begin
+          Result := chr(a) + chr(b) + IntToStr(c);
+          x := Random(777);
+          if ((x mod 7 = 0) and <acronym title="emp&egrave;che d'obtenir les caract&egrave;res :;<=>?@">not ((b&gt;$39) and (b&lt;$41))</acronym>) then Exit;
+        end;
+end;
+
+<a name="Generate" id="Generate">procedure Generate;</a>
+var
+  Buffer: array[0..255] of char;
+  i: integer;
+  crc, nom, serial: string;
+begin
+  i := SendMessage(Edit_Nom, WM_GETTEXTLENGTH, 255, LongInt(@Buffer));
+  if i &gt; 0 then
+  begin
+    SetLength(nom, i);
+    SendMessage(Edit_Nom, WM_GETTEXT, i + 1, lParam(PChar(nom)));
+    crc := First(nom);
+
+    <acronym title="Initilisation du Random de Delphi">Randomize</acronym>;
+    for i := 1 to length(crc) do
+      serial := serial + Second(ord(crc[i])) + '-';
+
+    serial := 'CrK-' + serial + '666';
+
+  end else serial := 'Veuillez entrer un nom';
+  SendMessage(Edit_Serial, WM_SETTEXT, 0, Integer(serial));
+end;</pre>
+	<br/>
+	<span class="paragraphe">
+	<object>
+	<p>La fonction <a href="#IntToStr">IntToStr</a> permet d'&eacute;viter d'utiliser l'unit&eacute; SysUtils, afin d'all&eacute;ger le keygen. N'oublions pas qu'on code ici sans la VCL.</p>
+	<p>La fonction <a href="#First">First</a> effectue le 1er calcul, sur le nom entr&eacute;, en fonction de la cl&eacute; hardcod&eacute;e.</p>
+	<p>La fonction <a href="#Second">Second</a> effectue le bruteforce, et permet d'obtenir un triplet de caract&egrave;res correspondant &agrave; un caract&egrave;re du resultat du calcul pr&eacute;d&eacute;dent sur le nom.
+	Le triplet sera de la forme [0-9]|[0-9][A-Z]|[0-9] afin de g&eacute;n&eacute;rer un serial "propre". J'utilise un Random afin de ne pas avoir le 1er r&eacute;sultat du bruteforce &agrave; chaque fois.</p>
+	<p>Enfin, la proc&eacute;dure <a href="#Generate">Generate</a> r&eacute;cup&egrave;re le nom, appelle les 2 fonctions pr&eacute;cedentes, et affiche le serial.</p>
+	</object>
+	</span>
+	<br/>
+	
+	<div class="abstract">
+	<h4>T&eacute;l&eacute;chargement</h4>
+	- <a href="../files/keygenmes/OllyView_Keygenme_3.zip" title="Le Keygenme">Le Keygenme</a>.<br/>
+	- <a href="../files/keygenmes/soluces/OllyView_Keygenme_3-SeVeN.zip" title="Le Keygen">Le Keygen</a>.<br/>
+	- <a href="../files/OllyView_Keygenme_3-SeVeN.zip" title="Le Tutorial">Ce tutorial zipp&eacute;</a>.<br/>
+	<br/>
+	</div>
+	<br/>
+	<div class="abstract">
+	<h4>Remerciements</h4>
+	- FFF, ma famille de cracking.<br/>
+	- Toutes les personnes avec qui j'ai le plaisir de discuter sur IRC.<br/>
+	- Les personnes et teams cit&eacute;es sur mon site.<br/>
+	- Et celles que j'ai oubli&eacute;es...<br/>
+	- (sans oublier celle que j'aime encore, et que tout le monde reconnaitra...)<br/>
+	<br/>
+	<div class="auteur">SeVeN / FFF</div>
+	</div>
+	</div>
+<!-- OllyView Keygenme 3: fin -->
+<!-- menu: debut -->
+	<div id="menu"> 
+	 <ul>
+		<li> <a href="../index.html">Accueil</a> </li>
+		<li> <a href="../x1.html">Tutoriaux</a> </li>
+		<li> <a href="../x2.html">Keygenmes</a> </li>
+		<li> <a href="../x3.html">Crypto</a> </li>
+		<li> <a href="../x4.html">Coding</a> </li>
+		<li> <a href="../x5.html">Images</a> </li>
+		<li> &nbsp; </li>
+		<li> <a href="../x6.html">Outils</a> </li>
+		<li> <a href="../x7.html">Liens</a> </li>
+	 </ul>
+	 <ul class="dernier">
+		<li class="dernier"> 15211 </li>
+	 </ul>
+	 </div>
+	 <div id="validator">
+	 <p> 
+	 <a href="http://validator.w3.org/check/referer" title="xhtml validator"><img src="../img/xhtml.png" height="15" width="80" alt="xhtml validator"/></a>
+	 <a href="http://jigsaw.w3.org/css-validator/check/referer" title="css validator"><img src="../img/css.png" height="15" width="80" alt="css validator"/></a>
+	 <a href="http://getfirefox.com/" title="Get Firefox - The Browser, Reloaded."><img src="../img/firefox.png" width="80" height="15" alt="Get Firefox"/></a>
+	 <a href="http://www.php.net/" title="Powered by PHP"><img src="../img/php.png" width="80" height="15" alt="Powered by PHP"/></a>
+	 </p>
+	<!-- Search Google: d&eacute;but -->
+	<form method="post" action="google.html">
+	<p>
+	<b class="bleu">G</b><b class="rouge">o</b><b class="orange">o</b><b class="bleu">g</b><b class="vert">l</b><b class="rouge">e</b> <br/>
+  	<input type="text" name="q" size="10" maxlength="255" value="" alt="GoogleSearch"/>
+	<input type="submit" name="sa" value="ok" alt="submit"/>
+	</p>
+	</form>
+	</div>
+	<!-- Search Google: fin -->
+<!-- menu: fin -->
+<!-- Quicklink: debut -->
+	<div id="quicklinks">
+	<div style="text-align:left"><a href="#haut"><img src="../img/haut.gif" alt="[haut.gif]" title="Remonter au d&eacute;but"/></a></div>
+	 <ul>
+		<li> <a href="http://zor.org/fighting/"><acronym title="Fighting For Fun">FFF</acronym></a> </li>
+		<li> <a href="http://www.forumcrff.cjb.net/"><acronym title="Cracking French Forum">CrFF</acronym></a> </li>
+		<li> <a href="http://reverseengineering.online.fr/forum/"><acronym title="French Reverse Engineering Team">FRET</acronym></a> </li>
+		<li> <a href="http://www.cim.ht.st/"><acronym title="Crack In Morocco">CiM</acronym></a> </li>
+		<li> <a href="http://www.shmeitcorp.tk/"><acronym title="ShmeitCorp">SC</acronym></a> </li>
+		<li class="dernier"> <a href="http://www.phrozencrew.be/"><acronym title="Phrozen Crew">PC</acronym></a> </li>
+	</ul>
+	</div>
+<!-- Quicklink: fin -->
+<!-- footer: debut -->
+<p>&nbsp;</p>
+</div>
+</body>
+</html>
+<!-- footer: fin -->

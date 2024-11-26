@@ -1,0 +1,446 @@
+var count
+var sehhandler
+
+start:
+//On ne peut pas mettre de bp sur GetCommandLineA puisqu'il check la présence d'int3 dessus et nous jarte 
+//s'il en trouve (encore un antidebug...)
+//Ni d'hardware breakpoint puisqu'à chaque SEH les debug registers sont effacés, ou alors les placer juste //avant qu'il les efface (c'est ce que j'ai fait dans ce script)
+//Du coup j'ai l'occasion de voir une string rigolotte :p (y'en a pas mal d'autres dans le binaire 
+//d'ailleurs ;))
+//0041D1AA   > \EB 15         jmp short 0041D1C1
+//0041D1AC      77            db 77                                    ;  CHAR 'w'
+//0041D1AD      61            db 61                                    ;  CHAR 'a'
+//0041D1AE      6C            db 6C                                    ;  CHAR 'l'
+//0041D1AF      6B            db 6B                                    ;  CHAR 'k'
+//0041D1B0      20            db 20                                    ;  CHAR ' '
+//0041D1B1      77            db 77                                    ;  CHAR 'w'
+//0041D1B2      69            db 69                                    ;  CHAR 'i'
+//0041D1B3      74            db 74                                    ;  CHAR 't'
+//0041D1B4      68            db 68                                    ;  CHAR 'h'
+//0041D1B5      20            db 20                                    ;  CHAR ' '
+//0041D1B6      74            db 74                                    ;  CHAR 't'
+//0041D1B7      68            db 68                                    ;  CHAR 'h'
+//0041D1B8      65            db 65                                    ;  CHAR 'e'
+//0041D1B9      20            db 20                                    ;  CHAR ' '
+//0041D1BA      6D            db 6D                                    ;  CHAR 'm'
+//0041D1BB      61            db 61                                    ;  CHAR 'a'
+//0041D1BC      73            db 73                                    ;  CHAR 's'
+//0041D1BD      74            db 74                                    ;  CHAR 't'
+//0041D1BE      65            db 65                                    ;  CHAR 'e'
+//0041D1BF      72            db 72                                    ;  CHAR 'r'
+//0041D1C0      2C            db 2C                                    ;  CHAR ','
+
+
+mov count, 4
+
+
+//passe 4 SEH
+
+SEH1:
+cmp count, 0
+je fin1
+sub count, 1
+run
+esto
+findop eip, #7703#
+bphws $RESULT, "x"
+mov [eip], #9090#
+bphwc eip
+jmp SEH1
+
+fin1:
+//passe 60 SEH
+mov count, 3B
+run
+
+SEH2:
+cmp count, 0
+je fin2
+sub count, 1
+eoe handler
+
+
+handler:
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH2
+
+fin2:
+//+1 SEH
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+
+
+mov count, 1
+
+SEH3:
+//+1 SEH
+cmp count, 0
+je fin3
+sub count, 1
+eoe handler1
+run 
+
+handler1:
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7703#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH3
+
+fin3:
+mov count, 1
+
+SEH4:
+//+1 SEH
+cmp count, 0
+je fin4
+sub count, 1
+eoe handler2
+
+
+handler2:
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH4
+
+fin4:
+//+1 SEH
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+
+mov count, 1
+
+SEH5:
+//+1 SEH
+cmp count, 0
+je fin5
+sub count, 1
+eoe handler3
+run 
+
+handler3:
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH5
+
+
+fin5:
+mov count, 5
+//Gere 5 SEH
+
+SEH6:
+cmp count, 0
+je fin6
+sub count, 1
+eoe handler4
+
+handler4:
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH6
+
+fin6:
+//+ 1 SEH
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+
+mov count, 1
+
+SEH7:
+//+1 SEH
+cmp count, 0
+je fin7
+sub count, 1
+eoe handler5
+
+handler5:
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH7
+
+fin7:
+//+1 SEH
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+
+mov count, F
+
+SEH8:
+//GERE 15 SEH
+cmp count, 0
+je fin8
+sub count, 1
+eoe handler6
+run
+
+handler6:
+mov sehhandler, eip
+sub sehhandler, 6C
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+jmp SEH8
+
+fin8:
+mov count, 19
+
+SEH9:
+//+25 SEH
+cmp count, 0
+je fin9
+sub count, 1
+eoe handler7
+
+handler7:
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH9
+
+fin9:
+//+1 SEH
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+
+mov count, 1
+SEH10:
+//+1 SEH
+cmp count, 0
+je fin10
+sub count, 1
+eoe handler8 
+
+handler8:
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7703#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH10
+
+
+//Load les imports à ce moment là
+
+fin10:
+mov count, 1
+
+SEH11:
+//+1 SEH
+cmp count, 0
+je fin11
+sub count, 1
+eoe handler9
+
+handler9:
+mov sehhandler, eip
+sub sehhandler, 6C
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+jmp SEH11
+
+fin11:
+//+ 1 SEH
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+run
+
+//+1 SEH
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+
+mov count, 1F
+
+SEH12:
+//GERE 31 SEH
+cmp count, 0
+je fin12
+sub count, 1
+eoe handler10 
+run
+
+handler10:
+mov sehhandler, eip
+sub sehhandler, 70
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+jmp SEH12
+
+fin12:
+//Après 0x1Aeme SEH on a la messagebox comme quoi on a foiré donc il se passe des choses entre le 1Aeme 
+//SEH et le suivant :)...
+
+//0043642A   .  83C4 04       add esp, 4
+//0043642D   .  3D D0EA0D00   cmp eax, 0DEAD0
+//00436432   .  90            nop
+
+mov count, 1A
+
+
+SEH13:
+//GERE 26 SEH
+cmp count, 0
+je fin13
+sub count, 1
+eoe handler11 
+run
+
+handler11:
+mov sehhandler, eip
+sub sehhandler, 54
+bphws sehhandler, "x"
+esto
+bphwc sehhandler
+findop eip, #7710#
+bphws $RESULT, "x"
+run
+mov [eip], #9090#
+bphwc eip
+jmp SEH13
+
+fin13:
+pause
+//bphws 00422250, "x"
+//On est au 1Aeme SEH de ce loop donc on s'arrête, et on va tracer manuellement.
+
+ret

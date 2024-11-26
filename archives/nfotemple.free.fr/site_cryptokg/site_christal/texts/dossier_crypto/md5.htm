@@ -1,0 +1,1269 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>RFC 1321</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<H3 ALIGN="CENTER"><FONT SIZE="5" FACE="Arial Black">The MD5 Message-Digest Algorithm</FONT></H3>
+
+<DL>
+	<DT>Status of this Memo</DT>
+	<DD>
+	<P>This memo provides information for the Internet community. It does not specify an Internet standard. Distribution
+	of this memo is unlimited.</P>
+	<P>
+	<DT>Acknowlegements</DT>
+	<DD>
+	<P>We would like to thank Don Coppersmith, Burt Kaliski, Ralph Merkle, David Chaum, and Noam Nisan for numerous
+	helpful comments and suggestions.</P>
+	<P>
+	<DT>Table of Contents</DT>
+	<DD>
+	<P>
+	<PRE>   1. Executive Summary                                                1
+   2. Terminology and Notation                                         2
+   3. MD5 Algorithm Description                                        3
+   4. Summary                                                          6
+   5. Differences Between MD4 and MD5                                  6
+   References                                                          7
+   APPENDIX A - Reference Implementation                               7
+   Security Considerations                                            21
+   Author's Address                                                   21
+</PRE>
+	<P>
+	<DT><A NAME="sec-1"></A><STRONG>1 Executive Summary</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>This document describes the MD5 message-digest algorithm. The algorithm takes as input a message of arbitrary
+	length and produces as output a 128-bit &quot;fingerprint&quot; or &quot;message digest&quot; of the input. It
+	is conjectured that it is computationally infeasible to produce two messages having the same message digest, or
+	to produce any message having a given prespecified target message digest. The MD5 algorithm is intended for digital
+	signature applications, where a large file must be &quot;compressed&quot; in a secure manner before being encrypted
+	with a private (secret) key under a public-key cryptosystem such as RSA.</P>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-2"></A><EM>Page 2</EM></DT>
+	<DD><EM></EM>
+	<P>The MD5 algorithm is designed to be quite fast on 32-bit machines. In addition, the MD5 algorithm does not require
+	any large substitution tables; the algorithm can be coded quite compactly.</P>
+	<P>The MD5 algorithm is an extension of the MD4 message-digest algorithm 1,2]. MD5 is slightly slower than MD4,
+	but is more &quot;conservative&quot; in design. MD5 was designed because it was felt that MD4 was perhaps being
+	adopted for use more quickly than justified by the existing critical review; because MD4 was designed to be exceptionally
+	fast, it is &quot;at the edge&quot; in terms of risking successful cryptanalytic attack. MD5 backs off a bit, giving
+	up a little in speed for a much greater likelihood of ultimate security. It incorporates some suggestions made
+	by various reviewers, and contains additional optimizations. The MD5 algorithm is being placed in the public domain
+	for review and possible adoption as a standard.</P>
+	<P>For OSI-based applications, MD5's object identifier is</P>
+	<P>
+	<PRE>   md5 OBJECT IDENTIFIER ::=
+     iso(1) member-body(2) US(840) rsadsi(113549) digestAlgorithm(2) 5}
+</PRE>
+	<P>In the X.509 type AlgorithmIdentifier [3], the parameters for MD5 should have type NULL.</P>
+	<P>
+	<DT><A NAME="sec-2"></A><STRONG>2 Terminology and Notation</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>In this document a &quot;word&quot; is a 32-bit quantity and a &quot;byte&quot; is an eight-bit quantity. A
+	sequence of bits can be interpreted in a natural manner as a sequence of bytes, where each consecutive group of
+	eight bits is interpreted as a byte with the high-order (most significant) bit of each byte listed first. Similarly,
+	a sequence of bytes can be interpreted as a sequence of 32-bit words, where each consecutive group of four bytes
+	is interpreted as a word with the low-order (least significant) byte given first.</P>
+	<P>Let x_i denote &quot;x sub i&quot;. If the subscript is an expression, we surround it in braces, as in x_{i+1}.
+	Similarly, we use ^ for superscripts (exponentiation), so that x^i denotes x to the i-th power.</P>
+	<P>Let the symbol &quot;+&quot; denote addition of words (i.e., modulo-2^32 addition). Let X &lt;&lt;&lt; s denote
+	the 32-bit value obtained by circularly shifting (rotating) X left by s bit positions. Let not(X) denote the bit-wise
+	complement of X, and let X v Y denote the bit-wise OR of X and Y. Let X xor Y denote the bit-wise XOR of X and
+	Y, and let XY denote the bit-wise AND of X and Y.</P>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-3"></A><EM>Page 3</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<DT><A NAME="sec-3"></A><STRONG>3 MD5 Algorithm Description</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>We begin by supposing that we have a b-bit message as input, and that we wish to find its message digest. Here
+	b is an arbitrary nonnegative integer; b may be zero, it need not be a multiple of eight, and it may be arbitrarily
+	large. We imagine the bits of the message written down as follows:</P>
+	<P>m_0 m_1 ... m_{b-1}</P>
+	<P>The following five steps are performed to compute the message digest of the message.</P>
+	<P>
+	<DT><A NAME="sec-3.1"></A><STRONG>3.1 Step 1. Append Padding Bits</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>The message is &quot;padded&quot; (extended) so that its length (in bits) is congruent to 448, modulo 512. That
+	is, the message is extended so that it is just 64 bits shy of being a multiple of 512 bits long. Padding is always
+	performed, even if the length of the message is already congruent to 448, modulo 512.</P>
+	<P>Padding is performed as follows: a single &quot;1&quot; bit is appended to the message, and then &quot;0&quot;
+	bits are appended so that the length in bits of the padded message becomes congruent to 448, modulo 512. In all,
+	at least one bit and at most 512 bits are appended.</P>
+	<P>
+	<DT><A NAME="sec-3.2"></A><STRONG>3.2 Step 2. Append Length</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>A 64-bit representation of b (the length of the message before the padding bits were added) is appended to the
+	result of the previous step. In the unlikely event that b is greater than 2^64, then only the low-order 64 bits
+	of b are used. (These bits are appended as two 32-bit words and appended low-order word first in accordance with
+	the previous conventions.)</P>
+	<P>At this point the resulting message (after padding with bits and with b) has a length that is an exact multiple
+	of 512 bits. Equivalently, this message has a length that is an exact multiple of 16 (32-bit) words. Let M[0 ...
+	N-1] denote the words of the resulting message, where N is a multiple of 16.</P>
+	<P>
+	<DT><A NAME="sec-3.3"></A><STRONG>3.3 Step 3. Initialize MD Buffer</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>A four-word buffer (A,B,C,D) is used to compute the message digest. Here each of A, B, C, D is a 32-bit register.
+	These registers are initialized to the following values in hexadecimal, low-order bytes first):</P>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-4"></A><EM>Page 4</EM></DT>
+	<DD><EM></EM>
+	<P>word A: 01 23 45 67 <BR>
+	word B: 89 ab cd ef <BR>
+	word C: fe dc ba 98 <BR>
+	word D: 76 54 32 10</P>
+	<P>
+	<DT><A NAME="sec-3.4"></A><STRONG>3.4 Step 4. Process Message in 16-Word Blocks</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>We first define four auxiliary functions that each take as input three 32-bit words and produce as output one
+	32-bit word.</P>
+	<P>
+	<PRE>          F(X,Y,Z) = XY v not(X) Z
+          G(X,Y,Z) = XZ v Y not(Z)
+          H(X,Y,Z) = X xor Y xor Z
+          I(X,Y,Z) = Y xor (X v not(Z))
+</PRE>
+	<P>In each bit position F acts as a conditional: if X then Y else Z. The function F could have been defined using
+	+ instead of v since XY and not(X)Z will never have 1's in the same bit position.) It is interesting to note that
+	if the bits of X, Y, and Z are independent and unbiased, the each bit of F(X,Y,Z) will be independent and unbiased.</P>
+	<P>The functions G, H, and I are similar to the function F, in that they act in &quot;bitwise parallel&quot; to
+	produce their output from the bits of X, Y, and Z, in such a manner that if the corresponding bits of X, Y, and
+	Z are independent and unbiased, then each bit of G(X,Y,Z), H(X,Y,Z), and I(X,Y,Z) will be independent and unbiased.
+	Note that the function H is the bit-wise &quot;xor&quot; or &quot;parity&quot; function of its inputs.</P>
+	<P>This step uses a 64-element table T[1 ... 64] constructed from the sine function. Let T[i] denote the i-th element
+	of the table, which is equal to the integer part of 4294967296 times abs(sin(i)), where i is in radians. The elements
+	of the table are given in the appendix.</P>
+	<P>Do the following:</P>
+	<P>
+	<PRE>   /* Process each 16-word block. */
+   For i = 0 to N/16-1 do
+
+     /* Copy block i into X. */
+     For j = 0 to 15 do
+       Set X[j] to M[i*16+j].
+     end /* of loop on j */
+
+     /* Save A as AA, B as BB, C as CC, and D as DD. */
+     AA = A
+     BB = B
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-5"></A><EM>Page 5</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE>     CC = C
+     DD = D
+
+     /* Round 1. */
+     /* Let [abcd k s i] denote the operation
+          a = b + ((a + F(b,c,d) + X[k] + T[i]) &lt;&lt;&lt; s). */
+     /* Do the following 16 operations. */
+     [ABCD  0  7  1]  [DABC  1 12  2]  [CDAB  2 17  3]  [BCDA  3 22  4]
+     [ABCD  4  7  5]  [DABC  5 12  6]  [CDAB  6 17  7]  [BCDA  7 22  8]
+     [ABCD  8  7  9]  [DABC  9 12 10]  [CDAB 10 17 11]  [BCDA 11 22 12]
+     [ABCD 12  7 13]  [DABC 13 12 14]  [CDAB 14 17 15]  [BCDA 15 22 16]
+
+     /* Round 2. */
+     /* Let [abcd k s i] denote the operation
+          a = b + ((a + G(b,c,d) + X[k] + T[i]) &lt;&lt;&lt; s). */
+     /* Do the following 16 operations. */
+     [ABCD  1  5 17]  [DABC  6  9 18]  [CDAB 11 14 19]  [BCDA  0 20 20]
+     [ABCD  5  5 21]  [DABC 10  9 22]  [CDAB 15 14 23]  [BCDA  4 20 24]
+     [ABCD  9  5 25]  [DABC 14  9 26]  [CDAB  3 14 27]  [BCDA  8 20 28]
+     [ABCD 13  5 29]  [DABC  2  9 30]  [CDAB  7 14 31]  [BCDA 12 20 32]
+
+     /* Round 3. */
+     /* Let [abcd k s t] denote the operation
+          a = b + ((a + H(b,c,d) + X[k] + T[i]) &lt;&lt;&lt; s). */
+     /* Do the following 16 operations. */
+     [ABCD  5  4 33]  [DABC  8 11 34]  [CDAB 11 16 35]  [BCDA 14 23 36]
+     [ABCD  1  4 37]  [DABC  4 11 38]  [CDAB  7 16 39]  [BCDA 10 23 40]
+     [ABCD 13  4 41]  [DABC  0 11 42]  [CDAB  3 16 43]  [BCDA  6 23 44]
+     [ABCD  9  4 45]  [DABC 12 11 46]  [CDAB 15 16 47]  [BCDA  2 23 48]
+
+     /* Round 4. */
+     /* Let [abcd k s t] denote the operation
+          a = b + ((a + I(b,c,d) + X[k] + T[i]) &lt;&lt;&lt; s). */
+     /* Do the following 16 operations. */
+     [ABCD  0  6 49]  [DABC  7 10 50]  [CDAB 14 15 51]  [BCDA  5 21 52]
+     [ABCD 12  6 53]  [DABC  3 10 54]  [CDAB 10 15 55]  [BCDA  1 21 56]
+     [ABCD  8  6 57]  [DABC 15 10 58]  [CDAB  6 15 59]  [BCDA 13 21 60]
+     [ABCD  4  6 61]  [DABC 11 10 62]  [CDAB  2 15 63]  [BCDA  9 21 64]
+
+     /* Then perform the following additions. (That is increment each
+        of the four registers by the value it had before this block
+        was started.) */
+     A = A + AA
+     B = B + BB
+     C = C + CC
+     D = D + DD
+</PRE>
+	<P>end /* of loop on i */</P>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-6"></A><EM>Page 6</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<DT><A NAME="sec-3.5"></A><STRONG>3.5 Step 5. Output</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>The message digest produced as output is A, B, C, D. That is, we begin with the low-order byte of A, and end
+	with the high-order byte of D.</P>
+	<P>This completes the description of MD5. A reference implementation in C is given in the appendix.</P>
+	<P>
+	<DT><A NAME="sec-4"></A><STRONG>4 Summary</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>The MD5 message-digest algorithm is simple to implement, and provides a &quot;fingerprint&quot; or message digest
+	of a message of arbitrary length. It is conjectured that the difficulty of coming up with two messages having the
+	same message digest is on the order of 2^64 operations, and that the difficulty of coming up with any message having
+	a given message digest is on the order of 2^128 operations. The MD5 algorithm has been carefully scrutinized for
+	weaknesses. It is, however, a relatively new algorithm and further security analysis is of course justified, as
+	is the case with any new proposal of this sort.</P>
+	<P>
+	<DT><A NAME="sec-5"></A><STRONG>5 Differences Between MD4 and MD5</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>The following are the differences between MD4 and MD5:</P>
+	<P>
+	<DT><A NAME="sec-1"></A><STRONG>1 A fourth round has been added.</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<DT><A NAME="sec-2"></A><STRONG>2 Each step now has a unique additive constant.</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<DT><A NAME="sec-3"></A><STRONG>3 The function g in round 2 was changed from (XY v XZ v YZ) to</STRONG></DT>
+	<DD>(XZ v Y not(Z)) to make g less symmetric.
+	<P>
+	<DT><A NAME="sec-4"></A><STRONG>4 Each step now adds in the result of the previous step. This</STRONG></DT>
+	<DD>promotes a faster &quot;avalanche effect&quot;.
+	<P>
+	<DT><A NAME="sec-5"></A><STRONG>5 The order in which input words are accessed in rounds 2 and</STRONG></DT>
+	<DD>3 is changed, to make these patterns less like each other.
+	<P>
+	<DT><A NAME="sec-6"></A><STRONG>6 The shift amounts in each round have been approximately</STRONG></DT>
+	<DD>optimized, to yield a faster &quot;avalanche effect.&quot; The shifts in different rounds are distinct.
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-7"></A><EM>Page 7</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<DT>References</DT>
+	<DD>
+	<P>[1] Rivest, R., &quot;The MD4 Message Digest Algorithm&quot;, <A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/rfc1320.html  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/rfc1320.html'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/rfc1320.html">RFC 1320</A>, MIT and RSA
+	Data Security, Inc., April 1992.</P>
+	<P>[2] Rivest, R., &quot;The MD4 message digest algorithm&quot;, in A.J. Menezes and S.A. Vanstone, editors, Advances
+	in Cryptology - CRYPTO '90 Proceedings, pages 303-311, Springer-Verlag, 1991.</P>
+	<P>[3] CCITT Recommendation X.509 (1988), &quot;The Directory - <BR>
+	Authentication Framework.&quot;</P>
+	<P>
+	<DT>APPENDIX A - Reference Implementation</DT>
+	<DD>
+	<P>This appendix contains the following files taken from RSAREF: A Cryptographic Toolkit for Privacy-Enhanced Mail:</P>
+	<P>global.h -- global header file</P>
+	<P>md5.h -- header file for MD5</P>
+	<P>md5c.c -- source code for MD5</P>
+	<P>For more information on RSAREF, send email to &lt;rsaref@rsa.com&gt;.</P>
+	<P>The appendix also includes the following file:</P>
+	<P>mddriver.c -- test driver for MD2, MD4 and MD5</P>
+	<P>The driver compiles for MD5 by default but can compile for MD2 or MD4 if the symbol MD is defined on the C compiler
+	command line as 2 or 4.</P>
+	<P>The implementation is portable and should work on many different plaforms. However, it is not difficult to optimize
+	the implementation on particular platforms, an exercise left to the reader. For example, on &quot;little-endian&quot;
+	platforms where the lowest-addressed byte in a 32- bit word is the least significant and there are no alignment
+	restrictions, the call to Decode in MD5Transform can be replaced with a typecast.</P>
+	<P>
+	<DT><A NAME="sec-A.1"></A><STRONG>A.1 global.h</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<PRE>/* GLOBAL.H - RSAREF types and constants
+ */
+
+/* PROTOTYPES should be set to one if and only if the compiler supports
+  function argument prototyping.
+</PRE>
+	<DT>The following makes PROTOTYPES default to 0 if it has not already</DT>
+	<DD>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-8"></A><EM>Page 8</EM></DT>
+	<DD><EM></EM>
+	<P>been defined with C compiler flags.</P>
+	<PRE> */
+</PRE>
+	<PRE>#ifndef PROTOTYPES
+</PRE>
+	<PRE>#define PROTOTYPES 0
+</PRE>
+	<PRE>#endif
+
+/* POINTER defines a generic pointer type */
+</PRE>
+	<DT>typedef unsigned char *POINTER;</DT>
+	<DD>
+	<P>
+	<PRE>/* UINT2 defines a two byte word */
+</PRE>
+	<DT>typedef unsigned short int UINT2;</DT>
+	<DD>
+	<P>
+	<PRE>/* UINT4 defines a four byte word */
+</PRE>
+	<DT>typedef unsigned long int UINT4;</DT>
+	<DD>
+	<P>
+	<PRE>/* PROTO_LIST is defined depending on how PROTOTYPES is defined above.
+</PRE>
+	<DT>If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it</DT>
+	<DD>returns an empty list.
+	<PRE> */
+</PRE>
+	<PRE>#if PROTOTYPES
+</PRE>
+	<PRE>#define PROTO_LIST(list) list
+</PRE>
+	<PRE>#else
+</PRE>
+	<PRE>#define PROTO_LIST(list) ()
+</PRE>
+	<PRE>#endif
+</PRE>
+	<P>
+	<DT><A NAME="sec-A.2"></A><STRONG>A.2 md5.h</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<PRE>/* MD5.H - header file for MD5C.C
+ */
+
+/* Copyright &copy; 1991-2, RSA Data Security, Inc. Created 1991. All
+</PRE>
+	<DT>rights reserved.</DT>
+	<DD>
+	<P>
+	<DT>License to copy and use this software is granted provided that it</DT>
+	<DD>
+	<DT>is identified as the &quot;RSA Data Security, Inc. MD5 Message-Digest</DT>
+	<DD>
+	<DT>Algorithm&quot; in all material mentioning or referencing this software</DT>
+	<DD>
+	<DT>or this function.</DT>
+	<DD>
+	<P>
+	<DT>License is also granted to make and use derivative works provided</DT>
+	<DD>
+	<DT>that such works are identified as &quot;derived from the RSA Data</DT>
+	<DD>
+	<DT>Security, Inc. MD5 Message-Digest Algorithm&quot; in all material</DT>
+	<DD>
+	<DT>mentioning or referencing the derived work.</DT>
+	<DD>
+	<P>
+	<DT>RSA Data Security, Inc. makes no representations concerning either</DT>
+	<DD>
+	<DT>the merchantability of this software or the suitability of this</DT>
+	<DD>
+	<DT>software for any particular purpose. It is provided &quot;as is&quot;</DT>
+	<DD>
+	<DT>without express or implied warranty of any kind.</DT>
+	<DD>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-9"></A><EM>Page 9</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<DT>These notices must be retained in any copies of any part of this</DT>
+	<DD>
+	<DT>documentation and/or software.</DT>
+	<DD>
+	<PRE> */
+
+/* MD5 context. */
+</PRE>
+	<DT>typedef struct {</DT>
+	<DD>
+	<PRE>  UINT4 state[4];                                   /* state (ABCD) */
+  UINT4 count[2];        /* number of bits, modulo 2^64 (lsb first) */
+  unsigned char buffer[64];                         /* input buffer */
+</PRE>
+	} MD5_CTX;
+	<P>
+	<DT>void MD5Init PROTO_LIST ((MD5_CTX *));</DT>
+	<DD>
+	<DT>void MD5Update PROTO_LIST</DT>
+	<DD>((MD5_CTX *, unsigned char *, unsigned int));
+	<DT>void MD5Final PROTO_LIST ((unsigned char [16], MD5_CTX *));</DT>
+	<DD>
+	<P>
+	<DT><A NAME="sec-A.3"></A><STRONG>A.3 md5c.c</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<PRE>/* MD5C.C - RSA Data Security, Inc., MD5 message-digest algorithm
+ */
+
+/* Copyright &copy; 1991-2, RSA Data Security, Inc. Created 1991. All
+</PRE>
+	<DT>rights reserved.</DT>
+	<DD>
+	<P>
+	<DT>License to copy and use this software is granted provided that it</DT>
+	<DD>
+	<DT>is identified as the &quot;RSA Data Security, Inc. MD5 Message-Digest</DT>
+	<DD>
+	<DT>Algorithm&quot; in all material mentioning or referencing this software</DT>
+	<DD>
+	<DT>or this function.</DT>
+	<DD>
+	<P>
+	<DT>License is also granted to make and use derivative works provided</DT>
+	<DD>
+	<DT>that such works are identified as &quot;derived from the RSA Data</DT>
+	<DD>
+	<DT>Security, Inc. MD5 Message-Digest Algorithm&quot; in all material</DT>
+	<DD>
+	<DT>mentioning or referencing the derived work.</DT>
+	<DD>
+	<P>
+	<DT>RSA Data Security, Inc. makes no representations concerning either</DT>
+	<DD>
+	<DT>the merchantability of this software or the suitability of this</DT>
+	<DD>
+	<DT>software for any particular purpose. It is provided &quot;as is&quot;</DT>
+	<DD>
+	<DT>without express or implied warranty of any kind.</DT>
+	<DD>
+	<P>
+	<DT>These notices must be retained in any copies of any part of this</DT>
+	<DD>
+	<DT>documentation and/or software.</DT>
+	<DD>
+	<PRE> */
+
+#include &quot;global.h&quot;
+</PRE>
+	<PRE>#include &quot;md5.h&quot;
+
+/* Constants for MD5Transform routine.
+ */
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-10"></A><EM>Page 10</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE>#define S11 7
+</PRE>
+	<PRE>#define S12 12
+</PRE>
+	<PRE>#define S13 17
+</PRE>
+	<PRE>#define S14 22
+</PRE>
+	<PRE>#define S21 5
+</PRE>
+	<PRE>#define S22 9
+</PRE>
+	<PRE>#define S23 14
+</PRE>
+	<PRE>#define S24 20
+</PRE>
+	<PRE>#define S31 4
+</PRE>
+	<PRE>#define S32 11
+</PRE>
+	<PRE>#define S33 16
+</PRE>
+	<PRE>#define S34 23
+</PRE>
+	<PRE>#define S41 6
+</PRE>
+	<PRE>#define S42 10
+</PRE>
+	<PRE>#define S43 15
+</PRE>
+	<PRE>#define S44 21
+</PRE>
+	<P>
+	<DT>static void MD5Transform PROTO_LIST ((UINT4 [4], unsigned char [64]));</DT>
+	<DD>
+	<DT>static void Encode PROTO_LIST</DT>
+	<DD>((unsigned char *, UINT4 *, unsigned int));
+	<DT>static void Decode PROTO_LIST</DT>
+	<DD>((UINT4 *, unsigned char *, unsigned int));
+	<DT>static void MD5_memcpy PROTO_LIST ((POINTER, POINTER, unsigned int));</DT>
+	<DD>
+	<DT>static void MD5_memset PROTO_LIST ((POINTER, int, unsigned int));</DT>
+	<DD>
+	<P>
+	<DT>static unsigned char PADDING[64] = {</DT>
+	<DD>0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 <BR>
+	};
+	<P>
+	<PRE>/* F, G, H and I are basic MD5 functions.
+ */
+</PRE>
+	<PRE>#define F(x, y, z) (((x) &amp; (y)) | ((~x) &amp; (z)))
+</PRE>
+	<PRE>#define G(x, y, z) (((x) &amp; (z)) | ((y) &amp; (~z)))
+</PRE>
+	<PRE>#define H(x, y, z) ((x) ^ (y) ^ (z))
+</PRE>
+	<PRE>#define I(x, y, z) ((y) ^ ((x) | (~z)))
+
+/* ROTATE_LEFT rotates x left n bits.
+ */
+</PRE>
+	<PRE>#define ROTATE_LEFT(x, n) (((x) &lt;&lt; (n)) | ((x) &gt;&gt; (32-(n))))
+
+/* FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
+</PRE>
+	<DT>Rotation is separate from addition to prevent recomputation.</DT>
+	<DD>
+	<PRE> */
+</PRE>
+	<PRE>#define FF(a, b, c, d, x, s, ac) { \
+ (a) += F ((b), (c), (d)) + (x) + (UINT4)(ac); \
+ (a) = ROTATE_LEFT ((a), (s)); \
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-11"></A><EM>Page 11</EM></DT>
+	<DD><EM></EM>
+	<P>(a) += (b); \ <BR>
+	}</P>
+	<PRE>#define GG(a, b, c, d, x, s, ac) { \
+ (a) += G ((b), (c), (d)) + (x) + (UINT4)(ac); \
+ (a) = ROTATE_LEFT ((a), (s)); \
+ (a) += (b); \
+  }
+</PRE>
+	<PRE>#define HH(a, b, c, d, x, s, ac) { \
+ (a) += H ((b), (c), (d)) + (x) + (UINT4)(ac); \
+ (a) = ROTATE_LEFT ((a), (s)); \
+ (a) += (b); \
+  }
+</PRE>
+	<PRE>#define II(a, b, c, d, x, s, ac) { \
+ (a) += I ((b), (c), (d)) + (x) + (UINT4)(ac); \
+ (a) = ROTATE_LEFT ((a), (s)); \
+ (a) += (b); \
+  }
+
+/* MD5 initialization. Begins an MD5 operation, writing a new context.
+ */
+</PRE>
+	<DT>void MD5Init (context)</DT>
+	<DD>
+	<DT>MD5_CTX *context; /* context */</DT>
+	<DD>
+	<PRE>{
+  context-&gt;count[0] = context-&gt;count[1] = 0;
+  /* Load magic initialization constants.
+</PRE>
+	<PRE>*/
+  context-&gt;state[0] = 0x67452301;
+  context-&gt;state[1] = 0xefcdab89;
+  context-&gt;state[2] = 0x98badcfe;
+  context-&gt;state[3] = 0x10325476;
+</PRE>
+	}
+	<P>
+	<PRE>/* MD5 block update operation. Continues an MD5 message-digest
+  operation, processing another message block, and updating the
+  context.
+ */
+</PRE>
+	<DT>void MD5Update (context, input, inputLen)</DT>
+	<DD>
+	<DT>MD5_CTX *context; /* context */</DT>
+	<DD>
+	<DT>unsigned char *input; /* input block */</DT>
+	<DD>
+	<DT>unsigned int inputLen; /* length of input block */</DT>
+	<DD>
+	<PRE>{
+  unsigned int i, index, partLen;
+
+  /* Compute number of bytes mod 64 */
+  index = (unsigned int)((context-&gt;count[0] &gt;&gt; 3) &amp; 0x3F);
+
+  /* Update number of bits */
+  if ((context-&gt;count[0] += ((UINT4)inputLen &lt;&lt; 3))
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-12"></A><EM>Page 12</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE>   &lt; ((UINT4)inputLen &lt;&lt; 3))
+ context-&gt;count[1]++;
+  context-&gt;count[1] += ((UINT4)inputLen &gt;&gt; 29);
+
+  partLen = 64 - index;
+
+  /* Transform as many times as possible.
+</PRE>
+	<PRE>*/
+  if (inputLen &gt;= partLen) {
+ MD5_memcpy
+   ((POINTER)&amp;context-&gt;buffer[index], (POINTER)input, partLen);
+ MD5Transform (context-&gt;state, context-&gt;buffer);
+
+ for (i = partLen; i + 63 &lt; inputLen; i += 64)
+   MD5Transform (context-&gt;state, &amp;input[i]);
+
+ index = 0;
+  }
+  else
+ i = 0;
+
+  /* Buffer remaining input */
+  MD5_memcpy
+ ((POINTER)&amp;context-&gt;buffer[index], (POINTER)&amp;input[i],
+  inputLen-i);
+</PRE>
+	}
+	<P>
+	<PRE>/* MD5 finalization. Ends an MD5 message-digest operation, writing the
+  the message digest and zeroizing the context.
+ */
+</PRE>
+	<DT>void MD5Final (digest, context)</DT>
+	<DD>
+	<DT>unsigned char digest[16]; /* message digest */</DT>
+	<DD>
+	<DT>MD5_CTX *context; /* context */</DT>
+	<DD>
+	<PRE>{
+  unsigned char bits[8];
+  unsigned int index, padLen;
+
+  /* Save number of bits */
+  Encode (bits, context-&gt;count, 8);
+
+  /* Pad out to 56 mod 64.
+</PRE>
+	<PRE>*/
+  index = (unsigned int)((context-&gt;count[0] &gt;&gt; 3) &amp; 0x3f);
+  padLen = (index &lt; 56) ? (56 - index) : (120 - index);
+  MD5Update (context, PADDING, padLen);
+
+  /* Append length (before padding) */
+  MD5Update (context, bits, 8);
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-13"></A><EM>Page 13</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE>  /* Store state in digest */
+  Encode (digest, context-&gt;state, 16);
+
+  /* Zeroize sensitive information.
+</PRE>
+	<PRE>*/
+  MD5_memset ((POINTER)context, 0, sizeof (*context));
+</PRE>
+	}
+	<P>
+	<PRE>/* MD5 basic transformation. Transforms state based on block.
+ */
+</PRE>
+	<DT>static void MD5Transform (state, block)</DT>
+	<DD>
+	<DT>UINT4 state[4];</DT>
+	<DD>
+	<DT>unsigned char block[64];</DT>
+	<DD>
+	<PRE>{
+  UINT4 a = state[0], b = state[1], c = state[2], d = state[3], x[16];
+</PRE>
+	<P>Decode (x, block, 64);</P>
+	<P>
+	<PRE>  /* Round 1 */
+  FF (a, b, c, d, x[ 0], S11, 0xd76aa478); /* 1 */
+  FF (d, a, b, c, x[ 1], S12, 0xe8c7b756); /* 2 */
+  FF (c, d, a, b, x[ 2], S13, 0x242070db); /* 3 */
+  FF (b, c, d, a, x[ 3], S14, 0xc1bdceee); /* 4 */
+  FF (a, b, c, d, x[ 4], S11, 0xf57c0faf); /* 5 */
+  FF (d, a, b, c, x[ 5], S12, 0x4787c62a); /* 6 */
+  FF (c, d, a, b, x[ 6], S13, 0xa8304613); /* 7 */
+  FF (b, c, d, a, x[ 7], S14, 0xfd469501); /* 8 */
+  FF (a, b, c, d, x[ 8], S11, 0x698098d8); /* 9 */
+  FF (d, a, b, c, x[ 9], S12, 0x8b44f7af); /* 10 */
+  FF (c, d, a, b, x[10], S13, 0xffff5bb1); /* 11 */
+  FF (b, c, d, a, x[11], S14, 0x895cd7be); /* 12 */
+  FF (a, b, c, d, x[12], S11, 0x6b901122); /* 13 */
+  FF (d, a, b, c, x[13], S12, 0xfd987193); /* 14 */
+  FF (c, d, a, b, x[14], S13, 0xa679438e); /* 15 */
+  FF (b, c, d, a, x[15], S14, 0x49b40821); /* 16 */
+
+ /* Round 2 */
+  GG (a, b, c, d, x[ 1], S21, 0xf61e2562); /* 17 */
+  GG (d, a, b, c, x[ 6], S22, 0xc040b340); /* 18 */
+  GG (c, d, a, b, x[11], S23, 0x265e5a51); /* 19 */
+  GG (b, c, d, a, x[ 0], S24, 0xe9b6c7aa); /* 20 */
+  GG (a, b, c, d, x[ 5], S21, 0xd62f105d); /* 21 */
+  GG (d, a, b, c, x[10], S22,  0x2441453); /* 22 */
+  GG (c, d, a, b, x[15], S23, 0xd8a1e681); /* 23 */
+  GG (b, c, d, a, x[ 4], S24, 0xe7d3fbc8); /* 24 */
+  GG (a, b, c, d, x[ 9], S21, 0x21e1cde6); /* 25 */
+  GG (d, a, b, c, x[14], S22, 0xc33707d6); /* 26 */
+  GG (c, d, a, b, x[ 3], S23, 0xf4d50d87); /* 27 */
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-14"></A><EM>Page 14</EM></DT>
+	<DD><EM></EM>
+	<P>GG (b, c, d, a, x[ 8], S24, 0x455a14ed); /* 28 */ <BR>
+	GG (a, b, c, d, x[13], S21, 0xa9e3e905); /* 29 */ <BR>
+	GG (d, a, b, c, x[ 2], S22, 0xfcefa3f8); /* 30 */ <BR>
+	GG (c, d, a, b, x[ 7], S23, 0x676f02d9); /* 31 */ <BR>
+	GG (b, c, d, a, x[12], S24, 0x8d2a4c8a); /* 32 */</P>
+	<P>
+	<PRE>  /* Round 3 */
+  HH (a, b, c, d, x[ 5], S31, 0xfffa3942); /* 33 */
+  HH (d, a, b, c, x[ 8], S32, 0x8771f681); /* 34 */
+  HH (c, d, a, b, x[11], S33, 0x6d9d6122); /* 35 */
+  HH (b, c, d, a, x[14], S34, 0xfde5380c); /* 36 */
+  HH (a, b, c, d, x[ 1], S31, 0xa4beea44); /* 37 */
+  HH (d, a, b, c, x[ 4], S32, 0x4bdecfa9); /* 38 */
+  HH (c, d, a, b, x[ 7], S33, 0xf6bb4b60); /* 39 */
+  HH (b, c, d, a, x[10], S34, 0xbebfbc70); /* 40 */
+  HH (a, b, c, d, x[13], S31, 0x289b7ec6); /* 41 */
+  HH (d, a, b, c, x[ 0], S32, 0xeaa127fa); /* 42 */
+  HH (c, d, a, b, x[ 3], S33, 0xd4ef3085); /* 43 */
+  HH (b, c, d, a, x[ 6], S34,  0x4881d05); /* 44 */
+  HH (a, b, c, d, x[ 9], S31, 0xd9d4d039); /* 45 */
+  HH (d, a, b, c, x[12], S32, 0xe6db99e5); /* 46 */
+  HH (c, d, a, b, x[15], S33, 0x1fa27cf8); /* 47 */
+  HH (b, c, d, a, x[ 2], S34, 0xc4ac5665); /* 48 */
+
+  /* Round 4 */
+  II (a, b, c, d, x[ 0], S41, 0xf4292244); /* 49 */
+  II (d, a, b, c, x[ 7], S42, 0x432aff97); /* 50 */
+  II (c, d, a, b, x[14], S43, 0xab9423a7); /* 51 */
+  II (b, c, d, a, x[ 5], S44, 0xfc93a039); /* 52 */
+  II (a, b, c, d, x[12], S41, 0x655b59c3); /* 53 */
+  II (d, a, b, c, x[ 3], S42, 0x8f0ccc92); /* 54 */
+  II (c, d, a, b, x[10], S43, 0xffeff47d); /* 55 */
+  II (b, c, d, a, x[ 1], S44, 0x85845dd1); /* 56 */
+  II (a, b, c, d, x[ 8], S41, 0x6fa87e4f); /* 57 */
+  II (d, a, b, c, x[15], S42, 0xfe2ce6e0); /* 58 */
+  II (c, d, a, b, x[ 6], S43, 0xa3014314); /* 59 */
+  II (b, c, d, a, x[13], S44, 0x4e0811a1); /* 60 */
+  II (a, b, c, d, x[ 4], S41, 0xf7537e82); /* 61 */
+  II (d, a, b, c, x[11], S42, 0xbd3af235); /* 62 */
+  II (c, d, a, b, x[ 2], S43, 0x2ad7d2bb); /* 63 */
+  II (b, c, d, a, x[ 9], S44, 0xeb86d391); /* 64 */
+</PRE>
+	<P>state[0] += a; <BR>
+	state[1] += b; <BR>
+	state[2] += c; <BR>
+	state[3] += d;</P>
+	<P>
+	<PRE>  /* Zeroize sensitive information.
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-15"></A><EM>Page 15</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE>*/
+  MD5_memset ((POINTER)x, 0, sizeof (x));
+</PRE>
+	}
+	<P>
+	<PRE>/* Encodes input (UINT4) into output (unsigned char). Assumes len is
+  a multiple of 4.
+ */
+</PRE>
+	<DT>static void Encode (output, input, len)</DT>
+	<DD>
+	<DT>unsigned char *output;</DT>
+	<DD>
+	<DT>UINT4 *input;</DT>
+	<DD>
+	<DT>unsigned int len;</DT>
+	<DD>
+	<PRE>{
+  unsigned int i, j;
+
+  for (i = 0, j = 0; j &lt; len; i++, j += 4) {
+ output[j] = (unsigned char)(input[i] &amp; 0xff);
+ output[j+1] = (unsigned char)((input[i] &gt;&gt; 8) &amp; 0xff);
+ output[j+2] = (unsigned char)((input[i] &gt;&gt; 16) &amp; 0xff);
+ output[j+3] = (unsigned char)((input[i] &gt;&gt; 24) &amp; 0xff);
+  }
+</PRE>
+	}
+	<P>
+	<PRE>/* Decodes input (unsigned char) into output (UINT4). Assumes len is
+  a multiple of 4.
+ */
+</PRE>
+	<DT>static void Decode (output, input, len)</DT>
+	<DD>
+	<DT>UINT4 *output;</DT>
+	<DD>
+	<DT>unsigned char *input;</DT>
+	<DD>
+	<DT>unsigned int len;</DT>
+	<DD>
+	<PRE>{
+  unsigned int i, j;
+
+  for (i = 0, j = 0; j &lt; len; i++, j += 4)
+ output[i] = ((UINT4)input[j]) | (((UINT4)input[j+1]) &lt;&lt; 8) |
+   (((UINT4)input[j+2]) &lt;&lt; 16) | (((UINT4)input[j+3]) &lt;&lt; 24);
+</PRE>
+	}
+	<P>
+	<PRE>/* Note: Replace &quot;for loop&quot; with standard memcpy if possible.
+ */
+</PRE>
+	<P>
+	<DT>static void MD5_memcpy (output, input, len)</DT>
+	<DD>
+	<DT>POINTER output;</DT>
+	<DD>
+	<DT>POINTER input;</DT>
+	<DD>
+	<DT>unsigned int len;</DT>
+	<DD>
+	<PRE>{
+  unsigned int i;
+
+  for (i = 0; i &lt; len; i++)
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-16"></A><EM>Page 16</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE> output[i] = input[i];
+</PRE>
+	}
+	<P>
+	<PRE>/* Note: Replace &quot;for loop&quot; with standard memset if possible.
+ */
+</PRE>
+	<DT>static void MD5_memset (output, value, len)</DT>
+	<DD>
+	<DT>POINTER output;</DT>
+	<DD>
+	<DT>int value;</DT>
+	<DD>
+	<DT>unsigned int len;</DT>
+	<DD>
+	<PRE>{
+  unsigned int i;
+
+  for (i = 0; i &lt; len; i++)
+ ((char *)output)[i] = (char)value;
+</PRE>
+	}
+	<P>
+	<DT><A NAME="sec-A.4"></A><STRONG>A.4 mddriver.c</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<PRE>/* MDDRIVER.C - test driver for MD2, MD4 and MD5
+ */
+
+/* Copyright &copy; 1990-2, RSA Data Security, Inc. Created 1990. All
+</PRE>
+	<DT>rights reserved.</DT>
+	<DD>
+	<P>
+	<DT>RSA Data Security, Inc. makes no representations concerning either</DT>
+	<DD>
+	<DT>the merchantability of this software or the suitability of this</DT>
+	<DD>
+	<DT>software for any particular purpose. It is provided &quot;as is&quot;</DT>
+	<DD>
+	<DT>without express or implied warranty of any kind.</DT>
+	<DD>
+	<P>
+	<DT>These notices must be retained in any copies of any part of this</DT>
+	<DD>
+	<DT>documentation and/or software.</DT>
+	<DD>
+	<PRE> */
+
+/* The following makes MD default to MD5 if it has not already been
+  defined with C compiler flags.
+ */
+</PRE>
+	<PRE>#ifndef MD
+</PRE>
+	<PRE>#define MD MD5
+</PRE>
+	<PRE>#endif
+
+#include &lt;stdio.h&gt;
+</PRE>
+	<PRE>#include &lt;time.h&gt;
+</PRE>
+	<PRE>#include &lt;string.h&gt;
+</PRE>
+	<PRE>#include &quot;global.h&quot;
+#if MD == 2
+</PRE>
+	<PRE>#include &quot;md2.h&quot;
+</PRE>
+	<PRE>#endif
+#if MD == 4
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-17"></A><EM>Page 17</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE>#include &quot;md4.h&quot;
+</PRE>
+	<PRE>#endif
+#if MD == 5
+</PRE>
+	<PRE>#include &quot;md5.h&quot;
+</PRE>
+	<PRE>#endif
+
+/* Length of test block, number of test blocks.
+ */
+</PRE>
+	<PRE>#define TEST_BLOCK_LEN 1000
+</PRE>
+	<PRE>#define TEST_BLOCK_COUNT 1000
+</PRE>
+	<P>
+	<DT>static void MDString PROTO_LIST ((char *));</DT>
+	<DD>
+	<DT>static void MDTimeTrial PROTO_LIST ((void));</DT>
+	<DD>
+	<DT>static void MDTestSuite PROTO_LIST ((void));</DT>
+	<DD>
+	<DT>static void MDFile PROTO_LIST ((char *));</DT>
+	<DD>
+	<DT>static void MDFilter PROTO_LIST ((void));</DT>
+	<DD>
+	<DT>static void MDPrint PROTO_LIST ((unsigned char [16]));</DT>
+	<DD>
+	<P>
+	<PRE>#if MD == 2
+</PRE>
+	<PRE>#define MD_CTX MD2_CTX
+</PRE>
+	<PRE>#define MDInit MD2Init
+</PRE>
+	<PRE>#define MDUpdate MD2Update
+</PRE>
+	<PRE>#define MDFinal MD2Final
+</PRE>
+	<PRE>#endif
+#if MD == 4
+</PRE>
+	<PRE>#define MD_CTX MD4_CTX
+</PRE>
+	<PRE>#define MDInit MD4Init
+</PRE>
+	<PRE>#define MDUpdate MD4Update
+</PRE>
+	<PRE>#define MDFinal MD4Final
+</PRE>
+	<PRE>#endif
+#if MD == 5
+</PRE>
+	<PRE>#define MD_CTX MD5_CTX
+</PRE>
+	<PRE>#define MDInit MD5Init
+</PRE>
+	<PRE>#define MDUpdate MD5Update
+</PRE>
+	<PRE>#define MDFinal MD5Final
+</PRE>
+	<PRE>#endif
+
+/* Main driver.
+</PRE>
+	<P>
+	<DT>Arguments (may be any combination):</DT>
+	<DD>
+	<PRE>  -sstring - digests string
+  -t       - runs time trial
+  -x       - runs test script
+  filename - digests file
+  (none)   - digests standard input
+ */
+</PRE>
+	<DT>int main (argc, argv)</DT>
+	<DD>
+	<DT>int argc;</DT>
+	<DD>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-18"></A><EM>Page 18</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<DT>char *argv[];</DT>
+	<DD>
+	<PRE>{
+  int i;
+</PRE>
+	<P>if (argc &gt; 1)</P>
+	<PRE> for (i = 1; i &lt; argc; i++)
+   if (argv[i][0] == '-' &amp;&amp; argv[i][1] == 's')
+     MDString (argv[i] + 2);
+   else if (strcmp (argv[i], &quot;-t&quot;) == 0)
+     MDTimeTrial ();
+   else if (strcmp (argv[i], &quot;-x&quot;) == 0)
+     MDTestSuite ();
+   else
+     MDFile (argv[i]);
+  else
+ MDFilter ();
+</PRE>
+	<P>return (0); <BR>
+	}</P>
+	<P>
+	<PRE>/* Digests a string and prints the result.
+ */
+</PRE>
+	<DT>static void MDString (string)</DT>
+	<DD>
+	<DT>char *string;</DT>
+	<DD>
+	<PRE>{
+  MD_CTX context;
+  unsigned char digest[16];
+  unsigned int len = strlen (string);
+</PRE>
+	<P>MDInit (&amp;context); <BR>
+	MDUpdate (&amp;context, string, len); <BR>
+	MDFinal (digest, &amp;context);</P>
+	<P>
+	<PRE>  printf (&quot;MD%d (\&quot;%s\&quot;) = &quot;, MD, string);
+  MDPrint (digest);
+  printf (&quot;\n&quot;);
+</PRE>
+	}
+	<P>
+	<PRE>/* Measures the time to digest TEST_BLOCK_COUNT TEST_BLOCK_LEN-byte
+  blocks.
+ */
+</PRE>
+	<DT>static void MDTimeTrial ()</DT>
+	<DD>
+	<PRE>{
+  MD_CTX context;
+  time_t endTime, startTime;
+  unsigned char block[TEST_BLOCK_LEN], digest[16];
+  unsigned int i;
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-19"></A><EM>Page 19</EM></DT>
+	<DD><EM></EM>
+	<P>printf <BR>
+	(&quot;MD%d time trial. Digesting %d %d-byte blocks ...&quot;, MD, <BR>
+	TEST_BLOCK_LEN, TEST_BLOCK_COUNT);</P>
+	<P>
+	<PRE>  /* Initialize block */
+  for (i = 0; i &lt; TEST_BLOCK_LEN; i++)
+ block[i] = (unsigned char)(i &amp; 0xff);
+
+  /* Start timer */
+  time (&amp;startTime);
+
+  /* Digest blocks */
+  MDInit (&amp;context);
+  for (i = 0; i &lt; TEST_BLOCK_COUNT; i++)
+ MDUpdate (&amp;context, block, TEST_BLOCK_LEN);
+  MDFinal (digest, &amp;context);
+
+  /* Stop timer */
+  time (&amp;endTime);
+</PRE>
+	<P>printf (&quot; done\n&quot;);</P>
+	<PRE>  printf (&quot;Digest = &quot;);
+  MDPrint (digest);
+  printf (&quot;\nTime = %ld seconds\n&quot;, (long)(endTime-startTime));
+  printf
+ (&quot;Speed = %ld bytes/second\n&quot;,
+  (long)TEST_BLOCK_LEN * (long)TEST_BLOCK_COUNT/(endTime-startTime));
+</PRE>
+	}
+	<P>
+	<PRE>/* Digests a reference suite of strings and prints the results.
+ */
+</PRE>
+	<DT>static void MDTestSuite ()</DT>
+	<DD>
+	<PRE>{
+  printf (&quot;MD%d test suite:\n&quot;, MD);
+</PRE>
+	<P>MDString (&quot;&quot;); <BR>
+	MDString (&quot;a&quot;); <BR>
+	MDString (&quot;abc&quot;); <BR>
+	MDString (&quot;message digest&quot;); <BR>
+	MDString (&quot;abcdefghijklmnopqrstuvwxyz&quot;); <BR>
+	MDString <BR>
+	(&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;); MDString <BR>
+	(&quot;1234567890123456789012345678901234567890\
+	<DT><A NAME="sec-1234567890123456789012345678901234567890&quot;);"></A><STRONG>1234567890123456789012345678901234567890&quot;);</STRONG></DT>
+	<DD>}
+	<P>
+	<PRE>/* Digests a file and prints the result.
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-20"></A><EM>Page 20</EM></DT>
+	<DD><EM></EM>
+	<P>
+	<PRE> */
+</PRE>
+	<DT>static void MDFile (filename)</DT>
+	<DD>
+	<DT>char *filename;</DT>
+	<DD>
+	<PRE>{
+  FILE *file;
+  MD_CTX context;
+  int len;
+  unsigned char buffer[1024], digest[16];
+
+  if ((file = fopen (filename, &quot;rb&quot;)) == NULL)
+ printf (&quot;%s can't be opened\n&quot;, filename);
+
+  else {
+ MDInit (&amp;context);
+ while (len = fread (buffer, 1, 1024, file))
+   MDUpdate (&amp;context, buffer, len);
+ MDFinal (digest, &amp;context);
+</PRE>
+	<P>fclose (file);</P>
+	<P>
+	<PRE> printf (&quot;MD%d (%s) = &quot;, MD, filename);
+ MDPrint (digest);
+ printf (&quot;\n&quot;);
+  }
+</PRE>
+	}
+	<P>
+	<PRE>/* Digests the standard input and prints the result.
+ */
+</PRE>
+	<DT>static void MDFilter ()</DT>
+	<DD>
+	<PRE>{
+  MD_CTX context;
+  int len;
+  unsigned char buffer[16], digest[16];
+</PRE>
+	<P>MDInit (&amp;context);</P>
+	<PRE>  while (len = fread (buffer, 1, 16, stdin))
+ MDUpdate (&amp;context, buffer, len);
+  MDFinal (digest, &amp;context);
+</PRE>
+	<P>MDPrint (digest); <BR>
+	printf (&quot;\n&quot;); <BR>
+	}</P>
+	<P>
+	<PRE>/* Prints a message digest in hexadecimal.
+ */
+</PRE>
+	<DT>static void MDPrint (digest)</DT>
+	<DD>
+	<DT>unsigned char digest[16];</DT>
+	<DD>
+	<PRE>{
+</PRE>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+<A NAME="page-21"></A><EM>Page 21</EM></DT>
+	<DD><EM></EM>
+	<P>unsigned int i;</P>
+	<P>
+	<PRE>  for (i = 0; i &lt; 16; i++)
+ printf (&quot;%02x&quot;, digest[i]);
+</PRE>
+	}
+	<P>
+	<DT><A NAME="sec-A.5"></A><STRONG>A.5 Test suite</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>The MD5 test suite (driver option &quot;-x&quot;) should print the following results:</P>
+	<P>
+	<DT>MD5 test suite:</DT>
+	<DD>
+	<DT>MD5 (&quot;&quot;) = d41d8cd98f00b204e9800998ecf8427e</DT>
+	<DD>
+	<DT>MD5 (&quot;a&quot;) = 0cc175b9c0f1b6a831c399e269772661</DT>
+	<DD>
+	<DT>MD5 (&quot;abc&quot;) = 900150983cd24fb0d6963f7d28e17f72</DT>
+	<DD>
+	<DT>MD5 (&quot;message digest&quot;) = f96b697d7cb7938d525a2f31aaf161d0</DT>
+	<DD>
+	<DT>MD5 (&quot;abcdefghijklmnopqrstuvwxyz&quot;) = c3fcd3d76192e4007dfb496cca67e13b</DT>
+	<DD>
+	<DT>MD5 (&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;) =</DT>
+	<DD>
+	<DT>d174ab98d277d9f5a5611c2c9f419d9f</DT>
+	<DD>
+	<DT>MD5 (&quot;123456789012345678901234567890123456789012345678901234567890123456</DT>
+	<DD>
+	<DT><A NAME="sec-78901234567890&quot;)"></A><STRONG>78901234567890&quot;) = 57edf4a22be3c955ac49da2e2107b67a</STRONG></DT>
+	<DD><STRONG></STRONG>
+	<P>
+	<DT>Security Considerations</DT>
+	<DD>
+	<P>The level of security discussed in this memo is considered to be sufficient for implementing very high security
+	hybrid digital- signature schemes based on MD5 and a public-key cryptosystem.</P>
+	<P>
+	<DT>Author's Address</DT>
+	<DD>
+	<P>Ronald L. Rivest <BR>
+	Massachusetts Institute of Technology <BR>
+	Laboratory for Computer Science <BR>
+	NE43-324 <BR>
+	545 Technology Square <BR>
+	Cambridge, MA 02139-1986</P>
+	<P>Phone: (617) 253-5880 <BR>
+	EMail: <A HREF="mailto:rivest@theory.lcs.mit.edu">rivest@theory.lcs.mit.edu</A></P>
+	<P>
+	<DT>
+<HR ALIGN="CENTER">
+
+	<DD>
+</DL>
+
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,58 @@
+[LF] [Space] [Space] [Tab] [Space] [LF] = Label 10b = label 2
+[Space] [Space] [Space] [Tab] [Space] [Tab] [Space] [Space] [Space] [Space] [LF] = push 1010000b = push 80
+[Tab] [LF] [Space] [Space] = affiche 80 (P)
+[Space] [Space] [Space] [Tab] [Tab] [Space] [Space] [Space] [Space] [Tab] [LF] = push 1100001b = push 97
+[Tab] [LF] [Space] [Space] = affiche 97 (a)
+[Space] [Space] [Space] [Tab] [Tab] [Tab] [Space] [Space] [Tab] [Tab] [LF] = push 1110011b = push 115
+[Tab] [LF] [Space] [Space] = affiche 115 (s)
+[Space] [Space] [Space] [Tab] [Tab] [Tab] [Space] [Space] [Tab] [Tab] [LF] = push 1110011b = push 115 
+[Tab] [LF] [Space] [Space] = affiche 115 (s)
+[Space] [Space] [Space] [Tab] [Tab] [Tab] [Space] [Tab] [Space] [LF] = push 111010b = push 58
+[Tab] [LF] [Space] [Space] = affiche 58 (:)
+[Space] [Space] [Space] [Tab] [Space] [Space] [Space] [Space] [Space] [LF] = push 100000b = push 32
+[Tab] [LF] [Space] [Space] = affiche 32 ( )
+[Space] [Space] [Space] [Tab] [LF] = push 1
+[Tab] [LF] [Tab] [Space] = lit caractere entré et le place en position 1 sur la pile
+[Space] [Space] [Space] [Tab] [Space] [LF] = push 10b = push 2
+[Tab] [LF] [Tab] [Space] = lit caractere entré et le place en position 2 sur la pile
+[Space] [Space] [Space] [Tab] [Tab] [LF] = push 11b = push 3
+[Tab] [LF] [Tab] [Space] = lit caractere entré et le place en position 3 sur la pile 
+[Space] [Space] [Space] [Tab] [Space] [Space] [LF] = push 100b = push 4
+[Tab] [LF] [Tab] [Space] = lit caractere entré et le place en position 4 sur la pile  
+[Space] [Space] [Space] [Tab] [Space] [Tab] [LF] = push 101b = push 5
+[Tab] [LF] [Tab] [Space] = lit caractere entré et le place en position 5 sur la pile  
+[Space] [Space] [Space] [Tab] [LF] = push 1 
+[Tab] [Tab] [Tab] = récupère le caractère en position 1
+[Space] [Space] [Space] [Tab] [Space] [LF] = push 10b = push 2
+[Tab] [Tab] [Tab] = récupère le caractère en position 2 
+[Tab] [Space] [Space] [Space] = additionne char 1 et char 2
+[Space] [Space] [Space] [Tab] [Tab] [Space] [Tab] [Tab] [Tab] [Tab] [Space] [LF] = push 11011110b = push 222
+[Tab] [Space] [Space] [Tab] =  (char 1 + char 2) - 222
+[LF] [Tab] [Space] [Tab] [Space] [Space] [LF] = jz label 100b = jz label 4
+[LF] [Space] [LF] [Tab] [Space] [LF] = jmp label 10b = jmp label 2
+[LF] [Space] [Space] [Tab] [Space] [Space] [LF] = label 100b = label 4
+[Space] [Space] [Space] [Tab] [Tab] [Space] [Tab] [Tab] [Tab] [Tab] [Space] [LF] = push 11011110b = push 222
+[Space] [Space] [Space] [Tab] [Tab] [LF] = push 11b = push 3
+[Tab] [Tab] [Tab] = récupère le caractère en position 3
+[Tab] [Space] [Space] [Space] = additionne 222 et char 3
+[Space] [Space] [Space] [Tab] [Space] [Space] [LF] = push 100b = push 4
+[Tab] [Tab] [Tab] = récupère le caractère en position 4
+[Tab] [Space] [Space] [Space] = (222 + char 3) + char 4
+[Space] [Space] [Space] [Tab] [Space] [Tab] [LF] = push 101b = push 5
+[Tab] [Tab] [Tab] = récupère le caractère en position 5
+[Tab] [Space] [Space] [Space] = ((222 + char 3) + char 4) + char 5
+[Space] [Space] [Space] [Tab] [Tab] [Tab] [Space] [Space] [Tab] [Space] [Space] [Space] [LF] = push 111001000b = push 456
+[Tab] [Space] [Space] [Tab] = (((222 + char 3) + char 4) + char 5) - 456
+[LF] [Tab] [Space] [Tab] [Space] [Space] [Space] [LF] = jz label 1000b = jz label 8
+[LF] [Space] [LF] [Tab] [Space] [LF] = jump label 10b = jmp label 2
+[LF] [Space] [Space] [Tab] [Space] [Space] [Space] [LF] = label 1000b = label 8
+[Space] [Space] [Space] [Tab] [Space] [Space] [Tab] [Tab] [Tab] [Tab] [LF] = push 1001111b = push 79
+[Tab] [LF] [Space] [Space] = affiche 79 (O)
+[Space] [Space] [Space] [Tab] [Tab] [Space] [Tab] [Space] [Tab] [Tab] [LF] = push 1101011b = push 107
+[Tab] [LF] [Space] [Space] = affiche 107 (k)
+[Space] [Space] [Space] [Tab] [Space] [Space] [Space] [Space] [Space] [LF] = push 100000b = push 32
+[Tab] [LF] [Space] [Space] = affiche 32 ( )
+[Space] [Space] [Space] [Tab] [Space] [Tab] [Space] [LF] = push 1010b = push 10
+[Tab] [LF] [Space] [Space] = affiche 10 (nouvelle ligne)
+
+elooo.

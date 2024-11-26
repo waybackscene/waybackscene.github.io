@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+
+
+<head>
+
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<meta name="author" content="elooo" />
+	<meta name="keywords" content="Reverse Engineering, asm, crackme, tutorial, unmew" />
+	<meta name="description" content="Un petit coin d'o" />
+
+    <title>L'o elle aime &ccedil;a ! - Decrypt Tool</title>
+	<link rel="shortcut icon" href="favicon.gif" />
+  <link type="text/css" media="screen" href="orange.css" rel="stylesheet" title="Orange" />
+  <link type="text/css" media="print" href="http://elooo.fff.free.fr/print.css"  rel="stylesheet" />
+	<meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <script type="text/javascript" src="JavascriptDecoder.js"></script>
+  <script type="text/javascript" src="JavascriptColorizer.js"></script>	
+  <script type="text/javascript">
+  <!--
+  function rot13(form)
+  {
+		var text = form.elements['text'].value;
+		var text_enc = '';
+		var car = '', car_code = 0;
+		for (var i = 0; i < text.length; i++) 
+		{
+			car = text.charAt(i);
+			car_code = car.charCodeAt(0);
+			if (car >= 'a' && car <= 'm' || car >= 'A' && car <= 'M') 
+			{
+				car_code += 13;
+			}
+			else if (car >= 'n' && car <= 'z' || car >= 'N' && car <= 'Z') 
+			{
+				car_code -= 13;
+			}
+			text_enc += String.fromCharCode(car_code);
+		 }
+		form.elements['text'].value = text_enc;
+  }
+	
+    function decode(form) {
+        var jsdecoder = new JavascriptDecoder();
+        var jscolorizer = new JavascriptColorizer();
+        var code;
+
+        jsdecoder.s = form.elements['text'].value;
+        code = jsdecoder.decode();
+        
+        if (document.all) {
+            document.getElementById("text_indent").innerText = code;
+        } else {
+            code = code.replace(/&/g, "&amp;");
+            code = code.replace(/</g, "&lt;");
+            code = code.replace(/>/g, "&gt;");
+            jscolorizer.s = code;
+            code = jscolorizer.colorize();
+            document.getElementById("text_indent").innerHTML = code;
+        }
+    }	
+  //-->
+  </script>
+	
+</head>
+<body>
+		
+
+<!-- DEBUT_MENU -->
+
+	<div class="menu">	
+
+<div id="navcontainer">
+	<ul id="navlist">
+<li><a class="mon" href="index.html" title="Les News">News</a></li>
+<li><a class="mon" href="tutoriaux.html" title="Reverse Engineering">Tutoriaux</a></li>
+<li><a class="mon" href="coding.html" title="Coding">Coding</a></li>
+<li><a class="mon" href="decrypt.html" title="Page pratique">Page pratique</a></li>
+<li><a class="mon" href="liens.html" title="Liens">Liens</a></li>
+	</ul>
+</div>
+
+
+
+<div id="depotoire2">	
+<h4>Info :</h4>	 
+
+<p class="mon">Ces pages sont conformes aux <a class="mon" href="http://openweb.eu.org/articles/pourquoi_standards/">Standards du Web</a>.</p>			 
+<p class="mon"><a class="mon" href="http://validator.w3.org/check/referer">
+       <img style="border:0;width:80px;height:15px"
+       src="images/w3c_xhtml1.1.png"
+       alt="Valid XHTML 1.1!" height="80px" width="15px" />
+       </a>
+
+       <a class="mon" href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:80px;height:15px"
+       src="images/w3c_css.png" 
+       alt="Valid CSS 3!" height="80px" width="15px" />
+       </a> </p>
+	<p class="mon">2003-2006</p>
+</div>
+</div>
+
+
+<div id="container">
+
+		 
+</div>
+<!-- FIN_MENU -->
+
+
+<!-- DEBUT_TEXTE -->
+<div class="texte">
+  <h1>Un petit coin d'o...</h1>
+	<p class="mon"><a class="mon" href="mailto:elooo[at]dune2.info">Me contacter</a> pour un demande de suppression de liens ou pour un signalement de bugs.<br />
+Pour les demandes de cracks, passez votre chemin.</p>
+
+  <h2>Decrypt Tool</h2>
+
+<form action="decrypt.html">	
+<p style="text-align:center"><textarea name="text" rows="15" cols="60"></textarea></p>
+
+<p style="text-align:center"><input type="reset" value=" Effacer " />
+<input type="button" onclick="rot13(this.form);return false" value="Rot13" />
+<input type="button" onclick="form.elements['text'].value=unescape(form.elements['text'].value)" value=" Unescape " />
+<input type="button" onclick="form.elements['text'].value=escape(form.elements['text'].value)" value=" Escape " />
+<input type="button" onclick="form.elements['text'].value=btoa(form.elements['text'].value)" value=" Base64 " />
+<input type="button" onclick="form.elements['text'].value=atob(form.elements['text'].value)" value=" Debase64 " /><br />
+<input type="button" value="JS/Highlight !" onclick="decode(this.form)" />
+</p>
+</form> 
+
+
+<pre id="text_indent" style="background:#f5f5f5;align:center;width:100%;padding-left:25px;font: normal 9px Verdana, sans-serif;color:black;"></pre>
+
+
+</div>
+<!-- FIN_TEXTE -->
+
+
+</body>
+</html>

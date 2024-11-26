@@ -1,0 +1,441 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>CRC Calculator</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/Background.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Background.gif">
+
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD><EM><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Default.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Default.htm'"
+				tppabs="http://www.efg2.com/Lab/Default.htm"><FONT SIZE="6" COLOR="blue" FACE="Arial">efg's</FONT><FONT SIZE="6"
+				COLOR="blue"> </FONT><FONT SIZE="6" COLOR="blue" FACE="Arial">Computer Lab</FONT></A></EM></TD>
+			<TD>&nbsp;</TD>
+			<TD><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/CRC/files/Default.htm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/CRC/files/Default.htm'" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Default.htm"><FONT SIZE="6">Mathematics</FONT></A></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD><A HREF="CRCC.zip" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/CRCC.zip"><IMG SRC="Crc.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Crc.gif" WIDTH="32" HEIGHT="32"
+				ALIGN="BOTTOM" ALT="Crc.gif (968 bytes)" BORDER="0" tppabs="http://www.efg2.com/Lab/Mathematics/Crc.gif"></A></TD>
+			<TD>&nbsp;</TD>
+			<TD><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP  \n\nThis file was not retrieved by Teleport Pro, because it did not meet the project\'s file type specifications.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP'"
+				tppabs="http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP"><FONT SIZE="6">Cyclic Redundancy Code Calculator</FONT></A></TD>
+			<TD>&nbsp;</TD>
+			<TD><FONT SIZE="6">Lab Report</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD ALIGN="CENTER" COLSPAN="3">
+				<P ALIGN="CENTER"><STRONG>Calculate CRCs of Character Strings using a CRC Calculator<BR>
+				</STRONG><small>(Also see the <A HREF="FileCheck.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/FileCheck.htm">FileCheck</A>
+				Lab Report for CRCs of Files, Directories, Volumes)</small>
+			</TD>
+		</TR>
+		<TR>
+			<TD>&nbsp;</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP  \n\nThis file was not retrieved by Teleport Pro, because it did not meet the project\'s file type specifications.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP'"
+				tppabs="http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP"><IMG SRC="ScreenCRCCalc.jpg" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/ScreenCRCCalc.jpg" WIDTH="380" HEIGHT="236"
+				ALIGN="BOTTOM" ALT="ScreenCRCCalc.jpg (17211 bytes)" BORDER="0" tppabs="http://www.efg2.com/Lab/Mathematics/ScreenCRCCalc.jpg"></A>
+			</TD>
+			<TD>&nbsp;</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P><STRONG><FONT SIZE="4">Purpose<BR>
+</FONT></STRONG><FONT SIZE="3">The purpose of the </FONT><EM><FONT SIZE="3">CRCCalculator</FONT></EM><FONT SIZE="3">
+is to display interactively the CRC-16 and CRC-32 values for a specified string.&nbsp; (The CRC-32 values will
+match those computed by PKZIP.)</FONT></P>
+<P><FONT SIZE="3">Additional files, </FONT><EM><FONT SIZE="3">CRC16Dem</FONT></EM><FONT SIZE="3"> and </FONT><EM><FONT
+SIZE="3">CRC32Dem</FONT></EM><FONT SIZE="3">, show how to create a command-line program to calculate CRC values.
+&nbsp; A &quot;C&quot; command-line program is also available.</FONT></P>
+<P><STRONG><FONT SIZE="4">Materials and Equipment</FONT></STRONG></P>
+
+<BLOCKQUOTE>
+	<P><STRONG><FONT SIZE="4">Software Requirements<BR>
+	</FONT></STRONG><FONT SIZE="3">Windows 95/98<BR>
+	Delphi 3/4/5 (to recompile)</FONT></P>
+	<P><STRONG><FONT SIZE="4">Hardware Requirements<BR>
+	</FONT></STRONG>VGA display</P>
+</BLOCKQUOTE>
+
+<P><STRONG><FONT SIZE="4">Procedure</FONT></STRONG></P>
+
+<OL>
+	<LI>Double click on the <EM>CRCCalculator.EXE</EM> icon to start the program.
+	<LI>Enter any text in the edit box.
+	<LI>Observe the CRC-16 and CRC-32 values in decimal or hexadecimal.
+</OL>
+
+<P><STRONG><FONT SIZE="4">Expected Values</FONT></STRONG><BR>
+Hex values do not change by version of Delphi, but the decimal values are intended to be unsigned.&nbsp; CRC-16
+values have always been unsigned, but since there was no 4-byte unsigned integer in D1-D3, the decimal values are
+signed for the CRC-32 until the Delphi 4 version.</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="1">
+		<TR>
+			<TD ALIGN="CENTER" ROWSPAN="2">
+				<P ALIGN="CENTER">&nbsp;</P>
+
+				<P ALIGN="CENTER"><STRONG>Test String</STRONG>
+			</TD>
+			<TD ALIGN="CENTER" COLSPAN="2">
+				<P ALIGN="CENTER"><STRONG>CRC-16</STRONG>
+			</TD>
+			<TD ALIGN="CENTER" COLSPAN="2">
+				<P ALIGN="CENTER"><STRONG>CRC-32</STRONG>
+			</TD>
+			<TD ALIGN="CENTER" ROWSPAN="2">
+				<P ALIGN="CENTER">&nbsp;</P>
+
+				<P ALIGN="CENTER"><STRONG>Comments</STRONG>
+			</TD>
+		</TR>
+		<TR>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><STRONG>Decimal</STRONG>
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><STRONG>Hex</STRONG>
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><STRONG>Decimal</STRONG>
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><STRONG>Hex</STRONG>
+			</TD>
+		</TR>
+		<TR>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER">&lt;null string&gt;
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">0
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">0000
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">0
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">00000000
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">Delphi 2/3/4/5
+			</TD>
+		</TR>
+		<TR>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER">abc
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">38712
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">9738
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">891568578
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">352441C2
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">Delphi 2/3/4/5
+			</TD>
+		</TR>
+		<TR>
+			<TD ALIGN="CENTER" ROWSPAN="2">
+				<P ALIGN="CENTER">ABC
+			</TD>
+			<TD ALIGN="RIGHT" ROWSPAN="2">
+				<P ALIGN="RIGHT">17697
+			</TD>
+			<TD ALIGN="RIGHT" ROWSPAN="2">
+				<P ALIGN="RIGHT">4521
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">-1551695032
+			</TD>
+			<TD ALIGN="RIGHT" ROWSPAN="2">
+				<P ALIGN="RIGHT">A3830348
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">Delphi 2/3
+			</TD>
+		</TR>
+		<TR>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">2743272264
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">Delphi 4/5
+			</TD>
+		</TR>
+		<TR>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER">This is a string
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">19524
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">4C44
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">141976383
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">0876633F
+			</TD>
+			<TD ALIGN="RIGHT">
+				<P ALIGN="RIGHT">Delphi 2/3/4/5
+			</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>The CRC-32s of the files <EM>abcLower.TXT</EM>, <EM>ABCupper.TXT</EM>, and <EM>ThisIsAString.TXT</EM> in the
+<EM>CRCDelphi.ZIP</EM> file match the values above, which are also verified in the <EM>CRC32Dem.PAS </EM>command
+line program:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD WIDTH="100%"><FONT FACE="Courier New">CRC-32&nbsp;&nbsp;&nbsp; Bytes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; F i l e n a
+				m e<BR>
+				-------- -------- ------------------------<BR>
+				352441C2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3 abcLower.TXT<BR>
+				A3830348&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3 ABCUpper.TXT<BR>
+				0876633F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 16 ThisIsAString.TXT</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P><STRONG><FONT SIZE="4">Discussion<BR>
+</FONT></STRONG>CRC values, especially the CRC-32, are an extremely good way to verify the integrity of a file.&nbsp;
+If the CRC-32 for a file stays the same, there is only an extremely small probability that the file has been changed
+-- about 1 in 4 billion. &nbsp; CRCs could be used as a preliminary verification tool to find identical files.
+&nbsp; If the CRCs of two files do not match, the file are not the same.&nbsp; This could even be used to compare
+image files.</P>
+<P>The &quot;hardware&quot; method of computing CRCs involves bit manipulations, which is very inefficient for
+a software computation.&nbsp; Instead of computing the CRC bit-by-bit, a 256-element lookup table can be used to
+perform the equivalent of 8 bit operations at a time.&nbsp; (This is described in &quot;Byte-wise CRC Calculations&quot;
+in <EM>IEEE Micro</EM>, June 1983, pp. 40-50.)&nbsp;</P>
+<P>For a CRC-16, the lookup table consists of 256 2-byte WORDs (see the <EM>CRC16.PAS</EM> unit for the actual
+table).&nbsp; For a CRC-32, the lookup table consists of 256 4-byte DWORDs (see the CRC32.PAS unit for the actual
+table).&nbsp; Given the lookup <EM>Table</EM>, the code for computing a CRC-32 is as follows:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD><FONT FACE="Arial Narrow">// Use CalcCRC32 as a procedure so CRCValue can be passed in but<BR>
+				// also returned. This allows multiple calls to CalcCRC32 for<BR>
+				// the &quot;same&quot; CRC-32 calculation.<BR>
+				PROCEDURE CalcCRC32 (p: pointer; ByteCount: DWORD; VAR CRCValue: DWORD);<BR>
+				&nbsp; // The following is a little cryptic (but executes very quickly).<BR>
+				&nbsp; // The algorithm is as follows:<BR>
+				&nbsp; // 1. exclusive-or the input byte with the low-order byte of<BR>
+				&nbsp; // the CRC register to get an INDEX<BR>
+				&nbsp; // 2. shift the CRC register eight bits to the right<BR>
+				&nbsp; // 3. exclusive-or the CRC register with the contents of Table[INDEX]<BR>
+				&nbsp; // 4. repeat steps 1 through 3 for all bytes<BR>
+				<BR>
+				&nbsp; VAR<BR>
+				&nbsp;&nbsp;&nbsp; i:&nbsp; DWORD;<BR>
+				&nbsp;&nbsp;&nbsp; q: ^BYTE;<BR>
+				BEGIN<BR>
+				&nbsp; q := p;<BR>
+				&nbsp; FOR i := 0 TO ByteCount-1 DO<BR>
+				&nbsp; BEGIN<BR>
+				&nbsp;&nbsp;&nbsp; CRCvalue := (CRCvalue SHR 8) XOR<BR>
+				&nbsp;&nbsp;&nbsp; Table[ q^ XOR (CRCvalue AND $000000FF) ];<BR>
+				&nbsp;&nbsp;&nbsp; INC(q)<BR>
+				&nbsp; END<BR>
+				END {CalcCRC32};</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>You can pass nearly any argument to this routine since the first parameter is a pointer.&nbsp; For a string,
+pass the address of the first character, for example:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; <FONT FACE="Arial Narrow">CalcCRC32 (Addr(s[1]), LENGTH(s), CRC32);</FONT></P>
+<P>To avoid an access violation in Delphi 4 (or later) make sure Length(s) &gt; 0.&nbsp; (I'm not sure why Delphi
+3 didn't complain.)</P>
+<P>To compute the same CRC-32 as used in the PKZIP utility, start with a <EM>CRCvalue</EM> of $FFFFFFFF.&nbsp;
+After calling <EM>CalcCRC32 </EM>above (any number of times), the finalization consists of a 1's complement of
+the <EM>CRCvalue</EM>.&nbsp; This can be computed with the expression <EM>NOT CRCvalue</EM> in Delphi.</P>
+<P>The initialization and finalization of the CRC computation are arbitrary. &nbsp; As mentioned above, the &quot;standard&quot;
+CRC-32 (the one used by PKZIP) starts with $FFFFFFFF as the initial value and then performs a 1's complement to
+yield the final value.&nbsp; Here's what is done in the CRC Calculator for CRC-32s:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD WIDTH="100%"><FONT FACE="Arial Narrow">CRC32 := $FFFFFFFF; // To match PKZIP<BR>
+				IF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LENGTH(s) &gt; 0 // Avoid access violation in D4<BR>
+				THEN CalcCRC32 (Addr(s[1]), LENGTH(s), CRC32);<BR>
+				CRC32 := NOT CRC32; // TO match PKZIP<BR>
+				<BR>
+				CRC32Decimal.Caption := IntToStr(CRC32);<BR>
+				CRC32Hex.Caption := IntToHex(CRC32,8)</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>[Thanks to Rolf Gebhardt and Glen Harman for pointing out an inconsistency about how finalization was handled
+in an earlier version of this article.]</P>
+<P>The CRC-16 computation starts with an initial value of 0 and performs no finalization.&nbsp; Here's what is
+done in in the CRC Calculator for CRC-16s:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD WIDTH="100%"><FONT FACE="Arial Narrow">CRC16 := 0; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				// Could use $FFFF or other initial value<BR>
+				IF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LENGTH(s) &gt; 0 // Avoid access violation in D4<BR>
+				THEN CalcCRC16 (Addr(s[1]), LENGTH(s), CRC16);<BR>
+				<BR>
+				CRC16Decimal.Caption := IntToStr(CRC16);<BR>
+				CRC16Hex.Caption := IntToHex(CRC16,4);</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>See the <A HREF="FileCheck.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/FileCheck.htm">FileCheck</A> Lab
+Report for information about creating CRCs of files.</P>
+<P>The command line examples, <EM>CRC16Dem</EM> and <EM>CRC32Dem</EM> can be compiled from a DOS Window (assuming
+your path contains the Delphi <EM>bin </EM>directory) by entering:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; <FONT FACE="Arial Narrow">DCC32 CRC16Dem.PAS </FONT>&nbsp;&nbsp; or<BR>
+&nbsp;&nbsp;&nbsp;&nbsp; <FONT FACE="Arial Narrow">DCC32 CRC32Dem.PAS</FONT></P>
+<P>Study the <EM>CRC16Dem</EM> and <EM>CRC32Dem</EM> command line programs for a way to calculate CRCs without
+a Windows interface.</P>
+<P><A NAME="Literature"></A><big><STRONG>Useful literature:</STRONG></big><BR>
+&quot;Procedure for Computing CRC-32 Values,&quot; <EM>Microsoft Systems Journal</EM>, March 1995, pp. 107-108.</P>
+<P>&quot;Byte-wise CRC Calculations&quot; by Aram Perez in <EM>IEEE Micro</EM>, June 1983, pp. 40-50. Shows how
+to create a lookup table which is the best way to implement in software (versus the shifts that are done when implemented
+in hardware).&nbsp;</P>
+<P>&quot;A Tutorial on CRC Computations&quot; by Tenkasi V. Ramabadran and Sunil S. Gaitonde in <EM>IEEE Micro</EM>,
+August 1988, pp. 62-75.</P>
+<P>&quot;Cyclic Redundancy Checks for Data Integrity or Identity&quot; by William H. Press and Saul A. Teukolsky,
+<EM>Computers in Physics</EM>, Jul/Aug 1989, pp. 88-91.</P>
+<P>&quot;For the Love of the Gam&quot; by Michael Barr, <EM>Embedded Systems Programming</EM>, Dec. 1999, pp. 47-54.</P>
+<P>&quot;Slow and Steady Never Lost the Race&quot; by Michael Barr, <EM>Embedded Systems Programming</EM>, Jan.
+2000, pp. 37-46.&nbsp; Shows how to compute CRC lookup table.&nbsp; The two Table 1s from these <EM>Embedded Systems
+Programming</EM> articles provided this information:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="1">
+		<TR>
+			<TD><STRONG>Standard Name</STRONG></TD>
+			<TD>CRC-CCITT</TD>
+			<TD>CRC-16</TD>
+			<TD>CRC-32</TD>
+		</TR>
+		<TR>
+			<TD><STRONG>Width</STRONG></TD>
+			<TD>16 bits</TD>
+			<TD>16 bits</TD>
+			<TD>32 bits</TD>
+		</TR>
+		<TR>
+			<TD><STRONG>Generator Polynomial</STRONG></TD>
+			<TD>10001000000100001</TD>
+			<TD>11000000000000101</TD>
+			<TD>100000100110000010001110110110111</TD>
+		</TR>
+		<TR>
+			<TD><STRONG>Initial remainder</STRONG></TD>
+			<TD>0xFFFF</TD>
+			<TD>0x0000</TD>
+			<TD>0xFFFFFFFF</TD>
+		</TR>
+		<TR>
+			<TD><STRONG>Final XOR value</STRONG></TD>
+			<TD>0x0000</TD>
+			<TD>0x0000</TD>
+			<TD>0xFFFFFFFF</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P><STRONG><FONT SIZE="4">Conclusions<BR>
+</FONT></STRONG>CRC values, especially the CRC-32, are an extremely good way to verify the integrity of a string
+or even a&nbsp; file.</P>
+<P>
+<HR ALIGN="CENTER">
+</P>
+<P><STRONG><FONT SIZE="4">Keywords</FONT></STRONG><FONT SIZE="4"><BR>
+</FONT>cyclic redundancy check, CRC-16, CRC-32, APPTYPE CONSOLE, lookup table, XOR, Comp, Int64, IntToHex, Addr</P>
+<P><STRONG><FONT SIZE="4">Files<BR>
+</FONT></STRONG>Delphi 2/3/4/5 Source and EXE (234 KB):&nbsp;&nbsp; <A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP'" tppabs="http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP"
+tppabs="http://www.efg2.com/Lab/Mathematics/CRCDelphi.ZIP">CRCDelphi.ZIP</A></P>
+<P>Borland C++ 5.02 &quot;C&quot; CRC-32 Source and EXE (45 KB):&nbsp; <A HREF="CRCC.zip" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/CRCC.zip">CRCC.ZIP</A><BR>
+Use the &quot;make file&quot; to compile:&nbsp; <FONT FACE="Arial Narrow">make -f crc32.mak</FONT><BR>
+(Modify <EM>.mak</EM> file to point to correct location of <EM>wildargs.obj</EM>.&nbsp; The <EM>.mak</EM> file
+automatically performs a test that the results will match those of PKZIP.)&nbsp; This command-line utility can
+be used with wildcards to find the CRC-32 of files in a directory, for example:&nbsp; <FONT FACE="Arial Narrow">crc32
+*.*</FONT></P>
+
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

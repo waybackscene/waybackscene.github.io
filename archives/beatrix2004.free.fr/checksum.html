@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Win32)">
+	<META NAME="CREATED" CONTENT="20040918;13374550">
+	<META NAME="CHANGED" CONTENT="20040919;15595137">
+</HEAD>
+<BODY LANG="fr-FR" DIR="LTR">
+<P ALIGN=CENTER><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=5><B>COMPRENDRE
+LE CHECKSUM DU HEADER</B></FONT></FONT></P>
+<P ALIGN=RIGHT><FONT FACE="Trebuchet MS, sans-serif">par BeatriX</FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Je vous propose ici un petit
+aper&ccedil;u du fonctionnement de l'API <I>MapFileAndChecksumA</I>.
+L'id&eacute;e de ce petit travail est venu d'une question de Crisanar
+et d'une suggestion de Neitsa. Crisanar se demandais pourquoi le
+checksum calcul&eacute; par l'api MapFileAndCheckSum et celui calcul&eacute;
+par WinHex &eacute;taient diff&eacute;rents. Voici la r&eacute;ponse
+:</FONT></P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">La fonction
+<B><SPAN STYLE="text-decoration: none"><I>MapFileAndCheckSum</I></SPAN></B>
+permet de calculer le checksum que l'on trouve dans le Header de
+certains fichiers.</FONT></P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Voici la source issue du
+MSDN :</FONT></P>
+<DIV ID="Section2" DIR="LTR" STYLE="background: #ccccff">
+	<P><BR><BR>
+	</P>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4 STYLE="font-size: 15pt"><B>MapFileAndCheckSum</B></FONT></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><I>The MapFileAndCheckSum
+	function computes the checksum of the specified file.</I></FONT></P>
+	<DIV ID="Section1" DIR="LTR" STYLE="background: #ffffcc">
+		<P STYLE="margin-left: 1.01cm"><FONT FACE="Trebuchet MS, sans-serif">DWORD
+		MapFileAndCheckSum( PTSTR Filename, PDWORD HeaderSum, PDWORD
+		CheckSum );</FONT></P>
+	</DIV>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><I><B>Parameters</B></I></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><I>Filename</I></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">[in] Pointer to a
+	null-terminated string that specifies the file name of the file for
+	which the checksum is to be computed.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><I>HeaderSum</I></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">[out] Pointer to a variable
+	that receives the original checksum from the image file, or zero if
+	there is an error.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><I>CheckSum</I></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">[out] Pointer to the
+	variable that receives the computed checksum.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif"><B>Return Values</B></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">If the function succeeds,
+	the return value is CHECKSUM_SUCCESS.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">If the function fails, the
+	return value is one of the following.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">Return code Description</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">CHECKSUM_OPEN_FAILURE Could
+	not open the file.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">CHECKSUM_MAP_FAILURE Could
+	not map the file.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">CHECKSUM_MAPVIEW_FAILURE
+	Could not map a view of the file.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">CHECKSUM_UNICODE_FAILURE
+	Could not convert the file name to Unicode.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">Remarks</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">The MapFileAndCheckSum
+	function computes a new checksum for the file and returns it in the
+	CheckSum parameter. This function is used by any application that
+	creates or modifies an executable image. <B><I>Checksums are
+	required for kernel-mode drivers and some system DLLs.</I></B> The
+	linker computes the original checksum at link time, if you use the
+	appropriate linker switch. For more details, see your linker
+	documentation.</FONT></P>
+	<P><BR><BR>
+	</P>
+</DIV>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif"><B>Voil&agrave; ! C'est dit,
+ce checksum ne sert que pour tester l'int&eacute;grit&eacute; des
+drivers et des dll, pas des ex&eacute;cutables...</B></FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><U><B>1
+) Sch&eacute;ma de la fonction.</B></U></FONT></FONT></P>
+<P STYLE="font-weight: medium"><FONT FACE="Trebuchet MS, sans-serif">Commen&ccedil;ons
+par illustrer simplement le fonctionnement de MapFileAndChecksumA.</FONT></P>
+<P ALIGN=CENTER><IMG SRC="checksum.gif" NAME="Image1" ALIGN=MIDDLE WIDTH=418 HEIGHT=633 BORDER=0><BR><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">L'API commence donc par
+ouvrir le fichier, cr&eacute;e un mappage et calcul le checksum sur
+ce mappage. Voici un petit sch&eacute;ma sur la cr&eacute;ation d'un
+mappage si, comme moi, c'est la premi&egrave;re fois que vous
+entendez parler de cette b&ecirc;te l&agrave; :(issu du MSDN)</FONT></P>
+<P><BR><BR>
+</P>
+<P><IMG SRC="fmap.gif" NAME="Image2" ALIGN=LEFT WIDTH=340 HEIGHT=323 BORDER=0><BR CLEAR=LEFT><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Vous devez donc d'abord
+cr&eacute;er un objet qui va maintenir le lien entre le fichier et
+ses mappages en m&eacute;moire. </FONT>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><U><B>2
+) Analyse de l'API ChecksumMappedFile</B></U></FONT></FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Comme vous pouvez le voir
+sur le premier sch&eacute;ma, notre API MapFileAndCheckSum utilise
+plusieurs APIs dont ChecksumMappedFile. Sans plus attendre, je vous
+livre donc le secret du calcul de ce checksum. Pour faire simple, il
+s'agit d'additionner tous les DWORD qui composent l'exe ! Ce n'est
+qu'une simple addition. Pour preuve, voici la proc&eacute;dure qui
+r&eacute;alise ce calcul :</FONT></P>
+<P><BR><BR>
+</P>
+<DIV ID="Section4" DIR="LTR" STYLE="background: #ffffcc">
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AA7 ADD EAX,DWORD PTR
+	DS:[ESI].............voil&agrave; le d&eacute;but de nos additions.
+	Il effectue le calcul par paquets de 128 octets.</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AA9 ADC EAX,DWORD PTR
+	DS:[ESI+4]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AAC ADC EAX,DWORD PTR
+	DS:[ESI+8]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AAF ADC EAX,DWORD PTR
+	DS:[ESI+C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AB2 ADC EAX,DWORD PTR
+	DS:[ESI+10]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AB5 ADC EAX,DWORD PTR
+	DS:[ESI+14]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AB8 ADC EAX,DWORD PTR
+	DS:[ESI+18]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44ABB ADC EAX,DWORD PTR
+	DS:[ESI+1C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44ABE ADC EAX,DWORD PTR
+	DS:[ESI+20]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AC1 ADC EAX,DWORD PTR
+	DS:[ESI+24]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AC4 ADC EAX,DWORD PTR
+	DS:[ESI+28]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AC7 ADC EAX,DWORD PTR
+	DS:[ESI+2C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44ACA ADC EAX,DWORD PTR
+	DS:[ESI+30]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44ACD ADC EAX,DWORD PTR
+	DS:[ESI+34]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AD0 ADC EAX,DWORD PTR
+	DS:[ESI+38]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AD3 ADC EAX,DWORD PTR
+	DS:[ESI+3C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AD6 ADC EAX,DWORD PTR
+	DS:[ESI+40]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AD9 ADC EAX,DWORD PTR
+	DS:[ESI+44]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44ADC ADC EAX,DWORD PTR
+	DS:[ESI+48]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44ADF ADC EAX,DWORD PTR
+	DS:[ESI+4C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AE2 ADC EAX,DWORD PTR
+	DS:[ESI+50]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AE5 ADC EAX,DWORD PTR
+	DS:[ESI+54]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AE8 ADC EAX,DWORD PTR
+	DS:[ESI+58]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AEB ADC EAX,DWORD PTR
+	DS:[ESI+5C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AEE ADC EAX,DWORD PTR
+	DS:[ESI+60]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AF1 ADC EAX,DWORD PTR
+	DS:[ESI+64]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AF4 ADC EAX,DWORD PTR
+	DS:[ESI+68]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AF7 ADC EAX,DWORD PTR
+	DS:[ESI+6C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AFA ADC EAX,DWORD PTR
+	DS:[ESI+70]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44AFD ADC EAX,DWORD PTR
+	DS:[ESI+74]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B00 ADC EAX,DWORD PTR
+	DS:[ESI+78]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B03 ADC EAX,DWORD PTR
+	DS:[ESI+7C]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B06 ADC EAX,0</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B09 ADD ESI,80</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B0F SUB ECX,80</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B15 JNZ SHORT
+	imagehlp.76C44AA7</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B17 TEST EDX,EDX</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B19 JNZ
+	imagehlp.76C45E52</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B1F MOV
+	EDX,EAX............pour mon exemple, le checksum EAX = 49C7 206F</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B21 SHR
+	EDX,10.............. On r&eacute;cup&egrave;re EDX = 49C7 (les 2
+	octets de gauche)</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B24 AND
+	EAX,0FFFF...........ici, on r&eacute;cup&egrave;re EAX = 206F (les
+	deux octets de droite)</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B29 ADD
+	EAX,EDX............et on ajoute le tout , EAX = 49C7 + 206F = <B>6A36</B></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B2B MOV EDX,EAX</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B2D SHR EDX,10</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B30 ADD EAX,EDX</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B32 AND EAX,0FFFF</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B37 POP ESI</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">76C44B38 RETN 0C</FONT></P>
+</DIV>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Mais attention, ce n'est pas
+termin&eacute;...la valeur que l'on vient d'obtenir est encore un
+tout petit peu modifi&eacute;e avant de devenir le vrai CHECKSUM . On
+ajoute &agrave; cette valeur la taille de l'exe :</FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Pour mon exemple, taille =
+A00.</FONT></P>
+<P ALIGN=CENTER><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=5><B>CHECKSUM
+= 6A36 + A00 = 7436</B></FONT></FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Et voil&agrave; le travail !
+Notez au passage que LordPE vous renvoie cette valeur &eacute;galement.</FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt"><U><B>3
+) Pourquoi WinHex ne donne pas le m&ecirc;me Checksum ?</B></U></FONT></FONT></P>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">WinHex permet de calculer un
+certain nombre de Hash et notamment un checksum (32 bit). A priori,
+on peut esp&eacute;rer qu'il s'agisse du m&ecirc;me Checksum que
+celui calcul&eacute; par l'api pr&eacute;c&eacute;dente. Et bien NON
+! Pour mon exemple, j'obtiens un checksum de 554B.</FONT></P>
+<P><FONT FACE="Trebuchet MS, sans-serif">Pour faire simple, il
+n'utilise pas le m&ecirc;me algorithme de calcul ! Sans compter qu'il
+n'ajoute pas &agrave; la fin de son check la taille du fichier !
+Voici le petit bout de code qui calcule ce &laquo; checksum &raquo; :</FONT></P>
+<P><BR><BR>
+</P>
+<DIV ID="Section3" DIR="LTR" STYLE="background: #ffffcc">
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B00F  MOV EAX,DWORD PTR
+	SS:[ESP]............r&eacute;cup&egrave;re l'adresse du fichier en
+	m&eacute;moire</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B012  ADD
+	EAX,EDI.................................ajoute le d&eacute;calage</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B014  MOVZX EAX,<B>BYTE</B>
+	PTR DS:[EAX]...........r&eacute;cup&egrave;re l'octet situ&eacute;
+	en [EAX]</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B017  ADD DWORD PTR
+	DS:[EBX+4],EAX........<B>fait l'addition !</B></FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B01A  INC
+	EDI.......................................d&eacute;calage</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B01B  DEC ECX</FONT></P>
+	<P><FONT FACE="Trebuchet MS, sans-serif">0040B01C  JNZ SHORT
+	WinHex.0040B00F</FONT></P>
+</DIV>
+<P><BR><BR>
+</P>
+<P><FONT FACE="Trebuchet MS, sans-serif">WinHex ajoute les <B>BYTES</B>
+du fichier alors que l'API ChecksumMappedFile ajoute les <B>DWORD</B>
+du fichier et ajoute au final la taille du fichier. Ceci explique
+largement pourquoi les deux checksums sont compl&egrave;tement
+diff&eacute;rents.</FONT></P>
+</BODY>
+</HTML>

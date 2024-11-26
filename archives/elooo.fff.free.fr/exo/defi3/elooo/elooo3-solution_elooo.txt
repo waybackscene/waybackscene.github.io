@@ -1,0 +1,203 @@
+*** Défi 3 - Solution par elooo ***
+
+
+A l'ouverture du crackme, on constate qu'on tombe sur une messagebox qui nous avertit que nous 
+ne sommes pas autorisés à accéder au fichier :(
+De plus on s'apercoit qu'il n'y a aucune editbox qui nous permettrait de rentrer un quelconque 
+pass. Humm...
+On va désassembler tout ça :)
+
+Tiens-tiens bizarre :
+
+0040108C  |.  6A 00         PUSH 0                                   ; /hTemplateFile = NULL
+0040108E  |.  68 80000000   PUSH 80                                  ; |Attributes = NORMAL
+00401093  |.  6A 03         PUSH 3                                   ; |Mode = OPEN_EXISTING
+00401095  |.  6A 00         PUSH 0                                   ; |pSecurity = NULL
+00401097  |.  6A 01         PUSH 1                                   ; |ShareMode = FILE_SHARE_READ
+00401099  |.  68 00000080   PUSH 80000000                            ; |Access = GENERIC_READ
+0040109E  |.  68 00304000   PUSH elooo3.00403000                     ; |FileName = "ooole"
+004010A3  |.  E8 F0000000   CALL <JMP.&kernel32.CreateFileA>         ; \CreateFileA
+004010A8  |.  83F8 FF       CMP EAX,-1
+004010AB  |.  74 62         JE SHORT elooo3.0040110F
+004010AD  |.  A3 78304000   MOV DWORD PTR DS:[403078],EAX
+004010B2  |.  6A 00         PUSH 0                                   ; /pOverlapped = NULL
+004010B4  |.  68 7C304000   PUSH elooo3.0040307C                     ; |pBytesRead = elooo3.0040307C
+004010B9  |.  6A 14         PUSH 14                                  ; |BytesToRead = 14 (20.)
+004010BB  |.  68 1B304000   PUSH elooo3.0040301B                     ; |Buffer = elooo3.0040301B
+004010C0  |.  FF35 78304000 PUSH DWORD PTR DS:[403078]               ; |hFile = NULL
+004010C6  |.  E8 DF000000   CALL <JMP.&kernel32.ReadFile>            ; \ReadFile
+
+CreateFileA va regarder si le fichier "ooole" existe dans le directory, et l'ouvrir s'il est présent (cf paramètres de la fonction ci-dessus).
+Si le fichier n'existe pas la fonction retourne -1 (stocké dans eax). Et si le fichier est inexistant on saute direct en 0040110F :
+
+0040110F  |> \6A 00         PUSH 0                                   ; /Style = MB_OK|MB_APPLMODAL
+00401111  |.  68 6B304000   PUSH elooo3.0040306B                     ; |Title = ":o "
+00401116  |.  68 45304000   PUSH elooo3.00403045                     ; |Text = "You don't have access to this file ! "
+0040111B  |.  FF75 08       PUSH DWORD PTR SS:[EBP+8]                ; |hOwner
+0040111E  |.  E8 5D000000   CALL <JMP.&user32.MessageBoxA>           ; \MessageBoxA
+
+Moue, pas cool, c'est notre BadBoy ça.
+Donc 1ère chose on va créer un fichier "ooole" (sans extension), que l'on va sauver dans notre 
+dossier à côté du crackme.
+A l'intérieur on peut par exemple, juste pour pouvoir repérer facilement les valeurs rentrer 
+1234567890.
+
+
+Cette fois le fichier existe, donc on ne sautera pas en 0040110F, mais on va lire le fichier 
+grace à ReadFile. Ceci dit, tout le fichier ne va pas être lu, mais uniquement 20 bytes 
+(14 bytes en hexadécimal)
+Ensuite on arrive à cette partie du code :
+
+004010CB  |.  33C9          XOR ECX,ECX                              ;  ecx = 0
+004010CD  |>  B8 00100300   /MOV EAX,31000                           ;  eax = 31000h
+004010D2  |.  50            |PUSH EAX                                ; /Arg3 => 00031000
+004010D3  |.  FF348D 063040>|PUSH DWORD PTR DS:[ECX*4+403006]        ; |Arg2
+004010DA  |.  8B148D 1B3040>|MOV EDX,DWORD PTR DS:[ECX*4+40301B]     ; |
+004010E1  |.  52            |PUSH EDX                                ; |Arg1
+004010E2  |.  E8 65000000   |CALL elooo3.0040114C                    ; \elooo3.0040114C
+004010E7  |.  83C4 0C       |ADD ESP,0C                              ;  permet de retablir la pile
+004010EA  |.  41            |INC ECX                                 ;  ecx++
+004010EB  |.  817D F8 01060>|CMP DWORD PTR SS:[EBP-8],0A070601       ;  [ebp-8] == 0A070601h ?
+004010F2  |.  75 1B         |JNZ SHORT elooo3.0040110F               ;  si != BadBoy
+004010F4  |.  83F9 05       |CMP ECX,5                               ;  sinon on regarde si ecx == 5
+004010F7  |.^ 72 D4         \JB SHORT elooo3.004010CD                ;  si c inferieur a 5, on reprend la boucle
+
+On voit que le 1er paramètre de ce call est invariablement 31000h.
+Le 2eme paramètre correspond à une valeur pointée dans un buffer qui débute en 403006. A 
+chaque incrémentation d'ecx (qui sert ici de compteur et d'indexeur finalement), la valeur 
+puschée changera.
+Si on va voir dans le dump à quoi correspond ce buffer,on voit :
+
+00403006  6F 6F 6F 6C 65 6C 6F 6F 6F 6C 65 6C 20 64 69 61  ooolelooolel dia
+00403016  62 6C 6F 21 00                                   blo!.
+
+Autrement dit, une string "ooolelooolel diablo!"
+
+De la même manière on constate que le 3eme paramètre correspond à une valeur également pointée 
+dans un buffer.
+On va y jeter un oeil et on y voit :
+
+0040301B  FF FE 31 00 32 00 33 00 34 00 35 00 36 00 37 00  ÿþ1.2.3.4.5.6.7.
+0040302B  38 00 39 00                                      8.9.
+
+Ca ressemble beaucoup à notre pass écrit dans le fichier ca :)
+Maintenant on a repéré les paramètres déjà :
+
+Arg1 =  31000h
+Arg2 =  oool = 6F6F6F6Ch (passage1 dans le call - 4 caractères car on push un dword)
+	eloo = 656C6F6Fh (passage2 dans le call)
+	olel = 6F6C656Ch (passage3 dans le call)
+	 dia = 20646961h (passage4 dans le call)
+	blo! = 626C6F21h (passage5 dans le call)
+Arg3 =  FFFE3100h (passage1 dans le call)
+	32003300h (passage2 dans le call)
+	34003500h (passage3 dans le call)
+	36003700h (passage4 dans le call)
+	38003900h (passage5 dans le call)
+
+
+On sait donc que le call 
+
+004010E2  |.  E8 65000000   |CALL elooo3.0040114C 
+
+va utiliser ces paramètres, faire des choses avec, retourner une valeur et que cette valeur, 
+après chaque passage dans le call sera comparée à 0A070601h et devra y être égale pour pouvoir 
+se rapprocher petit à petit du GoodBoy.
+
+Passons donc à l'étude du call en question :
+
+
+0040114C  /$  55            PUSH EBP
+0040114D  |.  8BEC          MOV EBP,ESP
+0040114F  |.  50            PUSH EAX
+00401150  |.  8B45 0C       MOV EAX,DWORD PTR SS:[EBP+C]             ;  eax = [ebp+C] ([ebp+C] = Arg2 (cf sur la pile))
+00401153  |.  0345 10       ADD EAX,DWORD PTR SS:[EBP+10]            ;  eax += 31000h ( on additionne Arg2 avec Arg1)
+00401156  |.  C1C0 03       ROL EAX,3                                ;  rotation des 3 bits les + a droite de la valeur de eax vers la gauche
+00401159  |.  C1E0 05       SHL EAX,5                                ;  decalage de 5 bits vers la gauche de la valeur de eax
+0040115C  |.  C1C8 02       ROR EAX,2                                ;  rotation des 2 bits les + a gauchee de la valeur de eax vers la droite
+0040115F  |.  2C 13         SUB AL,13                                ;  al (partie basse de ax) -= 13h
+00401161  |.  3345 08       XOR EAX,DWORD PTR SS:[EBP+8]             ;  eax = eax ^ Arg3 (dword contenu dans le fichier ; cf pile)
+00401164  |.  C1E8 02       SHR EAX,2                                ;  decalage de 2 bits vers la droite de la valeur de eax
+00401167  |.  8945 0C       MOV DWORD PTR SS:[EBP+C],EAX             ;  on stocke eax en [ebp+C] (sur la pile)
+0040116A  |.  58            POP EAX
+0040116B  |.  5D            POP EBP
+0040116C  \.  C3            RETN
+
+Bon, c'est le genre de reverse chiant à faire (si on compte tout reverser évidemment :>).
+Les rotations de bits sur des valeurs binaires quand on connait mal les instructions et qu'on 
+ne sait pas faire des modifs en live dans le debuggeur, qu'en plus on n'a pas d'outils capables 
+de faire les calculs à notre place et qu'on ne veut pas coder (ou qu'on ne sait pas coder), ça 
+peut vouloir sous-entendre "tout se taper à la main" :)
+Ahah :)
+
+Ici, on n'a pas besoin de tout reverser, il suffit de regarder un peu :
+
+00401167  |.  8945 0C       MOV DWORD PTR SS:[EBP+C],EAX   << on stocke la valeur dans [EBP+C], 
+mais on sait que cette valeur sera ensuite comparée à 0A070601h, et on veut qu'elle y soit égale.
+Donc on part de ça (et ça nous arrange bien, car quel que soit le nombre de fois où le call a 
+déjà été appelé cette valeur est invariante :
+eax = 0A070601h
+
+On remonte :
+00401164  |.  C1E8 02       SHR EAX,2  
+Là il va falloir reverser cette opération.
+L'inverse d'un shr est un shl (dur :>)
+Donc il va falloir faire  "shl 0A070601h, 2", ce qui donne 281C1804h.
+Application pratique (soyons fous :> ):
+ - La valeur binaire de 0A070601h est 1010000001110000011000000001. Par contre pour faire notre 
+décalage il va falloir travailler sur un dword entier, autrement dit 32 bits, donc on va rajouter 
+les 0 qui manquent à gauche:
+00001010000001110000011000000001
+ - On veut faire un décalage de 2 bits à gauche, ce qui donne :
+001010000001110000011000000001
+Et on rajoute les bits qui manquent à droite en mettant des 0.
+00101000000111000001100000000100
+Ce qui nous donne bien en hexa : 281C1804h :) Cette valeur du coup va également etre fixe quelque 
+soit le nombre de passages qui a déjà eu lieu dans le call. Parfait, ça réduit la routine :)
+
+Juste au dessus, on voit qu'on xor cette valeur avec les données contenues dans le fichier. Or 
+ce qu'on cherche justement c'est à quoi correspondent ces valeurs pour que notre keyfile soit 
+valide. Donc on ne pourra pas remonter plus haut.
+Par contre au-dessus, on a encore des variables connues, on va également pouvoir aussi nous 
+soulager un peu niveau boulot :p
+
+Toutes les instructions avant le fameux xor sont des opération sur eax, et au final c'est la 
+dernière valeur stockée dans eax, juste avant le xor qui nous intéresse.
+On va donc poser un bpx en 00401161  |.  3345 08       XOR EAX,DWORD PTR SS:[EBP+8] 
+
+XOR est une instruction réversible, cela signifie que si on a A ^ B = C, on peut retrouver B 
+en faisant A ^ C = B.
+
+Récapitulons :
+	En 00401161, on aura EAX ^ x = y
+	x est l'inconnue qu'on recherche, celle que l'on veut stocker dans notre fichier
+	y c'est quoi ? :) C'est tout simplement 281C1804h
+Eh oui, si on veut qu'à l'issue du call on ne saute pas vers BadBoy, il va falloir faire 
+EAX ^ 281C1804h, récupérer toutes les valeurs-solutions de cette opération et les placer 
+successivement dans notre keyfile.
+Un détail cependant : les valeurs contenues en mémoire, une fois pushées sur la pile sont 
+stockées en sens inverse, donc il ne faudra pas oublier de les remettre dans le bon ordre.
+
+On fait travailler le débugger et on note à chaque breakpoint :
+
+Passage1: x = 1C9FDBC5h xor 281C1804h = 3483C3C1h (dans l'ordre ca donne C1C38334h)
+Passage2: x = 1C9F1945h xor 281C1804h = 34830141h (dans l'ordre ca donne 41018334h) 
+Passage3: x = 1A1F1BC5h xor 281C1804h = 320303C1h (dans l'ordre ca donne C1030332h)
+Passage4: x = 1B1D0805h xor 281C1804h = 33011001h (dans l'ordre ca donne 01100133h)
+Passage5: x = 1C9F1875h xor 281C1804h = 34830071h (dans l'ordre ca donne 71008334h)	 
+
+Si on met les valeurs bout-à-bout, on a alors comme "pass" : 
+C1C3833441018334C10303320110013371008334
+
+Par contre, attention, il s'agit des valeurs récupérées du dump hexa du fichier ooole, et non 
+des valeurs unicode qu'on y écrit dedans.
+Donc on sort son éditeur hexa, on ouvre le fichier ooole dedanset on y colle ce pass.
+Remarque : je ne récupère que 20 bytes du fichier avec le ReadFile, et je ne fais pas de test 
+ensuite sur les bytes qui pourraient se trouver après, donc rien ne vous empêche de rajouter 
+tout ce que vous voulez à la suite du pass, le keyfile restera valide :)
+
+Voilà, en espérant ne pas avoir trop baclé la rédaction :/
+
+Bonne journée,
+
+elooo

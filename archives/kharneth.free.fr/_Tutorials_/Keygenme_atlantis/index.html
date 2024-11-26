@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!-- #02                             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>Keygenme_atlantis</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#FFFFFF;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+img {  border-width:2;border-style:inset;border-color:#FFFFFF; }
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">KeyGenMe 01 de AtLAnTiS<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- PEId<br>&nbsp;- SmartCheck<br>&nbsp;- Compilateur au choix<br>&nbsp;- Calculatrice<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant en Cracking<br>ayant des connaissances de base en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/Keygenme_atlantis.exe">Keygenme_atlantis</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<tr><td width="20%"><b>1 - PEId</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par une analyse rapide avec <i>PeId</i> pour vérifier que le programme n'est pas compressé ou crypté. 
+Il ne l'est pas. Par contre on voit qu'il a été compilé avec Visual Basic 6.0.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour étudier les programmes VB, l'outil idéal est <i>Smartcheck</i>.
+</p></td></tr>
+
+<tr><td nowrap><b>2 - SmartCheck</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On lance <i>SmartCheck</i>, on charge le programme avec <i>Ctrl+o</i>, mais avant de commencer, nous allons régler quelques paramètres pour que <i>SmartCheck</i> soit le plus loquace possible.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On click sur le menu "Program", puis dans la fenêtre qui apparait, sur le bouton "Advanced". Dans le cadre "Performance Optimizations", on décoche la case "Suppress system API and OLE calls". On click sur "OK". 
+Ensuite, on affiche le deuxième onglet, "Reporting", et on coche la case "Report Windows messages". On click sur le bouton "OK". 
+Ces paramètres nous permettrons de voir presque tout ce qui se passe dans le programme.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On click sur le bouton "Show Errors and Specific Events" s'il n'est pas déjà actif. Maintenant, on peut lancer le programme avec <i>F5</i>.<br>
+</p><center><img src="Captures/Smart01.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On entre un Nom et un Serial, par exemple kharneth et 123456, puis on click sur le bouton "Vérifier". Une MessageBox nous indique que ce n'est pas ça. On la ferme ainsi que le programme. Puis, on passe sous <i>SmartCheck</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Après avoir double-clicker sur la ligne "Command1_Click", on peut remarqué 3 choses intéressantes:
+</p><center><img src="Captures/Smart02.gif" alt=""></center><p align="justify"><br>
+&nbsp;- D'abord, la fonction <i>Len</i> récupère le nombre de caractères de notre nom. Ici 8.<br>
+&nbsp;- Ensuite, la fonction <i>Left$</i> récupère la première lettre du nom puis la fonction <i>Asc</i> renvoie la valeur ASCII de celle-ci. Ici 'k' et 107.<br>
+&nbsp;- Finalement, la fonction <i>Hex</i> convertit une valeur numérique en sa représentation hexadécimale, avant l'affichage de la MsgBox.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ces informations apparaissent dans la fenêtre de droite en clickant sur chaque ligne.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant, nous allons voir plus en détail ce qu'il s'est passé. On click sur la première ligne "Command1_Click", puis sur le bouton "Show All Events".<br>
+</p><center><img src="Captures/Smart03.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit tous les messages windows de l'application et on se trouve sur la ligne correspondant à l'évènement OnClick du bouton. On double-click dessus pour afficher toutes les actions qui ont été capturées lorsque l'on a clické sur le bouton "Vérifier". On retrouve les 3 fonctions vues précédemment, mais sous la fonction <i>Asc</i>, on remarque 4 instructions intéressantes: 3 multiplications et 1 division.<br>
+</p><center><img src="Captures/Smart04.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On click dessus pour voir ce que ça donne dans la fenêtre de droite. La première multiplication donne ceci:
+</p><center><img src="Captures/Smart05.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On réfléchit un peu et on remarque que la valeur 8 correspond à la taille de notre nom. Par contre 1024 ne représente rien. On va considérer que c'est une constante. On prend la calculatrice, on fait 8 * 1024 = 8192.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La division n'affiche rien dans la fenêtre de droite. C'est pas grave passons à la suivante.<br>
+</p><center><img src="Captures/Smart06.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit 4096. Ne serait-ce pas la moitiè de 8192? On peut donc supposer que la division était par 2. On a donc maintenant une multiplication par 7. Cette valeur ne représente pas grand chose, pour le moment, on va dire que c'est une constante. On prend la calculatrice: 4096 * 7 = 28672.<br>
+</p><center><img src="Captures/Smart07.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On retrouve bien notre valeur 28672 qui est maintenant multipliée par 107. On ouvre les yeux et on voit que c'est la valeur retournée par la fonction <i>Asc</i>, soit la valeur ASCII de la première lettre de notre nom. 28672 * 107 = 3067904, valeur qu'on retrouve dans l'instruction qui suit la dernière multiplication.<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voyons maintenant ce que nous dit la fonction <i>Hex</i> puisque les instructions suivantes ne sont pas intéressantes.
+</p><center><img src="Captures/Smart08.gif" alt=""></center><p align="justify"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On retrouve bien dans la fenêtre de droite notre valeur finale 3067904 qui va donc être convertie en hexadécimal. Calculatrice: 3067904 = 0x2ED000.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 choses intéressantes dans cette partie: 3 fonctions de comparaison de chaîne <i>_vbaStrCmp</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En clickant sur la première, on voit dans la fenêtre de droite qu'elle compare notre code "123456" avec le résultat hexadécimale "2ED000". Je crois que l'on tient notre code! La deuxième compare notre code avec rien. Et la troisième compare notre code avec le résultat décimal "3067904". Aurions-nous 2 codes valides?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On lance le KeyGenMe, on entre le code hexa, ça marche! On entre le code décimal et il ne se passe rien. On va donc garder la valeur hexa comme code correct.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vérifions quand même, avec un nom de taille différente, que les 2 valeurs 1024 et 7 sont vraiment des constantes. C'est le cas. On a retrouvé l'algorithme et on peut maintenant coder le KeyGen. :o)
+</p>
+</td></tr>
+
+
+<tr><td width="20%"><b>3 - KeyGen</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici le code source d'un KeyGen écrit sous Dev-C++.<br>
+<!-- Code HTML généré à partir de Dev-C++ -->
+<!--StartFragment-->
+<pre><code><font color="#808080">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+</font><font color="#800000"><b>int </b></font>main</font><font color="#808000">(</font><font color="#800000"><b>int </b></font>argc</font><font color="#808000">, </font><font color="#800000"><b>char </b></font><font color="#808000">*</font>argv</font><font color="#808000">[])
+{
+ </font><font color="#800000"><b>char </b></font>nom</font><font color="#808000">[</font><font color="#FF0000">256</font><font color="#808000">] = </font><font color="#0000FF">&quot;&quot;</font><font color="#808000">;
+ </font><font color="#800000"><b>int </b></font>serial </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+
+ </font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Entrez votre nom: &quot;</font><font color="#808000">);
+ </font>scanf</font><font color="#808000">(</font><font color="#0000FF">&quot;%s&quot;</font><font color="#808000">, </font>nom</font><font color="#808000">);            </font><font color="#008000"><i>// Récupère le nom.
+
+ </i></font>serial </font><font color="#808000">= </font>strlen</font><font color="#808000">(</font>nom</font><font color="#808000">) * </font><font color="#FF0000">1024</font><font color="#808000">; </font><font color="#008000"><i>// taille du nom x 1024.
+ </i></font>serial </font><font color="#808000">/= </font><font color="#FF0000">2</font><font color="#808000">;                 </font><font color="#008000"><i>// division par 2.
+ </i></font>serial </font><font color="#808000">*= </font><font color="#FF0000">7</font><font color="#808000">;                 </font><font color="#008000"><i>// multiplie par 7.
+ </i></font>serial </font><font color="#808000">*= </font>nom</font><font color="#808000">[</font><font color="#FF0000">0</font><font color="#808000">];            </font><font color="#008000"><i>// multiplie par le code ASCII
+                              // de la 1<sup>ère</sup> lettre.
+ </i></font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Votre serial: %X\n&quot;</font><font color="#808000">, </font>serial</font><font color="#808000">);
+                              </font><font color="#008000"><i>// convertit le pass en Hexa.
+  </i></font>system</font><font color="#808000">(</font><font color="#0000FF">&quot;pause&quot;</font><font color="#808000">);
+  </font><font color="#800000"><b>return </b></font><font color="#FF0000">0</font><font color="#808000">;
+}
+
+</font></code></pre>
+<!--EndFragment-->
+<hr noshade width="80%"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici le code source d'un KeyGen écrit sous Delphi.<br>
+
+<pre>
+<b>procedure</b> TForm1.Button1Click(Sender: TObject);
+<b>var</b> nom: <b>String</b>;
+    pass: Integer;
+<b>begin</b>
+    nom := edit1.Text;
+		
+    pass:= length(nom);
+    pass:= pass * 1024;
+    pass:= pass <b>div</b> 2;
+    pass:= pass * 7;
+    pass:= pass * Ord(nom[1]);
+
+    edit2.Text:= IntToHex(pass,0);
+<b>end;</b>
+</pre> 
+
+</p></td></tr>
+
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+Desperately in need...of some...stranger's hand<br>
+In a...desperate land
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

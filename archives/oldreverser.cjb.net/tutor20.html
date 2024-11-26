@@ -1,0 +1,161 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+<pre>
+       How to crack EscapeRC v1.0.1 by ACiD BuRN [ECLiPSE/CiA]
+
+
+
+Description : a VB5 Time_Limit!
+
+
+tools used : - Wdasm89 (yes , i wanna have fun!)
+             - hexeditor!
+
+
+
+
+the essai :
+
+
+As you can see , the tool used isn't Soft ice or Smart check , but Wdasm !!
+In Vb app , you can't found string data refernces with the original version of wdasm :(
+anyway , you can use the imports !!
+
+So , run your target , after you moved your computer's date in 2002 for exemple...
+Boom , you see a messagebox : Trial period is over , BLABLABLA....
+
+ok , the VB apps don't use the API : messageboxa.
+they use one similar : rtcmsgbox
+
+So , in VB, for messagebox , you need to use : Bpx rtcmsgbox (for vb6 : bpx msvbvm60!rtcmsgbox)
+ok , u can use soft ice , but in this essay i want to show that u can use Wdasm for
+cracking VB...
+
+
+Fire up , Wdasm , dessasm your target (EscapeRC.exe)...
+goto imort and look for : rtcmsgbox
+click 2 times , coz the 1st time is not important.
+you will see this :
+
+* Reference To: MSVBVM50.rtcMsgBox, Ord:0253h 
+scroll up and you see :
+
+
+
+
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:    <== Referenced at 
+|:0041FA39(C)                                                              41FA39
+|
+:0041FB84 B904000280              mov ecx, 80020004
+:0041FB89 B80A000000              mov eax, 0000000A
+:0041FB8E 894DAC                  mov dword ptr [ebp-54], ecx
+:0041FB91 894DBC                  mov dword ptr [ebp-44], ecx
+:0041FB94 894DCC                  mov dword ptr [ebp-34], ecx
+:0041FB97 8D5594                  lea edx, dword ptr [ebp-6C]
+:0041FB9A 8D4DD4                  lea ecx, dword ptr [ebp-2C]
+:0041FB9D 8945A4                  mov dword ptr [ebp-5C], eax
+:0041FBA0 8945B4                  mov dword ptr [ebp-4C], eax
+:0041FBA3 8945C4                  mov dword ptr [ebp-3C], eax
+:0041FBA6 C7459C205A4000          mov [ebp-64], 00405A20
+:0041FBAD C7459408000000          mov [ebp-6C], 00000008
+
+* Reference To: MSVBVM50.__vbaVarDup, Ord:0000h
+                                  |
+:0041FBB4 FF158CD34200            Call dword ptr [0042D38C]
+:0041FBBA 8D55A4                  lea edx, dword ptr [ebp-5C]
+:0041FBBD 8D45B4                  lea eax, dword ptr [ebp-4C]
+:0041FBC0 52                      push edx
+:0041FBC1 8D4DC4                  lea ecx, dword ptr [ebp-3C]
+:0041FBC4 50                      push eax
+:0041FBC5 51                      push ecx
+:0041FBC6 8D55D4                  lea edx, dword ptr [ebp-2C]
+:0041FBC9 6A00                    push 00000000
+:0041FBCB 52                      push edx
+
+* Reference To: MSVBVM50.rtcMsgBox, Ord:0253h         <=== you land here after click
+
+------------------------------------------------------------------------------------
+
+
+So , you saw  : Referenced at 0041FA39
+in Wdasm , menu goto , and choose Code location and enter : 0041FA39
+
+you will land here :
+
+
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:0041FA24(C)
+
+
+:0041FA34 66837DEC1F              cmp word ptr [ebp-14], 001F  <== compare with 1F (31 in deci)
+:0041FA39 0F8D45010000            jnl 0041FB84                 <== a conditional jump!! :)        
+:0041FA3F 6830394000              push 00403930
+
+* Reference To: MSVBVM50.__vbaNew, Ord:0000h
+                                  |
+:0041FA44 FF15E8D24200            Call dword ptr [0042D2E8]
+:0041FA4A 50                      push eax
+:0041FA4B 6810A04200              push 0042A010
+
+
+
+
+now , u have just to patch it !!!
+to be sure it works , i changed it to :
+
+:0041FA34 66837DEC00         cmp word ptr [ebp-14], 00
+:0041FA39 0F8445010000       je 0041FB84
+
+
+hex edit your target and:
+- search : 66837DEC1F and change it to : 66837DEC00.
+- search : 0F8D45010000 and change it to : 0F8445010000 
+
+
+save it , and run it !!
+
+
+WOW !! no more Time limit !! hehe
+fucking easy !! now , u know how to patch VB using Wdasm !!!
+
+
+Well , this tut is finish , hope u understand all this piece of text , but if you have a 
+comment or one question, mail me to : ACiD_BuRN@crackerinaction.org 
+
+have fun...
+
+
+greetings to my groups : ECLiPSE / CiA
+
+also greetingz to: (no specific order)
+
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, Torn@do, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas ....
+
+i want to greets PWA members , i left this group due to not enough time for them :(
+sorry Dudes ;) , i will back !!
+
+if your name is not here sorry !!! lot of men to greets !
+
+					ACiD BuRN [ECL/CiA]
+
+
+
+
+
+
+
+
+</PRE></left>
+</BODY>
+</HTML>

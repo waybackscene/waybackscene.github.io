@@ -1,0 +1,113 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+
+                  
+                  ‹‹ 
+                 ‹‹‹‹‹                           ‹‹‹‹      ‹‹‹‹‹
+                ‹‹‹‹‹‹                            ‹‹‹‹     ‹‹‹  ‹‹ 
+                 ‹‹‹‹‹‹‹                                   ‹‹‹   ‹‹
+                ‹‹‹‹‹‹‹‹‹          ‹‹‹‹‹‹‹‹‹‹     ‹‹‹      ‹‹‹    ‹‹
+               ‹‹‹‹‹‹‹‹‹‹         ‹‹‹‹‹‹‹‹‹‹‹     ‹‹‹      ‹‹‹     ‹‹
+               ‹‹‹‹  ‹‹‹‹‹‹      ‹‹               ‹‹‹      ‹‹‹     ‹‹
+              ‹‹‹‹    ‹‹‹‹‹‹    ‹‹                ‹‹‹      ‹‹‹     ‹‹
+            ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹     ‹‹                ‹‹‹      ‹‹‹     ‹‹
+            ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹    ‹‹               ‹‹‹      ‹‹‹     ‹‹
+            ‹‹‹‹‹‹      ‹‹‹‹‹‹‹   ‹‹‹‹‹‹‹‹‹‹‹     ‹‹‹      ‹‹‹    ‹‹
+           ‹‹‹‹‹‹       ‹‹‹‹‹‹‹‹   ‹‹‹‹‹‹‹‹‹‹     ‹‹‹      ‹‹‹   ‹‹
+           ‹‹‹‹‹‹‹‹       ‹‹‹‹‹‹‹                 ‹‹‹      ‹‹‹  ‹‹
+           ‹‹‹‹‹‹‹‹‹‹‹      ‹‹‹‹                  ‹‹‹      ‹‹‹‹‹
+                                     [BurN]                    
+
+
+                     Proudly Presents CRACKING TuToR N∞3                         
+
+
+
+hop , c'est partie pour un autre cour de crack ...
+cette fois , on va se servire de Soft-ice pour deplomber des sharewares.
+On ne va pas patcher le fichier mais trouver le code valide en fonction
+de notre nom.Tout ceci en memoire grace ‡ ce magnifique Sof-ice...
+
+Au Programme:
+
+WWW Gif Animator v1.0
+
+Pour se crack nous allons considerer que soft-ice est installÈ
+correctement et que tout est pres pour cracker.(je ferais un texte
+explicatif pour tous ce qui non pas installÈ S-ice corectement.)
+Donc Quand on entre un nom , un prenom , et un numero de serie batard,
+on appuie sur OK.
+la le programme nous envoie chier car le numero est bidon.
+on va donc poser un point d'arret sur une fonction de windows qui
+est tres couramment utilisÈs pour cracker.
+En fait il y en a 2:
+
+Getwindowtexta  pour les progs 32 bits (Getwindowtext pour 16 bits)
+getdlgitemtexta pour les progs 32 bits (getdlgitemtext pour 16 bits)
+pour aller sous S-ice il faut presser les touches Control+D.
+une fois sous S-ice on tape:
+
+on appuie sur alt + R pour voir les registres (eax , edx ...)
+on appuie sur alt + D pour voir la zone data.
+
+pour poser le point d'arret:  BPX Getwindowtexta
+			      BPX getdlgitemtexta 
+
+on appuie sur F5 et on retourne a windows.
+
+on entre pour First Name: ACiD
+	 pour Last Name : BuRN
+	           code : 12345
+
+on appuie sur OK.
+Boum, S-ice est reaparu et nous dit :
+
+'break due to BPX Getdlgitemtexta'
+
+on tape D EAX et on voit dans la zone data : ACiD BuRN
+on appuie une fois sur F5 car on est dans le controle de nom
+et que l'on veut s'occuper du serial.
+Entre la zone data et la zone de code il y a marquÈ : USER32 ....
+on n'est pas dans le programme donc on fais F12 puis il n'y a plus
+rien.La , on est maintenant dans le programme.
+On trace comme un fou avec F10 et au bout d' un moment on voit dans
+la zone Registre EAX=00003039.interressant car si on fait :
+? EAX
+on voit apparaitre : 00003039    0000012345  "09"
+3039 c'est en hexadecimal et 12345 c'est en Decimal.
+
+12345 ce ne serait pas le code que l'on a tape au debut ? mais si,
+on ne doit pas Ítre tres loin.
+on continu a tracer (avec F10) tout en surveillant EAX et apres quelques F10 eax change !!!
+EAX a changÈ. Il est devenu :  EAX=7D5F4
+on tape ? EAX
+on obtient:   0007D5F4    00005135314
+tiens si on essayer 513534 comme code ?
+
+on fait control + D et on tape BC 0,1 pour effacer les 2 points d'arrets.
+F5 et nous voila sous Windows.
+
+Donc on entre First Name: ACiD
+              Last Name : BuRN
+                   Code : 513524
+
+Et voila le programme ne nous envoie pas chier nous sommes maintenat enregistrÈs !!!
+
+Voila ce cour est terminÈ mais il faut savoir que tous les shareware ne marche
+pas comme Áa et que d'autre faÁon de trouver les codes existent. Dans le prochain cour
+Comment touver le code pour Winimage 4.00 !!!
+
+
+
+						   --==[ACiD BuRN]==--
+
+
+
+</PRE>
+</BODY>
+</HTML>

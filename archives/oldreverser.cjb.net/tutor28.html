@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+How to keygen Lan-Box 1.01 by ACiD BuRN [ECLiPSE / CiA]
+
+
+type: Visual Basic 6 app
+level: very easy
+tools needed: Smart check 6 , VB for coding the keygen
+URL: http://members.tripod.com/LAN-BOX
+
+
+1)Intro :
+
+well , i am tired , i won't nag u lot in the intro ;)
+it is a vb prog , i will show u how to keygen it ...
+btw , A friend did a tut German tut too , i am sure it is good , but i
+can't read read german heh...
+
+2)time to go !
+
+Fire up your smart check , and open this little shit ;)
+click on Info button , and then on register
+now , enter name : ACiD BuRN
+and serial : 112233
+click on the button to check serial , this bitch say us : bad serial blablabla...
+heh , now end lan-box , in smart check do a search on this text : ACiD
+you will land where the algo start!
+now , look a bit , and you see it take ascii value from each letter of the name entered...
+so , click on this line :
+
+asc(String:"A") returns Integer:65 
+
+To see what the heck this bitch does with ascii value , click on "show all event" in View menu..
+now u see this :
+
+asc(String:"A") returns Integer:65    now , you see the crackme taking ascii value of the current 
+char (1st it is "A" from ACiD BuRN)
+and then it add it to previous ascii value from others chars...
+
+1st it add "65" to "0" coz no chars before "A" ...
+in smart check you see this with this line :
+__vbavaradd(VARIANT:Empty,VARIANT:Integer:65)
+
+this add 65 to 0 (empty means : no value yet)
+
+if you look down , you see same with the next chars of the name "C" (C from ACiD BuRN)
+Asc(String("C") returns Integer: 67   <== take ascii value of the current char , here "C"
+then add it to the last add of ascii value:
+
+__vbavaradd(VARIANT:65,VARIANT:Integer:67)
+then u see the result :
+__vbavarmove(VARIANT:integer:132,VARIANT:Integer:65)
+the result is : 132 , and the value:65 is the old result.So we can assume it replace 65 by the
+new value : 132
+
+Well it does this for each char ascii value  , so this loop take each char ascii value in decimal
+from your name , and add them...
+
+--------------------------------
+A = 65 + 0
+C = 67 + 65 = 132
+i = 132 + 105 = 237
+D = 237 + 68 = 305
+space = 305 + 32 = 337
+B = 337 + 66 = 403
+u = 403 + 117 =  520
+R = 520 + 82 = 602
+N = 602 + 78 = 680
+---------------------------------
+
+so , the final value from this addition of ascii value is : 680 in decimal ....
+
+
+
+Now , scroll down until the end of the loop on each ascii value of the name !
+this is where u see the value '680' :)
+heh , now look a bit , and scroll down until you see this :
+
+__vbavarmul(VARIANT:680,VARIANT:232354) : this multiple the result of ascii value with 232354
+the result of this multiplication is : 158000720
+
+__vbavarmul(VARIANT:158000720,VARIANT:653435) : this multiple the result of 1st multiplication 
+with 653435
+the result is: 103243200473200
+
+__vbavardiv(VARIANT:1.03243e014,VARIANT:23446534) : this divise the result of 2nd multiplication 
+with 23446534 (note: 1.03243e014 is same than 103243200473200 , it is for this it is good to do 
+calculs)...
+the result is: 4403345.947558817 (u see this value in smart check)
+
+and finaly you see :
+
+__vbavarmove(VARIANT:Double:4.40335e+006,VARIANT:Integer:680) 
+this move the final result (good serial) where the value "680" was written , it overwritte it!
+so , 1st time , i though it was good serial , but it is now !!
+i entered : 4403345.947558817 it sucked !!
+bad serial msg box , and shit :-/
+if we scroll down a bit you will see this value : 4403345,94755882
+let's try it , IT WORKS !!
+so , i was wondering how 4403345.947558817 become 4403345,94755882 , so i coded the keygen
+to see how can i fix this prob...
+i coded it in vb5 , entered : ACiD BuRN as name , and i genrated a serial with my keygen
+and it give me : 4403345,94755882
+Great !! , dunno why it works , maybe coz it is a vb apps , and the keygen is in vb too
+but we don't care , it works ! i am tired , i don't want to think more!
+
+Lemme explain the algo :
+
+
+--------------------------ALGO---------------------------------
+
+1st : add all ascii value of the name
+2nd : multiply the value (of 1st part of algo) with 232354
+3rd : multiply the value (of 2nd part of algo) with 653435
+4th : divise the value (of 3rd part of algo) with 23446534
+
+---------------------END OF ALGO-------------------------------
+
+the result of 4th is the final serial !!
+
+
+
+
+3)BONUS SOURCE OF THE KEYGEN IN VISUAL BASIC :
+
+
+
+-----------------------------START OF SOURCE-----------------
+
+For i = 1 To Len(Text1.Text)
+temp = Asc(Mid(Text1.Text, i, 1))
+final = final + temp
+Next i
+final = final * 232354
+final = final * 653435
+final = final / 23446534
+Text2.Text = final
+
+-----------------------------END OF SOURCE--------------------
+
+
+to make this work , do a new project in VB , and put 2 text box and one button
+text1.text = place to enter your name
+text2.text = the serial will be shown there!
+nothing more !
+Enjoy !!
+
+
+4)Ending....
+
+
+Well , this tut is finish , hope u understand all this piece of shit, but if you have a 
+comment or one question, mail me 
+you can found all my tuts at : 
+
+MAIL: ACiD_BuRN@nema.com
+Web page URL: http://acidburn2000.cjb.net/
+
+Enjoy!
+
+
+Greetings to my groups : ECLiPSE / CiA / ODT / EXEC / XTM
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , Killer_3K
+TaMaMBoLo , gizmo , Gota , ExtaBrain...
+
+
+if your name is not here sorry !!! too much ppls to greets !
+
+
+				ACiD BuRN [ECL/CiA]
+
+</PRE></left>
+</BODY>
+</HTML>

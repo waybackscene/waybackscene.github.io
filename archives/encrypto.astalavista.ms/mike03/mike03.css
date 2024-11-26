@@ -1,0 +1,158 @@
+/************* Global *************/
+* {
+margin: 0; 
+padding: 0;
+}
+
+body {
+font: 100%/110% Tahoma, Verdana, Arial, sans-serif;
+background: #5b5b5b;
+color: #e6e6e6;
+}
+
+p {
+margin-top: 0.5em;
+}
+
+a {
+color: white;
+font-weight: bold;
+letter-spacing: 1px;
+text-decoration: none;
+}
+
+a:hover {
+color: #787878;
+}
+
+blockquote {
+padding: 0.1em 0.3em;
+color: #9b9b9b;
+}
+
+/************* Container *************/
+#wrapper {
+width: 518px;
+margin: 0 auto;
+text-align: left;
+}
+
+/************* Header *************/
+#header {
+margin-top: 20px;
+height:222px;
+width: 518px;
+background: url(imgs/header.jpg) no-repeat;
+}
+
+#insideHeader {
+width: 450px;
+height: 90px;
+margin: 0 auto;
+padding: 47px 32px 23px 32px;
+}
+
+html>body #insideHeader {
+padding-top: 32px;
+height: 104px;
+}
+
+#insideHeader h1, #insideHeader p {
+margin: 10px 15px;
+}
+
+#insideHeader h1 {
+margin: 20px 0 0 15px;
+font-weight: bold;
+font-size: 2.3em;
+}
+
+#menu {
+width: 450px;
+margin: 0 auto;
+}
+
+
+#menu li {
+list-style-type: none;
+float: left;
+margin-right: 1px;
+}
+
+#menu a {
+font-size: 13px;
+text-decoration: none;
+float: left;
+font-weight: normal;
+letter-spacing: 0;
+color: #2B2B2B;
+background: #E6E6E6;
+display: block;
+width: 89px;
+text-align: center;
+padding: 3px 0;
+}
+
+#menu a:hover {
+background: #787878;
+color: #E6E6E6;
+}
+
+/************* Content *************/
+#main {
+height: 700px;
+}
+
+html>body #first h2 {
+margin-top: 0;
+padding-top: 30px;
+}
+
+#content {
+width: 518px;
+background: url(imgs/mainBg.gif) repeat-y;
+}
+
+#footer {
+	position: absolute;
+	width: 518px;
+	height: 82px;
+	background: #2B2B2B url(imgs/mainBottom.gif) top no-repeat;
+	left: 242px;
+	top: 1588px;
+}
+
+.post {
+width: 428px;
+padding: 0 45px;
+}
+
+.post h2 {
+margin-top: 1.5em;
+padding: 1.1em 0 0.4em;
+border-top: 1px solid #eaeaea;
+}
+
+.post ul {
+margin-left: 17px;
+padding: 0.1em 0;
+}
+
+#first {   /* Top of the content part in first post*/
+background: url(imgs/mainTop.gif) top no-repeat;
+}
+
+#first h2 {
+margin-top: 5px;
+border-top: none;
+}
+
+#footer p {
+text-align: center;
+margin: 45px auto 0;
+font-size: 0.75em;
+}
+
+#footer a:hover {
+color: #2B2B2B;
+}

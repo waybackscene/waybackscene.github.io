@@ -1,0 +1,79 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="images/styles.css" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="images/favicon.ico">
+<script language="JavaScript" type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="js/jquery.validate.js"></script>
+
+  <script>
+  $(document).ready(function(){
+    $.validator.addMethod("username", function(value, element) {
+        return this.optional(element) || /^[a-z0-9\_]+$/i.test(value);
+    }, "Username must contain only letters, numbers, or underscore.");
+
+    $("#regForm").validate();
+  });
+  </script>
+<title>RED Arena</title>
+</head>
+
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" class="main">
+  <tr> 
+    <td colspan="3"><center><img src="images/banners/logo1.png" alt="RED Arena" /></center></td>
+  </tr>
+  <tr> 
+    <td width="160" valign="top"></td>
+    <td width="732" valign="top"><p>
+	</p>
+      <div class="box-content"><div class="box"><h2>Registration / Signup</h2>
+      <p>Please register a account, before you can start using RED Arena.<br>
+        Registration is quick! Please note that fields marked <span class="required">*</span> 
+        are required.</p>
+	  
+      <form action="#" method="post" name="regForm" id="regForm" >
+        <table width="95%" border="0" cellpadding="3" cellspacing="3" class="forms">
+          <tr> 
+            <td colspan="2"><h4><strong>Login Details</strong></h4></td>
+          </tr>
+          </br><tr> 
+            <td>Name<span class="required"><font color="#CC0000">*</font></span></td> 
+            </br><td><input name="full_name" type="text" id="full_name" class="required" minlength="5" >
+          </tr>
+          <tr> 
+            <td>Username<span class="required"><font color="#CC0000">*</font></span></td>
+            <td><input name="user_name" type="text" id="user_name" class="required username" minlength="5" > 
+          </tr>
+          <tr> 
+            <td>Your Email<span class="required"><font color="#CC0000">*</font></span> 
+            </td>
+            <td><input name="usr_email" type="text" id="usr_email3" class="required email"> 
+              <span class="example">** Valid email please..</span></td>
+          </tr>
+          <tr> 
+            <td>Password<span class="required"><font color="#CC0000">*</font></span> 
+            </td>
+            <td><input name="pwd" type="password" class="required password" minlength="5" id="pwd"> 
+              <span class="example">** 5 chars minimum..</span></td>
+          </tr>
+          <tr> 
+            <td>Retype Password<span class="required"><font color="#CC0000">*</font></span> 
+            </td>
+            <td><input name="pwd2"  id="pwd2" class="required password" type="password" minlength="5" equalto="#pwd"></td>
+          </tr>
+          <tr> 
+            <td colspan="2"><p align="center"><input name="doRegister" type="submit" id="doRegister" value="Register"></p></td>
+          </tr>
+          <tr> 
+          </tr>
+        </table>
+      </form>
+	   
+      </td>
+    <td width="196" valign="top">&nbsp;</td>
+  </tr>
+</table>
+</div></div>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<title>DAMN :: Software :: DAMN NFO Viewer</title>
+	<link rel="stylesheet" type="text/css" href="main.css"/>
+	<link rel="SHORTCUT ICON" href="favicon.ico"/>
+	<meta name="Description" content="DAMN - Software - DAMN NFO Viewer"/>
+	<style type="text/css">
+	#tableScreenshots td { text-align : center }
+	dt { font-weight : bold; font-size: 10pt; }
+	</style>
+</head>
+
+<body>
+
+<!-- MENU -->
+
+<script language="JavaScript1.2" type="text/javascript" src="main.js"></script>
+<table id="tableMenu" cellpadding="0" cellspacing="1" border="0"><tr><td>
+<table id="tableMenuInner" width="100%" border="0" cellspacing="1" cellpadding="0" onmouseover="onMenuMouseOver( event, true );" onmouseout="onMenuMouseOver( event, false );">
+
+<tr><td><a href="/">Home</a></td></tr>
+<tr><td><a href="news.html">News</a></td></tr>
+<tr><td><a href="software/">Software</a></td></tr>
+<tr><td><a href="release_list.html">Release List</a></td></tr>
+<tr><td><a href="fga.html">FGA</a></td></tr>
+<tr><td><a href="ubb-cgi-bin/ultimatebb.cgi">Forums</a></td></tr>
+</table>
+</td></tr></table>
+<!-- MENU END -->
+
+<div class="divHeadMenu"><a href="">DAMN</a> &raquo; <a href="software/">Software</a> &raquo; DAMN NFO Viewer</div>
+<div id="divPageBody">
+<div id="divTitle">DAMN NFO Viewer v2.10 RC3</div>
+
+<!-- START of body text -->
+<p>DAMN NFO Viewer is an utility for viewing text files containing ASCII Art (e.g. .nfo and .diz files). Most of modern Windows fonts just don't have glyphs required for displaying ASCII Art, and those rare ones left are hard to use due to often erratical behaviour of localized Windows versions when it comes to displaying text with OEM fonts.</p>
+
+<p>DAMN NFO Viewer lets you see ASCII Art the way it's supposed to look, and it's good at it.</p>
+
+<h2>Features</h2>
+
+<dl>
+<dt>Available in multiple languages</dt>
+<dd>Chinese Simplified, Dutch, English, French, German, Italian, Norwegian, Portuguese, Russian, Spanish, Swedish, Turkish. You can choose the languages during installation and switch between them later via Settings dialog.</dd>
+
+<dt>Hyperlinks / Email addresses autodetection</dt>
+<dd>The viewer automatically detects hyperlinks / email addresses and shows them as clickable shortcuts.</dd>
+
+<dt>Customizable appearance</dt>
+<dd>You can set text/background colors, colors for hyperlinks and hovered hyperlinks, whether or not you want hyperlinks to be underlined, and choose between 3 built-in fonts, available in different sizes.</dd>
+
+<dt>Word Wrap</dt>
+<dd>You can switch between word wrap, character wrap and no wrap.</dd>
+
+<dt>Shell integration</dt>
+<dd>The Viewer can be set as the default application to open files with .nfo and .diz extensions. You get fancy file icons as a bonus.<!-- Webmaster should note that MIME type text/nfo will be handled in the release version. --></dd>
+
+<dt>Smart line breaks handling</dt>
+<dd>Unix style line breaks are supported (that is, you won't notice any difference). Moreover, the Viewer correctly displays files with doubled/tripled/etc. (e.g. because of improper multiple Unix&lt;-&gt;Windows conversions) line breaks.</dd>
+
+<dt>Unicode support</dt>
+<dd>Unicode version of the program is installed automatically if the operation system supports it. Unicode version provides better support for multilingual user interface.</dd>
+
+<dt>Copy-on-Select</dt>
+<dd>When this feature is on, text gets copied to clipboard automatically after you have finished selecting it (released shift key or left mouse button). After the selected text has been copied, the selected area will flash shortly and the text will get deselected (so for those who thought it's a bug: it is not).</dd>
+
+<dt>Direct Scroll mode</dt>
+<dd>In this mode there's no caret so you can't select text with keyboard, but you can navigate through file contents more easily (like in your browser). Turning it off makes it more like viewing a file in a text editor.</dd>
+
+<dt>and more...</dt>
+<dd>...including Most Recently Viewed nfos list (accessible via menu or <strong>Alt+R</strong>), Drag&amp;Drop support, ... well, check for yourself.</dd>
+</dl>
+
+
+<h2>Useful tips</h2>
+<ul style="list-style-type: disc;">
+<li>Pressing <strong>Alt+R</strong> or <strong>Ctrl+R</strong> invokes Most Recently Viewed list menu.</li>
+<li>Pressing <strong>Esc</strong> or <strong>Alt+X</strong> quits the program.</li>
+<li>There's no help file. Instead, please use the Settings dialog's tooltips. They contain detailed descriptions of corresponding settings.</li>
+<li>If you're not happy about 500Kb file size limit, you can remove it by setting<br/>
+<strong>HKEY_CURRENT_USER\Software\DAMN\DAMN&nbsp;NFO&nbsp;Viewer\MaxFileSizeKb</strong> to 0</li>
+<li>If you want to uninstall the program, go to its directory and run <strong>UnInstall.exe</strong>.</li>
+</ul>
+
+<h2>New in version 2.10 [changes since v2.0.x]</h2>
+<p>Too many to list them here, check the <a href="viewer_history.txt" target="_blank">history file</a>.</p>
+
+<h2>Screenshots</h2>
+<div align="center">
+<table cellspacing="2" cellpadding="2" border="0" id="tableScreenshots">
+<tr>
+    <td><a href="javascript:;" onclick="javascript: window.open('nvr_screenshot.html', 'winNVRScreenshot', 'toolbar=0,location=0,status=0,menubar=0,resizable=0,scrollbars=0,width=450,height=676,top=0,left=0'); return false;"><img src="software/images/nfoviewer_v210_small.gif" width="200" height="298" alt="DAMN NFO Viewer [small picture]" hspace="10" vspace="0" border="0"/></a></td>
+    <td><a href="javascript:;" onclick="javascript: window.open('nvr_s_screenshot.html', 'winNVRSScreenshot', 'toolbar=0,location=0,status=0,menubar=0,resizable=0,scrollbars=0,width=400,height=470,top=0,left=0'); return false;"><img src="software/images/nfoviewer_v210_settings_small.gif" width="180" height="208" alt="DAMN NFO Viewer Settings dialog [small picture]" hspace="10" vspace="0" border="0"/></a></td>
+</tr>
+<tr>
+    <td><a href="javascript:;" onclick="javascript: window.open('nvr_screenshot.html', 'winNVRScreenshot', 'toolbar=0,location=0,status=0,menubar=0,resizable=0,scrollbars=0,width=450,height=676,top=0,left=0'); return false;">main window</a></td>
+    <td><a href="javascript:;" onclick="javascript: window.open('nvr_s_screenshot.html', 'winNVRSScreenshot', 'toolbar=0,location=0,status=0,menubar=0,resizable=0,scrollbars=0,width=400,height=470,top=0,left=0'); return false;">settings dialog</a></td>
+</tr>
+</table>
+</div>
+
+<h2>Download</h2>
+<strong style="color: #e0e0e0">DO NOT PUT DIRECT LINKS TO THE FILE ON OTHER SITES!!!<br/>Most of users will not be able to get the file if they attempt to download it from location other than this site.<br/>Instead, link to www.damn.to or this page.</strong>
+<p>&nbsp;</p>
+
+<em>Latest version:</em> <b>v2.10 build 31 RC3</b> [Sep 12, 2002]<br/>
+<em>Supported platforms:</em> Windows 95/98/NT/2000/XP<br/>
+<em>Installation package:</em> <a href="http://web.archive.orgfiles/DAMN_NFO_Viewer_v2.10.0031.RC3_Setup.exe">DAMN_NFO_Viewer_v2.10.0031.RC3_Setup.exe</a> (247K)<br/>
+<em>Modification history:</em> <a href="viewer_history.txt">viewer_history.txt</a>
+
+<p>Bug reports, comments and suggestions are welcome.</p>
+
+<p><em>This program is compiled with dynamic version of MFC (that is, it needs mfc42.dll to run), so if you (although I doubt it) get error like 'Routine blah blah cannot be located in mfc42.dll', you should stop living in previous millennium and consider upgrading your system libraries.</em></p>
+
+<!--http://download.microsoft.com/download/platformsdk/Comctl32/5.80.2614.3600/W9XNT4/EN-US/50comupd.exe-->
+
+</div>
+
+<!-- FOOTER -->
+<div id="divFooter">
+<table cellspacing="0" cellpadding="0" border="0" width="500" align="center">
+<tr><td><img src="images/null.gif" width="500" height="30" border="0" alt=""/></td></tr>
+<tr><td><img src="images/h_ruler.jpg" height="4" border="0" width="500" alt=""/></td></tr>
+<tr><td class="copyright">&copy; 2000-2002 DAMN.<br/>None of the materials from this site may be reproduced<br/>without prior consent of the copyright owner.</td></tr>
+<!--<tr><td align="center">&nbsp;<br /><a href="/privacy_statement.html" class="xs" >privacy statement</a></td></tr>-->
+<tr><td><img src="images/null.gif" width="500" height="20" border="0" alt=""/></td></tr>
+</table>
+</div>
+<!-- END FOOTER -->
+</body>
+</html>
+
+
+
+<!--
+     FILE ARCHIVED ON 08:20:42 Dec 01, 2002 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 07:46:38 Sep 11, 2019.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  PetaboxLoader3.resolve: 28.093
+  captures_list: 211.757
+  PetaboxLoader3.datanode: 335.991 (4)
+  xauthn.identify: 80.587
+  load_resource: 264.918
+  exclusion.robots: 81.011
+  RedisCDXSource: 0.577
+  esindex: 0.012
+  CDXLines.iter: 10.844 (3)
+  xauthn.chkprivs: 0.049
+  exclusion.robots.policy: 80.995
+  LoadShardBlock: 115.215 (3)
+-->

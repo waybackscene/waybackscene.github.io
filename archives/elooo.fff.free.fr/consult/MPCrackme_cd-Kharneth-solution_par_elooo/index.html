@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+  font-family: "trebuchet ms", verdana, sans-serif;
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover
+  {
+  color: #003663;
+  background-color: #CCCC66; 
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+	
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>MPCrackMe_cd de Kharneth - Solution par elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie avanc&eacute;</td><td>Ollydbg 1.9d - StudPE - HexWorkShop</td><td>elooo</td></tr>
+</table>
+
+  <h2>Familiarisation avec le crackme</h2>
+<p>Tout d'abord, si on ouvre ce crackme dans StudPE, on constate qu'il est pack&eacute; avec Aspack 2.12.</p>
+
+<p style="text-align:center">
+<img src="1.PNG" alt="Image 1" />
+</p>
+
+<p>L'unpacking manuel d'Aspack 2.12 n'est pas compliqu&eacute, cependant je n'expliquerai pas la d&eacute;marche dans ce tutorial.</p>
+<p>Telechargez une version r&eacute;cente du Stripper ou &eacute;ventuellement Aspackdie (je n'ai pas test&eacute;e) qui unpackeront le crackme &agrave; votre place.</p>
+
+<p>Une fois le crackme d&eacute;compress&eacute;, interessons-nous de plus pr&egrave;s &agrave; ce crackme.<br />
+Si on l'execute, on tombe sur une messagebox similaire &agrave; celle-ci :</p>
+<p style="text-align:center">
+<img src="A.PNG" alt="Image A" />
+</p>
+
+
+<p>Bon apparemment on est en face d'un cd-check. Tant qu'on ne l'aura pas contourn&eacute; on ne saura rien faire d'autres.</p>
+<p>On lance le crackme dans le debuggeur et là essayez de poser un bpx quelconque, de lancer le processus et de tracer un peu. BOUM, ollydbg se ferme ! Intuitivement, je dirais que &ccedil;a sent l'anti-debugger.
+Voyons voir dans l'&eacute;diteur hexa si on y voit quelque chose d&eacute;j&agrave;.</p>
+
+<p style="text-align:center">
+<img src="2.PNG" alt="Image 2" />
+</p>
+<p>On voit clairement des cha&icirc;nes de caract&egrave;res qui correspondent &agrave; des noms de debuggers, qu'est-ce que &ccedil;a peut bien faire ici ? C'est quand m&ecirc;me &eacute;trange.
+Il s'agit en fait d'une sorte de Meltice &eacute;volu&eacute; que Kharneth a incorpor&eacute; dans son crackme.
+Le crackme va chercher en m&eacute;moire les cha&icirc;nes &agrave; trouver : les drivers de Softice (SICE pour win 9x et NTICE pour win NT) ainsi qu'ollydbg et windbg. Si elles sont rep&eacute;r&eacute;es c'est qu'un debugger est actif.<br />
+Mais si dans l'&eacute;diteur hexa on change les cha&icirc;nes &agrave; trouver, que se passera-t-il ? Le crackme cherchera tout autre chose en m&eacute;moire et si ces cha&icirc;nes correspondent &agrave; aucune application active voire existante,
+il ne se passera rien et le debugging se d&eacute;roulera normalement. C'est d'ailleurs comme &ccedil;a que nous allons nous y prendre :</p>
+
+<p style="text-align:center">
+<img src="3.PNG" alt="Image 3" />
+</p>
+<p>Revenons &agrave; nos moutons, un cd-check nous attend. Maintenant que nous sommes en mesure de debugger, nous allons pouvoir étudier le code correctement.</p>
+
+
+  <h2>Etude de la routine</h2>
+
+<p>Donc comme on l'a dit plus haut, la premi&egrave;re chose qu'il nous faudra virer c'est le cd-check. Les api caract&eacute;ristiques sont par exemple :</p>
+<blockquote>
+<ul class="liste">
+<li>GetDriveType (si eax=5 alors il s'agit d'un cdrom check)</li>
+<li>GetDriveTypeA</li>
+<li>GetLogicalDrives</li>
+<li>GetLogicalDrivesA</li>
+<li>GetLogicalDriveStrings</li>
+<li>GetLogicalDriveStringsA</li> 
+</ul>
+</blockquote>
+
+<p>Donc sans plus tarder, posons un <code>bpx GetDriveType</code>. Ollydbg nous renvoit cette fen&ecirc;tre :</p>
+
+<p style="text-align:center">
+<img src="4.PNG" alt="Image 4" />
+</p>
+<p>Et si l'on fait d&eacute;filer la liste des api, on voit bien qu'aucun bpx n'a &eacute;t&eacute; pos&eacute; et qu'en plus GetDriveType n'est pas pr&eacute;sent dans la liste. Par contre GetDriveTypeA existe.<br />
+Donc on recommence mais cette fois avec <code>bpx GetDriveTypeA</code> et l&agrave; on voit bien que le bpx est pos&eacute; :</p>
+<p style="text-align:center">
+<img src="5.PNG" alt="Image 5" />
+</p>
+<p>on lance le processus et on arrive ici :</p>
+<p style="text-align:center">
+<img src="6.PNG" alt="Image 6" />
+</p>
+<blockquote>
+<p style="font-size: 12px;color: darkgreen">NDLR SeVeN : Sans passer par un bpx en voulant faire vite, on aurait pu aussi faire une recherche dans ollydbg de l'instruction <code>cmp eax,5</code></p>
+</blockquote>
+<p>On remarque tout de suite la comparaison de eax à 5, il s'agit bien de notre v&eacute;rification du cd-rom. Un peu plus bas on voit toute une s&eacute;rie de jnz / je :</p>
+
+<p style="text-align:center">
+<img src="7.PNG" alt="Image 7" /><br />
+<img src="8.PNG" alt="Image 8" />
+</p>
+
+<p>La solution bourrine serait d'inverser judicieusement ces jump, mais on va 
+essayer de faire qelque chose de plus propre qui va nous permettre de comprendre
+le fonctionnement de GetDriveType.<br />
+</p>
+<p>Si le 5 du <code>cmp eax,5</code> correspond au lecteur de CDrom, il pourrait suffir
+de changer cette valeur par la valeur sp&eacute;cifique au disque dur par 
+exemple. Ces valeurs correspondent en fait au code de retour de la fonction GetDriveType.<br />
+Le code du disque dur est 3.</p>
+
+<blockquote>
+<pre style="font-size: 12px;color: darkgreen">
+NDLR SeVeN:
+GetDriveType Return Function codes:
+
+Value              Meaning
+     0                 Drive Cannot Be determined
+     1                 Root Dir Does not exist
+     2                 DriveRemoveable
+     3                 A Fixed Disk (HardDrive) 
+     4                 Remote Drive(Network)
+     5                 Cd-Rom Drive
+     6                 RamDisk
+</pre>
+</blockquote>
+
+<p>Cependant un autre test juste en dessous (GetVolumeInformationA) rend cette correction
+insuffisante, le nom du volume, entre autres, étant attendu, il faudrait alors quand même
+inverser des sauts.</p>
+<p>La solution la plus rapide et la moins contraignante consiste à poser un <code>ret</code> tout au début du call (en 004042F4, sur le <code>PUSH EBP</code>),
+afin qu'il en sorte aussi vite qu'il y est rentr&eacute;, et la vilaine message box ne nous emb&ecirc;tera plus. Elle laissera m&ecirc;me appara&icirc;tre une nouvelle
+fen&ecirc;tre comme celle-ci :</p>
+
+<p style="text-align:center">
+<img src="C.PNG" alt="Image C" />
+</p>
+
+<p>C'est donc le moment de s'interesser &agrave; la routine de g&eacute;n&eacute;ration du serial. Seulement rentrez un pass bidon plus de 3 fois de suite et regardez la fen&ecirc;tre qui
+s'affiche :</p>
+
+<p style="text-align:center">
+<img src="B.PNG" alt="Image B" />
+</p>
+<p>On va donc se charger de supprimer cette limitation pour pouvoir continuer. Le plus simple &agrave; mon humble avis est de poser un <code>bpx MessageBoxA</code>.<br />
+Ce qui nous fait breaker ici :</p>
+
+<p style="text-align:center">
+<img src="9.PNG" alt="Image 9" />
+</p>
+
+<p>Si on remonte un peu on voit une comparaison &agrave; la valeur 2, avec juste en-dessous un JBE qui se charge de jumper en-dessous
+de la message box. En fait &ccedil;a signifie que si on trouve une valeur inf&eacute;rieure ou &eacute;gale &agrave; 2 en 00403CD1, la message box ne s'affichera pas.<br />
+Ne nous cassons pas la t&ecirc;te, un JMP &agrave; la place du JBE et l'affaire est r&eacute;gl&eacute;e :)</p>
+
+<blockquote>
+<p style="font-size: 12px;color: darkgreen">
+NDLR SeVeN : <br />
+On voit clairement entre 00403C30 et 00403CCC des appels à des API sp&eacute;cifiques &agrave; la manipulation de la base de registre. </p>
+<p style="font-size: 12px;color: darkgreen">
+En effet, le nombre de tentatives est enregistr&eacute; ici : <br />
+HKEY_CURRENT_USER\MPCrackMe 4 InfosHackers By Kharneth <br />
+dans une valeur DWORD nomm&eacute;e MPCrackMe 4 InfosHackers By Kharneth, qu'on pourrait r&eacute;initialiser.</p>
+</blockquote>
+
+
+<p>Et cette fois, pour de bon, on va rellement pouvoir s'occuper du serial !<br />
+En faisant d&eacute;filer les api tout &agrave; l'heure, j'ai rep&eacute;r&eacute; un GetWindowTextLengthA, qui est
+surement loin d'&ecirc;tre ininteressant. Il pourrait par exemple r&eacute;cup&eacute;rer la longueur du pass rentr&eacute;
+pour la comparer &agrave; la longueur attendue. Donc essayons : <code>bpx GetWindowTextLengthA</code>. Pof, on arrive ici :</p>
+
+<p style="text-align:center">
+<img src="10.PNG" alt="Image 10" />
+</p>
+<blockquote>
+<p>Et c'est effectivement ce que je pensais. Le serial attendu fait donc 14 caract&egrave;res.</p>
+</blockquote>
+<p>En tracant un peu, plus bas, on peut voir : </p>
+
+<p style="text-align:center">
+<img src="11.PNG" alt="Image 11" />
+</p>
+<p>Il y a donc trois call importants avant les checksums qui serviront &agrave; la v&eacute;rification du serial.<br />
+Le premier du chargement de la string <code>KHAO</code>. On ne sait pas encore &agrave; quoi elle va servir, mais nulle do&ucirc;te qu'elle
+aura une fonction :).<br />
+Le deuxi&egrave;me call se pr&eacute;sente ainsi pour une partie : </p>
+
+<p style="text-align:center">
+<img src="12.PNG" alt="Image 12" />
+</p>
+<p>Il va v&eacute;rifier que le 5eme caract&egrave;re correspond bien &agrave; un -, l'autre partie du call qui ne figure pas sur le screenshot
+s'assure que le serial commence par la fameuse string KHAO de tout &agrave; l'heure.</p>
+<blockquote>
+<p>On s'attend donc &agrave; avoir un serial qui fait 14 caract&egrave;res et qui commence par <code>KHAO-</code></p>
+</blockquote>
+<p>Puis comme je l'ai comment&eacute; plus haut, on voit voit deux appels successifs &agrave; un m&ecirc;me call suivis de checksum,
+qui contiendront la routine de calcul de la valeur qui sera compar&eacute;e &agrave; chacun des checksum.<br />
+On y voit :</p>
+
+<p style="text-align:center">
+<img src="13.PNG" alt="Image 13" />
+<br />
+<img src="14.PNG" alt="Image 14" />
+</p>
+<blockquote>
+<p>On sait d&egrave;s lors que le serial est compos&eacute; de trois parties s&eacute;par&eacute;es par des -, que la 1ere partie 
+est form&eacute;e de KHAO, que les deux parties suivantes sont &eacute;galement compos&eacute;es de 4 caract&egrave;res
+, tous des alphab&eacute;tiques et en majuscules.</p>
+<p>Si on regarde les calculs effectu&eacute;s, sachant que les valeurs obtenues seront compar&eacute;es aux
+checksum, si on reverse l'algo on pourra r&eacute;cup&eacute;rer les bonnes lettres.</p>
+<p>Les &eacute;quations &agrave; r&eacute;soudre sont d'ailleurs :<br />
+<code>26325072=((((((car1+car2+car3+car4)^(car1*car2*car3*car4))+car1)*car2)/car3)-car4)</code> pour le 1er checksum (191B050h &eacute;tant &eacute;gal &agrave; 26325072) et <br />
+<code>31304602=((((((car1+car2+car3+car4)^(car1*car2*car3*car4))+car1)*car2)/car3)-car4)</code> pour le 2eme checksum(1DDAB9Ah &eacute;tant &eacute;gal &agrave; 31304602).</p> 
+</blockquote>
+<p>Les &eacute;quations &eacute;tant &agrave; 4 inconnues, il semble difficile d'en venir &agrave; bout autrement qu'en bruteforcant.<br />
+Vous trouverez ci-dessous 3 codes-sources dans 3 langages diff&eacute;rents qui feront le travail pour vous.</p>
+
+
+  <h2>R&eacute;solution du crackme</h2>
+
+<h3>Code-source en C par SeVeN</h3>
+
+<blockquote>
+<pre>
+/*
+  Name: Bruteforce du MPCrackMe 4 InfosHackers by Kharneth
+  Author: SeVeN
+  Date: 29/12/03 01:48
+  Description: Algo en C
+*/
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+ 
+void    brute(int checksum)
+{
+  char  a, b, c, d;
+  
+  for (a = 'A'; a &lt;= 'Z'; a++)
+   for (b = 'A'; b &lt;= 'Z'; b++)
+    for (c = 'A'; c &lt;= 'Z'; c++)
+     for (d = 'A'; d &lt;= 'Z'; d++)
+      if ((((unsigned int)((((a + b + c + d)^(a * b * c * d))+ a)* b)/ c)- d) == checksum)
+         {
+          printf("-%c%c%c%c", a, b, c, d);
+          return ;
+         }
+}
+
+int     main()
+{
+  printf("\nBruteforce du \"MPCrackMe 4 InfosHackers by Kharneth\"\npar SeVeN\n\n");
+  printf("Le serial est KHAO");
+  brute(0x191B050);
+  brute(0x1DDAB9A);
+  printf(".\n\n\n\n");
+  system("PAUSE");
+
+  return (0);
+}
+</pre>
+</blockquote>
+
+<h3>Code-source en java par elooo</h3>
+
+<blockquote>
+<pre>
+/* 
+ * AUTEUR:    elooo
+ * DATE:      29/12/03
+ * TITRE:     Bruteforce MPCrackme_cd de Kharneth
+ * FONCTION:  Permet de choper le serial attendu en fonction des checksums
+ */
+
+class bruteforce
+{
+ public static void main (String[] args)
+ {
+ System.out.println("\n\n**********************************************");
+ System.out.println("*             Bruteforce en JAVA             *");
+ System.out.println("*          MPCrackme_cd de Kharneth          *");
+ System.out.println("*                  Par elooo                 *");
+ System.out.println("**********************************************");
+ System.out.println("****                                      ****");
+ System.out.print("**** Le serial attendu est KHAO");
+ 
+ brutozor(26325072);
+ brutozor(31304602);
+ 
+ System.out.println(" ****");
+ System.out.println("****                                      ****");
+ System.out.println("**********************************************\n");
+ } 
+ 
+ public static void brutozor (int checksum)
+  {
+  char car1; 
+  char car2; 
+  char car3; 
+  char car4;
+  int resultat = 0; 
+
+    for(car1 = 'A' ; car1 &lt;= 'Z' ; car1++) 
+     for(car2 = 'A' ; car2 &lt;= 'Z' ; car2++) 
+      for(car3 = 'A' ; car3 &lt;= 'Z' ; car3++) 
+       for(car4 = 'A' ; car4 &lt;= 'Z' ; car4++) 
+        {
+        resultat = (((car1+car2+car3+car4)^(car1*car2*car3*car4))+car1);
+        long resultatlong = resultat & 0xffffffffL;
+	if (checksum ==(((resultatlong*car2)/car3)-car4)) 
+          System.out.print("-"+car1+car2+car3+car4);
+        }
+  }
+}
+</pre>
+</blockquote>
+
+<h3>Code-source en asm par elooo</h3>
+<p>(D&eacute;sol&eacute;e d'avance pour les grands codeurs en asm, je ne suis qu'une d&eacute;butante ^^)</p>
+
+<blockquote>
+<pre>
+	; **************************************************************************
+	; Catégorie : Bruteforce MPCrackme_cd de Kharneth.
+	; Type      : Bruteforce
+	; Asm       : MASM 8 
+	; Auteur    : elooo 
+	; **************************************************************************
+	
+	[...]
+	
+		FILTRE1           db "KHAO-%c%c%c%c-%c%c%c%c",0
+	
+	[...]
+	
+	Brute		PROC
+		 pushad
+                 xor edx, edx
+                 xor eax, eax
+                 xor ecx, ecx
+                 xor esi, esi
+	                 
+debut:           
+                 mov     CAR1, 65
+                 mov     CAR2, 65
+                 mov     CAR3, 65
+                 mov     CAR4, 65
+                 call    routine     
+                 jmp     checksum
+                 
+
+checksum:
+                 cmp     edi, 1
+                 je      suite2
+                 cmp     esi, 26325072
+                 je      suite
+                 jmp     incrementation
+                 
+incrementation:
+                 cmp     CAR4, 91
+                 je      incrementation2
+                 add     CAR4, 1
+                 call    routine
+                 jmp     checksum
+                 
+incrementation2:
+                 mov     CAR4, 65
+                 cmp     CAR3, 91
+                 je      incrementation3
+                 add     CAR3, 1
+                 call    routine
+                 jmp     checksum   
+                 
+incrementation3:
+                 mov     CAR3, 65
+                 cmp     CAR2, 91
+                 je      incrementation4
+                 add     CAR2, 1
+                 call    routine
+                 jmp     checksum
+                 
+incrementation4:
+                 mov     CAR2, 65
+                 cmp     CAR1, 91
+                 je      fin
+                 add     CAR1, 1
+                 call    routine
+                 jmp     checksum                
+
+suite:           
+                 mov       edi, 1
+                 movzx     edx, byte ptr CAR1
+                 mov       byte ptr TEMP1, dl
+                 movzx     edx, byte ptr CAR2
+                 mov       byte ptr TEMP2, dl
+                 movzx     edx, byte ptr CAR3
+                 mov       byte ptr TEMP3, dl
+                 movzx     edx, byte ptr CAR4
+                 mov       byte ptr TEMP4, dl
+                 xor     edx, edx
+                 mov     CAR1, 65
+                 mov     CAR2, 65
+                 mov     CAR3, 65
+                 mov     CAR4, 65
+                 call    routine
+                 
+suite2:
+                 cmp     esi, 31304602
+                 je      fin
+                 jmp     incrementation
+                 
+fin:
+                 push    dword ptr CAR4
+                 push    dword ptr CAR3
+                 push    dword ptr CAR2
+                 push    dword ptr CAR1
+                 push    dword ptr TEMP4
+                 push    dword ptr TEMP3
+                 push    dword ptr TEMP2
+                 push    dword ptr TEMP1
+                 invoke wsprintf, offset SERIAL, offset FILTRE1
+	         add     esp, 32    
+		 popad
+		 ret
+	
+	
+  Brute		ENDP		                                               
+	
+  	routine     PROC
+	
+                 movzx   edx, byte ptr CAR1
+                 mov     eax, edx
+                 movzx   ecx, byte ptr CAR2
+                 add     eax, ecx
+                 movzx   ebx, byte ptr CAR3
+                 add     eax, ebx
+                 movzx   esi, byte ptr CAR4
+                 add     eax, esi
+                 imul    edx, ecx
+                 imul    edx, ebx
+                 movzx   ecx, byte ptr CAR4
+                 imul    edx, ecx
+                 mov     ecx, eax
+                 xor     ecx, edx
+                 movzx   eax, byte ptr CAR1
+                 add     eax, ecx
+                 movzx   edx, byte ptr CAR2
+                 imul    edx
+                 movzx   edx, byte ptr CAR3
+                 mov     ecx, edx
+                 xor     edx, edx
+                 div     ecx
+                 mov     esi, eax
+                 movzx   eax, byte ptr CAR4
+                 sub     esi, eax
+                 ret
+                 
+    routine 	ENDP   
+</pre>
+</blockquote>
+<p>Apr&egrave;s utilisation d'une des bruteforces, on obtient alors comme serial :</p>
+<p style="text-align:center">
+<img src="D.PNG" alt="Image D" />
+</p>
+<p style="text-align:center">
+<img src="E.PNG" alt="Image E" />
+</p>
+</div>
+</body>
+</html>

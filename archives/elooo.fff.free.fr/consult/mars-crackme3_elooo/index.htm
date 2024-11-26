@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+  font-family: "trebuchet ms", verdana, sans-serif;
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover
+  {
+  color: #003663;
+  background-color: #CCCC66; 
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+	
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>Mars - Crackme3 : Solution par elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie+</td><td>Ollydbg</td><td>elooo</td></tr>
+</table>
+
+
+  <h2>Sommaire</h2>
+<ul>
+	 <li><a href="index.htm#intro">Introduction</a></li>
+	 <li><a href="index.htm#anti-debug">A la chasse aux anti-debugging</a></li>
+	 <li><a href="index.htm#algo">Comprendre l'algo de vérification du serial et le reverser</a></li> 	 	 
+</ul>
+
+  <h2 id="intro">Introduction</h2>
+<p>Tout d'abord, pour ceux qui voudraient mettre ce tutorial en pratique, le crackme est dispo <a href="crackme3m.exe">ICI</a>.</p>
+<p>Ensuite afin que tout le monde puisse en profiter, on va corriger une petite négligence de coding, qui fait
+que le crackme crashe sur un windows différent de XP.</p>
+<p style="text-align:center">
+<img src="1.PNG" alt="Image 1" />
+</p>
+<p>Il va donc falloir xorer ebx avant de l'utiliser comme indexeur, par contre on manque de place, il nous faudrait
+de la place pour 2 opcodes, mais on a juste un nop avant. On pourrait rediriger plus bas, mais j'ai vu un truc plus propre :p<br />
+En effet, à peine au-dessus en voit que eax est xoré : </p>
+<p style="text-align:center">
+<img src="2.PNG" alt="Image 2" />
+</p>
+<p>Or les valeurs de retour d'une fonction d'API sont toujours renvoyées dans eax, donc eax va de toutes manières être
+écrasé. Quel intérêt de le xorer avant étant donné qu'il n'est pas non plus pris en paramètre ??<br />
+On va donc xorer ebx à la place :)<br />
+Remplacez donc le</p>
+<blockquote>
+<pre>
+0040119B   .  33C0          XOR EAX,EAX
+</pre>
+</blockquote>
+<p>par un</p>
+<blockquote>
+<pre>
+0040119B      33DB          XOR EBX,EBX
+</pre>
+</blockquote>
+<p>Et vous sauvez les modifications :)<br />
+Maintenant passons au boulot proprement dit !</p>
+
+
+
+<h2 id="anti-debug">A la chasse aux anti-debugging</h2> 
+
+<p>Mars en proposant son crackme a trop parlé : "remarque2: si vous pensez avoir trouvé une solution valide,
+verifiez la sans le debugeur"<br />
+Ce qui permet d'affirmer avec certitude qu'il y a des détections de debugging qui vont effectuer des modifications
+si un debugger est détecté. Donc on va être prudent et on va tout tracer :></p>
+<p>On charge le prog dans olly et à peine plus bas on voit :</p>
+<p style="text-align:center">
+<img src="3.PNG" alt="Image 3" />
+</p>
+<p>DialogBoxParamA va chercher DlgProc en 004030A0, donc on fait Click-droit -> Go To -> 004030A0, on pose un bp (F2) et on fait F9
+afin de breaker au début de DlgProc. Refaites F2 pour enlever votre bp, on ne sait jamais... je vous rappelle qu'on
+cherche des tricks anti-debugging justement :D</p>
+<p>Le premier trick anti-debug est ici :</p>
+<p style="text-align:center">
+<img src="4.PNG" alt="Image 4" />
+</p>
+<p>En ce qui me concerne j'avais patché mon olly en remplaçant toutes les occurences de OLLYDBG ou Ollydbg par Ellydbg.<br />
+Le crackme compare donc (chez moi) LLY à lly, par conséquent j'échappe à la détection sans faire aucune modif.<br />
+Sinon il suffit de nopper le saut.</p>
+<p>En ce qui concerne le deuxième trick, c'est un peu plus subtil pour les débutants :</p>
+<p style="text-align:center">
+<img src="5.PNG" alt="Image 5" />
+</p>
+<p>Pour mieux comprendre faisons la comparaison avec la fonction d'API IsDebuggerPresent de Kernel32.dll</p>
+<blockquote>
+<pre>
+kernel32!IsDebuggerPresent:
+77E72740 64:A1 18000000 MOV EAX,DWORD PTR FS:[18] ; pointe sur le TIB du thread
+77E72746 8B40 30 MOV EAX,DWORD PTR DS:[EAX+30] ; pointe sur le PEB 
+77E72749 0FB640 02 MOVZX EAX,BYTE PTR DS:[EAX+2] ; champ BeingDebugged du PEB
+77E7274D C3 RETN
+</pre>
+</blockquote>
+<p>Le registre FS pointe sur le TEB (<strong>Thread Environnement Block</strong>) et pour accéder au code il suffit d'employer une
+adresse linéaire (<strong>FS:[18]</strong> Ceci dit FS:[0] pointe vers la même zone mémoire que FS:[18] mais utiliser une 
+adresse linéaire devient utile dans un souci de portabilité). Le pointeur lu en FS:[18] permet d'accéder à d'autres 
+valeurs du TEB.<br />
+Il y a un TIB (<strong>Thread Information Block</strong>) pour chaque thread lancé sous Win 32. FS:[18] permet de récupérer l'adresse
+du TIB du thread actif, [TIB+30] récupère l'adresse du PEB (<strong>Program Environment Block</strong>) et [PEB+2] pointe sur le flag
+de debug.<br />
+Si on revient au deuxième trick anti-debugging présent dans le crackme de mars, on remarque vite que c'est l'équivalent
+de IsDebuggerPresent (FS:[30] -> on pointe sur l'adresse du PEB du thread actif, on l'incrémente de deux et on récupère
+la valeur du flag BeingDebugged).<br />
+Si le programme n'est pas débuggé, le flag est à 0. Donc si vous n'utilisez pas le plugin qui va bien pour Ollydbg, si
+vous avez débugger sous un autre outil, assurez-vous que AL est à zéro sinon vous vous dirigez droit vers le mur :)</p>
+<p>Une fois ces deux tricks correctement passés vous devez voir "LOLO" dans la fenêtre de dump à la place de MARS.</p>
+<p>Mais attention, un troisième piège se cache dans le code, voyons voir ça :p<br/>
+On pose un bp (F2) en 004011CE, puis on fait F9, on entre un nom et un serial bidon et on clique sur "Vérifier".<br/>
+On breake. On trace doucement avec F8 et comme c'est bizarre, on arrive vers une liste d'opcode qu'ollydbg n'interprète 
+pas comme du code. Voyons voir :</p>
+<p style="text-align:center">
+<img src="6.PNG" alt="Image 6" />
+</p>
+<p>En fait, juste avant, ces opcodes vont être xorées afin de récupérer quelque chose qui ressemble à du code. Une fois
+ce code passé, les opcodes vont être re-xorées afin de les re-crypter (ou camoufler, comme vous préférez).<br />
+Une fois ce petit bout décrypté on a :</p>
+<p style="text-align:center">
+<img src="7.PNG" alt="Image 7" />
+</p>
+<p>En fait il va chercher un bp dans toute la fonction qui va récupérer le nom et le serial. Et si il en trouve, eh bien il
+va utiliser LOLO pour l'algo de vérif de serial et non LOLA.<br />
+Mais c'est facilement contournable, un inversement de saut pendant que la routine est décryptée et hop on n'en parlera plus, 
+ou sinon vous évitez de posez des bp là où il va checker :)</p>
+
+<p>Passons à l'algo maintenant !</p>
+
+<h2 id="algo">Comprendre l'algo de vérification du serial et le reverser</h2> 
+
+<p style="text-align:center">
+<img src="8.PNG" alt="Image 8" />
+</p>
+<p>Tout d'abord, qu'il s'agisse du nom ou du serial, on va incrémenter le compteur qui va se charger de pointer vers
+le bon byte jusqu'à 0Eh (soit 14, autrement dit de 0 à 14, donc 15 caractères). Si le nom ou le serial ne comporte pas
+15 caractères, ce n'est pas un problème puisque qu'ensuite on aura des 0 dans le buffer.<br />
+Par contre le résultat de l'addition est toujours stocké sur 2 bytes (AL ou DL), ce qui sous-entend que AL, en fonction du
+nom entré variera de 00 à 0FFh, et DL variera de 00 à 0FFh en fonction du serial entré.</p>
+
+<p style="text-align:center">
+<img src="9.PNG" alt="Image 9" />
+</p>
+<p>On additionne EAX et EDX, or on a constaté auparavant que AL variera de 00 à 0FFh et idem pour pour DL, donc EAX,
+après l'addition avec EDX aura une valeur comprise en 00000000 et (000000FFh + 000000FFh), c'est-à-dire entre 0 et
+1FEh.<br />
+Donc après l'addition avec 414C4F4Ch et EAX, on aura EAX compris entre 414C4F4Ch et 414C514Ah, et c'est sur ses nouvelles
+valeurs de EAX que sera calculée la racine carrée.</p>
+<p>Si on calcule la racine carrée de 414C4F4Ch, on obtient 814Bh, et si on calcule celle de 414C514Ah, on a également
+814Bh, on peut donc considérer cette valeur comme une constante dorénavant, puisqu'on sait que quel que soit le nom
+et le serial rentré, après le calcul de la racine carrée par le FPU on aura toujours 814Bh dans ECX.</p>
+<p style="text-align:center">
+<img src="10.PNG" alt="Image 10" />
+</p>
+<p>Quand j'ai vu cette boucle avec un compteur de 814Bh,j'ai eu mal au crane,mais je me suis dit que c'était cool car déjà
+on savait que 814Bh était fixe. Je me suis pas cassée la tête j'ai reversé le crackme au niveau de ses fonctionnalités
+pour qu'il me donne toutes les bonnes valeurs d'ESI qui me feraient aller à GoodBoy.<br />
+Amusez-vous à debugger <a href="crackme3m_reverse.exe">crackme3m_reverse.exe</a>, vous verrez quelles modifs j'ai faites.<br />
+En gros j'ai transformé le crackme en bruteforcer : il part de 414C514Ah et décrémente jusqu'à 414C4F4Ch afin de choper
+tous les ESI corrects.<br />
+On obtient alors :</p>
+<blockquote>
+<pre>
+414C5147h
+414C5101h
+414C50FBh
+414C50D7h
+414C50ABh
+414C507Bh
+414C506Fh
+414C5065h
+414C5057h
+414C5053h
+414C500Bh
+414C4FF7h
+414C4FDBh
+414C4FBDh
+414C4FBBh
+414C4FB1h
+414C4FA9h
+414C4FA3h
+414C4F9Dh
+414C4F8Dh
+414C4F79h
+414C4F75h
+414C4F5Dh
+414C4F5Bh
+414C4F51h
+414C4F4Fh
+</pre>
+</blockquote>
+<p>Soit 26 ESI potentiellement corrects. Si on veut continuer à reverser l'algo, cette fois, il faut soustraire ALOL 
+( 414C4F4Ch) à toutes ces valeurs : </p>
+
+<blockquote>
+<pre>
+000001FBh
+000001B5h
+000001AFh
+0000018Bh
+0000015Fh
+0000012Fh
+00000123h
+00000119h
+0000010Bh
+00000107h
+000000BFh
+000000ABh
+0000008Fh
+00000071h
+0000006Fh
+00000065h
+0000005Dh
+00000057h
+00000051h
+00000041h
+0000002Dh
+00000029h
+00000011h
+0000000Fh
+00000005h
+00000003h
+</pre>
+</blockquote>
+<p>Et maintenant pour récupérer un serial valide pour un nom, c'est très très très simple, puisque les valeurs juste
+au-dessus qu'on a obtenu correspondent à EAX après l'addition de EAX à EDX :</p>
+<blockquote>
+<pre>
+0040120F   > /0281 40304000 ADD AL,BYTE PTR DS:[ECX+403040]
+00401215   . |0291 50304000 ADD DL,BYTE PTR DS:[ECX+403050]
+0040121B   . |41            INC ECX
+0040121C   . |83F9 0E       CMP ECX,0E
+0040121F   .^\75 EE         JNZ SHORT crackme3.0040120F
+00401221   .  03C2          ADD EAX,EDX                    ;  eax = eax + edx  <---- LA !!
+</pre>
+</blockquote>
+<p>On se souvient qu'EAX n'a que AL d'occupé, et que AL contient l'addition des 15 caractères du nom mais uniquement
+stockés sur 2 bytes, donc quand on dépasse 2 bytes, on ne prend pas en compte ce qui serait normalement contenu dans AH.</p>
+<blockquote>
+<pre><strong>Exemple avec elooo:</strong>
+AL = 0
+AL = 0 + 65h = 65h
+AL = 65h + 6Ch = 0D1h
+AL = 0D1h + 6Fh = 40h 
+(normalement ça fait 140h mais le 1 est ignoré car "dépasse" la capacité de stockage d'AL)
+AL = 40h + 6Fh = 0AFh
+AL = 0AFh + 6Fh = 1Eh (normalement 11Eh)</pre>
+</blockquote>
+<p>A l'issue on a donc AL = 1Eh et comme EAX est xoré avant on obtient EAX = 0000001Eh</p>
+<p>A partir de là, ayant constaté que mars ne demandait qu'un caractère au minimum pour le serial, je ne
+me suis pas cassée la tête pour le keygen, d'autant plus qu'il existe plusieurs serials de un caractère pour chaque nom :<br />
+Il suffisait après l'addition des caractères du nom dans AL de soustraire cette valeur obtenue aux 26 autres valeurs présentes
+ci-dessus, et en ce qui me concerne je n'ai conservé que les serials de un caractère compris entre 21h (inclus) et 7Eh (inclus),
+et je stocke tout ça dans un fichier.</p>
+<p>Mon keygen est dispo <a href="crackme3-mars_keygen-elooo.exe">ICI</a>.</p>
+<hr />
+<blockquote>
+<p>Cordialement,<br />
+elooo.</p>
+</blockquote>
+
+</div>
+</body>
+</html>

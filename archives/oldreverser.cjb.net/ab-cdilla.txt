@@ -1,0 +1,387 @@
+
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S -- - ‹   ˙     ˙
+     ∞    ‹  ∞      ‹ ‹  ‹       ∞ ‹∞          ∞ ‹     ‹         ﬁ€‹   ‹ ∞
+  ‹€€≤ﬂﬂ€€€›‹≤€ﬂﬂﬂ€€€›ﬁ€›ﬁ€€€ﬂﬂﬂ€≤‹ﬁ≤€€ﬂﬂ€€€‹∞‹≤€› ﬂ‹  ﬁ€€€ﬂﬂ€€€‹∞≤€€‹ ﬁ€≤‹
+  €€€› ∞≤€€›€€€ ∞ﬂﬂﬂﬂ ﬂﬂﬂ €€€ ∞ €€€›€€€  ﬁ€€≤∞≤€€ ∞ €€›ﬁ€€€› ﬁ€€≤ €€€ﬂ€‹€€€›
+  ≤€€ﬂﬂﬂ€€€›€€€›∞ ∞≤€›€€€›€€€ ∞ €€€›€€€ﬂﬂﬂ€€‹ﬁ€€€ ∞ €€€ﬁ€€€ﬂﬂ≤€€‹ €€€› ﬂ€€€›
+ ∞≤€€›∞ €€€ ≤€€›∞ €€€›€€€∞≤€€ ∞ﬁ€€€›€€€› ‹€€€ﬁ€€€›∞∞≤€€∞≤€€› ﬁ€€€›€€€›∞ €€€‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€∞≤€€›∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞ €€€›€€€›∞ €€≤ﬂ‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€ﬁ€€€ ∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞∞≤€€ ≤€€›∞ €€›
+ ﬁ€€≤ ∞ﬁ€€≤ﬂ±€€‹‹‹€€€±€€≤ﬁ€€€‹‹€€±ﬂ≤€€€‹‹€€€€ﬂ€€€€‹≤€€€ﬂ≤€±‹ ﬁ€ﬂ ∞≤€€€ ﬁ€ﬂ
+  ﬂ      ﬂ∞  ﬂ    ﬂ    ﬂ       ﬂ          ﬂ         ﬂ   ∞    ﬂ      ﬂ  ﬂ
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ˙     ˙
+                                SRT - CRO
+
+
+				CDilla Cracking:						
+
+             MidTown Madness French version : Another approach on cdilla    
+								 
+		Tutorial by ACiD BuRN [Immortal Descendants]			 
+                             (October 6th, 1999) 		
+
+
+
+
+Tools needed : * Original CD of Midtown madness
+               * Soft ice 3.23			 
+               * soft ice tool to patch sice (used to dump sections)
+               * Hexwork shop
+	       * Frog ice (to hide soft ice)
+               * Procdump (for PE Editor)
+	       * Exescope
+
+
+
+Introduction:
+
+hello all , i know there is already a tutor on Midtown madness by black check
+but the way to crack it is not the same than him , and i will explain more things
+than he did about pasting our new dumped sections in cracked exe :)
+i also assume you read this tut , and you know some things about PE file format...
+
+
+
+
+
+let's kick cdilla 's ass :
+
+
+After installing your little game , PE edit the ".icd" files with procdump.
+(Fire up procdump , click on PE Editor , Browse to your ".icd" file , there it is
+Midtown.icd ...
+now , you must see : 
+
+		     - Entry Point : 00166C10
+		     - Image Base  : 00400000
+
+ok, we will need the OEP (original Entry point) later , so to have it just addition
+the Image base and the entry poing you get in procdump : 00400000 + 00166C10 = 566C10
+
+now , click on the "sections" Button , to see all sections of the file :
+
+
+you will only need to have the Virtual Offset , Raw Size , and Raw Offset values!
+
+
+- for the ".text" section :
+
+
+   Virtual Offset: 00001000 
+         Raw Size: 18D78F
+       Raw Offset: 600
+
+
+- for the ".Rdata" section :
+
+
+   Virtual Offset: 0018F000
+         Raw Size: 14C99
+       Raw Offset: 18DE00
+
+
+
+- for the ".data" section :
+
+
+   Virtual Offset: 001A4000
+         Raw Size: 3D8A4
+       Raw Offset: 1A2C00
+
+
+
+- for the ".data1" section :
+
+
+   Virtual Offset: 00314000
+         Raw Size: 20
+       Raw Offset: 1E0600
+
+
+- for the ".rsrc" section :
+
+
+   Virtual Offset: 00315000
+         Raw Size: CB3
+       Raw Offset: 1E0800
+
+
+Now , we will dump all the sections of the ".icd" file , except the ".Rdata" , you will 
+later why....
+btw , you need to add the image base to the virtual Offset of all sections:
+
+.text  : 400000 + 00001000 = 00401000
+.rdata : 400000 + 0018F000 = 0058F000
+.data  : 400000 + 001A4000 = 005A4000
+.data1 : 400000 + 00314000 = 00714000
+.rsrc  : 400000 + 00315000 = 00715000
+
+
+ok , now we gonna dump all this sections (except the .rdata)
+For this, we will need to but a breakpoint on the EOP (566C10 for us)
+btw , i assume you read the black check tutor , and you patched your Frog ice to
+hidde your soft ice , else go and read the nice tut before...
+Fire up your patched Frog ice , and run your original game.
+you will see a little video , at this time , make soft ice appears (ctrl+D) , and set 
+a bpx on the OEP: Bpx 56CC10 for this game!
+Press F5 to make the game runing again and close it after...
+now , Run it , and it normally breaks on 56CC10 , if it doesn't , look if you set the bpx
+to the good place (bl: you must get something like this:  #025F:56CC10)
+i assume it breaked , now u must can dump all the sections.
+Before dumping , disable all your bpx , we don't want shits in our dumped sections...
+the pagein command works like this : 
+
+pagein "address to dump start" "size" "file name"
+so, just type this in soft ice:
+
+
+pagein 401000 18D78F c:\text.bin
+pagein 5A4000 3D8A4 c:\data.bin
+pagein 714000 20 c:\data1.bin
+pagein 715000 CB3 c:\rsrc.bin
+
+ok, this dumped the section to our hard disk!!
+
+now , we have to do the "nice" part !! dumping our rdata sections , but it is not
+like the others !!
+first of all , you have to get the real address of the fuction , so we will trace into
+the call to our rdata section.
+
+After breaking , we land here:
+
+
+00566C10   PUSH    EBP               <-- we break here , on entry point
+00566C11   MOV     EBP,ESP
+00566C13   PUSH    FF
+00566C15   PUSH    005968D0
+00566C1A   PUSH    00566724
+00566C1F   MOV     EAX,FS:[00000000]
+00566C25   PUSH    EAX
+00566C26   MOV     FS:[00000000],ESP
+00566C2D   ADD     ESP, -5C
+00566C30   PUSH    EBX
+00566C31   PUSH    ESI
+00566C32   PUSH    EDI
+00566C33   MOV     [EBP-18],ESP
+00566C36   CALL    [0058F14C]        <-- this is the call in our rdata section , trace it (F8)
+
+
+in this call , we land here :
+
+009A6485     pushad
+009A6486     push 00000031              
+009A6488     push 00000000              ---> 0 mean kernels , it will be 1 for users... 
+009A6490     call [9A64A6]               --> get the real address of the function (9A64A6)
+009A6496     add esp, 8
+009A6499     popad
+.......      jmp [XXXXXXXX]
+
+
+trace this code , and you see the jmp [XXXXXXXX] becoming jmp [KERNEL32!GetVersion]...
+ok , it is good , you are on the good way :)
+we are near done about starting to code te call fixer!!
+anyway , we need to know how many Kernels and users imports there is in this game!!
+Ok , to do this , there is severals way , you can dessassemble the ".icd" with wdasm
+and count them , you can trace in soft ice too , but i used a tool called EXESCOPE
+to see how many imports it got...
+anyway , in my midtown.icd , i got :
+
+- 127 kernels import
+- 042 users import
+
+ok , but we need to have this number in hexadecimal , coz soft ice use only hexa value =)
+127 = 7Fh
+ 42 = 2Ah
+
+my favourite part come now !! coding the call fixer.
+first of all , we don't have writte access (read only access) to the Rdata section , so 
+we will move the rdata section to the data section place..
+For coding the call fixer , i start to code at EOP place , so enable your bpx on it , and 
+run the game again , wait until we break...
+now , we have to move rdata section in data section place in memory.
+To do this , just type :
+
+m "virtual offset of RDATA section + image base" l "rdata size" "data virtual offset"
+NOTE: For the data virtual offset , use a biger number , it is better...
+5A4000 is our normal virtual offset , i used 5B0000 (bigger like i said)
+
+so , just type this :
+
+m 58F000 l 14C99 5B0000
+
+ok, now time code !!
+
+you are at the line : 566C10     PUSH   EBP
+
+we will code something looking like this :
+
+00 pushad
+01 push ebx
+02 push 0
+04 call [XXXXXXXX]
+0A add esp,8
+0D mov edx, XXXXXX 
+12 cmp eax,[edx] 
+14 je 20
+16 inc edx
+17 cmp edx, XXXXXX + XXXXX
+1D jne 12
+1F int 03       
+20 mov [edx],ecx
+22 popad
+23 inc ebx
+24 cmp ebx, XX  
+2A jne 00
+2C int 03
+
+so , let's go :
+
+Type in soft ice: A "press enter"
+
+and code :
+
+566C10   pushad
+566C11   push ebx
+566C12   push 0
+566C14   call [009A64A6]            <-- real address , we found this when we traced in the call
+566C1A   add esp,8
+566C1D   mov edx, 5B0000            <-- address where we copied our .rdata section in
+566C22   cmp eax,[edx]    
+566C24   je 566C40
+566C26   inc edx
+566C27   cmp edx, 5B0000 + 14C99    <-- adress where we copied our .rdata in + rdata size 
+566C3D   jne 566C22
+566C3F   int 03                     <-- safty, if it found no match, break here.
+566C40   mov [edx],ecx    
+566C42   popad
+566C43   inc ebx
+566C44   cmp ebx, 7F                <-- number of api to fix 
+566C4A   jne 566C10
+566C4C   int 03
+
+
+Now set ebx to 0 (R ebx 0) , set your eip to line 0 (line 0 = 566C10 here , so R EIP 566C10)
+type "i3here on" and press F5 to run it, normaly u should break on 566C4C...
+Now set your ebx back to 0, change line 02 (56CC12 here) to "push 1" and change line 24 to
+'cmp ebx, user_import_number' (2A for us) and set the eip back line 0 (R EIP 566C10). 
+run it again.Normaly , all is ok now , it should break on 566C4C again...
+now , we can dump our rdata section safely:
+
+pagein 5B0000 14C99 c:\rdata.bin
+
+
+hehe !! now we just have to rebuild a working executable file.
+i tried Procdump to import sections , but this bitch didn't change anything , so i
+imported manually my sections , i will show you all ;)
+In first , do a copy of the ".icd" file , for us : Midtown.icd , and rename it with the
+name you want , but with ".exe" extension.  ex: damnit.exe
+
+Now , fire up hexworkshop , open "Damnit.exe" , and open the 1st section we dumped.
+it was : c:\text.bin...
+
+it is now , you need the Raw offset of each section , i written them in 1st of the tut
+but i will rewritte them here , to help you understanding this crap :p
+
+
+ for the ".text" section : Raw Offset: 600         size : 18D78F 
+for the ".Rdata" section : Raw Offset: 18DE00      size : 14C99
+ for the ".data" section : Raw Offset: 1A2C00      size : 3D8A4
+for the ".data1" section : Raw Offset: 1E0600      size : 20
+ for the ".rsrc" section : Raw Offset: 1E0800      size : CB3
+
+
+ok , you got all shits here !! we want to do the 1st section ".text" so :
+
+In hexworkshop , press alt+f5 , enter the Raw offset of the section you want to paste
+here : 600 , and click on ok. now go in the edit menu , and click on "select block"
+enter the size of the section , here : 18D78F...
+now , look at the other opened file (text.bin) , and press 'ctrl+a' to select all..
+now , go back to the main executable windown in hexworkshop , and paste the byte u just
+copied into the clipboard , do : 'ctrl+v' or edit menu , and paste...
+save your file , GOOD !! u just updated the '.text' section with our dumped section !!
+
+ok , i do another section import with you , and you will do the others using the same way !
+
+2nd section : Rdata!
+
+you can close the window 'text.bin' , and open with hexworkshop the file : 'rdata.bin'
+click on the main exe window , press 'alt+f5' , enter the size of the Raw Offset of
+the rdata section : 18DE00. Click on ok, go in edit menu , then "select block" , enter the
+rdata size section : 14C99...
+look the window of rdata.bin , press 'ctrl+a' to selection all bytes , and go back in
+main executable (damnit.exe) window in hexworkshop... now , just paste them with 'ctrl+c'
+or with paste in the edit menu..
+
+ok , i think you understood now , just do the same with all sections , save your executable..
+Now , you can unload frog ice , coz the anti sice is not anymore in our rebuilded exe.
+remove the original cd of midtown madness , and run 'damnit.exe' or 'whateverunameit.exe'
+WOW , the game run , very quickly , without this lame window, saying us to wait during the
+cd verification , and voila !! the game is runing very well =)
+But , to make a perfect executable , you have to rebuild the file's pe like it is written
+in Black Check tutorial:
+
+If you try to run it on another Windows 9x Version. It will crash. 
+it would only run on win98, cause the rdata section contained the address's of all the 
+functions from win98 (can be only on win95 if you cracked it on win95)
+The addresses we put in the import table are only valid for the Windows version we cracked 
+it on. Let's fix that:
+
+
+-Start Procdump (very good job G-RoM :)
+go to Options and select:
+
+[v]Recompute Object Size
+[v]Optmize PE Structure
+
+[X] Use actual import infos
+then , click on the OK button...
+
+now , we just have to rebuild the file , click on Rebuild PE , and browse to your cracked
+file (Damnit.exe for my)
+
+Procdump make us a valid import table and our executable is now fixed , and perfect !!!
+(i hope so ;p ) it should run on all win9x version of Windows...
+
+Voila !! this tut is finish , but if you have any comments or question , just mail me!!
+Acid2600@hotmail.com or ACiD_BuRN@nema.com
+
+you can also find all of my tutors here : http://acidburn2000.cjb.net/
+
+
+
+Now , i want to give special greets to some ppls who helped me about cdilla :
+
+- BIG FAT THX goes to R!SC for all the help , and answers to my questions...
+this dude rox !! he just cracked the new cdilla , PHEAR :p
+
+- thx to noos , for some help too :)
+- Killer_3K : 'lo ;)
+- G-RoM , for procdump and some nice chat ;p
+
+and now , my usual greetings for all my friends :
+
+
+Greetings: 
+group greetings : ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE- +HCU
+
+Also greetingz to: (no specific order)
+
+Cyber Blade, ^Inferno^, AB4DS,  Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , 
+TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup , zoltan ...
+
+eheh , i bet i forget some peoples :-/ , sorry !!!
+
+			
+
+copyright (c) ACiD BuRN and the Immortal Descendants.
+
+			
+				http://www.immortaldescendants.com/
+
+
+

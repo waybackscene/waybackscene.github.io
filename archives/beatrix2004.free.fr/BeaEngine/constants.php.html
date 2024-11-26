@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+
+<head>
+	<title> Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" href="includes/style.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="titre">
+	<div class="barre_bleue"></div>
+	<div class="barre_bleue2"></div>
+	<div id="fretsdn"><a href="http://binary-reverser.org"></a></div>
+	<div class="menu"><ul>
+    <li><a href='constants1.php.html'>&#62; see in English version</a></li>
+    </ul></div>
+</div>
+
+<div id="menu">
+	<div class="barre_bleue3"></div>
+	<div class="barre_grise"></div>
+		<ul>
+	<li><a href="index.php.html">Accueil</a></li>
+	<li><a href="download.php.html">Téléchargements</a></li>
+	<li> <a href="screenshots.php.html">Screenshots</a></li>
+	<li> <a href="links.php.html">Documentations</a></li>
+	<li><a href="support.php.html">Support</a></li>
+	</ul>
+	<p><strong>BeaEngine documentation</strong></p>
+	<ul>
+	<li> <a href="fonction.php.html">fonction Disasm</a></li>
+	<li><a href="structure.php.html">structure _Disasm</a></li>
+	<li><a href="constants.php.html">Constantes</a></li>
+	<li><a href="exemples.php.html">Exemples</a></li>
+	<li><a href="licence.php.html">Licence</a></li>
+	</ul>
+ 
+</div>
+
+<div id="contenu">
+	<div class="barre_bleue">Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </div>
+<h1>Constantes</h1>
+<p>Voici la liste exhaustive des constantes utilisées dans les différents champs renvoyés par BeaEngine. Je me suis efforcé de rendre ces listes les plus fonctionnelles possibles.</p>
+<p><strong>Valeurs prises par (MyDisasm.Instruction.Category & 0xFFFF0000)</strong></p>
+
+<pre>
+  GENERAL_PURPOSE_INSTRUCTION = 0x10000,
+  FPU_INSTRUCTION = 0x20000,
+  MMX_INSTRUCTION = 0x40000,
+  SSE_INSTRUCTION = 0x80000,
+  SSE2_INSTRUCTION = 0x100000,
+  SSE3_INSTRUCTION = 0x200000,
+  SSSE3_INSTRUCTION = 0x400000,
+  SSE41_INSTRUCTION = 0x800000,
+  SSE42_INSTRUCTION = 0x1000000,
+  SYSTEM_INSTRUCTION = 0x2000000,
+  VM_INSTRUCTION = 0x4000000,
+  UNDOCUMENTED_INSTRUCTION = 0x8000000,
+  AMD_INSTRUCTION = 0x10000000,
+  ILLEGAL_INSTRUCTION = 0x20000000,
+  INCOMPATIBLE_TYPE = 0x80000000,
+</pre>
+
+<p><strong>Valeurs prises par LOWORD(MyDisasm.Instruction.Category)</strong></p>
+
+<pre>
+
+DATA_TRANSFER = 0x1
+ARITHMETIC_INSTRUCTION = 2
+LOGICAL_INSTRUCTION = 3
+SHIFT_ROTATE = 4
+BIT_BYTE = 5
+CONTROL_TRANSFER = 6
+STRING_INSTRUCTION = 7
+InOutINSTRUCTION = 8
+ENTER_LEAVE_INSTRUCTION = 9
+FLAG_CONTROL_INSTRUCTION = 10
+SEGMENT_REGISTER = 11
+MISCELLANEOUS_INSTRUCTION = 12
+COMPARISON_INSTRUCTION = 13
+LOGARITHMIC_INSTRUCTION = 14
+TRIGONOMETRIC_INSTRUCTION = 15
+UNSUPPORTED_INSTRUCTION = 16
+LOAD_CONSTANTS = 17
+FPUCONTROL = 18
+STATE_MANAGEMENT = 19
+CONVERSION_INSTRUCTION = 20
+SHUFFLE_UNPACK = 21
+PACKED_SINGLE_PRECISION = 22
+SIMD128bits = 23
+SIMD64bits = 24
+CACHEABILITY_CONTROL = 25
+FP_INTEGER_CONVERSION = 26
+SPECIALIZED_128bits = 27
+SIMD_FP_PACKED = 28
+SIMD_FP_HORIZONTAL = 29
+AGENT_SYNCHRONISATION = 30
+PACKED_ALIGN_RIGHT = 31 
+PACKED_SIGN = 32
+PACKED_BLENDING_INSTRUCTION = 33
+PACKED_TEST = 34
+PACKED_MINMAX = 35
+HORIZONTAL_SEARCH = 36
+PACKED_EQUALITY = 37
+STREAMING_LOAD = 38
+INSERTION_EXTRACTION = 39
+DOT_PRODUCT = 40
+SAD_INSTRUCTION = 41
+ACCELERATOR_INSTRUCTION = 42  
+ROUND_INSTRUCTION = 43
+
+</pre>
+<p><strong>Valeurs prises par MyDisasm.Instruction.BranchType</strong></p>
+
+<pre>
+// ===================== langage : C
+  JO = 1,
+  JC = 2,
+  JE = 3,
+  JA = 4,
+  JS = 5,
+  JP = 6,
+  JL = 7,
+  JG = 8,
+  JB = 9,
+  JECXZ = 10,
+  JmpType = 11,
+  CallType = 12,
+  RetType = 13,
+  JNO = -1,
+  JNC = -2,
+  JNE = -3,
+  JNA = -4,
+  JNS = -5,
+  JNP = -6,
+  JNL = -7,
+  JNG = -8,
+  JNB = -9
+</pre>
+<pre>
+; ===================== langage : asm
+    Jo_                         equ 1
+    Jc_                         equ 2
+    Je_                         equ 3
+    Ja_                         equ 4
+    Js_                         equ 5
+    Jp_                         equ 6
+    Jl_                         equ 7
+    Jg_                         equ 8
+    Jb_                         equ 9
+    Jecxz_                      equ 10
+    JmpType                     equ 11
+    CallType                    equ 12
+    RetType                     equ 13
+    Jno_                        equ -1
+    Jnc_                        equ -2
+    Jne_                        equ -3
+    Jna_                        equ -4
+    Jns_                        equ -5
+    Jnp_                        equ -6
+    Jnl_                        equ -7
+    Jng_                        equ -8
+    Jnb_                        equ -9
+
+</pre>
+<p><strong>Valeurs prises par (MyDisasm.Argumentxx.ArgType & 0xFFFF0000)</strong></p>
+
+<pre>
+  NO_ARGUMENT = 0x10000000,
+  REGISTER_TYPE + MMX_REG = 0x20010000,
+  REGISTER_TYPE + GENERAL_REG = 0x20020000,
+  REGISTER_TYPE + FPU_REG = 0x20040000,
+  REGISTER_TYPE + SSE_REG = 0x20080000,
+  REGISTER_TYPE + CR_REG = 0x20100000,
+  REGISTER_TYPE + DR_REG = 0x20200000,
+  REGISTER_TYPE + SPECIAL_REG = 0x20400000,
+  REGISTER_TYPE + MEMORY_MANAGEMENT_REG = 0x20800000,
+  REGISTER_TYPE + SEGMENT_REG = 0x21000000,
+  MEMORY_TYPE = 0x40000000,
+  CONSTANT_TYPE + RELATIVE_ = 0x84000000,
+  CONSTANT_TYPE + ABSOLUTE_ = 0x88000000,
+
+</pre>
+
+<p><strong>Valeurs prises par LOWORD(MyDisasm.Argumentxx.ArgType)</strong></p>
+
+<pre>
+
+  REG0 = 0x1,  ( RAX / MM0 / ST0 / XMM0 / CR0 / DR0 / GDTR / ES )
+  REG1 = 0x2,  ( RCX / MM1 / ST1 / XMM1 / CR1 / DR1 / LDTR / CS )
+  REG2 = 0x4,  ( RDX / MM2 / ST2 / XMM2 / CR2 / DR2 / IDTR / SS )
+  REG3 = 0x8,  ( RBX / MM3 / ST3 / XMM3 / CR3 / DR3 / TR   / DS )
+  REG4 = 0x10, ( RSP / MM4 / ST4 / XMM4 / CR4 / DR4 / ---- / FS )
+  REG5 = 0x20, ( RBP / MM5 / ST5 / XMM5 / CR5 / DR5 / ---- / GS )
+  REG6 = 0x40, ( RSI / MM6 / ST6 / XMM6 / CR6 / DR6 / ---- / -- )
+  REG7 = 0x80, ( RDI / MM7 / ST7 / XMM7 / CR7 / DR7 / ---- / -- )
+  REG8 = 0x100,  ( R8  / --- / --- / XMM8 / CR8 / DR8 / ---- / -- )
+  REG9 = 0x200,  ( R9  / --- / --- / XMM9 / CR9 / DR9 / ---- / -- )
+  REG10 = 0x400,  ( R10  / --- / --- / XMM10 / CR10 / DR10 / ---- / -- )
+  REG11 = 0x800,  ( R11  / --- / --- / XMM11 / CR11 / DR11 / ---- / -- )
+  REG12 = 0x1000,  ( R12  / --- / --- / XMM12 / CR12 / DR12 / ---- / -- )
+  REG13 = 0x2000,  ( R13  / --- / --- / XMM13 / CR13 / DR13 / ---- / -- )
+  REG14 = 0x4000,  ( R14  / --- / --- / XMM14 / CR14 / DR14 / ---- / -- )
+  REG15 = 0x8000,  ( R15  / --- / --- / XMM15 / CR15 / DR15 / ---- / -- )
+  EFLAGS = 0x1,
+  MXCSR = 0x2
+
+</pre>
+
+<p><strong>Valeurs prises par MyDisasm.Options</strong></p>
+
+<pre>
+  NoTabulation = 0x0,
+  Tabulation = 0x1,
+
+  MasmSyntax = 0x000,
+  GoAsmSyntax = 0x100,
+  NasmSyntax = 0x200,
+  ATSyntax = 0x400,
+
+  PrefixedNumeral = 0x10000,
+  SuffixedNumeral = 0x00000,
+
+  ShowSegmentRegs = 0x01000000
+
+</pre>
+
+<p><strong>Valeurs prises par MyDisasm.Argument1.SegmentReg et MyDisasm.Argument2.SegmentReg</strong></p>
+<pre>
+	#define ESReg 1
+	#define DSReg 2
+	#define FSReg 3
+	#define GSReg 4
+	#define CSReg 5
+	#define SSReg 6
+</pre>
+
+<p><strong>Valeurs prises par MyDisasm.Instruction.Flags.OF_ , .SF_ ...</strong></p>
+<pre>
+  TE_ = 1,
+  MO_ = 2,
+  RE_ = 4,
+  SE_ = 8,
+  UN_ = 0x10,
+  PR_ = 0x20
+</pre>
+
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

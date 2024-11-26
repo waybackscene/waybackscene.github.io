@@ -1,0 +1,49 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY>
+
+<P>Source d'un CheckSum en Delphi</P>
+
+<P><BR>
+function GetCheckSum (FileName : string) : DWORD; <BR>
+var <BR>
+  F : File of DWORD; <BR>
+  Fsize : DWORD; <BR>
+  Buffer : Array [0..500] of DWORD; <BR>
+  P : Pointer; <BR>
+begin <BR>
+  FileMode := 0; <BR>
+  AssignFile ( F , FileName); <BR>
+  Reset ( F ); <BR>
+  Seek ( F , FileSize ( F ) div 2); <BR>
+  Fsize := FileSize( F )-1-FilePos( F ); <BR>
+  if Fsize &gt; 500 then Fsize := 500; <BR>
+  BlockRead ( F, Buffer, Fsize); <BR>
+  Close ( F ); <BR>
+  P:=@Buffer; <BR>
+   asm <BR>
+     xor eax, eax <BR>
+     xor ecx, ecx <BR>
+     mov edi , p <BR>
+     @again: <BR>
+       add eax, [edi + 4*ecx] <BR>
+       inc ecx <BR>
+       cmp ecx, fsize <BR>
+     jl @again <BR>
+     mov @result, eax <BR>
+   end; <BR>
+end; <BR>
+ <BR>
+<BR>
+
+
+</BODY>
+
+</HTML>

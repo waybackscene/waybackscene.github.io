@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>Visual Basic 6 - AntiHack</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="fenetre">
+<div class="titre"></div>
+
+<div class="menu">
+<ul>
+<li><a href='index.html'>Introduction</a></li>
+<li><a href='approche.html'>Analyse</a></li>
+</ul>
+
+</div>
+
+<div class="contenu">
+<p class="droite">Date de publication : mardi 20 juin 2006</p>
+<p class="droite">Auteur : BeatriX</p>
+<div class="ligne"></div>
+<h1>3. Analyse du binaire.</h1>
+
+<p>Voici un résumé graphique du comportement de ce binaire et des points importants :</p>
+
+
+<h6>  <img src="images/AntiHack.png" alt="" /></h6>
+<h2>Que devons-nous voir ?</h2>
+
+<p> Tout simplement que les routines importantes sont sur fond vert et que les appels aux fonctions VB importants sont entourés en rouge.</p>
+<div class="important">
+<p> Les fonctions VB utiles ici sont les fonctions classiques : </p>
+<ul>
+<li>vbaStrCmp : compare deux chaines. C'est le fameux if A=B then ...Elle renvoie 0 s'il y a égalité, 1 ou -1 en cas d'inégalités.</li>
+<li>rtcinputBox : Affiche une boite de dialogue. C'est une InputBox</li>
+<li>vbaNew2 : initialise une nouvelle Form. Permet de lancer la routine Form.Initialize</li>
+<li>VbaVarTstEq : Teste de comparaison entre deux variables.</li>
+</ul>
+</div>
+<p> Les autres fonctions VB n'ont quasiment aucune utilité (en tous cas, dans notre situation).</p>
+
+
+<h1>3.1. Le Lancement du binaire : Double démarrage</h2>
+<p> Avant de commencer l'analyse complète de vérification du mot de passe, nous devons nous attarder sur le lancement même de ce binaire. Pour résumer, AntiHack effectue une petite opération astucieuse visant à se détacher d'un éventuel processus parent (un debuggueur par exemple). Pour cela, il va lancer une seconde instance de lui-même par un simple shellexecute à laquelle il va passer un argument qui servira de vérificateur quant au bon déroulement de ce processus.</p>
+<p> Entrons maintenant plus dans le détail.</p>
+<p> Le programme débute réellement en 4055AF. Il commence par tester si le programme dispose d'un argument passé en ligne de commande en faisant appel à la fonction <strong>rtcCommandVar</strong> (en fait, les prog VB font tous un <strong>GetCommandLineA</strong> avant de démarrer le programme à proprement parlé). le programme va ensuite tester s'il existe déjà une instance de AntiHack lancée. Le test qui vérifie ceci est en 405858. Ce genre de check en VB se programme de la façon suivante :</p>
+
+<pre>
+If App.PrevInstance Then
+	MsgBox ("The Programme is already running!"), vbExclamation
+	Unload Me
+	Exit Sub
+End If
+</pre> 
+
+<h2>Que se passe-t-il réellement ?</h2>
+<p> En pratiquant un petit peu de reverse sur un programme VB6, on constate que pour effectuer cette tâche, le prog effectue en réalité les tâches suivantes :</p>
+
+<pre>
+1 . GetCurrentProcessId
+2 . GetModuleFileNameA
+3 . LCMapStringA (LCMAP_UPPERCASE) sur le chemin complet
+4 . Remplacer les "\" par des "?"
+<strong class="jaune">5 . CreateSemaphoreA dont le nom sera la chaine obtenue précédemment.</strong>
+6 . RtlGetLastWin32Error. Si ERROR_ALREADY_EXISTS, une instance existe déjà.
+</pre>
+<p> Il crée un <strong>Semaphore</strong> à partir du nom et du chemin du programme concerné. Si le semaphore existe déjà, ceci signifie qu'une autre instance de ce programme existe déjà. En d'autres termes, si on change le nom du prog, un prog VB n'est pas capable de détecter une autre Instance de lui-même.</p>
+<p> Si le saut en 405858 n'est pas effectué, ceci veut dire qu'il n'existe pas d'instance déjà lancée. Le programme ( que je vais appeler Instance1) va alors calculer un hash MD5 sur la chaine ID1+ "C:\WINDOWS". ID1 est l'ID du processus en cours et a été récupérée par <strong>GetCurrentProcessId</strong>. La chaine "C:\WINDOWS" est le chemin vers le dossier windows et a été récupérée par <strong>GetWindowsDirectoryA</strong>.</p>
+<p> Une fois ce hash calculé, il effectue un <strong>rtcShell</strong> sur lui même en passant le MD5 en argument. C'est ce que j'ai résumé sur le schéma par un <strong>CreateProcessW</strong> (il s'agit au final de cette fonction même si l'auteur a fait un <strong>rtcShell</strong>.
+<p> La nouvelle instance ( Instance2 ) va effectuer les mêmes opérations. Elle va récupérer l'argument (le MD5) qui lui a été transmis par Instance1 et va tester si cet argument provient bien de Instance1. A ce moment, le saut en 405858 est réalisé.</p>
+
+<h1>3.2. Validation du double démarrage</h1>
+<p> A ce stade, nous avons deux instances Instance1 et Instance2 qui tournent sur la machine. Instance2 va vérifier alors que c'est bien Instance1 qui l'a lancée. Avant que cette vérification se fasse, Instance1 s'arrête à l'aide d'un vbaEnd. Nous n'avons donc plus que Instance2 qui tourne sur la machine.</p>
+<p> Instance2 va d'abord faire un SnapShot des processus en cours à l'aide de <strong>CreateToolhelp32Snapshot</strong>. Elle va alors se rechercher elle-même en comparant son ID aux IDs trouvés à l'aide des fonctions <strong>Process32First</strong> et <strong>Process32Next</strong>. Dès qu'elle trouve son propre processus, elle récupère l'ID du processus qui l'a lancée, c'est-à-dire celle de Instance1. Ce tour de passe-passe est faisable grâce à la structure renvoyée par <strong>Process32Next</strong>, une <strong>PROCESS32ENTRY</strong> qui se décline de la façon suivante :</p> 
+<pre>
+typedef struct tagPROCESSENTRY32 { 
+  DWORD dwSize; 
+  DWORD cntUsage; 
+  DWORD th32ProcessID; 
+  DWORD th32DefaultHeapID; 
+  DWORD th32ModuleID; 
+  DWORD cntThreads; 
+<strong class="jaune">  DWORD th32ParentProcessID; </strong>
+  LONG  pcPriClassBase; 
+  DWORD dwFlags; 
+  TCHAR szExeFile[MAX_PATH]; 
+  DWORD th32MemoryBase;
+  DWORD th32AccessKey;
+  } PROCESSENTRY32; 
+  typedef PROCESSENTRY32* PPROCESSENTRY32; 
+typedef PROCESSENTRY32* LPPROCESSENTRY32; 
+</pre>
+
+<p> Le champ th32ParentProcessID contient l'ID recherché.</p>
+<p> une fois l'ID récupéré (ID1), Instance2 va recalculer un hash MD5 sur ID1+"C:\WINDOWS" et va comparer ce hash avec celui qui lui a été transmis en ligne de commande. En cas d'inégalité, Instance2 considère qu'elle n'a pas été lancée par Instance1 et s'arrête immédiatement. Ces tests sont effectués en 4047D4, 404110 et 404472.</p>
+
+<h1>3.3. Saisie et vérification du mot de passe</h1>
+<p> Le mot de passe est saisi à l'aide d'une InputBox lancée en 406016. Une série de manipulations est effectuée sur ce mot de passe et un hash MD5 est calculé sur ce mot de passe modifié en 405B91. Vont suivre des vérifications sur ce hash. Certaines de ces vérifications sont factices. En fait, le hash MD5 doit être égal à un hash hardcodé qui vaut <strong>A8B221A57EFAA8DAD2C7DFC8993BE4A3</strong>. Si les tests sont concluants, le binaire continue en 405E0C (troisième cadre vert du schéma).</p>
+
+<h1>3.4. Affichage de la fenêtre de félicitations</h1>
+<p> La fenêtre est initialisée par la fonction <strong>vbaNew2</strong> et lance la routine 4038B4. Cette routine "Form.Initialize" vérifie également le MD5 calculé.</p>
+<p> La fenêtre est alors lancée en 405E8E et les routines Form.Resize, Form.Load et Form.Paint vont à leur tour vérifier la valeur du MD5.</p>
+<h1>4. Patcher le binaire.</h1>
+<p>Nous pouvons alors patcher tous les sauts conditionnels qui suivent les <strong>vbaStrCmp</strong> de façon à faire croire que cette fonction renvoie 0 dans le cas de comparaisons des MD5. On peut également patcher la routine de calcul du MD5 pour qu'elle renvoie le MD5 hardcodé ci-dessus.</p>
+<p> Vous trouverez une version patchée qui accepte n'importe quel mot de passe en cliquant <a href="AntiHack_.exe">ICI</a> 
+
+<h1>5. Mot de la fin.</h1>
+
+<p> Nous avons constaté que malgré la complexité du code généré par VB6, il dispose de grosses failles de sécurité comme la fonction <strong>vbaStrCmp</strong> qui apparaît dès qu'une comparaison est effectuée. On peut alors facilement repérer les routines principales sans trop de mal.
+<p> Merci à <strong>sebdraluorg</strong> pour nous avoir permis de travailler un peu sur du VB. un chti coucou aux petits cocos qui ont également participé à ce défi : baboon, skirby, =GAMERA=, mr.tux et Beginner.</p>
+<p> Grosses caresses aux titis de la FRET et aux totos de LABO (quelle rime :) ) ainsi que tous les mimis de FC.</p>
+<p> BeatriX - lundi 19 juin 2006 - 23h34</p>
+<p class="griser"> Copyright (C)- FRET (2006)</p>
+
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+</div>
+</div>
+</body>
+</html>

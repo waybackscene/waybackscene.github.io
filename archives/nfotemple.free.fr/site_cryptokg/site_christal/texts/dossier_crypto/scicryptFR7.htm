@@ -1,0 +1,114 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Translator" content="Michel Arboi">
+<meta name="Description"
+      content="Traduction française de la FAQ de sci.crypt">
+<meta name="Keywords" content="cryptologie, cryptographie, cryptanalyse,
+      cryptology, cryptography, sci.crypt, FAQ, traduction, français,
+      signature, numérique, fonction, hachage, sens unique, MD4, MD5,
+      snefru, fonction de hachage à sens unique, signature numérique, 
+      message, authentification, authentifier, public, privé, secret,
+      partagé, clé, Rivest, merkle, ronde, RSA, 
+      traduction française">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FAQ de sci.crypt, chapitre 7: Signatures num&eacute;riques</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><FONT SIZE="5" FACE="Arial">Signatures num&eacute;riques</FONT></H1>
+<P><STRONG><FONT FACE="Arial">Table des mati&egrave;res</FONT></STRONG>
+
+<UL>
+	<LI><FONT SIZE="2" FACE="Arial">5.1. </FONT><A HREF="scicryptFR7.htm#1"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une fonction
+	de hachage &agrave; sens unique?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">5.2. </FONT><A HREF="scicryptFR7.htm#2"><FONT SIZE="2" FACE="Arial">Quelle est la diff&eacute;rence
+	entre public, priv&eacute;, secret, partag&eacute;, etc.?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">5.3. </FONT><A HREF="scicryptFR7.htm#3"><FONT SIZE="2" FACE="Arial">Qu'est-ce que MD4 et MD5?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">5.4. </FONT><A HREF="scicryptFR7.htm#4"><FONT SIZE="2" FACE="Arial">Qu'est-ce que Snefru?</FONT></A>
+</UL>
+
+
+<BLOCKQUOTE>
+	<H2><A NAME="1"></A><FONT SIZE="4" FACE="Arial">5.1. Qu'est-ce qu'une fonction de hachage &agrave; sens unique?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Une fonction de hachage &agrave; sens unique typique prend un message de longueur
+	variable en entr&eacute;e et produit un &quot;r&eacute;sum&eacute;&quot; de longueur fixe. Il est impossible de
+	trouver le message qui a g&eacute;n&eacute;r&eacute; un r&eacute;sum&eacute; donn&eacute;; en fait on ne doit pas
+	pouvoir obtenir la moindre information utile sur le message, m&ecirc;me pas un simple bit. Pour certaines fonctions
+	de hachage &agrave; sens unique il doit aussi &ecirc;tre impossible de trouver deux messages qui ont le m&ecirc;me
+	r&eacute;sum&eacute;. <BR>
+	<BR>
+	Une fonction de hachage &agrave; sens unique peut &ecirc;tre publique ou priv&eacute;e, tout comme une fonction
+	de chiffrement. Voici une application d'une fonction publique comme MD5 ou Snefru. La plupart des syst&egrave;mes
+	de signature &agrave; cl&eacute; publique sont relativement lents. Signer un long message peut &ecirc;tre trop
+	long. La solution: calculer le r&eacute;sum&eacute; du message, puis signer le r&eacute;sum&eacute;, qui est court.
+	Quelqu'un qui veut v&eacute;rifier la signature peut faire la m&ecirc;me chose. <BR>
+	[NdT: pas exactement, sinon n'importe qui pourrait falsifier la signature ! Soit H la fonction de hachage, M le
+	texte &agrave; signer, supposons que l'on utilise le RSA, donc une fonction de chiffrement E (publique) et de d&eacute;chiffrement
+	D (priv&eacute;e) : d'un c&ocirc;t&eacute; on calcule D(H(M)) = s et de l'autre on v&eacute;rifie E(s) = H(M) <BR>
+	Je laisse ElGamal en exercice !]</FONT>
+	<H2><A NAME="2"></A><FONT SIZE="4" FACE="Arial">5.2. Quelle est la diff&eacute;rence entre public, priv&eacute;,
+	secret, partag&eacute;, etc.?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Il y a dans la litt&eacute;rature un &eacute;norme m&eacute;lange de terminologie
+	&agrave; propos d'un tr&egrave;s petit ensemble de concepts. Les voici: (1) Quand un algorithme d&eacute;pend d'une
+	cl&eacute; qui n'est pas publi&eacute;e, on l'appelle algorithme priv&eacute;; sinon on l'appelle algorithme public.
+	(2) Nous avons des fonctions de chiffrement E et de d&eacute;chiffrement D, telles que D(E(M))=M pour tout message
+	M. (3) Nous avons aussi des fonctions de hachage H et des fonctions de v&eacute;rification V, telles que V(M,X)
+	= 1 si et seulement si X = H(M). <BR>
+	<BR>
+	Un cryptosyst&egrave;me &agrave; cl&eacute; publique a une fonction de chiffrement publique et une fonction de
+	d&eacute;chiffrement priv&eacute;e. Les sommes de contr&ocirc;les, comme celle mentionn&eacute;e dans la question
+	pr&eacute;c&eacute;dente, ont un hachage et une v&eacute;rification publique. <BR>
+	La signature num&eacute;rique a un hachage priv&eacute; et une v&eacute;rification publique: une seule personne
+	peut produire la signature d'un message, mais toutes peuvent v&eacute;rifier qu'elle est correcte. <BR>
+	<BR>
+	Manifestement, quand un algorithme d&eacute;pend d'une cl&eacute; priv&eacute;e, il est inutilisable par quiconque
+	n'a pas la cl&eacute;. Il n'y a pas vraiment de diff&eacute;rence entre une cl&eacute; &quot;partag&eacute;e&quot;
+	et une cl&eacute; priv&eacute;e: une cl&eacute; partag&eacute;e n'est pas publi&eacute;e, donc elle est priv&eacute;e.
+	Si vous chiffrez des donn&eacute;es pour un ami, allez-vous subitement faire du &quot;chiffrement &agrave; cl&eacute;
+	partag&eacute;e&quot; plut&ocirc;t que du chiffrement &agrave; cl&eacute; priv&eacute;e? Non. <BR>
+	<BR>
+	[NdT: je vous jure que l'original ne vaut pas mieux que mon charabia. Kerberos et d'autres syst&egrave;mes classent
+	les cl&eacute;s en trois cat&eacute;gories :</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI><FONT SIZE="2" FACE="Arial">priv&eacute;e, connue d'un seul protagoniste. Par exemple, la cl&eacute; priv&eacute;e
+		RSA.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">publique, connue de tout le monde. L'autre cl&eacute; RSA.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">secr&egrave;te, connue de deux personnes. Par exemple, une cl&eacute; DES ou de
+		n'importe quel autre algorithme sym&eacute;trique.</FONT>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">]</FONT>
+	<H2><A NAME="3"></A><FONT SIZE="4" FACE="Arial">5.3. Qu'est-ce que MD4 et MD5?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">MD4 et MD5 sont des fonctions de hachage d&eacute;velopp&eacute;es par Ron Rivest.
+	(voir le chapitre sur MD5) <BR>
+	<BR>
+	NB: on a trouv&eacute; une erreur de transcription dans le premier brouillon MD5. On devrait appeler l'algorithme
+	corrig&eacute; MD5a, mais beaucoup l'appellent MD5.</FONT>
+	<H2><A NAME="4"></A><FONT SIZE="4" FACE="Arial">5.4. Qu'est-ce que Snefru?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Snefru est une famille de fonctions de hachage d&eacute;velopp&eacute;e par Ralph
+	Merkle. Snefru-8 est une fonction &agrave; 8 rondes, la plus r&eacute;cente de la famille. Elles sont d&eacute;finies
+	dans le papier de Merkle. 
+<HR ALIGN="CENTER">
+</FONT>
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

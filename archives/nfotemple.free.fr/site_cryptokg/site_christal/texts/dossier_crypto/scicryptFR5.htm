@@ -1,0 +1,690 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Translator" content="Michel Arboi">
+<meta name="Description"
+      content="Traduction française de la FAQ de sci.crypt">
+<meta name="Keywords" content="cryptologie, cryptographie, cryptanalyse,
+      cryptology, cryptography, sci.crypt, FAQ, traduction, français,
+      traduction française,
+      product cipher, chiffre produit, DES, LUCIFER, LOKI, FEAL, PES,
+      Feistel, aléatoire, groupe, théorie des groupes, sécurité,
+      preuve, prouver, symétrique, authentification, message,
+      Data Encryption Standart, Triple DES, NSA, IBM, 
+      cryptanalyse différentielle, Biham, Shamir, classifié,
+      classified, ECB, CBC, CFB, OFB, propagation d'erreur, code,
+      codage, livre, électronique, rétroaction, Kerberos, ronde, 
+      mode opératoire">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FAQ de sci.crypt, chapitre 5: chiffres produits</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><FONT SIZE="5" FACE="Arial">Chiffres produits</FONT></H1>
+<P><STRONG><FONT FACE="Arial">Table des mati&egrave;res</FONT></STRONG>
+
+<UL>
+	<LI><FONT SIZE="2" FACE="Arial">3.1. </FONT><A HREF="scicryptFR5.htm#1"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'un &quot;produit&quot;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.2. </FONT><A HREF="scicryptFR5.htm#2"><FONT SIZE="2" FACE="Arial">Qu'est-ce qui rend un &quot;produit&quot;
+	s&ucirc;r?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.3. </FONT><A HREF="scicryptFR5.htm#3"><FONT SIZE="2" FACE="Arial">Quelles sont les propri&eacute;t&eacute;s
+	de la th&eacute;orie des groupes qui s'appliquent aux &quot;produits&quot;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.4. </FONT><A HREF="scicryptFR5.htm#4"><FONT SIZE="2" FACE="Arial">Qu'est-ce qui peut &ecirc;tre
+	prouv&eacute; sur la s&eacute;curit&eacute; d'un &quot;produit&quot;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.3. </FONT><A HREF="scicryptFR5.htm#5"><FONT SIZE="2" FACE="Arial">Comment les algorithmes de
+	chiffrement par bloc peuvent-ils chiffrer des donn&eacute;es plus longues qu'un bloc?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.6. </FONT><A HREF="scicryptFR5.htm#6"><FONT SIZE="2" FACE="Arial">Les algorithmes de chiffrement
+	par blocs sym&eacute;triques peuvent-ils &ecirc;tre utilis&eacute;s pour l'authentification de messages?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.7. </FONT><A HREF="scicryptFR5.htm#7"><FONT SIZE="2" FACE="Arial">Qu'est-ce que le DES exactement?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.8. </FONT><A HREF="scicryptFR5.htm#8"><FONT SIZE="2" FACE="Arial">Qu'est-ce que le triple DES?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.9. </FONT><A HREF="scicryptFR5.htm#9"><FONT SIZE="2" FACE="Arial">Qu'est-ce que la cryptanalyse
+	diff&eacute;rentielle?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.10. </FONT><A HREF="scicryptFR5.htm#10"><FONT SIZE="2" FACE="Arial">Quel a &eacute;t&eacute;
+	le r&ocirc;le de la NSA dans la conception du DES?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.11. </FONT><A HREF="scicryptFR5.htm#11"><FONT SIZE="2" FACE="Arial">Le DES est-il disponible
+	sous forme logicielle?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.12. </FONT><A HREF="scicryptFR5.htm#12"><FONT SIZE="2" FACE="Arial">Le DES est-il disponible
+	sous forme mat&eacute;rielle?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.13. </FONT><A HREF="scicryptFR5.htm#13"><FONT SIZE="2" FACE="Arial">Peut-on utiliser le DES
+	pour chiffrer des donn&eacute;es classifi&eacute;es?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">3.14. </FONT><A HREF="scicryptFR5.htm#14"><FONT SIZE="2" FACE="Arial">Qu'est-ce que le chiffrement
+	ECB, CBC, CFB, et OFB?</FONT></A>
+</UL>
+
+
+<BLOCKQUOTE>
+	<H2><A NAME="1"></A><FONT SIZE="4" FACE="Arial">3.1. Qu'est-ce qu'un &quot;chiffre produit&quot;?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">[NdT: j'ai traduit product cipher litt&eacute;ralement par chiffre produit. Je ne
+	connais pas le terme exact en fran&ccedil;ais] <BR>
+	Un produit est un chiffrement par bloc qui r&eacute;p&egrave;te plusieurs op&eacute;rations faibles comme des substitutions,
+	des transpositions, des additions ou des multiplications modulo N, et des transformations lin&eacute;aires (un
+	chiffrement par bloc signifie que l'on chiffre un bloc de donn&eacute;es &agrave; la fois (par exemple 8 octets),
+	puis on passe au bloc suivant). La notion de chiffre produit est due &agrave; Shannon [SHA49]. Des exemples de
+	chiffres produits modernes sont LUCIFER [SOR84], le DES [NBS77], les r&eacute;seaux SP [KAM78], LOKI [BRO90], FEAL
+	[SHI84], PES [LAI90], Khufu et Khafre [ME91a]. Les chiffres de Feistel sont une classe de chiffres produits qui
+	op&egrave;re sur une moiti&eacute; du cryptogramme &agrave; chaque ronde et &eacute;change les deux moiti&eacute;s
+	apr&egrave;s chaque ronde. LUCIFER, le DES, LOKI, et FEAL sont des exemples de chiffres de Feistel. <BR>
+	<BR>
+	Voici un comparatif des principaux param&egrave;tres de divers chiffres produits:</FONT>
+</BLOCKQUOTE>
+
+
+<BLOCKQUOTE ALIGN="CENTER">
+	<P>
+	<TABLE BORDER="1">
+		<TR>
+			<TD><FONT SIZE="2" FACE="Arial">Chiffre</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">Taille de bloc</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">Bits de cl&eacute;</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">Nombre de rondes</FONT></TD>
+		</TR>
+		<TR>
+			<TD><FONT SIZE="2" FACE="Arial">LUCIFER</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">128</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">128</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">16</FONT></TD>
+		</TR>
+		<TR>
+			<TD><FONT SIZE="2" FACE="Arial">DES</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">64</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">56</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">16</FONT></TD>
+		</TR>
+		<TR>
+			<TD><FONT SIZE="2" FACE="Arial">LOKI</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">64</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">64</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">16</FONT></TD>
+		</TR>
+		<TR>
+			<TD><FONT SIZE="2" FACE="Arial">FEAL</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">64</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">128</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">2^5, x &gt;= 5</FONT></TD>
+		</TR>
+		<TR>
+			<TD><FONT SIZE="2" FACE="Arial">PES</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">64</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">128</FONT></TD>
+			<TD><FONT SIZE="2" FACE="Arial">8</FONT></TD>
+		</TR>
+	</TABLE>
+
+</BLOCKQUOTE>
+
+
+<BLOCKQUOTE>
+	<H2><A NAME="2"></A><FONT SIZE="4" FACE="Arial">3.2. Qu'est-ce qui rend un chiffre produit s&ucirc;r?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Personne ne sait prouver math&eacute;matiquement qu'un chiffre produit est s&ucirc;r.
+	Aussi en pratique on commence en d&eacute;montrant que le chiffre </FONT><EM><FONT SIZE="2" FACE="Arial">a l'air
+	hautement al&eacute;atoire</FONT></EM><FONT SIZE="2" FACE="Arial">. Par exemple, le chiffre doit &ecirc;tre non
+	lin&eacute;aire et il doit produire des cryptogrammes qui d&eacute;pendent de tous les bits du texte clair et de
+	la cl&eacute;. Meyer a montr&eacute; qu'au moins 5 rondes du DES sont n&eacute;cessaires pour garantir cette d&eacute;pendance.
+	Dans ce sens un produit est un &quot;m&eacute;lange&quot; de fonctions qui combinent le texte clair, la cl&eacute;
+	et le cryptogramme de mani&egrave;re compliqu&eacute;e et non lin&eacute;aire. <BR>
+	<BR>
+	Les substitutions &agrave; chaque ronde du produit sont appel&eacute;es les bo&icirc;tes S. Par exemple, LUCIFER
+	a 2 bo&icirc;tes S, et le DES en a 8. La non lin&eacute;arit&eacute; du produit d&eacute;pend d'une conception
+	soigneuse de ces bo&icirc;tes S. Une liste partielle des crit&egrave;res de conceptions des bo&icirc;tes S du DES,
+	qui s'appliquent aux bo&icirc;tes S en g&eacute;n&eacute;ral, se trouve dans Brown et Brickell.</FONT>
+	<H2><A NAME="3"></A><FONT SIZE="4" FACE="Arial">3.3. Quelles sont les propri&eacute;t&eacute;s de la th&eacute;orie
+	des groupes qui s'appliquent aux produits?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Soit E un chiffre produit qui transforme un bloc de N bits en bloc de N bits. <BR>
+	Soit E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(X) le chiffrement de X
+	avec une cl&eacute; K. <BR>
+	Alors, pour tout K fix&eacute;, la fonction </FONT><KBD><FONT SIZE="2" FACE="Arial">X -&gt; E</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(X)</FONT></KBD><FONT SIZE="2" FACE="Arial"> est
+	une permutation de l'ensemble des blocs de N bits. <BR>
+	Soit P</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> cette permutation. L'ensemble
+	de toutes les permutations de N bits est appel&eacute; le groupe sym&eacute;trique et est not&eacute; S</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT SIZE="2" FACE="Arial"> <BR>
+	L'ensemble de toutes les permutations P</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">,
+	o&ugrave; K varie parmi toutes les cl&eacute;s possibles est appel&eacute; E(S</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">). Si E &eacute;tait une fonction al&eacute;atoire des libell&eacute;s vers les cryptogrammes
+	alors on s'attendrait &agrave; ce que E(S</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT SIZE="2"
+	FACE="Arial">) g&eacute;n&egrave;re un gros sous-ensemble de S</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">. <BR>
+	<BR>
+	Coppersmith et Grossman ont montr&eacute; qu'un chiffre produit tr&egrave;s simple peut g&eacute;n&eacute;rer le
+	groupe A</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT SIZE="2" FACE="Arial"> avec un nombre suffisant
+	de rondes <BR>
+	(A</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT SIZE="2" FACE="Arial"> est la moiti&eacute; du
+	groupe sym&eacute;trique: il est compos&eacute; de toutes les permutations &quot;paires&quot;, c'est-&agrave;-dire
+	toutes les permutations qui peuvent s'&eacute;crire comme un nombre pair d'&eacute;changes) <BR>
+	Even et Goldreich ont &eacute;t&eacute; capables d'&eacute;tendre ces r&eacute;sultats pour montrer que les chiffres
+	de Feistel peuvent g&eacute;n&eacute;rer A</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT SIZE="2"
+	FACE="Arial"> avec un nombre suffisant de rondes. <BR>
+	<BR>
+	La s&eacute;curit&eacute; des surchiffrements d&eacute;pend aussi des propri&eacute;t&eacute;s &quot;de groupe&quot;
+	d'un chiffre. Les chiffrements multiples sont une am&eacute;lioration par rapport au chiffrement simple si pour
+	les cl&eacute;s K1 et K2 il n'existe pas de cl&eacute; K3 telle que <BR>
+	E</FONT><SUB><FONT SIZE="2" FACE="Arial">K2</FONT></SUB><FONT SIZE="2" FACE="Arial">(E</FONT><SUB><FONT SIZE="2"
+	FACE="Arial">K1</FONT></SUB><FONT SIZE="2" FACE="Arial">(X)) == E</FONT><SUB><FONT SIZE="2" FACE="Arial">K3</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(X) </FONT><EM><FONT SIZE="2" FACE="Arial">(**)</FONT></EM><FONT SIZE="2" FACE="Arial"> <BR>
+	ce qui voudrait dire que le double chiffrement avec deux cl&eacute;s ind&eacute;pendantes K1 et K2 serait &eacute;quivalent
+	au chiffrement simple avec une troisi&egrave;me cl&eacute; K3. Si pour tout K1 et K2 il existe K3 telle que (**)
+	est vraie alors on dit que E est un groupe. <BR>
+	<BR>
+	Cette question de savoir si le DES est un groupe selon cette d&eacute;finition a &eacute;t&eacute; largement &eacute;tudi&eacute;e
+	par Sherman, Kaliski, et Rivest. Dans leur papier ils ont une forte pr&eacute;somption que le DES ne soit pas un
+	groupe. En fait, le DES </FONT><U><FONT SIZE="2" FACE="Arial">n'est pas</FONT></U><FONT SIZE="2" FACE="Arial">
+	un groupe.</FONT>
+	<H2><A NAME="4"></A><FONT SIZE="4" FACE="Arial">3.4. Qu'est-ce qui peut &ecirc;tre prouv&eacute; sur la s&eacute;curit&eacute;
+	d'un &quot;produit&quot;?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">D'apr&egrave;s ce qu'on a dit plus haut, P</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial"> est une permutation produite par E en fonction d'une cl&eacute; K. Le but du concepteur
+	de E est de s'assurer que P</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> apparaisse
+	comme un &eacute;l&eacute;ment au hasard du groupe sym&eacute;trique S</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">. Soit R un &eacute;l&eacute;ment de S</FONT><SUB><FONT SIZE="2" FACE="Arial">{2^N}</FONT></SUB><FONT
+	SIZE="2" FACE="Arial"> pris au hasard. Nous dirons que P</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial"> et R sont indiscernables si un observateur &agrave; qui on a donn&eacute; P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> et R ne peut pas les diff&eacute;rencier en temps
+	polynomial. C'est-&agrave;-dire qu'en un temps limit&eacute;, l'observateur ne peut pas distinguer les permutations
+	produites par E: la d&eacute;cision optimale n'est pas meilleure qu'une simple devinette. <BR>
+	<BR>
+	Luby et Rackoff ont montr&eacute; qu'une classe de chiffres de Feistel est s&ucirc;re selon cette d&eacute;finition
+	quand la fonction appliqu&eacute;e &agrave; chaque ronde est remplac&eacute;e par des fonctions bool&eacute;ennes
+	al&eacute;atoires.</FONT>
+	<H2><A NAME="5"></A><FONT SIZE="4" FACE="Arial">3.3. Comment les algorithmes de chiffrement par bloc peuvent-ils
+	chiffrer des donn&eacute;es plus longues qu'un bloc?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Il y a quatre mode op&eacute;ratoires standards (et beaucoup d'autres non standards).
+	Les modes standards sont d&eacute;finis dans </FONT><EM><FONT SIZE="2" FACE="Arial">U.S. Department of Commerce
+	Federal Information Processing Standard (FIPS) 81</FONT></EM><FONT SIZE="2" FACE="Arial">, publi&eacute; en 1980.
+	Voir la question sur l'ECB ci-dessous pour plus de d&eacute;tails. <BR>
+	<BR>
+	Bien qu'ils soient d&eacute;finis pour le DES, ces modes peuvent &ecirc;tre utilis&eacute;s avec n'importe quel
+	algorithme de chiffrement par blocs.</FONT>
+	<H2><A NAME="6"></A><FONT SIZE="4" FACE="Arial">3.6. Les algorithmes de chiffrement par blocs sym&eacute;triques
+	peuvent-ils &ecirc;tre utilis&eacute;s pour l'authentification de messages?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Vous pouvez utiliser un cryptosyst&egrave;me sym&eacute;trique pour vous prouver
+	que vous avez g&eacute;n&eacute;r&eacute; un message et que le message n'a pas &eacute;t&eacute; alt&eacute;r&eacute;
+	apr&egrave;s sa cr&eacute;ation. Mais vous ne pouvez pas prouver cela &agrave; quelqu'un d'autre sans r&eacute;v&eacute;ler
+	votre cl&eacute;. Ensuite vous ne pourrez rien prouver &agrave; propos des messages authentifi&eacute;s avec cette
+	cl&eacute;. <BR>
+	<BR>
+	Voir ANSI X3.106-1983 et FIPS 113 (1985) pour une m&eacute;thode d'authentification de messages standard bas&eacute;e
+	sur le DES.</FONT>
+	<H2><A NAME="7"></A><FONT SIZE="4" FACE="Arial">3.7. Qu'est-ce que le DES exactement?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Le DES est le Standard de Chiffrement de Donn&eacute;es (Data Encryption Standard)
+	du gouvernement am&eacute;ricain, un chiffre produit qui op&egrave;re sur des blocs de 64 bits en utilisant une
+	cl&eacute; de 56 bits. <BR>
+	<BR>
+	Il est d&eacute;fini dans FIPS 46-1 (1988) [qui remplace FIPS 46 (1977)]. FIPS signifie </FONT><EM><FONT SIZE="2"
+	FACE="Arial">Federal Information Processing Standards</FONT></EM><FONT SIZE="2" FACE="Arial">; ces standards sont
+	publi&eacute;s par NIST. <BR>
+	Le DES est identique &agrave; l' ANSI standard Data Encryption Algorithm (DEA) d&eacute;fini dans ANSI X3.92-1981.</FONT>
+	<H2><A NAME="8"></A><FONT SIZE="4" FACE="Arial">3.8. Qu'est-ce que le triple DES?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Le Triple DES est un chiffre produit qui, comme le DES, travaille sur des blocs
+	de donn&eacute;es de 64 bits. Il en existe plusieurs formes qui utilisent toutes le DES trois fois. Certaines utilisent
+	deux cl&eacute;s de 56 bits, d'autres trois. Les modes op&eacute;ratoires du DES peuvent &ecirc;tre aussi utilis&eacute;s
+	avec le Triple DES. <BR>
+	<BR>
+	Certains appellent &quot;Triple DES &quot; l'op&eacute;ration E(K1,D(K2,E(K1,x))). <BR>
+	<BR>
+	Cette m&eacute;thode est d&eacute;finie au chapitre 7.2 du standard ANSI X9.17-1985 </FONT><EM><FONT SIZE="2" FACE="Arial">Financial
+	Institution Key Management</FONT></EM><FONT SIZE="2" FACE="Arial"> et est pr&eacute;vue pour chiffrer les cl&eacute;s
+	et vecteurs d'initialisation DES pour la </FONT><EM><FONT SIZE="2" FACE="Arial">distribution automatique de cl&eacute;s</FONT></EM><FONT
+	SIZE="2" FACE="Arial">. Son nom officiel est </FONT><EM><FONT SIZE="2" FACE="Arial">Chiffrement et d&eacute;chiffrement
+	d'une cl&eacute; simple &agrave; l'aide d'une paire de cl&eacute;s</FONT></EM><FONT SIZE="2" FACE="Arial"> mais
+	est appel&eacute;e EDE dans d'autres standards. <BR>
+	<BR>
+	Ce standard dit (paragraphe 7.2.1): &quot;Les cl&eacute;s de chiffrement de cl&eacute;s peuvent &ecirc;tre une
+	cl&eacute; DEA simple ou une paire de cl&eacute;s DES. Les paires de cl&eacute;s doivent &ecirc;tre utilis&eacute;es
+	o&ugrave; l'on a besoin d'une s&eacute;curit&eacute; accrue (par exemple si les donn&eacute;es prot&eacute;g&eacute;es
+	par la (les) cl&eacute;(s) ont une longue vie). Une paire de cl&eacute;s ne doit pas &ecirc;tre chiffr&eacute;e
+	ou d&eacute;chiffr&eacute;e &agrave; l'aide d'une cl&eacute; simple&quot;. <BR>
+	<BR>
+	D'autres appellent &quot;triple DES&quot; l'op&eacute;ration E(K1,D(K2,E(K3,x))) ou bien E(K1,E(K2,E(K3,x))). <BR>
+	<BR>
+	Toutes ces m&eacute;thodes sont d&eacute;finies seulement pour le mode ECB. La s&eacute;curit&eacute; des diverses
+	m&eacute;thodes dans les autres modes (comme le CBC) est &agrave; l'&eacute;tude en ce moment. Pour le moment,
+	on doit supposer que les autres modes seront d&eacute;finis comme ils le sont actuellement mais avec E(K1,D(K2,E(K1,x)))
+	comme algorithme de chiffrement par bloc &agrave; la place du DES simple dans le m&eacute;canisme de r&eacute;troaction.
+	<BR>
+	<BR>
+	L'un d'entre nous (Ellison) a longtemps plaid&eacute; pour le triple DES sous la forme <BR>
+	<BR>
+	E(K1, Tran( E(K2, Tran( E(K3, Compress( x )))))), <BR>
+	<BR>
+	o&ugrave; chaque exemplaire du DES a sa propre cl&eacute; et son propre vecteur d'initialisation (en mode CBC)
+	et o&ugrave; Tran est un programme de transposition de gros blocs. Tran est disponible dans. Ceci augmenterait
+	la s&eacute;curit&eacute; en diffusant les changements de bits sur un bloc beaucoup plus gros (la taille de bloc
+	de Tran). D'autres compositions de chiffres faibles avec le DES sont possibles. Par exemple on pourrait d&eacute;finir
+	: <BR>
+	<BR>
+	E(K1, Prngxor(K4, Tran( E(K2, Tran( Prngxor(K5, E(K3, Compress( x )))))))), <BR>
+	<BR>
+	o&ugrave; Prngxor() est un algorithme de chiffrement de flux simple bas&eacute; sur un g&eacute;n&eacute;rateur
+	pseudo al&eacute;atoire &agrave; longue p&eacute;riode, pour &ecirc;tre s&ucirc;r que tous les motifs du texte
+	clair ou du cryptogramme seront cach&eacute;s m&ecirc;me quand on utilise le mode ECB du DES -- l'utilisation de
+	boucles int&eacute;rieures en mode CBC pr&eacute;sente en effet des faiblesses face &agrave; certaines attaques,
+	et on ignore encore si elles sont toujours pr&eacute;sentes lors de la composition avec Tran().</FONT>
+	<H2><A NAME="9"></A><FONT SIZE="4" FACE="Arial">3.9. Qu'est-ce que la cryptanalyse diff&eacute;rentielle?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">La cryptanalyse diff&eacute;rentielle est une m&eacute;thode d'attaque statistique
+	qui peut &ecirc;tre appliqu&eacute;e &agrave; tout processus it&eacute;ratif (c'est-&agrave;-dire un processus
+	bas&eacute; sur l'application r&eacute;p&eacute;t&eacute;e d'une fonction). La m&eacute;thode a &eacute;t&eacute;
+	popularis&eacute;e r&eacute;cemment par Biham et Shamir, mais Coppersmith a remarqu&eacute; que les bo&icirc;tes
+	S du DES ont &eacute;t&eacute; optimis&eacute;es contre cette attaque il y a 20 ans. Cette m&eacute;thode est efficace
+	contre plusieurs chiffres produits, notamment FEAL. <BR>
+	<BR>
+	La cryptanalyse diff&eacute;rentielle se base sur l'observation d'un grand nombre de textes chiffr&eacute;s Y,
+	Y' correspondant &agrave; des textes clairs X, X' ayant une diff&eacute;rence connue D=X+X' o&ugrave; + est le
+	</FONT><EM><FONT SIZE="2" FACE="Arial">OU exclusif</FONT></EM><FONT SIZE="2" FACE="Arial">. Dans l'attaque de base
+	de Biham-Shamir, 2^47 paires de tels textes clairs sont n&eacute;cessaires pour d&eacute;terminer la cl&eacute;
+	du DES. Si le DES est tronqu&eacute; &agrave; 6 ou 8 rondes, il faut significativement moins de paires. Dans ces
+	cas, la cl&eacute; peut &ecirc;tre retrouv&eacute;e en quelques minutes en utilisant quelques milliers de paires.
+	<BR>
+	Pour le DES complet, cette attaque est irr&eacute;alisable car elle demande trop de textes clairs connus. <BR>
+	<BR>
+	Le travail de Biham et Shamir sur le DES a r&eacute;v&eacute;l&eacute; plusieurs observations &eacute;tonnantes
+	sur l'algorithme. La plus importante est que si la g&eacute;n&eacute;ration des cl&eacute;s [NdT: key schedule]
+	&eacute;tait supprim&eacute;e du DES et si l'on utilisait une cl&eacute; de 16*48 = 768 bits, on pourrait retrouver
+	la cl&eacute; en moins de 2^64 &eacute;tapes. Ainsi des sous-cl&eacute;s ind&eacute;pendantes n'am&eacute;liorent
+	pas &eacute;norm&eacute;ment la s&eacute;curit&eacute; du DES. <BR>
+	De plus les bo&icirc;tes S du DES sont extr&egrave;mement sensibles: le changement d'une seule entr&eacute;e dans
+	ces tables &quot;am&eacute;liore&quot; grandement l'efficacit&eacute; de l'attaque diff&eacute;rentielle. <BR>
+	<BR>
+	Adi Shamir a dit (NYTimes 31 Oct 1991): &quot;je voudrais dire que, contrairement &agrave; ce que certains croient,
+	il n'y a pas de preuve que la conception de base du DES a &eacute;t&eacute; affaiblie&quot;.</FONT>
+	<H2><A NAME="10"></A><FONT SIZE="4" FACE="Arial">3.10. Comment la NSA a t-elle &eacute;t&eacute; impliqu&eacute;e
+	dans la conception du DES ?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">D'apr&egrave;s Kinnucan, Tuchman, un membre de l'&eacute;quipe d'IBM qui a d&eacute;velopp&eacute;
+	le DES aurait dit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Nous avons enti&egrave;rement d&eacute;velopp&eacute; le DES chez IBM avec des gens
+		d'IBM. La NSA n'a pas dict&eacute; une seule ligne!</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Tuchman et Meyer (un autre d&eacute;veloppeur du DES) a pass&eacute; un an &agrave;
+	casser des chiffres et a fini par trouver des faiblesses dans Lucifer.</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Leur approche &eacute;tait de chercher des substitutions, des permutations et des
+		mises en place de cl&eacute;s fortes... IBM a classifi&eacute; les notes contenant les crit&egrave;res de s&eacute;lection
+		&agrave; la demande de la NSA... La NSA nous a dit que nous avions r&eacute;invent&eacute; par inadvertance certains
+		des secrets profonds qu'ils utilisent dans leurs propres algorithmes</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">explique Techman. <BR>
+	<BR>
+	D'un autre c&ocirc;t&eacute;, un document intitul&eacute; </FONT><EM><FONT SIZE="2" FACE="Arial">Involvement of
+	the NSA in the development of DES: unclassified summary of the United States Select Committee on Intelligence</FONT></EM><FONT
+	SIZE="2" FACE="Arial"> publi&eacute; dans </FONT><EM><FONT SIZE="2" FACE="Arial">IEEE Communications Magazine</FONT></EM><FONT
+	SIZE="2" FACE="Arial">, p53-55, 1978, dit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Dans le d&eacute;veloppement du DES, la NSA a convaincu IBM qu'une taille de cl&eacute;
+		r&eacute;duite &eacute;tait suffisante; a indirectement aid&eacute; au d&eacute;veloppement de la structure des
+		bo&icirc;tes S; et a certifi&eacute; que l'algorithme DES final &eacute;tait, &agrave; leur connaissance, d&eacute;pourvu
+		de faiblesses math&eacute;matiques ou statistiques.</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial"><BR>
+	Il est clair que la NSA a insist&eacute; pour r&eacute;duire la taille de cl&eacute;. L'article dit de plus que
+	la NSA n'a pas touch&eacute; &agrave; l'algorithme lui-m&ecirc;me, seulement ses param&egrave;tres, ce qui dans
+	un certain sens r&eacute;sout le conflit apparent avec les remarques de Meyer et Tuchman.</FONT>
+	<H2><A NAME="11"></A><FONT SIZE="4" FACE="Arial">3.11. Le DES est-il disponible en logiciel?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Plusieurs personnes ont &eacute;crits des codes DES disponibles par FTP: Stig Ostholm;
+	BSD; Eric Young; Dennis Furguson; Mark Riordan; Phil Karn. <BR>
+	Un source Pascal du DES est aussi fourni chez Patterson. <BR>
+	<BR>
+	FIPS 46-1 dit &quot;L'algorithme sp&eacute;cifi&eacute; dans ce standard doit &ecirc;tre r&eacute;alis&eacute;
+	... en technologie mat&eacute;rielle (pas logicielle). ... Les mises en oeuvres logicielles dans des ordinateurs
+	d'usage g&eacute;n&eacute;ral ne sont pas conformes &agrave; ce standard.&quot; En d&eacute;pit de ceci, il existe
+	beaucoup de r&eacute;alisations logicielles, et des agences gouvernementales les utilisent.</FONT>
+	<H2><A NAME="12"></A><FONT SIZE="4" FACE="Arial">3.12. Le DES est-il disponible en mat&eacute;riel?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Les paragraphes suivants sont tir&eacute;s de messages envoy&eacute;s aux auteurs.
+	Nous ne nous engageons pas sur la qualit&eacute; ou m&ecirc;me l'existence de ces produits. <BR>
+	<BR>
+	Christian Franke, </FONT><A HREF="mailto:franke@informatik.rwth-aachen.de"><FONT SIZE="2" FACE="Arial">franke@informatik.rwth-aachen.de</FONT></A><FONT
+	SIZE="2" FACE="Arial">, dit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">1. Cryptech CRY12C102: 22.5Mbit/s d'apr&egrave;s la fiche technique, avec une interface
+		32 bits. Nous utilisons celui-l&agrave;, car c'est le seul qui &eacute;tait disponible quand nous avons lanc&eacute;
+		le projet. Aucun probl&egrave;me! <BR>
+		2. Pijnenburg PCC100: 20Mbit/s d'apr&egrave;s la fiche technique. Adresse: PIJNENBURG B.V., Boxtelswweg 26, NL-5261
+		NE Vught, Pays-Bas. <BR>
+		3. INFOSYS DES Chip (Allemagne): Les bo&icirc;tes S doivent &ecirc;tre charg&eacute;es par logiciel. Donc vous
+		pouvez modifier l'algorithme. D&eacute;sol&eacute;, je n'ai pas la fiche technique sous la main. S'il vous plait
+		envoyez-moi un courrier si vous avez besoin d'autres renseignements.</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Marcus J Ranum, </FONT><A HREF="mailto:mjr@tis.com"><FONT SIZE="2" FACE="Arial">mjr@tis.com</FONT></A><FONT
+	SIZE="2" FACE="Arial">, dit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">&quot;SuperCrypt&quot; 100Mbits/s et plus. <BR>
+		DES and Proprietary Storage for 16 56-bit keys Key stream generator Integrated hardware DES3 procedure Extended
+		mode with 112 bit keys; Computer Elektronik Infosys; 512-A Herndon Parkway,; Herndon, VA 22070; 800-322-3464. [NdT:
+		qqn comprend qqch &agrave; ce charabia t&eacute;l&eacute;graphique ?]</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Tim Hember, </FONT><A HREF="mailto:thember@gandalf.ca"><FONT SIZE="2" FACE="Arial">thember@gandalf.ca</FONT></A><FONT
+	SIZE="2" FACE="Arial">, dit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Newbridge Microsystems vend une puce DES AM9568 qui travaille &agrave; 25 MHz, effectue
+		un chiffrement en 18 cycles d'horloge, a un pipeline &agrave; 3 &eacute;tages, supporte les modes ECB, CBC, CFB-8
+		et &quot;CFB-1&quot;. De plus le prix est tr&egrave;s raisonable si on le compare &agrave; d'autres puces DES haut
+		de gamme. Appelez Newbridge Microsystems, Ottawa, 613-592-0714. (... il n'y a pas de probl&egrave;me d'import/export
+		entre les Etats-Unis et le Canada). Si vous avez besoin de circuits int&eacute;gr&eacute;s maison, DES ou &agrave;
+		cl&eacute; publique, alors Timestep Encryption a d&eacute;velopp&eacute; les puces cryptographiques de Newbridge
+		et d'autres circuits int&eacute;gr&eacute;s pour des &eacute;tablissements scolaires ou commerciaux. On peut les
+		joindre au 613-820-0024.</FONT>
+	</BLOCKQUOTE>
+	<H2><A NAME="13"></A><FONT SIZE="4" FACE="Arial">3.13. Peut-on utiliser le DES pour chiffrer des donn&eacute;es
+	classifi&eacute;es?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Le DES n'a pas &eacute;t&eacute; con&ccedil;u pour prot&eacute;ger des donn&eacute;es
+	classifi&eacute;es. Le standard FIPS 46-1 dit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Ce standard sera utilis&eacute; par tous les d&eacute;partements et agences f&eacute;d&eacute;raux
+		pour la protection cryptographique des donn&eacute;es informatiques quand les conditions suivantes s'appliquent:
+		<BR>
+		1. ... une protection cryptographique est requise; et 2. Les donn&eacute;es ne sont pas classifi&eacute;es selon
+		le National Security Act de 1947, amend&eacute;, ou le Atomic Energy Act de 1954, amend&eacute;.</FONT>
+	</BLOCKQUOTE>
+	<H2><A NAME="14"></A><FONT SIZE="4" FACE="Arial">3.14. Qu'est-ce que le chiffrement ECB, CBC, CFB, et OFB?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Ce sont les fa&ccedil;ons d'utiliser des chiffrements par bloc, comme le DES, pour
+	chiffrer des messages, des fichiers et des blocs de donn&eacute;es, connus sous le nom de modes op&eacute;ratoires.
+	<BR>
+	Quatre modes op&eacute;ratoires sont d&eacute;finis dans FIPS 81 (2 D&eacute;cembre 1980) et aussi dans ANSI X3.106-1983.
+	<BR>
+	<BR>
+	FIPS 81 sp&eacute;cifie que quand des donn&eacute;es ASCII sur 7 bits sont envoy&eacute;es par octets, le bit le
+	plus significatif inutilis&eacute; doit &ecirc;tre mis &agrave; 1. <BR>
+	<BR>
+	FIPS 81 sp&eacute;cifie aussi le bourrage pour les blocs courts. <BR>
+	<BR>
+	Les quatre modes op&eacute;ratoires du DES dans les standards FIPS/ANSI sont:</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Electronic Code Book [livre de codage &eacute;lectronique] (ECB),</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Cipher Block Chaining [Chiffrement avec chainage des blocs] (CBC),</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">K-bit Cipher FeedBack [r&eacute;troaction sur K bits] (CFB)</FONT>
+</BLOCKQUOTE>
+
+
+<UL>
+	<UL>
+		<LI>
+	</UL>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">K-bit Output FeedBack [r&eacute;troaction de sortie] (OFB).<BR>
+	Les quatre modes ANSI/FIPS ont tr&egrave;s peu de &quot;propagation d'erreurs&quot;. Si un bit seul est en erreur
+	dans le flux, la longueur de la cha&icirc;ne erreur sera au plus de 128 bits. <BR>
+	Un cinqui&egrave;me mode op&eacute;ratoire, utilis&eacute; dans Kerberos et ailleurs mais d&eacute;fini dans aucun
+	stanard, est le error-Propagating Cipher Block Chaining [Chiffrement par chainage de blocs avec propagation d'erreurs]
+	(PCBC). Contrairement aux quatre modes standard, le PCBC &eacute;tend l'effet d'une simple erreur de bit dans tout
+	le flux restant apr&egrave;s l'erreur. <BR>
+	[NdT: ce mode &eacute;tait utilis&eacute; dans Kerberos 4 mais a &eacute;t&eacute; abandonn&eacute; dans Kerberos
+	5 : on y a d&eacute;couvert des faiblesses] <BR>
+	<BR>
+	Ces cinq m&eacute;thodes sont expliqu&eacute;es ci-dessous dans une notation similaire au langage C. <BR>
+	<BR>
+	Quelques d&eacute;finitions:</FONT>
+</BLOCKQUOTE>
+
+
+<DL>
+	<DL>
+		<DT><FONT SIZE="2" FACE="Arial">P[n]</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">Le n-i&egrave;me bloc du texte clair, l'entr&eacute;e du chiffrement, la sortie
+		du d&eacute;chiffrement. La taille du bloc est d&eacute;termin&eacute;e par le mode.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">C[n]</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">Le n-i&egrave;me bloc du texte chiffr&eacute;, la sortie du chiffrement, l'entr&eacute;e
+		du d&eacute;chiffrement. La taille du bloc est d&eacute;termin&eacute;e par le mode.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">E(m)</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">La fonction de chiffrement du DES, sur un bloc m de 64 bits, en utilisant les sous-cl&eacute;s
+		g&eacute;n&eacute;r&eacute;es &agrave; partir d'une cl&eacute; de 56 bits.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">D(m)</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">La fonction de chiffrement du DES, sur un bloc de 64 bits, en utilisant les m&ecirc;mes
+		sous-cl&eacute;s que E(m), si ce n'est qu'elles sont en ordre inverse.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">IV</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">Un vecteur d'initialisation de 64 bits, une valeur secr&egrave;te qui, avec la
+		cl&eacute; est partag&eacute;e par le chiffreur et le d&eacute;chiffreur.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">I[n]</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">La n-i&egrave;me valeur d'une variable de 64 bits, utilis&eacute;e dans certains
+		modes.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">R[n]</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">La n-i&egrave;me valeur d'une variable de 64 bits, utilis&eacute;e dans certains
+		modes.</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">LSB(m,k)</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">Les k bits les moins significatifs (de droite) de m. <BR>
+		Par exemple: m &amp; ((1 &lt;&lt; k) - 1)</FONT>
+		<DT><FONT SIZE="2" FACE="Arial">MSB(m,k)</FONT></DT>
+		<DD><FONT SIZE="2" FACE="Arial">Les k bits les plus significatifs (de gauche) de m. <BR>
+		Par exemple: (m &gt;&gt; (64-k)) &amp; ((1 &lt;&lt; k) - 1)</FONT>
+	</DL>
+</DL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial"><BR>
+	Les op&eacute;rateurs = ^ &lt;&lt; &gt;&gt; &amp; sont d&eacute;finis comme dans le langage C.</FONT>
+</BLOCKQUOTE>
+
+
+<DL>
+	<DL>
+		<DT><STRONG><FONT SIZE="2" FACE="Arial">Livre de codage &eacute;lectronique (ECB)</FONT></STRONG></DT>
+		<DD><FONT SIZE="2" FACE="Arial">P[n] et C[n] font chacun 64 bits de long. 
+		<TABLE BORDER="1">
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Chiffrement</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">D&eacute;chiffrement</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = E(P[n])</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = D(C[n])</FONT></TD>
+			</TR>
+		</TABLE>
+</FONT>
+		<DT><STRONG><FONT SIZE="2" FACE="Arial">Chiffrement par chainage de blocs (CBC)</FONT></STRONG></DT>
+		<DD><FONT SIZE="2" FACE="Arial">P[n] et C[n] font chacun 64 bits de long. 
+		<TABLE BORDER="1">
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">Chiffrement</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">D&eacute;chiffrement</FONT></TD>
+			</TR>
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[0] = E(P[0]^IV)</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[0] = D(C[0])^IV</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">n&gt;0</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = E(P[n]^C[n-1])</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = D(C[n])^C[n-1]</FONT></TD>
+			</TR>
+		</TABLE>
+</FONT>
+		<DT><STRONG><FONT SIZE="2" FACE="Arial">Chiffrement par chainage de blocs avec propagation (PCBC)</FONT></STRONG></DT>
+		<DD><FONT SIZE="2" FACE="Arial">P[n] et C[n] font chacun 64 bits de long. 
+		<TABLE BORDER="1">
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">Chiffrement</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">D&eacute;chiffrement</FONT></TD>
+			</TR>
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[0] = E(P[0]^IV)</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[0] = D(C[0])^IV</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">n&gt;0</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = E(P[n]^P[n-1]^C[n-1])</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = D(C[n])^P[n-1]^C[n-1]</FONT></TD>
+			</TR>
+		</TABLE>
+</FONT>
+		<DT><STRONG><FONT SIZE="2" FACE="Arial">Chiffrement par r&eacute;troaction sur k bits (CFB)</FONT></STRONG></DT>
+		<DD><FONT SIZE="2" FACE="Arial">P[n]et C[n] font chacun k bits de long, 1 &lt;= k &lt;= 64. 
+		<TABLE BORDER="1">
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">Chiffrement</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">D&eacute;chiffrement</FONT></TD>
+			</TR>
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">n &gt; 0</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = I[n-1]&lt;&lt;k | C[n-1]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = I[n-1]&lt;&lt;k | C[n-1]</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = MSB(E(I[n]),k)</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = MSB(E(I[n]),k)</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = P[n]^R[n]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = C[n]^R[n]</FONT></TD>
+			</TR>
+		</TABLE>
+<BR>
+		Notez que si k==64, ceci se simplifie en: 
+		<TABLE BORDER="1">
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">n &gt; 0</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = C[n-1]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = C[n-1]</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = E(I[n])</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = E(I[n])</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = P[n]^R[n]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = C[n]^R[n]</FONT></TD>
+			</TR>
+		</TABLE>
+<BR>
+		Notes sur le CFB: Comme I[n] d&eacute;pend seulement du texte clair ou chiffr&eacute; de l'op&eacute;ration pr&eacute;c&eacute;dente,
+		la fonction E() peut &ecirc;tre calcul&eacute;e en parall&egrave;le avec la r&eacute;ception du texte avec lequel
+		elle va &ecirc;tre utilis&eacute;e.</FONT>
+		<P>
+		<DT><STRONG><FONT SIZE="2" FACE="Arial">R&eacute;troaction en sortie sur k bits (OFB)</FONT></STRONG></DT>
+		<DD><FONT SIZE="2" FACE="Arial">P[n] et C[n] font chacun k bits de long, 1 &gt;= k &gt;= 64. 
+		<TABLE BORDER="1">
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">Chiffrement</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">D&eacute;chiffrement</FONT></TD>
+			</TR>
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">n &gt; 0</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = I[n-1]&lt;&lt;k | R[n-1]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = I[n-1]&lt;&lt;k | R[n-1]</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = MSB(E(I[n]),k)</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = MSB(E(I[n]),k)</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = P[n]^R[n]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = C[n]^R[n]</FONT></TD>
+			</TR>
+		</TABLE>
+<BR>
+		Notez que si k==64, ceci se simplifie en: 
+		<TABLE BORDER="1">
+			<TR>
+				<TD>&nbsp;</TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[0] = IV</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">n &gt; 0</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = R[n-1]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">I[n] = R[n-1]</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = E(I[n])</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">R[n] = E(I[n])</FONT></TD>
+			</TR>
+			<TR>
+				<TD><FONT SIZE="2" FACE="Arial">Pour tout n</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">C[n] = P[n]^R[n]</FONT></TD>
+				<TD><FONT SIZE="2" FACE="Arial">P[n] = C[n]^R[n]</FONT></TD>
+			</TR>
+		</TABLE>
+<BR>
+		Notes sur l'OFB: le chiffrement et le d&eacute;chiffrement sont identiques. Comme I[n] est ind&eacute;pendant de
+		P et C, la fonction E() peut &ecirc;tre calcul&eacute;e en avance sur la r&eacute;ception du texte clair/chiffr&eacute;
+		avec lequel elle va &ecirc;tre utilis&eacute;e.</FONT>
+	</DL>
+</DL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Notes suppl&eacute;mentaires sur les modes op&eacute;ratoires du DES: <BR>
+	L'ECB et le CBC utilisent E() pour chiffrer et D() pour d&eacute;chiffrer, mais les modes par r&eacute;troaction
+	utilisent E() pour chiffrer et d&eacute;chiffrer. Ceci invalide cet argument erron&eacute;:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Les mises en oeuvre du DES qui proposent E() mais pas D() ne peuvent pas &ecirc;tre
+		utilis&eacute;es pour la confidentialit&eacute; des donn&eacute;es.</FONT>
+	</BLOCKQUOTE>
+	<P>
+<HR ALIGN="CENTER">
+
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

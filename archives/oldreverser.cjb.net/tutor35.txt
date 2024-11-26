@@ -1,0 +1,342 @@
+
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S -- - м   њ     њ
+     А    м  А      м м  м       А мА          А м     м         олм   м А
+  мллВпплллнмВлппплллнолнолллппплВмоВллпплллмАмВлн пм  олллпплллмАВллм олВм
+  лллн АВллнллл Апппп ппп ллл А лллнллл  оллВАВлл А ллнолллн оллВ лллплмлллн
+  ВллппплллнлллнА АВлнлллнллл А лллнлллпппллмоллл А лллолллппВллм лллн плллн
+ АВллнА ллл ВллнА лллнлллАВлл Аолллнлллн млллолллнААВллАВллн олллнлллнА лллм
+ олллнА лллолллнА лллоллВоллл АолллАВллнАолллолллн олллнлллнА лллнлллнА ллВпм
+ олллнА лллолллнА лллоллВоллл Аолллоллл Аолллолллн олллнлллнААВлл ВллнА ллн
+ оллВ АоллВпБллмммлллБллВолллммллБпВлллммллллпллллмВлллпВлБм олп АВллл олп
+  п      пА  п    п    п       п          п         п   А    п      п  п
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S --  -    њ     њ
+                                SRT - CRO
+
+
+                          Commercial Protection:
+
+        		How to Unpack Armadillo v1.75a  
+								 
+		Tutorial by ACiD BuRN [Immortal Descendants]			 
+                      	     (translated on 17th May 2000) 		
+
+
+
+Little description of Armadillo.You can see this on their official site:
+
+
+-------------------------------------------------------------------------------------------
+
+Armadillo is a powerful software protection system. It wraps around your program like an
+armored shell, defending your work from pirates and program crackers with state-of-the-art 
+encryption, data compression, and other security features. It also allows you to add a 
+complete software protection and registration-key system to your existing programs in five 
+minutes or less, with no changes to your program's code! And it works with any language
+that produces a 32-bit Windows EXE file.
+
+.....
+
+
+Armadillo modifies your program's EXE file, using a key you select and state-of-the-art 
+compression and encryption tools to foil any attack relying on a decompiler -- all they can 
+decompile is the code for the Armadillo decompressor itself, not your program. Your program 
+is decrypted in memory when it is run, after Armadillo is satisfied that it's safe to do so 
+and that the user has a valid license (more on licenses below). This, along with some advanced
+ snoop-detection functions, prevents most patch/bypass attacks -- it would require far more 
+knowledge (and a great deal more work) to patch your program while it's encrypted.
+
+
+-------------------------------------------------------------------------------------------
+
+Looks nice :) (errr, looked hehehe coz i owned it :)
+
+
+0) Introduction:
+
+
+I was surfing on their website where we can download the shareware version of
+Armadillo, and when i saw all possibles options of this shit , i told me that i should
+have a closer look on it :)
+So, after the installation , i took calc.exe ( in the windows dir) and i packed it using
+standard options to look the beast ;) hehe
+
+
+
+
+1) How to run a protected file with Soft-ice loaded:
+
+
+Nowadays , commercial protections use anti sice tricks... Armadillo as well.
+There is even 3 detections in it:
+
+- 1st one is the well known meltice.(Createfila \\.\SICE, \\.\NTICE and \\.\SIWDEBUG)
+- 2nd one is the IsDebuggerPresent tricks. the API getprocaddress is used...
+- and the last one is a little INT 3h..
+
+
+How to bypass these motherfuckin' tricks ?!
+
+We need to run the packed file with the soft ice loader.So , load it with it and then
+Run it...
+Soft-ice must pop up and you prolly see some little: INVALID
+At this time , put a BPX BPX Createfilea , press F5 3 times and you should arrive on the
+check. it looks like that :
+
+
+025F:10003895  FF1520A00010        CALL    [KERNEL32!CreateFileA]
+025F:1000389B  83F8FF              CMP     EAX,-01
+025F:1000389E  7409                JZ      100038A9   <-- here change it to JMP 100038A9
+025F:100038A0  50                  PUSH    EAX
+025F:100038A1  FF1538A00010        CALL    [KERNEL32!CloseHandle]
+025F:100038A7  EB0B                JMP     100038B4
+025F:100038A9  FF1544A00010        CALL    [KERNEL32!GetLastError]
+025F:100038AF  83F802              CMP     EAX,02
+025F:100038B2  7404                JZ      100038B8
+025F:100038B4  C645FF01            MOV     BYTE PTR [EBP-01],01
+025F:100038B8  8B4604              MOV     EAX,[ESI+04]
+
+
+
+We need to change the JZ 100038A9 to JMP 100038A9.
+For this, you just have to be at the good line in sice ( The JZ one...) and then under sice
+you type:
+
+A "press Enter"
+JMP 100038A9 "press Enter"
+"press Echap"
+
+Goody , the jz became a JMP , now we gotta trace with F10 and we pass through the 
+CALL  [KERNEL32!GetLastError] , After passing it , we see : CMP EAX,2.
+If EAX is not equal to 2 then it is fucked! OK ...
+Look in EAX and we have EAX = 2  So it's good :))
+Press F5 , we see the same thing , CMP EAX,2.  EAX is still equal to 2 so lets continue...
+Press F5, we see the same thing CMP EAX, 2 and EAX = 2 so it is OK too...
+We press F5 for the last check, but this time when we are on CMP EAX,2 we can see EAX = 32
+Hmm, if we don't fix it , it ain't going to work :-|
+So , just put 2 in EAX and all will be good :)
+
+Under Soft-ice, just type : R EAX 2
+W00p EAX changed to 2. So the CMP EAX,2 will be good :) everything is OK :)
+
+Once this shit is done , we gotta kill the 2nd Soft ice check 
+It uses the GetProcAddress API, so set a BPX on it and press F5.
+Just press F12 once to get out of the call and you should meet that piece of code ( or
+something similar)
+
+
+025F:XXXXXXXX  XXXXXXXXXXXX        CALL    [KERNEL32!GetProcAddress]
+025F:100038ED  3BC3                CMP     EAX,EBX
+025F:100038EF  740A                JZ      100038FB   <--- DO un R FL Z
+025F:100038F1  FFD0                CALL    EAX
+025F:100038F3  85C0                TEST    EAX,EAX
+025F:100038F5  7404                JZ      100038FB
+025F:100038F7  C645FF01            MOV     BYTE PTR [EBP-01],01
+025F:100038FB  56                  PUSH    ESI
+025F:100038FC  FF1548A00010        CALL    [KERNEL32!FreeLibrary]
+
+
+You prolly see CMP EAX,EBX and the conditional JMP just after it ...
+Here we have to reverse the Zero Flag and the programme will work normaly !
+To reverse the Zero Flag , you just have to type: R FL Z (under soft ice of course...)
+once you are at the good line ( here it is : 025F:100038EF  740A     JZ      100038FB )
+At this point of time , we have to trace with F10 like a fool and we gotta see the 
+famous INT 3h coming ;)
+But before, like the version of Armadillo i'm using is shareware , we will see a nag screen
+telling us that we're using an unregistered version ... (hehe , for now :)
+So click on OK and continue to trace ...
+
+This nag is quite simple to overcome , we just have to put a RET in the call and it is done :) 
+But we gotta kick out all the garbage putted by Armadillo , so we don't give a flying fuck about
+it !
+And it is done , Now we can Work with soft ice loaded and unpack the beast !
+But i cannot prevent me to say a little remark
+
+
+
+-------Remark:-----------------------------------------------------------------------------
+
+Like you prolly noticed , it is possible to protect exe with a name / serial 
+at the start of the prog who can be boring to kick , 'cause we wanna run the prog in memory ...
+I am telling you this 'cause the file we are studing doesn't contain name / serial
+'cause we packed it using standards options!
+But when i wanted to rip the nag off , i did a mistake and i patched the bad CALL!
+I entered the wrong one , and put one RET on the PUSH EDI ( i think , well on the
+1st instruction !)
+Then , i came out of this call ( 'cause of the RET eheh ) and i traced with F10.
+And then , guess what ? a motherfuckin' Dialog Box poped up ! asking me to enter the name serial
+huhu ! what the fuck is that ? we didn't activate that crap, but just with a patch we can got
+this screen !
+Looks like whatever we do , the exe contains the part of code for the name / serial dialog !
+Weird, but i conclude that must be quite easy to rip that dialog off! just a Call to play with!
+and we got a standard packed exe!
+Well , didn't have time to explore and study it much, but it can be intresting !
+It's possible that i am saying bullshits hehe 'coz i didn't have a closer look yet ;)
+Looks like every Commercial Protections ! STUPID :)
+
+-------End of Remark:---------------------------------------------------------------------
+
+
+So, let's finish our Work :)
+We continue to trace with F10 until we see the INT 3h fucker !
+After a bit , we see that:
+
+
+025F:00402241  2401                AND     AL,01
+025F:00402243  8885B8FEFFFF        MOV     [EBP-0148],AL
+025F:00402249  BA6D447546          MOV     EDX,4675446D
+025F:0040224E  8995B0FEFFFF        MOV     [EBP-0150],EDX
+025F:00402254  C785C4FEFFFF260C3604MOV     DWORD PTR [EBP-013C],04360C26
+025F:0040225E  895DFC              MOV     [EBP-04],EBX
+025F:00402261  8B85C4FEFFFF        MOV     EAX,[EBP-013C]
+025F:00402267  3385B0FEFFFF        XOR     EAX,[EBP-0150]
+025F:0040226D  8BE8                MOV     EBP,EAX
+025F:0040226F  B804000000          MOV     EAX,00000004
+025F:00402274  CC                  INT     3                 <----- the Goddamn INT 3h :)
+025F:00402275  3115148D4000        XOR     [00408D14],EDX
+025F:0040227B  A180804000          MOV     EAX,[00408080]
+025F:00402280  310584804000        XOR     [00408084],EAX
+025F:00402286  834DFCFF            OR      DWORD PTR [EBP-04],-01
+025F:0040228A  EB18                JMP     004022A4
+
+
+
+the protection is really similar to the 1.73 one! Lads at Armadillo' society are lazy ass !
+Didn't work lot for a protection told as "uncrackable" <---- LOL :)
+
+In short , you prolly noticed the "MOV EAX, 00000004".
+To bypass this check, you just have to put a JMP 0 instead of the MOV :)
+In Soft-ice , type:
+A "enter"
+JMP 0 "enter"
+"Echap"
+
+Ok, we just changed mov eax,4 to jmp 0.
+This will produce an exception and the programme will believe that Soft-ice isn't loaded!
+and it will run Fine :) enjoy it hehe :)
+We now have Calc.exe , ran with sice loaded , but it is still packed !
+
+
+2) How to wipe Armadillo out of the protected EXE !
+
+
+A) recover and dump what we need:
+
+It is this part who pissed me the much , 'cause i got one dumb error when i was making
+the new exe :( i restarted many times , and now look how i did:
+btw, it is easy , i was doing something wrong , i think i need to sleep sometimes hehe :)
+i was using the wrong section size ! of .text.   
+
+So , you ran your prog and if you look in the directory where the exe is , you can see
+one teporary file (heheheh !)
+Copy it , this bitch will be needed later!
+Then run procdump and look in the process list , you should see calc.exe and the
+temporary file aswell!
+Just do a right click on it (we wanna dump the TEMP file , not the exe..) and then you
+have to do a full Dump...
+We now have one new exe on the hard drive, it is the temp file dumped and we also got
+one temp file ( the one we copied earlier)
+
+
+B) How to make a working exe without that Goddamn Armadillo ;)
+
+If you rename the temp file in one exe file , and then run it, it will crash to hell!
+It is normal 'cause if you Hexedit it , you gotta see a lot of "XX"!
+Looks like the 1st section is fucked up !
+Hmm, let's run our Dump and this asshole crash too :-/
+
+GogogadgetauProcdump lol , you understood , you have to run Procdump and then to use its 
+PE editor on the Dump. you should see sections of the file , you have to look for the 1st 
+of them ! 
+I got this:
+
+- For the ".text" section :
+
+
+   Virtual Offset: 00001000 
+         Raw Size: 11A0E
+       Raw Offset: 1000
+
+
+Ok, keep that on a paper , we will use them !
+With Procdump  right click on this section (.text) and then : "saves to file" this will dump it
+on your hard disk! (example: text.bin).We do this coz this section is completly GOOD !
+No fuckin' "XX" in it !
+the Temp file got XX.Hmm , in fact Armadillo re-writte the section in memory...
+Once , the dumped section is on your disk , you hexedit your exe with Hexworkshop 
+(the exe is the temp file , renamed..)
+Open also the dumped section (aka text.bin in this example)
+
+Now , in  Hexworkshop, press alt+f5, enter Raw offset of the section that you want import.
+Here it is 1000 ( look above for the value).So enter 1000 and press OK...
+Go in the Edit menu and click on "select block" and enter the length (size) of the section
+Here it is : 11A0E...
+
+Look the opened file (text.bin) , and press 'ctrl+a' to select all...
+copy that with 'ctrl+c'.
+
+go back in the main window ( exe one) in Hexworkshop (the temp file renamed...)
+and paste the data you just copied (copied from text.bin).
+'ctrl+v' or Edit menu and paste.
+
+Save your file, and you now got a garbageless .text section ! and working :)
+It doesn't contain "XX" anymore ! hehe
+Run your saved executable and W00p :) , it is working ! IT RUNS !! IT RUNS lol :)
+
+But , to be sure that the file gotta work on every OS version we can rebuild the PE
+with procdump.
+
+It is free , so what about doing it ?! :)
+
+- Run Procdump (Thx G-RoM :)
+Go in Options and select:
+
+[X]Recompute Object Size
+[X]Optmize PE Structure
+
+[X] Use actual import infos
+
+and click on OK
+
+Click on Rebuild PE and open your saved file.
+Procdump do for us one valid import table and our executable is now more trustable heh :)
+Run it to see if it still works ..
+It is ok , this bastard didn't crash ehehe !
+Ok , the tutorial is over , and i hope you learnt something with it !
+
+All my tuts are here: http://acidburn2k.cjb.net/
+
+
+3) the Ending words:
+
+
+Greetings: 
+group greetings: ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE - CC
+
+Also greetingz to: (no specific order)
+
+R!SC, ^INFeRNo^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , CrackZ , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo ,
+Killer_3K, TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup, 
+zoltan , [yAtes], TarGon , Icecream , Punkguy2 , Sortof, TRDdonjuan,
+Lord Soth, Judged, G-Rom, Quantico, Christal, psike, Leo0n, Albator,
++Spath, +Frog's Print, toutim ...
+
+and others i know, but if i forgot your nick , sorry...
+
+Tutorial dedicated to my love
+
+Translated on 17/05/2000
+On a fucking day , when your still ill , and you don't know what to do execpt sleeping...
+too lazy to crack or to writte a new tut , so i traduced it for the US d00ds :)
+Cya in Hell, 
+
+			ACiD BuRN
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+
+		
+				http://www.immortaldescendants.org/

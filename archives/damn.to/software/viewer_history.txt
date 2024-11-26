@@ -1,0 +1,130 @@
+DAMN NFO Viewer v2.10 History
+
+[A number in parentheses stands for the build the bug was first reported for]
+
+Version 2.10 build 31 RC 3   [Sep 12, 2002]
+- Heh... frankly I completely forgot all the modifications I've made, but
+  I guess there were some... bug fixes mostly ;)
+
+Version 2.10 build 29 RC 2   [Oct 10, 2001]
+- Finished Plug-ins support. Currently I really don't know what except release verification
+  they can be useful for, but the one for DAMN releases is ready ;)
+- Added uninstaller
+- Changed some icons
+- Fixed some Unicode compatibility issues
+
+Version 2.10 build 27 RC 1   [Oct  5, 2001]
+- Added language: Chinese Simplified (thanks to Laofuzihere)
+- Added Unicode version of the program, which is automatically installed instead of
+  the ANSI one in case your OS supports Unicode (WinNT/Win2k/WinXP). Unicode version
+  is better ;)
+- During installation you can now choose interface languages you want to be installed
+- Message boxes now display Windows XP icons.
+- Removed file:// hyperlink detection (just in case)
+- Added 'TranslationAuthor' value to language dlls' version information
+- Some internal tweaking (performance mostly)
+
+Version 2.10 build 25 BETA 6 [Sep 27, 2001]
+- Fixed the bug that made hyperlinks appear at wrong positions (24)
+- Added ReadMe.txt with some useful information inside ;)
+
+Version 2.10 build 24 BETA 5 [Sep 23, 2001]
+- Added language: Dutch (thanks to Silver Premium)
+- Pressing ESC key now quits the application
+- Dropped PFTW, now using own installer
+- Caret is now hidden when Direct Scrolling is on
+- Fixed: random symbols would appear beyond the end of text sometimes (20)
+- The Viewer now correctly displays files with doubled (e.g. because of 
+  improper multiple ascii <-> binary conversions) line feeds
+- Some localized versions of Windows 2000 (as well as Windows XP) have been
+  naughty again! They have proved themselves able of replacing the glyphs
+  even in raster fonts :/ So, with no decent words left for Microsoft
+  programmers I had to switch to using raw bitmap routines instead of fonts.
+
+Version 2.10 build 20 BETA 4 [Aug 19, 2001]
+- Added smart email addresses detection ;)
+
+Version 2.10 build 19 BETA 3 [Aug 18, 2001]
+- Added language: German  (thanks to bloodfragger)
+- Added language: Turkish (thanks to |CARTMAN-eXP|)
+- File Drag&Drop is back
+- Fixed: window would get scrolled when the caret was in the right 
+  part of it (18)
+- Fixed: last line of the file would be missed sometimes (18)
+
+Version 2.10 build 18 BETA 2 [Jul 13, 2001]
+- Added language: Italian   (thanks to zZoVutu)
+- Added language: Norwegian (thanks to the--dud)
+- Added language: Spanish   (thanks to Parque)
+- Added language: Swedish   (thanks to Force)
+- Fixed language combobox sort problem (17)
+
+Version 2.10 build 17 BETA 1 [Jul  8, 2001]
+- Added multiple language support
+  - Added language: French  (thanks to Recca)
+  - Added language: Russian (thanks to me ;)
+- Added text wrap (no wrap/character wrap/word wrap)
+- Added 3 raster fonts for displaying NFO files. They're based on Courier New,
+  Lucida Console and Terminal typefaces. I also coded my own edit control.
+  So I got rid of stupid Microsoft RichEdit control that fails miserably to
+  display text with OEM fonts on some localized versions of Windows
+  (i.e. Simplified Chinese)
+- Improved Shell integration
+- New window layout (it's now a frame window, not a dialog if this is of any
+  meaning for you ;)
+- Added toolbar
+- Removed help file. It only was a waste of space, as most of the options are
+  self-explanatory. Anyway, if you don't understand any of them, look at
+  tooltips in Settings dialog.
+  
+
+Version 2.0.1          [Jan 16, 2001]
+- Added 'Easy Scrolling' feature
+- Added help file
+- Fixed (heh, I hope so) bug with incorrect font under Windows 2000 (I had to
+  add riched32.dll to the package, because Rich Edit Control v2.0 is unable
+  to correctly display text with OEM charset font in some non-English
+  Windows 2000 versions). [it turned out later that won't fix the prob]
+- Improved hyperlinks detection
+- Fixed really rare bug that caused incorrect processing of files with
+  multiple \0 symbols inside
+- Added some sort of setup =)
+
+Version 2.0            [Dec 19, 2000]
+ - Hyperlinks autodetection
+   - Underline hyperlinks option
+   - Customizable hyperlinks color
+   - Customizable hover color
+ - Most Recently Viewed [MRV] Files list
+ - File loading speed increased significally
+ - All new cool 256-color icons for the program and associated files
+ - Settings dialog redesigned. This includes:
+   - Added context help for settings [a cure for clueless]
+   - Redesigned color pickers
+   - Changed layout (it's now a property sheet)
+ - Status bar now displays size of file being viewed
+ - Starting up with File Open dialog can now be turned off
+ - Fixed awkward status bar behaviour for file names with display width
+   exceeding width of the status bar pane.
+ - Fixed problem with window font sometimes getting back to system default.
+ - Added EULA
+ - Added history.txt
+ - Old bugs fixed
+ - New ones coded (uhm... probably =)
+
+Version 1.0.4          [Sep 30, 2000]
+ - Fixes (I hope) v1.0.3 bug with window drawing
+                                                                      
+Version 1.0.3          [Sep 13, 2000]
+ - Copy-on-Select option added
+ - Minor interface enchancements
+                                                                      
+Version 1.0.2          [Jul 12, 2000]
+ - Fixed bug that sometimes caused rendering program window unseen
+                                                                      
+Version 1.0.1          [May 24, 2000]
+ - Fixed the problem with unix-style line breaks handling
+ - Some minor interface improvements
+
+Version 1.0            [May  2, 2000]
+- Initial release

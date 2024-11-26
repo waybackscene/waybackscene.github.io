@@ -1,0 +1,349 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<meta name="Translator" content="Michel Arboi">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Description"
+      content="Traduction française de la FAQ de sci.crypt">
+<meta name="Keywords" content="cryptologie, cryptographie, cryptanalyse,
+      cryptology, cryptography, sci.crypt, FAQ, traduction, français,
+      technique, mot de passe, WordPerfect, Word Perfect, Vigenère,
+      casser, cryptanalyse, coïncidence, index, indice, PGP, PEM,
+      RIPEM, courrier, électronique, mel, mail, Email, RSA, RSAREF,
+      unix, crypt, cbw, crypt breaker's workbench, compression,
+      distance d'unicité, redondance, incassable, clé aléatoire une fois,
+      masque jetable, one time pad, aléatoire, gestion de clé,
+      authentification, confiance, STU III, pseudo-aléatoire, graine, 
+      Enigma, fréquence, piratage, pirate, pirater, logiciel, CDROM,
+      cédérom, codage, VCR+, magnétoscope, numérique, 
+      traduction française">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FAQ de sci.crypt, chapitre 8: Divers points techniques...</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><FONT SIZE="5" FACE="Arial">Divers points techniques...</FONT></H1>
+<P><STRONG><FONT FACE="Arial">Table des mati&egrave;res</FONT></STRONG>
+
+<UL>
+	<LI><FONT SIZE="2" FACE="Arial">6.1. </FONT><A HREF="scicryptFR8.htm#1"><FONT SIZE="2" FACE="Arial">Comment r&eacute;cup&eacute;rer
+	des mots de passe de WordPerfect perdus?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.2. </FONT><A HREF="scicryptFR8.htm#2"><FONT SIZE="2" FACE="Arial">Comment casser un Vigen&egrave;re?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.3. </FONT><A HREF="scicryptFR8.htm#3"><FONT SIZE="2" FACE="Arial">Comment envoyer du courrier
+	chiffr&eacute; sous UNIX? [PGP, RIPEM, PEM, ...]</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.4. </FONT><A HREF="scicryptFR8.htm#4"><FONT SIZE="2" FACE="Arial">La commande UNIX </FONT><KBD><FONT
+	SIZE="2" FACE="Arial">crypt</FONT></KBD><FONT SIZE="2" FACE="Arial"> est-elle s&ucirc;re?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.5. </FONT><A HREF="scicryptFR8.htm#5"><FONT SIZE="2" FACE="Arial">Comment doit-on utiliser la
+	compression avec le chiffrement?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.6. </FONT><A HREF="scicryptFR8.htm#6"><FONT SIZE="2" FACE="Arial">Existe t-il un chiffre incassable?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.7. </FONT><A HREF="scicryptFR8.htm#7"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'&quot;al&eacute;atoire&quot;
+	signifie en cryptographie?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.6. </FONT><A HREF="scicryptFR8.htm#8"><FONT SIZE="2" FACE="Arial">Qu'est-ce que la distance
+	d'unicit&eacute;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.9. </FONT><A HREF="scicryptFR8.htm#9"><FONT SIZE="2" FACE="Arial">Qu'est-ce que la gestion de
+	cl&eacute;s et pourquoi est-ce important?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.10. </FONT><A HREF="scicryptFR8.htm#10"><FONT SIZE="2" FACE="Arial">Puis-je utiliser des nombres
+	pseudo al&eacute;atoires ou chaotiques comme flux de cl&eacute;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.11. </FONT><A HREF="scicryptFR8.htm#11"><FONT SIZE="2" FACE="Arial">Quelle est la fr&eacute;quence
+	correcte des lettres en anglais?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.12. </FONT><A HREF="scicryptFR8.htm#12"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'Enigma?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.13. </FONT><A HREF="scicryptFR8.htm#13"><FONT SIZE="2" FACE="Arial">Comment m&eacute;lange t-on
+	des cartes?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.14. </FONT><A HREF="scicryptFR8.htm#14"><FONT SIZE="2" FACE="Arial">Peut-on emp&ecirc;cher le
+	piratage d'un logiciel en chiffrant un CDROM?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">6.15. </FONT><A HREF="scicryptFR8.htm#15"><FONT SIZE="2" FACE="Arial">Peut-on cryptanalyser automatiquement
+	des syst&egrave;mes simples?</FONT></A>
+</UL>
+
+
+<BLOCKQUOTE>
+	<H2><A NAME="1"></A><FONT SIZE="4" FACE="Arial">6.1. Comment r&eacute;cup&eacute;rer des mots de passe de WordPerfect
+	perdus?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">On a d&eacute;montr&eacute; que le chiffrement dans WordPerfect est particuli&egrave;rement
+	facile &agrave; casser. <BR>
+	La m&eacute;thode utilise un OU exclusif avec deux flux de cl&eacute;s r&eacute;p&eacute;titifs: <BR>
+	un mot de passe entr&eacute; au clavier et un compteur sur un octet initialis&eacute; &agrave; </FONT><EM><FONT
+	SIZE="2" FACE="Arial">1+la longueur du mot de passe</FONT></EM><FONT SIZE="2" FACE="Arial">. On trouvera une description
+	compl&egrave;te dans Bennett &amp; Bergen et Caelli. <BR>
+	<BR>
+	Chris Galas &eacute;crit:</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Il y a quelques temps quelqu'un cherchait une solution pour d&eacute;crypter des
+		documents WordPerfect et je pense avoir trouv&eacute; une solution. Il y a une soci&eacute;t&eacute; nomm&eacute;e:
+		Accessdata (87 East 600 South, Orem, UT 84058), 1-800-658-5199 qui a un logiciel qui d&eacute;crypte les fichiers
+		WordPerfect, Lotus 1-2-3, Quatro-Pro, MS Excel et Paradox. Le co&ucirc;t du logiciel est 185 $. Un prix excessif,
+		mais si vous pensez que votre mot de passe fait 10 caract&egrave;res ou moins, passez-leur un coup de fil et demandez
+		la d&eacute;mo gratuite. La d&eacute;mo d&eacute;crypte les fichiers qui ont un mot de passe de 10 caract&egrave;res
+		au plus.</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Bruce Schneier dit que le num&eacute;ro de t&eacute;l&eacute;phone d'AccessData
+	est 801-224-6970.</FONT>
+	<H2><A NAME="2"></A><FONT SIZE="4" FACE="Arial">6.2. Comment casser un Vigen&egrave;re?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Un chiffre &agrave; cl&eacute; r&eacute;p&eacute;t&eacute;e, o&ugrave; le cryptogramme
+	est quelque chose qui ressemble &agrave; &quot;texte clair&quot; XOR &quot;Cl&eacute;Cl&eacute;Cl&eacute;Cl&eacute;&quot;
+	etc. est appel&eacute; un chiffre de Vigen&egrave;re. Si la cl&eacute; n'est pas trop longue et si le texte clair
+	est en anglais, suivez ces instructions : <BR>
+	1. D&eacute;couvrez la longueur de la cl&eacute; en comptant les co&iuml;ncidences. Essayez tous les d&eacute;calages
+	du cryptogramme par rapport &agrave; lui-m&ecirc;me et comptez les octets qui sont &eacute;gaux. Si les deux morceaux
+	de cryptogrammes ont utilis&eacute; la m&ecirc;me cl&eacute;, environ 6 % des octets seront &eacute;gaux. Sinon,
+	moins de 0,4 % seront &eacute;gaux (en supposant que la cl&eacute; soit compos&eacute;e d'octets de 8 bits al&eacute;atoire
+	et que le texte clair est en ASCII) <BR>
+	[NdT: en fran&ccedil;ais, ces pourcentages seront diff&eacute;rents mais le principe est le m&ecirc;me] <BR>
+	Le plus petit d&eacute;placement qui marche donne la taille de la cl&eacute;. <BR>
+	<BR>
+	2. D&eacute;calez le texte de cette longueur et faites un OU exclusif avec lui-m&ecirc;me. Ceci supprime la cl&eacute;
+	et laisse le texte &quot;XOR&eacute;&quot; avec lui m&ecirc;me. Comme l'anglais a seulement 1 bit d'information
+	r&eacute;elle par octet, deux cha&icirc;nes de textes XOR&eacute;s ensemble ont seulement 2 bits par octet, ce
+	qui donne une redondance suffisante pour choisir un d&eacute;chiffrement unique (et en fait, une cha&icirc;ne de
+	texte XOR&eacute; avec lui m&ecirc;me a une entropie de 1 bit par octet seulement) <BR>
+	[NdT: le lecteur me pardonnera cette traduction barbare de &quot;XORed&quot; par &quot;XOR&eacute;&quot;. je voulais
+	&eacute;viter une p&eacute;riphrase trop lourde] <BR>
+	<BR>
+	Si la cl&eacute; est courte, on peut m&ecirc;me traiter &ccedil;a plus facilement comme une substitution polyalphab&eacute;tique
+	standard. Tous les vieux textes de cryptanalyse expliquent comment casser cela. Entre les mains d'un expert, ces
+	m&eacute;thodes marchent avec un texte seulement dix fois plus long que la cl&eacute;.</FONT>
+	<H2><A NAME="3"></A><FONT SIZE="4" FACE="Arial">6.3. Comment envoyer du courrier chiffr&eacute; sous UNIX? [PGP,
+	RIPEM, PEM, ...]</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Voici une m&eacute;thode populaire, avec la commande </FONT><KBD><FONT SIZE="2"
+	FACE="Arial">des</FONT></KBD><FONT SIZE="2" FACE="Arial">: <BR>
+	<BR>
+	</FONT><KBD><FONT SIZE="2" FACE="Arial">cat file | compress | des private_key | uuencode | mail </FONT></KBD><FONT
+	SIZE="2" FACE="Arial"><BR>
+	<BR>
+	Cependant, il y a un standard Internet en cours appel&eacute; PEM (Privacy Enhanced Mail) [Courrier &agrave; Confidentialit&eacute;
+	Am&eacute;lior&eacute;e]. Il est d&eacute;crit dans les RFC 1421 &agrave; 1424. Pour rejoindre la liste de discussion,
+	contactez </FONT><A HREF="mailto:pem-dev-request@tis.com"><FONT SIZE="2" FACE="Arial">pem-dev-request@tis.com</FONT></A><FONT
+	SIZE="2" FACE="Arial">. Au moment o&ugrave; l'on &eacute;crit ces lignes, une version b&ecirc;ta de PEM est en
+	test. <BR>
+	<BR>
+	Il y a aussi deux programmes disponibles dans le domaine public pour chiffrer du courrier: PGP et RIPEM. Les deux
+	sont disponibles par FTP. Chacun a son propre groupe de discussion: </FONT><A HREF="news:alt.security.pgp"><FONT
+	SIZE="2" FACE="Arial">alt.security.pgp</FONT></A><FONT SIZE="2" FACE="Arial"> et </FONT><A HREF="news:alt.security.ripem"><FONT
+	SIZE="2" FACE="Arial">alt.security.ripem</FONT></A><FONT SIZE="2" FACE="Arial">. Chacun a aussi sa propre FAQ.
+	<BR>
+	<BR>
+	PGP est surtout utilis&eacute; en dehors des Etats-Unis car il utilise l'algorithme RSA sans licence et le brevet
+	RSA est seulement (ou principalement) en force aux Etats-Unis. <BR>
+	<BR>
+	RIPEM est principalement utilis&eacute; aux Etats-Unis car il utilise RSAREF qui est disponible gratuitement aux
+	Etats-Unis mais pas &agrave; l'ext&eacute;rieur. <BR>
+	<BR>
+	Comme les deux programmes utilisent un algorithme &agrave; cl&eacute; secr&egrave;te pour chiffrer le corps du
+	message (PGP utilisait IDEA, RIPEM le DES) et RSA pour chiffrer la cl&eacute;, ils devraient &ecirc;tre capables
+	de communiquer. Bien qu'il y ait eu des appels r&eacute;p&eacute;t&eacute;s pour que chacun puisse comprendre le
+	format et les choix algorithmiques de l'autre, aucune interop&eacute;rabilit&eacute; n'est possible &agrave; cette
+	date (d'apr&egrave;s ce que nous en savons).</FONT>
+	<H2><A NAME="4"></A><FONT SIZE="4" FACE="Arial">6.4. La commande UNIX crypt est-elle s&ucirc;re?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Non. Il existe un programme nomm&eacute; </FONT><EM><FONT SIZE="2" FACE="Arial">cbw</FONT></EM><FONT
+	SIZE="2" FACE="Arial"> (crypt breaker's workbench) qui peut faire des attaques texte chiffr&eacute; seul contre
+	les fichiers chiffr&eacute;s par </FONT><KBD><FONT SIZE="2" FACE="Arial">crypt</FONT></KBD><FONT SIZE="2" FACE="Arial">.</FONT>
+	<H2><A NAME="5"></A><FONT SIZE="4" FACE="Arial">6.5. Comment doit-on utiliser la compression avec le chiffrement?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Beaucoup de gens ont propos&eacute; de faire une compression parfaite suivie par
+	une m&eacute;thode de chiffrement simple (par exemple XOR avec une cl&eacute; r&eacute;p&eacute;t&eacute;e). Ca
+	pourrait marcher, &agrave; condition que vous puissiez faire une compression parfaite. Malheureusement, ce n'est
+	faisable que si vous connaissez la distribution exacte de toutes les entr&eacute;es possibles, ce qui est loin
+	d'&ecirc;tre le cas. <BR>
+	<BR>
+	La compression aide le chiffrement en r&eacute;duisant la redondance du texte clair. Ca augmente la taille du texte
+	chiffr&eacute; que vous pouvez envoyer avec une cl&eacute; d'une taille donn&eacute;e. <BR>
+	<BR>
+	Presque tous les syst&egrave;mes de compression, &agrave; moins qu'ils n'aient &eacute;t&eacute; con&ccedil;u avec
+	la cryptographie &agrave; l'esprit, produisent une sortie qui d&eacute;marre avec une redondance tr&egrave;s &eacute;lev&eacute;e.
+	Par exemple la sortie de la commande Unix </FONT><KBD><FONT SIZE="2" FACE="Arial">compress</FONT></KBD><FONT SIZE="2"
+	FACE="Arial"> commence par un nombre magique bien connu de trois octets. Ceci donne un </FONT><EM><FONT SIZE="2"
+	FACE="Arial">texte clair connu</FONT></EM><FONT SIZE="2" FACE="Arial"> qui peut &ecirc;tre utilis&eacute; dans
+	certaines attaques. Cependant, la compression est g&eacute;n&eacute;ralement b&eacute;n&eacute;fique car elle supprime
+	les autres textes clairs connus au milieu du texte. En g&eacute;n&eacute;ral, plus basse est la redondance du texte
+	clair plus difficile est la cryptanalyse. <BR>
+	<BR>
+	De plus, la compression raccourcit le texte en entr&eacute;e et en sortie, et r&eacute;duit le temps de calcul
+	n&eacute;cessaire pour l'algorithme de chiffrement, donc m&ecirc;me si la s&eacute;curit&eacute; n'&eacute;tait
+	pas accrue, la compression avant chiffrement serait b&eacute;n&eacute;fique. <BR>
+	<BR>
+	La compression apr&egrave;s chiffrement est stupide. Si l'algorithme de chiffrement est bon, il produira une sortie
+	statistiquement indiscernable d'une source al&eacute;atoire, et aucun algorithme de compression ne peut r&eacute;ussir
+	&agrave; compresser des octets al&eacute;atoires. D'un autre c&ocirc;t&eacute;, si la compression r&eacute;ussit
+	&agrave; trouver un mod&egrave;le qui compresse la sortie de l'algorithme de chiffrement, il y a une faille dans
+	cet algorithme.</FONT>
+	<H2><A NAME="6"></A><FONT SIZE="4" FACE="Arial">6.6. Y a t-il un chiffre incassable?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Oui. La cl&eacute; al&eacute;atoire une fois [ou masque jetable] est incassable.
+	Malheureusement il faut distribuer une cl&eacute; aussi longue que le texte clair. <BR>
+	<BR>
+	Bien s&ucirc;r, un cryptosyst&egrave;me n'a pas besoin d'&ecirc;tre absolument incassable pour &ecirc;tre utile.
+	Il lui suffit plut&ocirc;t d'&ecirc;tre assez fort pour r&eacute;sister &agrave; des attaques venant des ennemis
+	potentiels pendant la dur&eacute;e de validit&eacute; des donn&eacute;es qu'il prot&egrave;ge.</FONT>
+	<H2><A NAME="7"></A><FONT SIZE="4" FACE="Arial">6.7. Qu'est-ce qu'&quot;al&eacute;atoire&quot; veut dire en cryptographie?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Les applications cryptographiques demandent plus qu'un simple g&eacute;n&eacute;rateur
+	pseudo al&eacute;atoire commun. Une source de bits est cryptographiquement al&eacute;atoire s'il est impossible
+	de calculer ce que sera le Ni&egrave;me bit en connaissant l'algorithme ou le mat&eacute;riel qui g&eacute;n&egrave;re
+	le flux et la s&eacute;quence des N-1 premiers bits, quel que soit N. <BR>
+	<BR>
+	Un g&eacute;n&eacute;rateur logiciel (ou pseudo al&eacute;atoire) est une fonction qui transforme une graine vraiment
+	al&eacute;atoire en une cha&icirc;ne de bits plus longue et apparemment al&eacute;atoire. Cette graine doit &ecirc;tre
+	suffisamment grosse pour ne pas pouvoir &ecirc;tre devin&eacute;e par l'opposant. Id&eacute;alement, elle devrait
+	&ecirc;tre r&eacute;ellement al&eacute;atoire (peut-&ecirc;tre g&eacute;n&eacute;r&eacute;e par un dispositif mat&eacute;riel)
+	<BR>
+	<BR>
+	Par exemple, ceux qui ont des Sparcstation 1 peuvent g&eacute;n&eacute;rer des nombres al&eacute;atoires en utilisant
+	l'entr&eacute;e audio sans micro comme source. Par exemple: <BR>
+	</FONT><KBD><FONT SIZE="2" FACE="Arial">cat /dev/audio | compress - &gt; foo </FONT></KBD><FONT SIZE="2" FACE="Arial"><BR>
+	donne un fichier &agrave; haute entropie (pas totalement al&eacute;atoire, mais avec &quot;beaucoup de hasard&quot;).
+	On peut chiffrer ce fichier en utilisant un deses morceaux comme cl&eacute;, pour convertir cette graine en cha&icirc;ne
+	pseudo al&eacute;atoire. <BR>
+	<BR>
+	Quand on cherche des dispositifs mat&eacute;riels qui produisent cette entropie, il est important de mesurer r&eacute;ellement
+	cette entropie plut&ocirc;t que supposer que &ccedil;a doit &ecirc;tre al&eacute;atoire parce que &ccedil;a a l'air
+	compliqu&eacute;. Par exemple, les temps de r&eacute;ponse d'un disque ont l'air impr&eacute;visibles pour beaucoup
+	de gens mais un disque qui tourne ressemble beaucoup &agrave; une horloge et ses temps de r&eacute;ponse ont une
+	entropie assez basse.</FONT>
+	<H2><A NAME="8"></A><FONT SIZE="4" FACE="Arial">6.6. Qu'est-ce que la distance d'unicit&eacute;?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">La distance d'unicit&eacute; est une approximation de la quantit&eacute; de texte
+	chiffr&eacute; telle que sa taille en bits est &eacute;gale &agrave; la somme de v&eacute;ritable information (entropie)
+	qu'il y a dans le texte clair correspondant et dans la cl&eacute;. Des textes clairs sensiblement plus longs que
+	&ccedil;a ont probablement un seul d&eacute;chiffrement valide. C'est utilis&eacute; pour v&eacute;rifier la validit&eacute;
+	d'une attaque texte clair seul. Les textes plus courts que cette valeur ont probablement plusieurs d&eacute;chiffrements
+	valides &eacute;quiprobables; la difficult&eacute; qu'&eacute;prouve l'attaquant &agrave; choisir le bon augmente
+	la s&eacute;curit&eacute;. <BR>
+	<BR>
+	Comme toutes les mesures statistiques ou de th&eacute;orie de l'information, la distance d'unicit&eacute; ne fait
+	pas de pr&eacute;dictions d&eacute;terministes mais donne plut&ocirc;t des r&eacute;sultats probabilistes: typiquement,
+	la quantit&eacute; minimale de texte chiffr&eacute; pour laquelle il est probable qu'on obtiendra un seul texte
+	clair en essayant toutes les cl&eacute;s possibles pour le d&eacute;chiffrement. Normalement, les cryptologistes
+	ne travaillent pas directement avec la distance d'unicit&eacute;. Ils d&eacute;terminent plut&ocirc;t la probabilit&eacute;
+	de tel ou tel &eacute;v&eacute;nement. <BR>
+	<BR>
+	Imaginons que la distance d'unicit&eacute; d'un chiffre est de D caract&egrave;res. Si moins de D caract&egrave;res
+	de texte chiffr&eacute; ont &eacute;t&eacute; intercept&eacute;s, alors on n'a pas assez d'information pour distinguer
+	la v&eacute;ritable cl&eacute; dans l'ensemble des cl&eacute;s possibles. Le DES a une distance d'unicit&eacute;
+	de 17,5 caract&egrave;res, ce qui est plus petit que trois blocs (chaque bloc correspond &agrave; 8 caract&egrave;res
+	ASCII). Ceci peut sembler trop bas a priori, mais la distance d'unicit&eacute; ne donne aucune indication sur la
+	puissance de calcul n&eacute;cessaire pour trouver la cl&eacute; quand D caract&egrave;res ont &eacute;t&eacute;
+	intercept&eacute;s. <BR>
+	<BR>
+	En fait, la cryptanalyse v&eacute;ritable suit rarement les lignes directrices utilis&eacute;es dans la discussion
+	sur la distance d'unicit&eacute;. (Comme toutes les autres mesures comme la taille de la cl&eacute;, la distance
+	d'unicit&eacute; est quelque chose qui garantit l'ins&eacute;curit&eacute; si elle est trop petite, mais ne garantit
+	pas la s&eacute;curit&eacute; si elle est grande). En pratique, peu de cryptosyst&egrave;mes sont imp&eacute;n&eacute;trables
+	&agrave; toute analyse; toutes sortes de caract&eacute;ristiques peuvent servir de points d'entr&eacute;e pour
+	casser des messages chiffr&eacute;s. Toutefois, de telles consid&eacute;rations th&eacute;oriques sont parfois
+	utiles, par exemple pour d&eacute;terminer un intervalle de changement de cl&eacute; dans un cryptosyst&egrave;me
+	particulier. Les cryptanalystes emploient aussi une batterie de tests statistiques et de th&eacute;orie de l'information
+	pour diriger leur analyse dans les directions les plus prometteuses. <BR>
+	<BR>
+	Malheureusement, l'essentiel de la litt&eacute;rature sur l'application des statistiques &agrave; la cryptanalyse
+	est encore classifi&eacute;, m&ecirc;me le travail de 1940 d'Alan Turin .</FONT>
+	<H2><A NAME="9"></A><FONT SIZE="4" FACE="Arial">6.9. Qu'est-ce que la gestion de cl&eacute; et pourquoi est-ce
+	important?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Un des axiomes fondamentaux de la cryptographie est que l'ennemi poss&egrave;de
+	tous les d&eacute;tails du syst&egrave;me cryptographique g&eacute;n&eacute;ral, et qu'il ne lui manque que les
+	cl&eacute;s. (bien s&ucirc;r, on peut supposer que la CIA n'a pas pour habitude de donner les d&eacute;tails de
+	ses cryptosyst&egrave;mes au Mossad, mais le Mossad les trouvera probablement de toute fa&ccedil;on). L'utilisation
+	r&eacute;p&eacute;t&eacute;e d'une quantit&eacute; de cl&eacute; finie introduit une redondance qui peut faciliter
+	la cryptanalyse. Ainsi, en particulier dans les syst&egrave;mes de communications modernes o&ugrave; l'on &eacute;change
+	des quantit&eacute;s &eacute;normes de donn&eacute;es, les deux participants doivent avoir non seulement un cryptosyst&egrave;me
+	robuste mais aussi suffisamment de cl&eacute;s pour couvrir le traffic. <BR>
+	<BR>
+	La gestion des cl&eacute;s concerne la distribution, l'authentification et la manipulation des cl&eacute;s. <BR>
+	<BR>
+	Un exemple public de technologie moderne de gestion de cl&eacute;s est le t&eacute;l&eacute;phone s&eacute;curis&eacute;
+	STU III, qui pour son utilisation classifi&eacute;e fait appel &agrave; des &quot;Crypto Ignition Keys&quot; et
+	&agrave; un centre de gestion de cl&eacute;s g&eacute;r&eacute; par la NSA. Il y a une hi&eacute;rarchie dans les
+	CIK: certaines cl&eacute;s sont utilis&eacute;es par le personnel de contr&ocirc;le autoris&eacute; pour valider
+	des cl&eacute;s de trafic et pour effectuer des op&eacute;rations de maintenance ou d'installation, comme la d&eacute;claration
+	de cl&eacute;s perdues. <BR>
+	<BR>
+	Ceci devrait donner une id&eacute;e de l'&eacute;tendue du probl&egrave;me de gestion de cl&eacute;s. Pour des
+	syst&egrave;mes &agrave; cl&eacute; publique, il y a plusieurs questions similaires, souvent en rapport avec </FONT><EM><FONT
+	SIZE="2" FACE="Arial">en qui avons-nous confiance?</FONT></EM>
+	<H2><A NAME="10"></A><FONT SIZE="4" FACE="Arial">6.10. Peut-on utiliser des nombres pseudo al&eacute;atoires ou
+	chaotiques comme flux de cl&eacute;?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Les &eacute;quations chaotiques et les fractals produisent apparemment &quot;du
+	hasard&quot; &agrave; partir de g&eacute;n&eacute;rateurs relativement compacts. Le plus simple exemple peut-&ecirc;tre
+	est le g&eacute;n&eacute;rateur &agrave; congruence lin&eacute;aire, un des types de g&eacute;n&eacute;rateurs
+	al&eacute;atoires les plus populaires, o&ugrave; il n'y a pas de correspondance &eacute;vidente entre les &quot;graines&quot;
+	et les sorties. Malheureusement, le graphe d'une telle s&eacute;quence sera un r&eacute;seau r&eacute;gulier dans
+	un espace de dimension suffisante. Ce r&eacute;seau correspond math&eacute;matiquement &agrave; une structure que
+	les cryptanalystes pourront tr&egrave;s ais&eacute;ment exploiter. Des g&eacute;n&eacute;rateurs plus compliqu&eacute;s
+	ont des structures plus compliqu&eacute;es, c'est pour cela qu'ils produisent des images int&eacute;ressantes [NdT:
+	on est pass&eacute; aux fractals, je suppose !] -- mais une s&eacute;quence cryptographiquement forte n'aura pas
+	de structure calculable du tout.</FONT>
+	<H2><A NAME="11"></A><FONT SIZE="4" FACE="Arial">6.11. Quelle est la fr&eacute;quence exacte des lettres en anglais?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Il y a trois r&eacute;ponses &agrave; cette question, chacune l&eacute;g&egrave;rement
+	plus profonde que la pr&eacute;c&eacute;dente. Vous pouvez trouver la premi&egrave;re r&eacute;ponse dans divers
+	livres: c'est-&agrave;-dire une liste de fr&eacute;quences calcul&eacute;es directement &agrave; partir d'un &eacute;chantillon
+	de texte anglais. <BR>
+	<BR>
+	La deuxi&egrave;me r&eacute;ponse est que la &quot;langue anglaise&quot; varie d'un auteur &agrave; l'autre et
+	a chang&eacute; au cours du temps, donc il n'y a pas de liste absolue. Bien s&ucirc;r les listes dans les livres
+	sont &quot;correctement&quot; calcul&eacute;es, mais elles sont toutes diff&eacute;rentes: chaque liste d&eacute;pend
+	de l'&eacute;chantillon utilis&eacute;. Un message donn&eacute; aura des statistiques diff&eacute;rentes du langage
+	pris comme un tout. <BR>
+	<BR>
+	La troisi&egrave;me r&eacute;ponse est que oui, aucun message particulier ne va avoir les m&ecirc;me caract&eacute;ristiques
+	que l'anglais en g&eacute;n&eacute;ral, mais que pour toutes les utilisations raisonnables ces l&eacute;g&egrave;res
+	diff&eacute;rences ne g&ecirc;neront pas. En fait les &quot;statistiques bay&eacute;siennes&quot; (et d'autres
+	mots &agrave; la mode comme &quot;m&eacute;thodes d'entropie maximum&quot; et &quot;estimation du maximum de vraisemblance&quot;)
+	&eacute;tudient des questions comme </FONT><EM><FONT SIZE="2" FACE="Arial">Quelle est la probabilit&eacute; qu'un
+	texte avec ces fr&eacute;quences soit en anglais?</FONT></EM><FONT SIZE="2" FACE="Arial"> et fournissent des r&eacute;ponses
+	raisonnablement solides. <BR>
+	<BR>
+	Donc faites votre propre liste &agrave; partir de votre propre &eacute;chantillon de textes anglais. Ca sera bien
+	suffisant en pratique si vous l'utilisez correctement.</FONT>
+	<H2><A NAME="12"></A><FONT SIZE="4" FACE="Arial">6.12. Qu'est-ce qu'Enigma?</FONT></H2>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Pour un projet en s&eacute;curit&eacute; de donn&eacute;es nous cherchons des renseignements
+		sur le code allemand Enigma et comment il a &eacute;t&eacute; cass&eacute; par les Britanniques durant la deuxi&egrave;me
+		guerre mondiale.</FONT>
+	</BLOCKQUOTE>
+	<P>
+	<H2><A NAME="13"></A><FONT SIZE="4" FACE="Arial">6.13. Comment m&eacute;langer des cartes?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">C'est un cas particulier de la permutation d'un tableau de valeur, en utilisant
+	une fonction (pseudo) al&eacute;atoire. Toutes les permutations possibles doivent &ecirc;tre &eacute;quiprobables.
+	Pour faire &ccedil;a, il vous faut une fonction al&eacute;atoire (modran(x)) qui produit des valeurs enti&egrave;res
+	uniform&eacute;ment r&eacute;parties dans l'intervalle [0..x-1]. Etant donn&eacute;e cette fonction, vous pouvez
+	m&eacute;langer avec le code [C] suivant: (sachant que ARRLTH la longueur du tableau arr[] et que swap() &eacute;change
+	les valeurs aux deux adresses donn&eacute;es) <BR>
+	<BR>
+	</FONT><KBD><FONT SIZE="2" FACE="Arial">for ( n = ARRLTH-1; n &gt; 0 ; n-- ) swap( &amp;arr[modran( n+1 )], &amp;arr[n]
+	) ; </FONT></KBD><FONT SIZE="2" FACE="Arial"><BR>
+	<BR>
+	modran(x) ne peut pas &ecirc;tre obtenue par un simple </FONT><KBD><FONT SIZE="2" FACE="Arial">(ranno() % x)</FONT></KBD><FONT
+	SIZE="2" FACE="Arial"> car l'intervalle de sortie de ranno() peut ne pas &ecirc;tre divisible par x, bien que dans
+	la plupart des cas l'erreur sera tr&egrave;s faible.</FONT>
+	<H2><A NAME="14"></A><FONT SIZE="4" FACE="Arial">6.14. Peut-on empecher le piratage d'un logiciel en chiffrant
+	un CDROM?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">On exprime souvent le d&eacute;sir de publier un CD-ROM avec plusieurs logiciels,
+	chacun chiffr&eacute; s&eacute;par&eacute;ment, et on veut utiliser des cl&eacute;s diff&eacute;rentes pour chaque
+	utilisateur pour &eacute;viter le piratage (cl&eacute;s &eacute;ventuellement limit&eacute;es dans le temps). <BR>
+	<BR>
+	D'apr&egrave;s ce que nous en savons, ceci est impossible, car il n'existe rien sur un PC ou une station de travail
+	standard qui identifie l'utilisateur au clavier. S'il existait une telle identification, alors le CD-ROM pourrait
+	&ecirc;tre chiffr&eacute; avec une cl&eacute; bas&eacute;e en partie sur celle vendue &agrave; l'utilisateur et
+	en partie sur un num&eacute;ro unique. Toutefois, dans ce cas le CD-ROM est unique et c'est contraire au principe
+	[NdT: on presse normalement un grand nombre de CD-ROM identiques] <BR>
+	<BR>
+	Si le CD-ROM doit &ecirc;tre chiffr&eacute; une fois et produit en masse, alors il y a une cl&eacute; (ou un ensemble
+	de cl&eacute;s) pour ce chiffrement &agrave; une &eacute;tape du processus. Cette cl&eacute; est utilisable avec
+	n'importe quelle copie des donn&eacute;es du CD-ROM. Le pirate doit seulement isoler cette cl&eacute; et la vendre
+	avec la copie ill&eacute;gale.</FONT>
+	<H2><A NAME="15"></A><FONT SIZE="4" FACE="Arial">6.15. Peut-on cryptanalyser automatiquement des syst&egrave;mes
+	simples?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Certainement. Pour les produits commerciaux vous pouvez essayer AccessData; voir
+	la question 6.1. Nous ne connaissons pas de sites FTP avec de tels logiciels, mais il y a beaucoup de papiers sur
+	le sujet.</FONT><BR>
+	
+<HR ALIGN="CENTER">
+
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

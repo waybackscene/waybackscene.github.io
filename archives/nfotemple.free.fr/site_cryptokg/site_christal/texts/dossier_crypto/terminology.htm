@@ -1,0 +1,82 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P></P>
+
+<P><BR>
+</P>
+<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial">Basic Terminology</FONT></B></P>
+
+<UL>
+	<P><B><FONT SIZE="2" FACE="Arial">Encryption:</FONT></B><FONT SIZE="2" FACE="Arial"> c'est l'action de transformer
+	un texte en clair (</FONT><B><FONT SIZE="2" FACE="Arial">Plaintext</FONT></B><FONT SIZE="2" FACE="Arial">) en une
+	cha&icirc;ne data qui ressemblera &agrave; une s&eacute;quence de bits al&eacute;atoires et sans significations
+	(</FONT><B><FONT SIZE="2" FACE="Arial">ciphertext</FONT></B><FONT SIZE="2" FACE="Arial">). L'action d'aller du
+	ciphertext vers le plaintext est appel&eacute; </FONT><B><FONT SIZE="2" FACE="Arial">decryption</FONT></B><FONT
+	SIZE="2" FACE="Arial">.</FONT></P>
+	<P><B><FONT SIZE="2" FACE="Arial">Cryptography:</FONT></B><FONT SIZE="2" FACE="Arial"> permet de s&eacute;curiser
+	les communications. La </FONT><B><FONT SIZE="2" FACE="Arial">Cryptoanalysis</FONT></B><FONT SIZE="2" FACE="Arial">
+	consiste, &agrave; partir du ciphertext et sans conna&icirc;tre la cl&eacute; de d&eacute;cryptage, de retrouver
+	le plaintext. la </FONT><B><FONT SIZE="2" FACE="Arial">Cryptology</FONT></B><FONT SIZE="2" FACE="Arial"> est une
+	branche des math&eacute;matiques se situant entre la cryptography et la cryptoanalysis.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Un </FONT><B><FONT SIZE="2" FACE="Arial">cryptographic algorithm</FONT></B><FONT
+	SIZE="2" FACE="Arial">, aussi appel&eacute; </FONT><B><FONT SIZE="2" FACE="Arial">cipher</FONT></B><FONT SIZE="2"
+	FACE="Arial">, est une fonction math&eacute;matique qui utilise les plaintexts comme entr&eacute; et produit un
+	ciphertext &agrave; la sortie, et vice versa.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Tous les ciphers modernes utilisent une </FONT><B><FONT SIZE="2" FACE="Arial">key</FONT></B><FONT
+	SIZE="2" FACE="Arial"> (cl&eacute;) associ&eacute;e au plaintext pour produire un ciphertext. La m&ecirc;me cl&eacute;,
+	ou une cl&eacute; diff&eacute;rente, est n&eacute;cessaire pour que la fonction de d&eacute;cryption redonne le
+	plaintext &agrave; partir du ciphertext. les d&eacute;tails d'un cryptographic algorithm sont en g&eacute;n&eacute;ral
+	rendu </FONT><A HREF="md5.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/md5.htm" target="_blank"><FONT SIZE="2" FACE="Arial">public</FONT></A><FONT SIZE="2" FACE="Arial">.
+	c'est la cl&eacute; qui est la protection d'un cipher moderne, non le d&eacute;tail du cipher.</FONT></P>
+	<P><B><FONT SIZE="2" FACE="Arial">Symmetric algorithms: </FONT></B><FONT SIZE="2" FACE="Arial">utilise la m&ecirc;me
+	cl&eacute; pour l'encryption et la d&eacute;cryption. Ces algorithmes imposent que l'&eacute;metteur et le receveur
+	du message se mettent d'accord sur une cl&eacute; avant l'&eacute;change de messages s&eacute;curis&eacute;s.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Certains symmetric algorithms op&egrave;rent sur 1 bit (ou parfois 1 byte) du plaintext.
+	Ils sont appel&eacute; </FONT><B><FONT SIZE="2" FACE="Arial">stream ciphers</FONT></B><FONT SIZE="2" FACE="Arial">.Les
+	autres algorithmes op&egrave;rent sur un bloc de bits et sont appel&eacute;s </FONT><B><FONT SIZE="2" FACE="Arial">block
+	ciphers</FONT></B><FONT SIZE="2" FACE="Arial">. La majorit&eacute; des block ciphers r&eacute;cents utilisent un
+	bloc d'une taille de 64 bits.</FONT></P>
+	<P><B><FONT SIZE="2" FACE="Arial">Public-key algorithms</FONT></B><FONT SIZE="2" FACE="Arial"> (aussi appel&eacute;
+	asymmetric algorithms) utilisent deux cl&eacute;s diff&eacute;rentes (une </FONT><B><FONT SIZE="2" FACE="Arial">key
+	pair</FONT></B><FONT SIZE="2" FACE="Arial">) pour l'encryption et la decryption. Les cl&eacute;s dans une key pair
+	sont math&eacute;matiquement li&eacute;es, mais il est impossible de d&eacute;duire une cl&eacute; &agrave; partir
+	de l'autre. Ces algorithmes sont appel&eacute;s &quot;public-key&quot; car la cl&eacute; d'encryption peut &ecirc;tre
+	rendue public. N'importe qui peut utiliser la cl&eacute; publique pour encrypter un message, mais seul le propri&eacute;taire
+	de la cl&eacute; priv&eacute;e correspondant pourra le d&eacute;crypter.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Certains algorithmes &agrave; cl&eacute;s publiques, comme RSA, permettent un fonctionnement
+	&agrave; l'envers: un message peut &ecirc;tre encrypt&eacute; par une cl&eacute; priv&eacute;e et d&eacute;crypt&eacute;
+	avec la cl&eacute; publique correspondant. Si vous (ou n'importe qui d'autre) pouvez d&eacute;crypter un message
+	utilisant la cl&eacute; d'un de vos copains, vous saurez que c'est ce copain qui vous a envoy&eacute; un message,
+	car nul autre que lui ne poss&egrave;de la m&ecirc;me cl&eacute; priv&eacute;e. c'est le principe de la </FONT><B><FONT
+	SIZE="2" FACE="Arial">Digital signatures</FONT></B><FONT SIZE="2" FACE="Arial">.</FONT></P>
+	<P><B><FONT SIZE="2" FACE="Arial">Pour en savoir plus</FONT></B><FONT SIZE="2" FACE="Arial">:</FONT></P>
+	<P><A HREF="Glossary.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/Glossary.htm" target="_blank"><FONT SIZE="2" FACE="Arial">Dictionary of Technical Cryptography - Technical
+	Cryptographic Terms Explained</FONT></A></P>
+	<P><A HREF="algorithms.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/algorithms.htm" target="_blank"><FONT SIZE="2" FACE="Arial">Les Algorithmes Cryptographiques</FONT></A></P>
+</UL>
+
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="4" CELLSPACING="0" WIDTH="13%">
+	<TR>
+		<TD WIDTH="52%" VALIGN="TOP">
+			<P ALIGN="RIGHT"><A HREF="intro.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.htm"><IMG SRC="left.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/left.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A>
+		</TD>
+		<TD WIDTH="48%" VALIGN="TOP"><A HREF="symetric.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/symetric.htm"><IMG SRC="right.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/right.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A></TD>
+	</TR>
+</TABLE>
+
+</CENTER>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,695 @@
+// Kaine_CRackme4
+// Téléchargeable ici : http://elooo.fff.free.fr/consult/Crackme4_Kaine/KaineCrackme4.exe
+// Ce script a la base etait destiné à un usage personnel, donc je n'ai pas patché ce qui ne me détectait pas...
+// autrement dit, il ne fonctionnera que si vous utilisez Ollydbg, mais un Ollydbg patché (j'ai pas géré les 
+// FindWindow sur Ollydbg, mon ollydbg étant patché en Ellydbg...), si vous avez le plugin IsDebuggerPresent activé
+// (j'ai pas pas patché dans le cas où les detections IsDebuggerPresent ne renvoyaient pas 0), et si dans les options
+// de debugging, onglet exceptions, vous cochez toutes les cases :p
+// De plus j'aurais pu virer plein de breakpoints,mais j'ai utilisé ce script pour mon avancement, donc pour
+// voir l'agencement de la chose, j'ai préféré tout laisser :)
+// J'ai commenté tous les bp que j'avais posé sur les adresses en 00145xxx car ça marchait tout à l'heure, mais là
+// ca ne veut plus donc surement que les adresses ne sont plus les mêmes... En commentant ça refonctionne de
+// nouveau.
+// Pour ceux qui veulent un tutorial complet sur ce crackme, très détaillé, je vous invite à lire la rédaction de
+// kharneth ici :
+// http://kharneth.free.fr/_Tutorials_/Crackme4_Kaine/index.html
+// *Mon fichier de registration ici : 
+// http://elooo.fff.free.fr/consult/Crackme4_Kaine/KKEY.krm
+// *Bruteforce pour le nom du fichier : 
+// http://elooo.fff.free.fr/consult/Crackme4_Kaine/Crackme4_Kaine_nom_fichier.exe
+// *Bruteforce pour le dernier quadruplet du serial : 
+// http://elooo.fff.free.fr/consult/Crackme4_Kaine/Crackme4_kaine_quadruplet_serial.exe
+
+
+bphws 41728B, "x"
+run
+bphwc 41728B
+sto
+bp E0113A
+run
+bc E0113A
+bp E01241
+run
+bc E01241
+sti
+sto
+// PATCHER ISDEBUG.DLL
+var patch
+mov patch, 00E0255F
+mov [patch], 6F6F6C65 
+bphws 00E04575, "x"
+bphws 00E02326, "x"
+bp 00E02326
+loopapi:
+run
+cmp eip, 00E02326
+jne loopapi
+fin:
+bphwc 00E04575
+bphwc 00E02326
+bc 00E02326
+bphws 00E0472D, "x"
+bp 00E0472D
+// PASSER LE BUILD IAT
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+bphwc 00E0472D
+bc 00E0472D
+bphws 4116D2, "x"
+bp 4116D2
+run
+bphwc 4116D2
+bc 4116D2
+bphws 411702, "x"
+bp 411702
+run
+bphwc 411702
+bc 411702
+// PASSER LES 1ERS LAYERS
+bphws 00412B10, "w"
+run
+run
+run
+bphwc 00412B10
+bphws 00411ABB, "x"
+bp 00411ABB
+run
+bphwc 00411ABB
+bc 00411ABB
+bphws 00411F2E, "x"
+bp 00411F2E
+run
+bphwc 00411F2E
+bc 00411F2E
+bphws 004123A1, "x"
+bp 004123A1
+run
+bphwc 004123A1
+bc 004123A1
+bphws 004125DE, "x"
+bp 004125DE
+run
+bphwc 004125DE
+bc 004125DE
+bphws 004128BB, "x"
+run
+bphwc 004128BB
+bphws 00412AF8, "x"
+run
+bphwc 00412AF8
+// SAUTE A UN ENDROIT MERDIQUE
+mov eip, 00412B23
+bphws 004116A3, "x"
+run
+bphwc 004116A3
+bphws 00411262, "x"
+run
+bphwc 00411262
+bphws 00401245, "x"
+run
+bphwc 00401245
+bphws 0041102A, "x"
+run
+bphwc 0041102A
+bphws 0040145D, "x"
+run
+bphwc 0040145D
+bphws 00410DF2, "x"
+run
+bphwc 00410DF2
+bphws 00401675, "x"
+run
+bphwc 00401675
+bphws 00410BBA, "x"
+run
+bphwc 00410BBA
+bphws 0040188D, "x"
+run
+bphwc 0040188D
+bphws 00410982, "x"
+run
+bphwc 00410982
+bphws 00401AA5, "x"
+run
+bphwc 00401AA5
+bphws 0041074A, "x"
+run
+bphwc 0041074A
+bphws 00401CBD, "x"
+run
+bphwc 00401CBD
+bphws 00410512, "x"
+run
+bphwc 00410512
+bphws 00401ED5, "x"
+run
+bphwc 00401ED5
+bphws 004102DA, "x"
+run
+bphwc 004102DA
+bphws 004020ED, "x"
+run
+bphwc 004020ED
+bphws 004100A2, "x"
+run
+bphwc 004100A2
+bphws 00402305, "x"
+run
+bphwc 00402305
+bphws 0040FE6A, "x"
+run
+bphwc 0040FE6A
+bphws 0040251D, "x"
+run
+bphwc 0040251D
+bphws 0040FC32, "x"
+run
+bphwc 0040FC32
+bphws 00402735, "x"
+run
+bphwc 00402735
+bphws 0040F9FA, "x"
+run
+bphwc 0040F9FA
+bphws 0040294D, "x"
+run
+bphwc 0040294D
+bphws 0040F7C2, "x"
+run
+bphwc 0040F7C2
+bphws 00402B65, "x"
+run
+bphwc 00402B65
+//bphws 00145B4C, "x"
+//run
+//bphwc 00145B4C
+//bphws 00145BC7, "x"
+//run
+//bphwc 00145BC7
+bphws 00402DE6, "x"
+run
+bphwc 00402DE6
+// OUTPUTDEBUGSTRING
+mov patch, 402D94
+mov [patch], 0
+bphws 0040F58A, "x"
+run
+bphwc 0040F58A
+bphws 00402E0E, "x"
+run
+bphwc 00402E0E
+bphws 0040F352, "x"
+run
+bphwc 0040F352
+bphws 00403026, "x"
+run
+bphwc 00403026
+bphws 0040F0A0, "x"
+run
+bphwc 0040F0A0
+//bphws 00145EA9, "x"
+//run
+//bphwc 00145EA9
+bphws 0040F319, "x"
+run
+// UNHANDLEDEXCEPTION
+mov eip, 0040F31E
+bphwc 0040F319
+sti
+bphws 0040323E, "x"
+run
+bphwc 0040323E
+bphws 0040EE68, "x"
+run
+bphwc 0040EE68
+bphws 00403456, "x"
+run
+bphwc 00403456
+bphws 0040EC30, "x"
+run
+bphwc 0040EC30
+bphws 0040366E, "x"
+run
+bphwc 0040366E
+bphws 0040E9F8, "x"
+run
+bphwc 0040E9F8
+bphws 00403886, "x"
+run
+bphwc 00403886
+bphws 0040E7C0, "x"
+run
+bphwc 0040E7C0
+bphws 00403A9E, "x"
+run
+bphwc 00403A9E
+bphws 0040E588, "x"
+run
+bphwc 0040E588
+bphws 00403CB6, "x"
+run
+bphwc 00403CB6
+bphws 0040E350, "x"
+run
+bphwc 0040E350
+bphws 00403ECE, "x"
+run
+bphwc 00403ECE
+bphws 0040E118, "x"
+run
+bphwc 0040E118
+bphws 004040E6, "x"
+run
+bphwc 004040E6
+bphws 0040DEE0, "x"
+run
+bphwc 0040DEE0
+bphws 004042FE, "x"
+run
+bphwc 004042FE
+bphws 0040DCA8, "x"
+run
+bphwc 0040DCA8
+bphws 00404516, "x"
+run
+bphwc 00404516
+bphws 0040DA70, "x"
+run
+bphwc 0040DA70
+bphws 0040472E, "x"
+run
+bphwc 0040472E
+bphws 0040D7C0, "x"
+run
+bphwc 0040D7C0
+bphws 00404946, "x"
+run
+bphwc 00404946
+bphws 0040D510, "x"
+run
+bphwc 0040D510
+bphws 00404B5E, "x"
+run
+bphwc 00404B5E
+bphws 0040D260, "x"
+run
+bphwc 0040D260
+bphws 00404D76, "x"
+run
+bphwc 00404D76
+bphws 0040CFB0, "x"
+run
+bphwc 0040CFB0
+bphws 00404F94, "x"
+run
+bphwc 00404F94
+bphws 0040CD78, "x"
+run
+bphwc 0040CD78
+bphws 004051AC, "x"
+run
+bphwc 004051AC
+bphws 0040CB40, "x"
+run
+bphwc 0040CB40
+bphws 004053C4, "x"
+run
+bphwc 004053C4
+bphws 0040C908, "x"
+run
+bphwc 0040C908
+bphws 004055DC, "x"
+run
+bphwc 004055DC
+bphws 0040C6D0, "x"
+run
+bphwc 0040C6D0
+bphws 004057F4, "x"
+run
+bphwc 004057F4
+bphws 0040C498, "x"
+run
+bphwc 0040C498
+bphws 00405A0C, "x"
+run
+bphwc 00405A0C
+bphws 0040C260, "x"
+run
+bphwc 0040C260
+bphws 00405C24, "x"
+run
+bphwc 00405C24
+bphws 0040C028, "x"
+run
+bphwc 0040C028
+bphws 00405E3C, "x"
+run
+bphwc 00405E3C
+bphws 0040BDF0, "x"
+run
+bphwc 0040BDF0
+bphws 00406054, "x"
+run
+bphwc 00406054
+bphws 0040BBB8, "x"
+run
+bphwc 0040BBB8
+bphws 0040626C, "x"
+run
+bphwc 0040626C
+bphws 0040B980, "x"
+run
+bphwc 0040B980
+bphws 00406484, "x"
+run
+bphwc 00406484
+bphws 0040B748, "x"
+run
+bphwc 0040B748
+bphws 0040669C, "x"
+run
+bphwc 0040669C
+bphws 0040B510, "x"
+run
+bphwc 0040B510
+bphws 004068B4, "x"
+run
+bphwc 004068B4
+bphws 0040B2D8, "x"
+run
+bphwc 0040B2D8
+bphws 00406ACC, "x"
+run
+bphwc 00406ACC
+bphws 0040B0A0, "x"
+run
+bphwc 0040B0A0
+bphws 00406CE4, "x"
+run
+bphwc 00406CE4
+bphws 0040AE67, "x"
+run
+bphwc 0040AE67
+bphws 00406EFC, "x"
+run
+bphwc 00406EFC
+bphws 0040AC2E, "x"
+run
+bphwc 0040AC2E
+bphws 00407115, "x"
+run
+bphwc 00407115
+bphws 0040A9F5, "x"
+run
+bphwc 0040A9F5
+bphws 0040732E, "x"
+run
+bphwc 0040732E
+bphws 0040A7BC, "x"
+run
+bphwc 0040A7BC
+bphws 00407547, "x"
+run
+bphwc 00407547
+bphws 0040A583, "x"
+run
+bphwc 0040A583
+bphws 00407760, "x"
+run
+bphwc 00407760
+bphws 0040A34A, "x"
+run
+bphwc 0040A34A
+bphws 00407979, "x"
+run
+bphwc 00407979
+bphws 0040A111, "x"
+run
+bphwc 0040A111
+bphws 00407B92, "x"
+run
+bphwc 00407B92
+bphws 00409ED8, "x"
+run
+bphwc 00409ED8
+bphws 00407DAB, "x"
+run
+bphwc 00407DAB
+bphws 0040980A, "x"
+run
+// FINDwINDOW
+bphwc 0040980A
+//bphws 00145588, "x"
+//run
+//bphwc 00145588
+bphws 00409C65, "x"
+run
+bphwc 00409C65
+bphws 00409D86, "x"
+run
+bphwc 00409D86
+//bphws 00145EA9, "x"
+//run
+// SETUNHANDLEDEXCEPTIONFILTER
+//bphwc 00145EA9
+bphws 00407FC4, "x"
+run
+bphwc 00407FC4
+bphws 0040913C, "x"
+run
+bphwc 0040913C
+//bphws 00145588, "x"
+//run
+// FINDwINDOW
+//bphwc 00145588
+bphws 00409597, "x"
+run
+bphwc 00409597
+bphws 004096B8, "x"
+run
+bphwc 004096B8
+//bphws 00145EA9, "x"
+//run
+// SETUNHANDLEDEXCEPTIONFILTER
+//bphwc 00145EA9
+bphws 004081AB, "x"
+run
+bphwc 004081AB
+bphws 00408F08, "x"
+run
+bphwc 00408F08
+bphws 00408392, "x"
+run
+bphwc 00408392
+bphws 00408535, "x"
+run
+// CREATEFILEA Key.txt
+bphwc 00408535
+//bphws 001456F9, "x"
+//run
+// CREATEFILEA RM.key
+// CREATEFILEA cle.txt
+// ...
+//bphwc 001456F9
+bphws 00408696, "x"
+run
+bphwc 00408696
+bphws 004086AB, "x"
+run
+// CREATEFILEA "I don't like Filemon.key" 1E fois
+bphwc 004086AB
+bphws 004086DC, "x"
+run
+// COMMENTEZ TOUT CE QUI A EN DESSOUS SI VOUS N'AVEZ PAS VOTRE FICHIER .KRM DE CREE !!
+// kernel32.GetCurrentDirectoryA
+// "\*.krm*"
+bphwc 004086DC
+bphws 0040870C, "x"
+run
+// kernel32.lstrcatA
+// kernel32.FindFirstFileA
+bphwc 0040870C
+bphws 0040872F, "x"
+run
+bphwc 0040872F
+bphws 00408C64, "x"
+run
+// VERIF LE NOM DU FICHIER
+// 4 LETTRES MULTIPLIEES = 20F1615
+bphwc 00408C64
+bphws 00408C8D, "x"
+run
+// VERIF LE NOM DU FICHIER
+// 4 LETTRES ADDITIONNEES = 134
+// YKKE
+bphwc 00408C8D
+bphws 00408CA9, "x"
+run
+// kernel32.SetUnhandledExceptionFilter
+// kernel32.lstrlenA
+// kernel32.lstrcatA
+// kernel32.CreateFileA
+bphwc 00408CA9
+bphws 00408D9D, "x"
+run
+// kernel32.GetFileSize
+bphwc 00408D9D
+bphws 00408DA2, "x"
+run
+// TAILLE ENTRE 37 ET 4B
+// kernel32.CreateFileMappingA
+bphwc 00408DA2
+bphws 00408DF4, "x"
+run
+// kernel32.MapViewOfFile
+bphwc 00408DF4
+bphws 00408E25, "x"
+run
+// "[Registration Infos]",CR,LF
+bphwc 00408E25
+bphws 004089BF, "x"
+run
+// "Name = "
+bphwc 004089BF
+bphws 00408CD4, "x"
+run
+// kernel32.GetTickCount
+bphwc 00408CD4
+bphws 00408AF9, "x"
+run
+// Serial = 
+bphwc 00408AF9
+bphws 00408B80, "x"
+run
+// kernel32.GetTickCount
+bphwc 00408B80
+bphws 00408C37, "x"
+run
+// Noppe le test du GetTickCount
+mov patch, 408C48
+asm patch, "nop"
+inc patch
+asm patch, "nop"
+// TIRETS EN 4eme et 9eme position dans serial
+bphwc 00408C37
+bphws 00408BA5, "x"
+bp 00408BA5
+run
+// longueur du nom entre 7 et 0Fh (grrrr je vais meme pas pouvoir faire un serial pour elooo !)
+// 00419362  6C 65 5F 74 72 61 EE 74 72 65 00 42 65 61 74 72  le_traître.Beatr
+// 00419372  69 78 00 5F 6A 75 6C 69 65 6E 5F 00 54 68 69 65  ix._julien_.Thie
+// 00419382  72 72 79 20 54 68 65 20 4F 6E 65 00              rry The One.
+// Blackliste ci-dessus
+bc 00408BA5
+bphwc 00408BA5
+bphws 00408A00, "x"
+bp 00408A00
+run
+bc 00408A00
+bphwc 00408A00
+bphws 00408A26, "x"
+run
+bphwc 00408A26
+// Nom correct du fichier pour le code n'entraine pas d'exception : KKEY.krm
+// 4 1er char du nom shr edi, 4 | 4 1ers char du serial multipliés = eax
+// compare la difference entre edi et eax avec 100 (doit etre inf)
+// edi2 -> sub al, 20h, xor al, 0A5h, not al 
+// |si inf à 30h,on ajoute 52h
+// |si entre 30h et 7Fh, on fait rien dans le call
+// |si sup à 7Fh on soustrait, on soustrait 7Fh et on ajoute 30h
+//  (on fait ca sur chaque char du name)
+// on xor les 4 derniers char de edi2 avec le deuxieme quadruplet du serial à l'envers (little endian)
+// doit etre egal à 0
+// 00419362  6C 65 5F 74 72 61 EE 74 72 65 00 42 65 61 74 72  le_traître.Beatr
+// 00419372  69 78 00 5F 6A 75 6C 69 65 6E 5F 00 54 68 69 65  ix._julien_.Thie
+// 00419382  72 72 79 20 54 68 65 20 4F 6E 65 00              rry The One.
+// additionne les chars de la string au dessus -> = 102E
+// 3eme quadruplet du serial :
+// sub al, 30h | ecx = ecx+ecx*4 | ecx=eax+ecx*2|loop| doit etre = à 102E
+//
+// Comment se faire un serial de leet ? :P
+// Objectif = avoir pour serial : 1337-UR0X-???? (pour le dernier quadruplet on verra en fonction)
+// yeah Da Fucker l33t, U own ze Kaine :>
+// 1er quadruplet serial = 6AF59F (pour 1337)
+// 6AF59F + 99 = 6AF69E
+// shl edi, 4-> 06AF69E0
+// dans l'editeur hexa pour les 4 1ers chars du nom : E069AF06
+bphws 00408A78, "x"
+run
+// On veut UR0X
+// 'U' = 55h | not 55h = AAh | AAh xor A5h = 0Fh | 0Fh + 20h = 2Fh
+// 'R' = 52h | not 52h = ADh | ADh xor A5h = 08h | 08h + 20h = 28h
+// '0' = 30h | not 30h = CFh | CFh xor A5h = 6Ah | 6Ah + 20h = 8Ah
+// 'X' = 58h | not 58h = A7h | A7h xor A5h = 02h | 0Fh + 20h = 22h
+// dans l'editeur hexa, pour les 4 derniers chars du nom on met : 2F288A22
+bphwc 00408A78
+bphws 00408ACE, "x"
+run
+// 1Er passage <=> ecx = (1er char - 30h) = ecx1
+// 2eme passage <=> ecx2 = ecx1+ecx1*4 | ecx3 = (2eme char - 30h)+ecx2*2
+// 3Eme passage <=> ecx4 = ecx3+ecx3*4 | ecx5 = (3eme char - 30h)+ecx4*2  
+// 4Eme passage <=> ecx6 = ecx5+ecx5*4 | ecx7 = (4eme char - 30h)+ecx6*2 
+// On code une bruteforce (pas envie de faire des maths :)
+// et comme on est faineant on lui vole l'algo :p
+// 		mov edi, 102E
+// 		MOV AL,BYTE PTR DS:[ESI]
+// 		INC ESI
+// loop:	OR AL,AL
+// 		JE verdict
+// 		SUB AL,30
+// 		LEA ECX,DWORD PTR DS:[ECX+ECX*4]
+// 		LEA ECX,DWORD PTR DS:[EAX+ECX*2]
+// 		MOV AL,BYTE PTR DS:[ESI]
+// 		INC ESI
+// 		JMP loop
+// verdict:	XOR ECX,EDI
+// 		JNZ Brute
+// cool, d'apres la bruteforce, 1MAx serait un bon quadruplet :)
+// Je vois bien comme serial de leet : 1337-UR0X-1MAx, pas vous ? :D ahah :)
+bphwc 00408ACE
+bphws 00408AE6, "x"
+run
+bphwc 00408AE6
+bphws 00408905, "x"
+run
+//ASCII "REGISTERED ! Please mail me solutions at reverse_me__@hotmail.com"
+bphwc 00408905
+bphws 00408911, "x"
+run
+
+ret
+
+
+
+
+
+
+
+
+
+
+
+
+
+

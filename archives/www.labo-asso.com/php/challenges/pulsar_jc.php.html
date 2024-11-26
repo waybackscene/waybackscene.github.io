@@ -1,0 +1,197 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+          <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+                
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center"> 
+                    <p><font color="#339999" size="5">Pulsar's JunkCode<br>
+                      Crackme</font></p>
+                    <p><font color="#339999">Pulsar</font></p>
+                  </div></td>
+                <td width="1"> <div align="right"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>
+            <br>
+			<table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td colspan="2"> <p align="justify">Salut tout le monde,</p>
+                        <p align="justify">C'est un de mes premiers crackme donc 
+                          soyez indulgents svp :)</p>
+                        <p align="justify">Si vous voulez apprendre de nouvelles 
+                          m&eacute;thodes de detecter softice / olly, de nouvelles 
+                          mani&egrave;res pour effacer votre PE header, prot&eacute;ger 
+                          votre IAT ... je pense que ce crackme n'est pas fait 
+                          pour vous.</p>
+                        <p align="justify">Par contre si vous voulez avoir la 
+                          possibilit&eacute; d'apprendre (ne m'engueulez pas si 
+                          vous n'apprenez rien) certaines fonctionnalit&eacute;s 
+                          de vos outils pr&eacute;f&eacute;r&eacute;s (IDA me 
+                          vient de t&ecirc;te) ou de construire certains programmes 
+                          qui vous aideront sans doute un jour ou l'autre dans 
+                          votre carri&egrave;re de reverse, alors ces crackmes 
+                          peuvent vous &ecirc;tre utiles.</p>
+                        <p align="justify">Ces crackmes, oui...en effet je vais 
+                          en faire environ 5 avec un niveau de difficult&eacute; 
+                          croissant. Si vous arrivez &agrave; les r&eacute;soudre 
+                          tous, je vous offrirai un petit cadeau :)</p>
+                        <p align="justify"><font color="#FFFF00">Pulsar's JC#1 
+                          :</font><br>
+                          Ce premier crackme est simple, vous vous apercevrez 
+                          rapidement que je prends une info, je g&eacute;n&egrave;re 
+                          des trucs et apr&egrave;s je dis si vous &ecirc;tes 
+                          un bon reverser ou pas... La routine de calcul elle 
+                          m&ecirc;me est courte, mais malheureusement &quot;un 
+                          peu&quot; de junk code a infest&eacute; mes sources...Je 
+                          pense que vous n'aurez aucune difficult&eacute;s &agrave; 
+                          trouver les mots magiques quand le code sera propre 
+                          !</p>
+                        <p align="justify">Pour r&eacute;ussir ce crackme vous 
+                          devez trouver le bon code... Si vous voulez le bruteforcer, 
+                          pas de probl&egrave;me, mais vous n'apprendrez s&ucirc;rement 
+                          pas grand chose... &ccedil;a ne vous aidera pas pour 
+                          le prochain en tout cas :)</p>
+                        <p align="justify"><font color="#FFFF00">Pulsar's JC#2 
+                          :</font><br>
+                          Bon rien de bien m&eacute;chant pour ce second crackme 
+                          non plus, simplement le moteur de g&eacute;n&eacute;ration 
+                          s'&eacute;toffe un peu plus. Je pense cependant qu'enlever 
+                          le junk de celui-ci pourrait &ecirc;tre presque plus 
+                          facile que pour le pr&eacute;c&eacute;dent...A vous 
+                          de voir pourquoi :)</p>
+                        <p align="justify">Pour r&eacute;ussir il suffit de faire 
+                          afficher &quot;Good Boy&quot; au programme.</p>
+                        <p align="justify">Info:<br>
+                          Je n'ai pas cod&eacute; tout le junk code moi m&ecirc;me, 
+                          c'est un outil maison qui s'en est occup&eacute;. Avec 
+                          les &eacute;volutions de cet outil viendront des difficult&eacute;s 
+                          sup&eacute;rieures pour les crackmes...</p>
+                        <p align="justify">J'esp&egrave;re que vous apprendrez 
+                          des choses int&eacute;ressantes...</p>
+                        <p>T&eacute;l&eacute;charger : <a href="../../download/pulsar_jc1.zip" target="_blank">Pulsar'sJC#1</a><br>
+                          T&eacute;l&eacute;charger : <a href="../../download/pulsar_jc2.zip" target="_blank">Pulsar'sJC#2</a></p>
+                        </td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table> 
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. <font size="-1">&nbsp;</font><font size="1"> </font> </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="pulsar_jc.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+ 
+          </td>
+              </tr>
+            </table></td>
+        </tr>
+  </table>
+</body>
+</html>

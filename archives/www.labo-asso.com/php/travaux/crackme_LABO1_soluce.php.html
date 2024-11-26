@@ -1,0 +1,329 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center"> 
+                    <p><font size="5">Solution pour le crackme<br>
+                      LABO#1 de Kaine<br></font>
+                     -=&curren; Lionel d'Hauenens &curren;=-</p>
+                    <p>
+                    <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                      <tr> 
+                        <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                            <tr> 
+                              <td><a href="../../download/keygen_Kaine_LABO1.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table></p>
+                  </div></td>
+                <td width="1"> <div align="ri????5?ght"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>            
+            <br>
+            <table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td> <div align="justify"> 
+                          <p align="justify">Lors de la rencontre du 17 avril 
+                            2006, Kaine nous avait pondu deux crackmes fort sympathiques. 
+                            Ces crackmes ont &eacute;t&eacute; cod&eacute;s dans 
+                            le seul et unique but de nous permettre d'illustrer 
+                            certaines situations. </p>
+                          <p align="justify">Le crackme LABO#1 &eacute;tait annonc&eacute; 
+                            comme ceci par son auteur :</p>
+                          <table border="0" align="center" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td nowrap>
+<p align="center"><font color="#00FFFF">================================================================<br>
+                                  LABO#1<br>
+                                  ================================================================</font></p>
+                                <p><font color="#00FFFF"> - Patcher simplement 
+                                  le binaire :) <br>
+                                  - Eviter de me taper dessus si quelqu'un trouve 
+                                  le bon pass :p</font></p>
+                                <p><font color="#00FFFF">Kaine</font></p>
+                                <p><font color="#00FFFF">================================================================</font></p>
+                          </td>
+                            </tr>
+                          </table>
+                          <p align="justify">Regardons donc la <font color="#00FFFF">routine 
+                            start</font> de <font color="#00FFFF">LABO#1</font> 
+                            :</p>
+                          <table border="0" align="center" cellpadding="0" cellspacing="10">
+                            <tr valign="top"> 
+                              <td nowrap> <p align="left"><br>
+                                  <br>
+                                  <br>
+                                  .text:00401000<br>
+                                  .text:00401005<br>
+                                  .text:00401007<br>
+                                  .text:00401009<br>
+                                  .text:0040100E<br>
+                                  .text:00401013<br>
+                                  .text:00401018<br>
+                                  .text:0040101A<br>
+                                  .text:0040101C<br>
+                                  .text:0040101E<br>
+                                  .text:00401023<br>
+                                  .text:00401028<br>
+                                  .text:0040102A<br>
+                                  .text:0040102F<br>
+                                  <br>
+                                  <font color="#00FF00">label_bad</font>: <br>
+                                  <br>
+                                  .text:00401031<br>
+                                  .text:00401033<br>
+                                  .text:00401038<br>
+                                  .text:0040103D<br>
+                                  .text:0040103F<br>
+                                  <br>
+                                  <font color="#00FF00">label_sortie</font>: <br>
+                                  <br>
+                                  .text:00401044<br>
+                                  .text:00401046<br>
+                                </p></td>
+                              <td nowrap> <div align="left"> 
+                                  <p>public start<br>
+                                    start proc near<br>
+                                    <br>
+                                    call <font color="#FFFF00">Traitement_Licence</font><br>
+                                    test eax, eax<br>
+                                    jz short <font color="#00FF00">label_bad</font><br>
+                                    push offset <font color="#00FFFF">Resultat_Licence_Utilisateur</font> 
+                                    <br>
+                                    push offset <font color="#00FFFF">Mask_Verification_KEY</font> 
+                                    <br>
+                                    call lstrcmpA<br>
+                                    test eax, eax<br>
+                                    jnz short <font color="#00FF00">label_bad</font><br>
+                                    push 0 <br>
+                                    push offset <font color="#00FFFF">Titre_MessageBox</font> 
+                                    <br>
+                                    push offset <font color="#00FFFF">Texte_GOOD</font> 
+                                    <br>
+                                    push 0 <br>
+                                    call MessageBoxA<br>
+                                    jmp short <font color="#00FF00">label_sortie</font><br>
+                                    ; --------------------------------------------------- 
+                                    <br>
+                                    <br>
+                                    <br>
+                                    push 0 <br>
+                                    push offset <font color="#00FFFF">Titre_MessageBox</font> 
+                                    <br>
+                                    push offset <font color="#00FFFF">Texte_BAD</font> 
+                                    <br>
+                                    push 0 <br>
+                                    call MessageBoxA <br>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    push 0 <br>
+                                    call ExitProcess<br>
+                                    <br>
+                                    start endp<br>
+                                    .<br>
+                                    .<br>
+                                    . </p>
+                                </div></td>
+                            </tr>
+                          </table>
+                          <p align="justify">En regardant de plus pr&ecirc;t le 
+                            code de LABO#1, on se rend tout de suite compte qu'il 
+                            n'y a strictement rien de difficile. Un seul octet 
+                            de modifi&eacute; et le tour est jou&eacute;. :)</p>
+                          <p align="justify">Cependant, il faut se rappeler que 
+                            ce crackme a &eacute;t&eacute; d&eacute;velopp&eacute; 
+                            afin de permettre d'illustrer certaines situations. 
+                            Patcher reste un exercice simple mais trouver la cl&eacute; 
+                            valide devient beaucoup plus ardu ! En effet, la routine 
+                            <font color="#FFFF00">Traitement_Licence</font> r&eacute;serve 
+                            bien des surprises avec au programme :</p>
+                          <p align="justify">- <font color="#00FFFF">code cca</font><br>
+                            - <font color="#00FFFF">junk code</font><br>
+                            - <font color="#00FFFF">code polymorphe</font><br>
+                            - <font color="#00FFFF">VM</font><br>
+                            <br>
+                            Comme vous pouvez le voir, Kaine a vraiment mis le 
+                            paquet dans la routine <font color="#FFFF00">Traitement_Licence</font>.</p>
+                          <p align="justify">A travers cet exercice, l'auteur 
+                            a tout simplement voulu illustrer le fait qu'il ne 
+                            sert &agrave; rien de blinder une routine (<font color="#FFFF00">Traitement_Licence</font>) 
+                            alors que la porte de derri&egrave;re reste grande 
+                            ouverte (patch tr&egrave;s facile). </p>
+                          <p align="justify">Je me suis donc pench&eacute; sur 
+                            la routine qui traite la licence en travaillant uniquement 
+                            avec du script IDA. Le script s'occupe de tout nettoyer 
+                            et de d&eacute;sassembler la VM. J'ai volontairement 
+                            int&eacute;gr&eacute; dans le script des messages 
+                            demandant &agrave; l'utilisateur l'autorisation d'appliquer 
+                            chaque action. Ceci afin de permettre &agrave; ceux 
+                            qui le d&eacute;sirent de faire un nettoyage partiel 
+                            dans le but d'&eacute;tudier du code pr&eacute;cis.</p>
+                          <p align="justify">Si toutefois, vous d&eacute;sirez 
+                            manipuler le script plusieurs fois de suite en appliquant 
+                            diff&eacute;rentes formules, je vous conseille de 
+                            relancer compl&egrave;tement de d&eacute;sassemblage 
+                            de l'ex&eacute;cutable.<br>
+                            Ce probl&egrave;me est ind&eacute;pendant de ma volont&eacute;. 
+                            Je n'ai pas r&eacute;ussi &agrave; trouver la fonction 
+                            qui permette d'annuler la modification d'octet dans 
+                            le listing. ;p</p>
+                          <p align="justify">Le script a &eacute;t&eacute; d&eacute;velopp&eacute; 
+                            sous <font color="#FFFF00">IDA v4.3 freeware</font> 
+                            et devrait fonctionner sur les versions ant&eacute;rieures.</p>
+                          <p align="justify"> Pour ceux qui n'ont jamais travaill&eacute; 
+                            sous IDA, j'esp&egrave;re que ce travail vous donnera 
+                            un aper&ccedil;u des possibilit&eacute;s &eacute;normes 
+                            que propose le d&eacute;veloppement de scripts. J'esp&egrave;re 
+                            aussi qu'il vous donnera envie d'y mettre le nez dedans. 
+                            Vous verrez...&ccedil;a sent bonnnnn :)</p>
+                          <p align="left">Amusez-vous bien :)</p>
+                          <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+                            <tr> 
+                              <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td>
+                            </tr>
+                          </table>
+                          <p>Suite &agrave; la d&eacute;couverte de la cl&eacute; 
+                            valide, je voulais signaler qu'une plainte a &eacute;t&eacute; 
+                            d&eacute;pos&eacute;e contre l'auteur pour diffamation 
+                            et d&eacute;formation :D de la v&eacute;rit&eacute;. 
+                            L'affaire est en cours... ;)</p>
+                          <p></p>
+                        </div>
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                          <tr> 
+                            <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                                <tr> 
+                                  <td nowrap><font color="#339999" size="2" face="Fixedsys">Lionel 
+                                    d'Hauenens</font></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        &nbsp;</td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="crackme_LABO1_soluce.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+            
+                  </td>
+              </tr>
+            </table></td>
+        </tr>
+      </table>
+</body>
+</html>

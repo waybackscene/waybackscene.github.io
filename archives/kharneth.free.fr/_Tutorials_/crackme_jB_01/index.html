@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!-- #05                             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>crackme_jB_01</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#FFFFFF;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">CrackMe 01 de jB<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- PEId<br>&nbsp;- OllyDbg<br>&nbsp;- Calculatrice<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant en Cracking<br>ayant des connaissances de base en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/crackme_jB_01.exe">crackme_jB_01</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<tr><td width="20%"><b>1 - PEId</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par une analyse rapide avec <i>PEId</i> pour vérifier que le programme n'est pas compressé ou crypté. 
+Et justement, <i>PEId</i> nous signale qu'il est compressé avec UPX. Alors, soit on est pas pressé et on le décompresse à la main. Dans ce cas, Elooo vous l'expliquera mieux que moi (<a href="http://festouilles.free.fr/elooo_-_UPXUnpackme_Clandestino.zip" target="blank">elooo_-_UPXUnpackme_Clandestino</a>). Soit on veut passer directement aux choses sérieuses et on utilise simplement UPX.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant que l'exe est décompressé, on peut le charger dans <i>OllyDbg</i>.
+</p></td></tr>
+
+<tr><td width="20%"><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par regarder dans la liste des chaînes de caractères en faisant click-droit, "Search for", "All referenced text strings". On voit rien d'intéressant. Bon passons au plan B. On fait <i>Ctrl+N</i> pour afficher les imports et on va chercher une API intéressante du style GetDlgItemText ou GetWindowText. Et là non plus, on ne trouve rien d'intéressant!<br>
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plan C, regardons dans la fenêtre de dump (en bas à gauche) si on y trouve des chaînes de caractères. Enfin, on trouve "Réussi!", "POUSSINS" et "Challenge InfoHackers". Ce "POUSSINS" est intéressant. A quoi peut-il correspondre? Je ne pense pas que ce soit le pass, c'est trop flagrant! D'ailleurs, en le testant, ça se confirme. Mais il doit bien être utilisé quelque part!
+Voyons d'abord où est utilisée la chaîne "Réussi!". Notons son adresse (00409030) puis cherchons-la dans le code en faisant click-droit, Search for --> Constant. On tape l'adresse puis Entrer.<br>
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On atterit au début d'une routine assez longue en 00401045 qui contient plusieurs ligne d'initialisation.
+</p><center><img src="Captures/Olly03.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Suivies par une boucle qui effectue des calculs sur des nombres de 64 bits (QWORD) et une API qui a l'air intéressante! Elle envoie des messages à des contrôles. Ici, c'est le message WM_GETTEXT qui est suffisamment explicite! Nous sommes peut être à l'endroit où notre pass est récupéré. On va regarder si cette API est utilisée ailleurs en faisant <i>Ctrl+N</i>, puis en sélectionnant USER32.SendDlgItemMessageA, puis en pressant la touche Entrée. La nouvelle fenêtre nous montre 3 adresses d'où est appelée la fonction.
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La premiére est celle que l'on a trouvé. En double-clickant sur la deuxième, on se retrouve à la fin de la longue routine et la troisième nous emmène un peu plus bas.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le message utilisé lors des 2 autres appels est WM_SETTEXT donc on peut supposer que le premier appel récupère notre pass. On va tester de suite en plaçant un point d'arrêt dessus et en lançant le programme. On tape ce qu'on veut, par exemple "NOTREPASS", puis on click sur le bouton Vérifier.<br>
+</p><center><img src="Captures/Olly05.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On retourne sous <i>OllyDbg</i> qui s'est bien arrêté sur l'appel de l'API. On voit dans la fenêtre de la pile les différents paramêtres passés et notamment Buffer qui contient l'adresse de destination de notre pass. On la sélectionne, click-droit puis Follow in dump. On exécute la fonction en pressant <i>F8</i> et on voit apparaître notre pass dans la fenêtre de dump. On va maintenant tracer avec <i>F8</i> pour voir ce que le programme fait de notre pass.<br>
+</p><center><img src="Captures/Olly06.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit dans la fenêtre des registres que notre pass est chargé en ESI et le fameux POUSSINS en ECX. Ensuite, une boucle compare ces 2 chaînes. On continue de tracer.<br>
+</p><center><img src="Captures/Olly07.gif" alt=""></center><p align="justify">  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On saute par dessus une boucle que l'on aurait prise si on avait entré POUSSINS comme pass. Cette boucle génère le texte "Non...!" à partir du texte "Réussi!", puis le JMP nous expédie à la fin de la routine pour l'afficher dans le champ texte. Ces 2 boucles ne servent donc à rien.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voilà quelque chose d'intéressant! Une comparaison est effectuée entre la valeur de EDI (ici 9) et 8. On remonte un peu le listing et on voit que EDI contient la valeur retournée par l'API. Quand une fonction renvoie une valeur, celle-ci se trouve en général dans EAX et l'instruction placée juste après le CALL l'a copiée dans EDI. L'API a renvoyée le nombre de caractères saisis (<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winprog/winprog/windows_api_reference.asp" target="blank">voir win32.hlp ou MSDN pour plus de précisions</a>). Si l'égalité n'est pas respectée, le JNZ suivant nous envoie à la fin de la routine. Notre pass doit donc contenir 8 caractères.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On relance le programme en tapant cette fois un pass de 8 lettres puis on trace jusqu'à cette fameuse comparaison.
+</p><center><img src="Captures/Olly08.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On arrive sur une boucle qui prend les 8 caractères de notre pass 1 par 1, les aditionne avec 8 autres valeurs, puis effectue un XOR avec encore 8 nouvelles valeurs. On va voir où sont stockées ces 16 valeurs.<br>
+</p><center><img src="Captures/Olly09.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dans la fenêtre d'information, on click-droit sur l'adresse, puis Follow adress in dump.<br>
+</p><center><img src="Captures/Olly10.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit sur la première ligne, les 16 octets qui seront utilisés pour crypter notre pass.
+</p><center><img src="Captures/Olly11.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une boucle effectue des calculs sur des QWORDS à partir de notre pass crypté. Puis la valeur résultante est comparée avec une autre valeur. Cette boucle ressemble étrangement à celle que l'on a vu en début de routine. On va regarder à partir de quel texte, cette première boucle effectue ses calculs. On pose un point d'arrêt sur la deuxième ligne qui récupère les caractères, on lance le prog avec <i>F9</i>, on retape un pass puis on valide. On se retrouve dans la boucle et on voit qu'elle prend les caractères de la chaîne "POUSSINS".<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Récapitulons l'alogrithme: La chaîne "POUSSINS" est transformée en QWORD, notre pass est crypté puis transformé en QWORD avec les mêmes calculs puis les 2 valeurs sont comparées. On en conclu donc que notre pass crypté doit être égal à POUSSINS!  On a également noté la clé de cryptage constituée des 16 octets vus précédemment.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On retourne sur la boucle de cryptage et on voit que les opérations effectuées (ADD et XOR) sont réversibles. On va donc pouvoir reprendre les calculs à l'envers, à partir de "POUSSINS" pour retrouver le mot de passe. Les 8 caractères sont aditionnés avec les 8 premiers octets de la clé puis un XOR est efectué avec les 8 derniers octets de la clé.<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plusieurs possibilités s'offrent à nous: soit, on le fait à la main avec papier, crayon et calculatrice, puisque les calculs sont simples, ce sera très rapide. On peut aussi coder vite fait un prog si on est fainéant. Mais cette fois, on va patcher le programme pour qu'il fasse les calculs à notre place et nous affiche le bon pass! :o)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour modifier une instruction, il suffit de double-clicker dessus et d'entrer ce que l'on veut. 
+</p><center><img src="Captures/Olly12.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Juste après la récupération du mot de passe, on place un JMP qui saute directement au début de la boucle de cryptage et évite ainsi que le programme détecte que l'on a tapé "POUSSINS". Dans la boucle, on inverse les 2 adresses qui récupèrent les octets de la clé ([ESP + EAX + 18] devient [ESP + EAX +20] et inversement). Le <i>ADD CL,DL</i> devient <i>XOR CL,DL</i> et le <i>XOR CL,DL</i> devient <i>SUB CL,DL</i>.
+</p><center><img src="Captures/Olly13.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, on passe en paramètre de l'API qui va afficher le résultat, l'adresse qui contient le mot de passe décrypté. On enlève tous les points d'arrêt restants, puis on lance le prog avec <i>F9</i>.<br>
+</p><center><img src="Captures/Olly14.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On tape POUSSINS, on click sur "Vérifier" et le mot de passe apparaît en clair! :o)
+
+</p></td></tr>
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+There's danger on the edge of town<br>
+Ride the King's highway, baby
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

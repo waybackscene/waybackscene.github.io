@@ -1,0 +1,50 @@
+PRE { font-family: "Courier New", monospace; font-size: 8pt; }
+CODE { font-family: "Courier New", monospace; font-weight:bold; }
+.CODE2 { font-family: "Courier New", monospace; font-size: 9pt; background:#202020; color:#E0E0E0; }
+
+P { text-align:justify; font-family: Arial,Helvetica,sans-serif; font-size:11pt; }
+
+.BASIC { background: #444444; font-family: Arial,Helvetica,sans-serif; font-size: 9pt; }
+.BASID { background: #888888; font-family: Arial,Helvetica,sans-serif; font-size: 9pt; }
+.BASIC2 { background: #888888; font-family: Arial,Helvetica,sans-serif; font-size: 9pt; text-align: justify; color: #000000; }
+.BASIC3 { background: #888888; font-family: Arial,Helvetica,sans-serif; font-size: 9pt; color: #000000; }
+.BASIC4 { background: #444444; font-family: Arial; font-size: 9pt; text-align: justify; }
+
+.GAMES { background: #444444; font-family: Verdana; font-size: 9pt; font-weight: bold; text-align: justify; }
+.CREDS { background: #444444; color: #F7F1CF; font-family: Verdana; font-size: 10pt; font-weight: bold; text-align: justify; }
+.CRED2 { color: #F7F1CF; font-family: Verdana; font-size: 10pt; font-weight: bold; text-align: justify; }
+.CRED3 { color: #FFFFFF; font-family: Verdana; font-size: 10pt; font-weight: bold; text-align: right; }
+.TOPIC { background: #202020; font-family: Arial,Helvetica,sans-serif; font-size: 9pt; }
+.TNEWS { background: #202020; font-family: Arial,Helvetica,sans-serif; font-size: 15pt; }
+
+.ADHEAD { background: #202020; font-family: Arial,Helvetica,sans-serif; font-size: 8pt; }
+.ADBODY { background: #444444; font-family: Arial,Helvetica,sans-serif; font-size: 8pt; text-align: justify; }
+.ADNEWS { background: #444444; font-family: Arial,Helvetica,sans-serif; font-size: 10pt; }
+.ADLEER { font-family: Arial,Helvetica,sans-serif; font-size: 8pt; }
+
+BLOCKQUOTE { color: #000000; word-spacing:-0.2em }
+
+A:link { color: #BB8866; text-decoration: underline; }
+A:hover {color: yellow; }
+A:visited { color: #DFDFDF; text-decoration: underline; }
+A:active { color: #FFFFFF; background: #DD0000; text-decoration: underline; }
+
+A.art:link { color: #990000; text-decoration: none; }
+A.art:hover { color: #000000; background: yellow; text-decoration: none; }
+A.art:visited { color: #000099; text-decoration: underline; }
+A.art:active { color: #FFFFFF; background: #DD0000; }
+
+
+BODY { 
+scrollbar-3dlight-color: #444444; 
+scrollbar-arrow-color: #BBBBBB; 
+scrollbar-base-color: #202020; 
+scrollbar-darkshadow-color: #000000; 
+scrollbar-face-color: #444444; 
+scrollbar-highlight-color: #999999; 
+scrollbar-shadow-color: #000000; 
+background-color: #000000;
+color: #F0F0F0;
+margin: 0;
+}  
+        

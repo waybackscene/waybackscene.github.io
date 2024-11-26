@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+<head>
+<title>Pamplemousse - Analyse de BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="titre"></div>
+<div id="menu">
+	<ul>
+	<li> <a href="intro.html">1. Intro</a></li>
+	<li><a href="schema.html">2. Schéma</a></li>
+	<li><a href="tricks.html">3. Tricks du keygen</a></li>
+	<li><a href="equation.html">4. Résoudre l'équation</a></li>
+	<li><a href="keygen.html">5. Créer le keygen</a></li>
+	<li><a href="greetz.html">6. Greetz</a></li>
+	</ul>
+</div>
+
+<div id="contenu">
+<h1> 2.SCHEMA DU KEYGENME.</h1>
+<p> Voici donc pour commencer un rapide aperçu du fonctionnement de ce keygenme. J'ai représenté en jaune la partie "calculs" et en rouge la partie Anti-Debug/Anti-desassemblage.</p>
+<h6><img class ="noborder" src = "images/schema.gif" alt="" /></h6>
+<p> Pour commencer, vous pouvez constater que le binaire est compressé par UPX. La présence d'un packer /compresseur est souvent le signe d'une tentative de camouflage de chaines de caractères gênantes. Nous prendrons donc bien soin de snooper le binaire avant de commencer l'analyse à proprement parlé.</p>
+<p> La partie la plus intéressante est bien évidemment celle qui concerne le calcul et le check du serial. Deux simples GetDlgItemTextA permettent de récupérer le nom et le serial. Comme je l'ai précisé sur le schéma, le serial a un format XXXX-XXXX où les XXXX sont des valeurs numériques. Je les ai baptisées Num1 et Num2. Vous remarquez également que le check du serial se déroule en deux temps :</p>
+<ul>
+<li> Tout d'abord, une grosse routine qui checke le Num1 en utilisant un hash du Nom (SHA1).</li>
+<li> Puis, un check sur le Num2 qui utilise cette fois les lettres du nom.</li>
+</ul>
+<h2> Le Check de Num1</h2>
+<p> Il s'agit de la plus grosse routine de vérification. Elle nécessite l'utilisation impressionnante de 10 nombres, à savoir :</p>
+<ul>
+<li> 8 bignums hardcodés que j'ai nommé a,b,c,d,e,f,g.</li>
+<li> Num1 qui sera converti en bignum à son tour.</li>
+<li> Un SHA1 sur le Nom que j'ai appelé N.</li>
+<li> Un byte "2A".</li>
+</ul>
+<p> Il s'agit en fait de résoudre une grosse équation non linéaire dont l'inconnue est Num1. Cette valeur se trouve être la puissance d'un bignum et est elle même élevée à une certaine puissance. Pour rendre les choses plus amusantes, le tout est agrémenté de modulos différents.</p>
+
+<h2> Les Tricks </h2>
+<p>Peu nombreux et très simples, ils ne sont là que pour ennuyer un reverser débutant et ne présentent finalement aucune difficulté en comparaison avec l'algorithme de vérification.</p>
+<p> Je vais donc commencer par analyser ces tricks.</p>
+<div class="page_suivante">
+<a href="tricks.html"><img class ="noborder" src = "images/hand.jpg" alt="Page suivante" title="Page suivante" /></a>
+</div>
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+
+
+</div>
+</body>
+</html>

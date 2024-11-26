@@ -1,0 +1,629 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>YO-bfuscator1 - solution par BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="fenetre">
+<div class="titre"></div>
+
+<div class="menu">
+<ul>
+<li><a href='index.html'>Introduction</a></li>
+<li><a href='demarche.html'>Ma démarche</a></li>
+<li><a href='crackme.html'>Le Crackme</a></li>
+<li><a href='obfuscation.html'>Obfuscation</a></li>
+<li><a href='conclusion.html'>Conclusion</a></li>
+</ul>
+
+</div>
+
+<div class="contenu">
+<p class="droite">Date de publication : 20 avril 2008 00h40</p>
+<p class="droite">Auteur : BeatriX</p>
+<div class="ligne"></div>
+
+<h1>2 . Ma démarche.</h1>
+<p></p>
+<h2>2.1. Analyses locales (program points).</h2>
+<p>La solution que je propose ici pour "nettoyer" le binaire de l'obfuscation est semi-automatique. Toute la partie concernant la prospection et la prise de décision est réalisée à la main. La partie laborieuse de suppression de junk est réalisée par un émulateur. L'analyse menée sur ce binaire est en fait un ensemble d'attaques 'locales' portées à différents endroits choisis avec soin. Wroblewski les appelle des 'program points'. Ces program points sont en fait de "vraies" instructions qui nous servent de point d'appui pour découvrir de nouvelles instructions du code source. L'étude effectuée autour de chaque program point est ainsi qualifiable de "locale".
+</p>
+<p>Le plus difficile dans ce genre d'approche est de déterminer les "bons" program points qui permettront de nettoyer un maximum de code en un minimum d'effort. De plus, il va sans dire que plus les program points sont nombreux et plus l'analyse sera longue. Nous allons voir ici que ce nombre est assez réduit mais suffisamment conséquent pour s'amuser un peu.
+</p>
+<h2>2.2. Attaque 1 : Analyse différentielle (étude statistique).</h2>
+<p>Comme je viens de le dire, déterminer les program points est la phase critique de l'analyse. Il faut trouver de "bons" program points ! Dans ce genre de recherche, nous sommes confronté au problème de ce que j'ai baptisé les insertions de code de type <strong>"stealth constructs"</strong>. Il s'agit d'une technique d'obfuscation qui consiste à insérer du code qu'il est difficile de distinguer du code source d'origine. Une analyse spécifique nous permet de distinguer les vrais des faux.</p>
+<p>Si par exemple nous rencontrons un "cmp ebx, eax" comme program point potentiel, il faudra vérifier qu'il a un lien avec ce que nous analysons. Il faudra chercher à savoir d'où vient "ebx" et "eax" et il faudra aussi vérifier si la comparaison débouche sur quelque chose d'utile. Si nous rencontrons un "mov [49379Ch], eax", il faudra vérifier que l'espace mémoire rempli est bien utilisé quelque part par le programme. Dans ce binaire, cette phase a été facile à négocier puisque les "stealth constructs" se résument à une seule insertion.</p> 
+<p>Sans m'en rendre compte, pour trouver des program points, je suis parti de deux hypothèses fortes. La première a presque été suggérée par les consignes laissées par Yolejedi :</p>
+<div class="important">
+<strong>HYPOTHESE 1</strong> : L'obfuscation est de type insertion de code. Le code original n'a pas été altéré par des transformations de type mutation de code.
+</div>
+<p>Ceci m'a amené à formuler la seconde hypothèse dans la foulée.</p>
+<div class="important">
+<strong>HYPOTHESE 2</strong> : Il existe un différentiel significatif entre le code d'origine et l'obfuscation insérée.
+</div>
+<p>Ceci signifie que certaines instructions ou familles d'instructions sont utilisées dans le code d'origine et sont absentes de l'obfuscation. Dans notre cas, il se trouve que le différentiel est assez important. J'ai donc commencé ce travail de recherche des différences en logguant certaines instructions ou familles d'instructions.</p>
+
+<p><strong><span class="jaune">Recherche d'instructions rares</span></strong></p>
+
+<p>Les <strong>premiers program points</strong> auxquels on peut penser sont les appels aux fonctions de l'api qui ne sont pas du tout utilisés par l'obfuscation. Chaque fonction utilise des paramètres poussés sur la pile. L'analyse locale ici cherchera à déterminer les lignes de code qui "poussent" ces fameux paramètres.
+</p>
+<p>Les <strong>seconds program points</strong> incontournables sont les instructions qui modifient le contenu d'emplacements mémoire. Par exemple, un : 
+</p>
+<pre>
+0056EED9 mov dword ptr [49379Ch], eax
+</pre>
+<p>nous amènera à chercher l'origine de la valeur contenue dans eax afin de déterminer la définition du dword situé en 49379Ch. De la même façon que les appels à l'API, l'obfuscation n'utilise pas ce genre d'instruction.</p>
+<p>Les <strong>troisièmes program points</strong> concernent les instructions de tests ou de comparaisons. Par exemple, un :
+</p>
+<pre>
+0045A3A9 cmp ebx, eax
+</pre>
+<p>nous amènera à réaliser une analyse locale visant à déterminer l'origine des valeurs contenues dans ebx et eax afin de comprendre le sens de cette comparaison. Encore une fois, c'est une famille d'instructions qui n'est pas utilisée dans l'obfuscation (sauf une fois en tant que stealth code).</p>
+
+<p>Une fois cette propection réalisée, on peut essayer de faire une recherche plus systématique <strong>d'instructions rares</strong> en faisant le pari que si elles sont rares, c'est qu'elles ne sont pas utilisées par le moteur d'obfuscation. Pour exemple, je me souviens que durant l'analyse des instructions d'un défi appelé le K5 (de Kaine), l'émulateur m'avait signalé une instruction unique utilisée : ENTER 0,0 ! Il se trouve que c'était l'entrée du length disassembler engine de zombie (LDE 1.06).</p>
+<p>Dans ce binaire, les program points proposés ci-dessus sont de type "rares" et sont à 99 % issus du code source. Une seule insertion de type "stealth constructs" a été ajoutée dans la routine de vérification du serial comme nous le verrons plus tard.</p>
+<p>Je dispose sur l'émulateur d'un module de comptage des instructions. Voici ce que nous obtenons sur la routine de vérification du serial :</p>
+<pre>
+========================================
+=
+=	one-byte instructions frequences
+=
+========================================
+add Ev, Gv = 4
+or  Gb, Eb = 8 &#60-------- code source
+sub Ev, Gv = 3
+xor Ev, Gv = 4
+cmp Gv, Ev = 1 &#60-------- code source
+push ecx = 7
+push edi = 9
+pushad     = 1 &#60--------- code source
+popad      = 1 &#60--------- code source
+mov Gb, Eb = 8 &#60--------- code source
+mov cl, Ib = 7 &#60--------- code source
+mov eax, Iv = 1 &#60--------- code source
+mov ecx, Iv = 1 &#60--------- code source
+mov ebx, Iv = 1 &#60--------- code source
+mov ebp, Iv = 1 &#60--------- code source
+mov edi, Iv = 1 &#60--------- code source
+
+========================================
+=
+=	Group 1 instructions frequences
+=
+========================================
+and Ev, Ib = 1
+cmp Ev, Ib = 1 &#60--------- code source
+
+========================================
+=
+=	Group 2 instructions frequences
+=
+========================================
+shl Ev, 1 = 1
+shr Ev, 1 = 1
+
+========================================
+=
+=	Group 3 instructions frequences
+=
+========================================
+div Ev = 1 &#60--------- code source
+
+========================================
+=
+=	Group 5 instructions frequences
+=
+========================================
+push Ev = 1
+</pre>
+<p>Vous pouvez constater qu'une grande partie des instructions retenues fait partie du code source et non de l'obfuscation.</p>
+<p><strong><span class="jaune">Analyse différentielle du control-flow</span></strong></p>
+
+<p>La technique précédente permet de débusquer des instructions agissant sur le data-flow mais ne permet pas de rendre compte de la structure du binaire. Les procedures, les boucles nous échappent même si on entrevoit parfois des portions de code qui se répètent. Il est donc nécessaire de se concentrer sur les valeurs prises par EIP et sur les instructions de branche ainsi que sur certains grands classiques. </p>
+<p><strong>Mesure du delta</strong></p>
+
+<p>On peut partir du principe que si EIP est augmenté ou diminué d'une valeur supérieure à une valeur seuil fixée a priori, c'est qu'il s'est produit un saut "réel". La valeur seuil permet de se prémunir des instructions de branche de l'obfuscation qui souvent ne réalisent pas des "sauts" très significatifs. Cette mesure du différenciel entre deux valeurs consécutives de EIP s'appelle communément <strong>mesure du delta</strong>. Voici par exemple ce genre d'analyse réalisée sur la routine de vérification du serial qui rappelons-le, pour un serial de 7 caractères, va exécuter plus de 29000 instructions.</p>
+<pre>
+=====================================================
+=
+=	Log des instructions de branche (delta > 1000h)
+=	sur routine de vérification du serial
+=
+=====================================================
+
+00412283 call 40103Ch
+0040103C jmp near dword ptr [59E02Ch]=========&#62 IsWindowEnabled
+00421FCC call 40101Eh
+0040101E jmp near dword ptr [59E030h]=========&#62 EnableWindow
+004232AE jne 420E30h
+00421FCC call 40101Eh
+0040101E jmp near dword ptr [59E030h]=========&#62 EnableWindow
+004232AE jne 420E30h
+00426039 je 43264Ah
+00437D69 call 401036h
+00401036 jmp near dword ptr [59E028h]=========&#62 GetWindowTextA 
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+00445E7D jne 441B72h
+0044859C jmp 43B7ABh
+0043E009 je 449C3Ch
+00453D0A jne 456C56h
+0045B7A4 ja 46B40Fh
+0046965E jmp near ecx
+004731E0 call 401060h
+00401060 jmp near dword ptr [59E044h]=========&#62 SetDlgItemTextA : --------&#60 Perdu ! &#62--------
+</pre>
+<p>On voit apparaître tous les appels aux fonctions de l'API. Au passage, on voit que le binaire utilise ce qu'on appelle un trampoline pour réaliser ces appels (compilation médiocre de masm32 :) ). On voit également apparaître des boucles avec des série de "jne". On voit même un "jmp ecx" ! Tout ceci est une bonne base pour compléter une analyse de data-flow sur cette routine. Il est à noter que cette analyse nous permet d'obtenir à 98 % des instructions du code d'origine.</p>
+
+<p></p>
+<h2>2.3. Attaque 2 : Etude des mouvements de pile. ( data-flow )</h2>
+<p> Dans un premier temps, on remarque que le binaire exécute deux fonctions :</p>
+<pre>
+0056DE51 call 401078h =========&#62 GetModuleHandleA : Main
+005761FC call 401012h =========&#62 DialogBoxParamA
+</pre>
+<p>Voici donc nos deux premiers program points sur lesquels vont porter notre première attaque. Avant l'appel à chacune de ces deux fonctions, le programme va pousser sur la pile les paramètres utiles. Il va également s'amuser à noyer ces informations dans un junk code complexe. Nous allons ainsi nettoyer le code en se focalisant sur les modifications de ESP. Si on commence par chercher à logguer toutes les instructions qui modifient le registre esp avant l'appel à la première fonction, on obtient ceci :</p>
+<pre>
+00565BB2 call 565BB8h
+00565BC9 push ecx
+00565BCA call 565BD0h
+00565BD0 pop ebp
+00565BE4 call 565BEAh
+00565BEA pop ecx
+00566203 push 4AF35Ch
+00566208 push dword ptr fs:[8h]
+0056620F pop ecx
+00566215 push dword ptr fs:[8h]
+0056621C pop ecx
+00566223 push esp
+00566224 pop esi
+0056686D push dword ptr fs:[8h]
+00566874 pop ecx
+00566877 pop ecx
+00566878 push esp
+00566879 pop ebp
+0056687D pop ebp
+00566880 pop edi
+00566EFE push ebp
+005675D0 push dword ptr fs:[0h]
+005675E1 push dword ptr fs:[8h]
+005675E8 pop ecx
+005675FE call 567604h
+00567604 pop ecx
+00567C2B push dword ptr fs:[4h]
+005682BD push dword ptr fs:[8h]
+005682C4 pop eax
+005682C7 pop edx
+005682CF pop ebp
+005682D3 pop eax
+005689A6 push 5801CFh
+00568FC3 push 59752Ch
+00568FD9 push ebx
+00569617 push dword ptr fs:[4h]
+00569624 push dword ptr [esp+4h]
+00569628 pop dword ptr [esp]
+0056962B push dword ptr fs:[8h]
+00569632 pop ebx
+00569637 push dword ptr fs:[8h]
+0056963E pop ebp
+00569649 pop ebp
+0056964A call 569650h
+00569650 pop esi
+00569656 pop edi
+0056965A pop esi
+00569E8D push dword ptr fs:[eax]
+00569E90 call 569E96h
+0056A537 push edi
+0056A543 push esp
+0056A544 pop edi
+0056A553 call 56A559h
+0056A559 pop edi
+0056A55F push dword ptr fs:[4h]
+0056ACFE push esp
+0056ACFF pop edx
+0056AD13 call 56AD19h
+0056AD19 pop ecx
+0056AD30 push esp
+0056AD31 pop edi
+0056AD41 push esp
+0056AD42 pop esi
+0056B20C pop ebp
+0056B213 pop ecx
+0056B217 pop edi
+0056BD96 push 4752A9h
+0056BDA0 push eax
+0056C296 push 4DB30Ch
+0056C29B call 56C2A1h
+0056C2A1 pop esi
+0056C2B3 pop ebp
+0056C2BA pop edi
+0056C745 pop esi
+0056C763 push 0h
+0056C765 push edi
+0056CE2D lea esp, dword ptr [esp-4h]
+0056D2EE call 56D2F4h
+0056D2F4 pop edi
+0056D2FD push 487E4Fh
+0056D8B9 pop esi
+0056D8C0 pop ecx
+0056D8C4 pop edx
+0056DE51 call 401078h =========&#62 GetModuleHandleA : Main
+</pre>
+<p> Bien que cette version du code soit nettement moins lourde que la version complète (nous n'avons que 83 instructions qui modifient esp sur un total de 787 instructions exécutées !), elle reste encore très confuse. Nous pouvons alors coder un petit filtre supplémentaire qui va simplement logguer les instructions équivalentes à un "push" mais qui va en même temps observer les valeurs de esp. Si après avoir loggué un "push", esp est augmenté de 4, on supprime ce dernier "push" des logs enregistrés. Dès qu'on atteint notre program point (en 56DE51), on affiche les logs enregistrés. Voici ce que nous obtenons pour le code précédent : </p>
+<pre>
+005689A6 push 5801CFh
+00569E8D push dword ptr fs:[eax]
+0056C763 push 0h
+0056DE51 call 401078h =========&#62 GetModuleHandleA : Main
+</pre>
+<p> On voit donc que le paramètre de la fonction observée est poussé en 56C763. On voit également la mise en place d'un SEH dont le handler se situe en 5801CFh.</p>
+<p>De même, en appliquant ce petit filtre sur la seconde fonction, on obtient ceci :</p>
+<pre>
+00570171 push 0h
+00571861 push 494B9Bh
+00572C0A push 0h
+00573C0E push 65h
+00574E46 push eax
+005761FC call 401012h =========&#62 DialogBoxParamA
+</pre>
+<p>Pour information, avant ce dernier nettoyage, le programme exécute 760 instructions ! On voit de ce fait que la WinProc démarre en 494B9Bh.</p>
+<p>Vous pensez déjà que tout ceci est bien inutile vu qu'on peut obtenir les mêmes informations en posant deux BP sur ces fonctions et en regardant les valeurs poussées sur la pile. Il est vrai que dans les deux exemples proposés, cette technique n'a aucun intérêt vu que tous les paramètres poussés sont des constantes. Il n'en est pas de même pour toutes les fonctions de ce binaire. Voyez plutôt l'exemple suivant :</p>
+<pre>
+	00495F3F pushad 
+	004B71E7 push 406A43h
+	004B8AEC push dword ptr [4937A0h]
+	004BA00B call 40106Ch =========&#62 SetWindowTextA : YO-bfuscator_I :) 
+
+	004BB9D2 push 67h
+	004BCDA3 push dword ptr [49379Ch]
+	004BE7C2 call 401042h =========&#62 LoadBitmapA
+
+	004C147C push 68h
+	004C28DB push dword ptr [49379Ch]
+	004C3E20 call 401042h =========&#62 LoadBitmapA
+
+	...
+</pre>
+<p>Dans les cas proposés ici, on voit le contenu d'espaces mémoire poussés sur la pile. Grâce à cette technique, nous récupérons facilement les adresses de ces emplacements ce qui nous donne une information précieuse sur la nature de l'emplacement en question.</p>
+<p>Pour conclure sur cette technique d'attaque, je signale que j'ai réalisé le filtrage à l'aide de ma librairie de désassemblage <strong>BeaEngine 3.0</strong>. Le filtrage effectué est le suivant :</p>
+<div class="important">
+<p>MonDisasm.Instruction.ImplicitModifiedRegs & REG4</p>
+<p>MonDisasm.Argument1.ArgType & REG4</p>
+</div>
+<p>En d'autres termes, on loggue les instructions qui modifient implicitement le registre REG4, c'est-à-dire ESP, et on loggue également les instructions qui modifient explicitement le REG4, c'est-à-dire celles qui disposent de ESP comme premier argument dans la syntaxe d'une instruction intel suivante :</p>
+<p> OPERATION + ARGUMENT1 + ARGUMENT2</p>
+<p> L'argument 1 est souvent associé à l'opérande destination qui va subir la transformation.</p>
+
+<p><strong><span class="jaune">Remarque importante :</span></strong></p>
+
+<p>Dans cette méthode, on ne peut pas voir réellement comment sont stockés les paramètres sur la pile. Voici un petit exemple qui nécessite un travail supplémentaire :</p>
+<pre>
+	push eax
+	mov dword ptr [esp], ebx
+	call GetModuleHandleA
+</pre>
+<p>C'est clairement une mutation du code standard suivant :</p>
+<pre>
+	push ebx
+	call GetModuleHandleA
+</pre>
+<p>Malheureusement, si nous n'appliquons qu'un data-flow sur esp, nous n'obtenons que ceci :</p>
+<pre>
+	push eax
+	call GetModuleHandleA
+</pre>
+<p>Il est donc nécessaire de comparer les valeurs sur la pile au moment de l'appel à la fonction avec les valeurs poussées ! C'est un travail à ne pas négliger dans l'absolu. Dans le cas de cette étude, le code source n'étant pas muté, nous ne rencontrerons pas cette situation.</p>
+
+<h2>2.4. Attaque 3 : Backward Slicing (back-stepping).</h2>
+<p>Cette attaque porte cette fois sur les deux autres types de program points mentionnés précédemment. Le principe est assez simple. On demande à l'émulateur d'exécuter le programme à l'envers à partir du program point choisi tout en scrutant le contenu des registres et de la pile. On peut ainsi pister une valeur et remonter jusqu'à sa source tout en logguant les instructions qui opèrent sur cette valeur. On obtient ainsi ce qui s'appelle un SLICE. L'obfuscation ne resiste quasiment pas à une telle attaque. Je vais exposer cette approche à travers deux exemples.</p>
+<p><strong>Exemple 1</strong>
+</p>
+<p>Si on demande de logguer à partir de l'entry point les instructions qui modifient les contenus d'espace mémoire, on obtient ceci : </p>
+<pre>
+0056B83C mov dword ptr fs:[eax], esp
+0056DE51 call 401078h =========&#62 GetModuleHandleA : Main
+0056EED9 mov dword ptr [49379Ch], eax
+005761FC call 401012h =========&#62 DialogBoxParamA
+</pre>
+<p> Nous avons obtenu ce filtrage en demandant à BeaEngine 3.0 de logguer les instructions qui vérifient les conditions suivantes :</p>
+<div class="important">
+<p>(MonDisasm.Argument1.Argtype & MEMORY_TYPE) && (MonDisasm.Argument1.Memory.BaseRegister != REG4)</p>
+</div>
+<p>On demande en fait à BeaEngine de logguer les instructions qui ont pour opérande destination (argument1) un MEMORY_TYPE qui n'est pas pointé par ESP (BaseRegister != ESP). Cette dernière condition n'est pas indispensable a priori mais s'avère très utile pour éviter les accès à la pile très nombreux.</p>
+<p> La première affectation concerne la mise en place du SEH et confirme ce que nous avons constaté précédemment. Juste après l'appel à la fonction GetModuleHandleA, on voit que le contenu de eax est stocké en 49379Ch. Nous allons donc partir de ce program point et appliquer un back-stepping automatique pour pister le contenu de eax. Pour information, 96 instructions séparent l'appel à GetModuleHandleA de notre program point.</p>
+<p>Voici le slice que nous obtenons au premier jet :</p>
+<pre>
+backward slicing à partir de 0056EED9
+
+
+0056DE51 call 401078h =========> GetModuleHandleA : Main
+
+0056DE56 xchg eax, esi
+0056E40C inc esi
+0056E8EE mov edi, esi
+0056E8FF xchg ebp, edi
+0056EECF xchg eax, ebp
+0056EED8 dec eax
+
+0056EED9 mov dword ptr [49379Ch], eax
+</pre>
+<p> La séquence ne contient que 6 instructions sur les 96 exécutées en réalité. C'est un très bon rendement a priori. Cependant, si on y regarde de plus près, on constate qu'en dehors du "inc esi" et du "dec eax", toutes les instructions font partie des instructions de transfert de données (DATA TRANSFER INSTRUCTIONS) et ne sont là que pour essayer de nous perdre un peu plus. On va donc demander au back-stepping de refaire le travail en ne logguant que les instructions qui font vraiment quelquechose, c'est-à-dire les ARITHMETIC INSTRUCTIONS, LOGICAL INSTRUCTIONS, SHIFT AND ROTATE INSTRUCTIONS. Nous obtenons un log bien évidemment plus court :</p>
+<pre>
+backward slicing à partir de 0056EED9 sans DATA_TRANSFER INSTRUCTIONS
+
+
+0056DE51 call 401078h =========&#62 GetModuleHandleA : Main
+
+0056E40C inc esi
+0056EED8 dec eax
+
+0056EED9 mov dword ptr [49379Ch], eax
+</pre>
+<p>L'obfuscation qui reste ici, c'est à dire un "inc/dec" ne nous pose plus de difficulté même si les deux instructions travaillent sur des registres différents. Quoiqu'il arrive, le contenu de esi ira dans eax par un jeu de tranfert complexe. Nous pouvons conclure que finalement le contenu de eax dans notre program point n'est rien d'autre que la valeur retournée par GetModuleHandleA ! Tout ça pour ça !!</p>
+<p><strong>Exemple 2</strong>
+</p>
+<p>Si on demande de logguer à partir de l'entrée de la WinProc les instructions de comparaison , on obtient ceci : </p>
+<pre>
+0049AE89 cmp esi, 110h &#60-- WM_INITDIALOG
+
+0049BCF3 cmp esi, 111h &#60-- WM_COMMAND
+	005286DB cmp ebp, 1h
+
+		00412283 call 40103Ch =========&#62 IsWindowEnabled 
+
+		00437D69 call 401036h =========&#62 GetWindowTextA 
+
+		0045A3A9 cmp ebx, eax
+
+		004731E0 call 401060h =========&#62 SetDlgItemTextA : --------&#60 Perdu ! &#62-------- 
+
+	0052A1E8 cmp ebp, 2h
+
+0049CF40 cmp esi, 136h &#60-- WM_CTLCOLORDLG
+
+0049E2B9 cmp esi, 138h &#60-- WM_CTLCOLORSTATIC
+
+0049F749 cmp esi, 133h &#60-- WM_CTLCOLOREDIT
+
+004A0817 cmp esi, 135h &#60-- WM_CTLCOLORBTN
+
+004A22A2 cmp esi, 10h
+
+</pre>
+<p>Si on y regarde de près, on remarque un "cmp ebx, eax" fort intéressant ! ( a priori). Il se trouve juste derrière l'appel à la fonction GetWindowTextA... Si j'ose dire, on a une sensation du bon gros crackme de base qui récupère le serial , qui fait des calculs et qui fait un gros "CMP EBX, EAX". Nous verrons plus loin qu'il n'en est rien et que <strong>c'est un petit piège</strong> de YoleJedi pour nous faire chercher au mauvais endroit :) Bref, nous pouvons quand même chercher l'origine des valeurs contenues dans ebx et eax. Cette recherche va s'avérer très fructueuse puisqu'elle va nous dévoiler la routine de vérification du serial saisi.</p>
+<p>Si on effectue un back-stepping avec filtrage des DATA_TRANSFER INSTRUCTIONS à partir de 45A3A9h, on obtient ceci :</p>
+<pre>
+******************************************
+*
+*	Backward Slicing + FILTRE ANTI TRANSFERT à partir de 45A3A9 sur ebx
+*
+*
+******************************************
+nbre d'instructions exécutées entre 43901A et 45A3A9 : 29032
+nbre d'instructions retenues après back-stepping + anti-transfer : 610
+Taux de réduction : 98 %
+
+0045A3A9 cmp ebx, eax
+00457F28 inc ebx
+00457F26 not ebx
+00457209 neg dword ptr [esp]
+00456C43 ror ebx, 63h
+004566AA rol eax, 0E3h
+00455896 inc ebx
+0045518B not ebx
+00455188 sub ebx, 1h
+00454AFD neg ebp
+0045376A xor edx, 4CC12Ch
+00453274 xor ebx, 4CC12Ch
+00452C61 ror ebx, 98h
+00451E84 rol edx, 0D8h
+00451A07 ror ebx, 5h
+00451A06 dec ebx
+00451A04 neg ebx
+00451359 not dword ptr [esp]
+004506D6 or ebx, eax
+004506C6 ror ebx, 62h
+0044FA8F ror edx, 3Eh
+0044F55E rol ebx, 0C9h
+0044EEA3 ror ecx, 0A9h
+0044E026 sub ebx, 1h
+0044D8FA inc ebx
+0044D231 inc ebx
+0044C55C dec edi
+0044BAB7 neg edx
+0044BAB6 inc edx
+0044B431 not dword ptr [esp]
+0044AD47 xor ebx, 0AB979C82h
+0044AD25 inc ebx
+0044AD23 not ebx
+0044A26E neg esi
+0043DFF2 rol ebx, 0AFh
+0043D0DF rol ebx, 0D1h
+0043C4D0 neg esi
+0043C4B1 neg ecx
+00448593 ror ebx, 0Ah
+00447932 ror ebx, 56h
+004472B5 dec ebx
+004472B3 neg ebx
+00445E83 not ebx
+004459C7 add ebx, 4AB2B6h
+00444C27 sub edx, 4AB2B6h
+004444FB ror ebx, 1h
+00443F5A dec ebx
+00443392 inc ebx
+00442D3B xor bl, al
+00442D37 rol ebx, 9Fh
+0044218D ror ebx, 7Fh
+004459C7 add ebx, 4AB2B6h
+00444C27 sub edx, 4AB2B6h
+004444FB ror ebx, 1h
+00443F5A dec ebx
+
+[....]
+0043C4D0 neg esi
+0043C4B1 neg ecx
+0043B7A1 not ebx
+0043B79E add ebx, 0FFFFFFFFh
+0043A95D neg ebx
+0043A312 xor ebx, 539B5Dh
+00439742 xor ebx, 539B5Dh
+0043901A mov ebx, 6964654Ah
+
+</pre>
+<p> L'origine de ebx est donc située en 43901A où ebx est affecté de la chaine "ideJ". Même si nous sommes passés de 29000 instructions exécutées à 610, on constate que l'obfuscation reste assez présente mais facile à comprendre. En réalisant un petit filtrage spécifique à l'obfuscation présente ici (j'appelle ça une suppression manuelle), on obtient ceci :</p>
+<pre>
+******************************************
+*
+*	Backward slicing + FILTRE ANTI TRANSFERT à partir de 45A3A9 sur ebx
+*
+*
+******************************************
+nbre d'instructions exécutées entre 43901A et 45A3A9 : 29032
+nbre d'instructions retenues après back-stepping + filtre anti-transfer : 610
+nbre d'instructions retenues après back-stepping + filtre anti-transfer + suppression manuelle : 118
+Taux de réduction : 99,6 %
+
+0045A3A9 cmp ebx, eax
+00455896 inc ebx
+00451A07 ror ebx, 5h
+004506D6 or ebx, eax
+0044AD47 xor ebx, 0AB979C82h
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+[.....]
+00442D3B xor bl, al
+004444FB ror ebx, 1h
+00442D3B xor bl, al
+0043901A mov ebx, 6964654Ah
+</pre>
+<p>A ce stade de l'analyse, il ne reste plus qu'à comprendre d'où vient "al" dans les "xor" successifs. On verra que ces opérations répétées cachent de simples boucles et que 'al' n'est rien d'autre que les caractères du serial pris un par un.</p>
+
+<h2>2.5 Conclusion</h2>
+<p>Voilà dans son ensemble la démarche suivie pour analyser ce petit binaire. Je conclue donc en rappelant les différentes étapes de la recherche :</p>
+<div class="important">
+<ul>
+<li>1. Recherche de program points par <strong>analyse différentielle</strong>.</li>
+<ul>
+<li>Recherche d'instructions rares ou de familles d'instructions</li>
+<li>Mesure du delta</li>
+<li>Log des appels aux fonctions de l'api</li>
+</ul>
+<li>2. Analyse de <strong>data-flow sur esp</strong> pour déterrer les "vrais" mouvements de pile avant l'appel à une fonction</li>
+<li>3. Analyse de data-flow d'un context restreint (un seul registre) par <strong>backward slicing</strong>.</li>
+</ul>
+</div>
+<p>Nous allons pouvoir nous intéresser au crackme à proprement parlé maintenant. Dans un souci de clareté, j'ai décomposé le travail en deux parties :</p>
+<p><strong>Première partie :</strong>Je donne un aperçu du fonctionnement du crackme et je donne également le code source pour masm32 juste histoire de prouver que ce que je viens d'écrire n'est pas complètement inutile.</p>
+<p><strong>Deuxième partie :</strong>Ma méthode d'analyse fait de la discrimination positive, c'est-à-dire qu'elle ne travaille que sur le code utile et non l'obfuscation. Nous comblerons en partie ce manque en analysant l'obfuscation proposée selon des critères annoncés par Wroblewski dans son article "General Method Of Program Code Obfuscation".</p>
+<p class="griser"> Copyright (C)- FRET (2008)</p>
+
+<div class="page_suivante">
+<a href="crackme.html"><img class ="noborder" src = "Images/hand.gif" alt="Page suivante" title="Page suivante" /></a>
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+</div>
+</div>
+</body>
+</html>

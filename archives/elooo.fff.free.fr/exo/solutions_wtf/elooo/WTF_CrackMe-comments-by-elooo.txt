@@ -1,0 +1,275 @@
+;====================================================================
+ 		WTF_CrackMe d'elooo - Code commenté
+;====================================================================
+
+
+004016FD   $  60            PUSHAD                                   ; sauve les registres
+004016FE   .  B8 2D174000   MOV EAX,WTF_Crac.0040172D                ; eax = 0040172D
+00401703   .  8D3D FD164000 LEA EDI,DWORD PTR DS:[4016FD]            ; edi = debut de la proc (004016FD)
+00401709   .  B9 B9010000   MOV ECX,1B9                              ; ecx = 1B9h = fin code - debut code = nb byte a scanner
+0040170E   .  60            PUSHAD                                   ; sauve les registres
+0040170F   .  E8 08000000   CALL WTF_Crac.0040171C                   ; saute en 0040171C et dec esp de 4
+00401714   .  02EB          ADD CH,BL
+00401716   .  0B58 EB       OR EBX,DWORD PTR DS:[EAX-15]
+00401719   .  0148 40       ADD DWORD PTR DS:[EAX+40],ECX
+0040171C   $  58            POP EAX                                  ; eax = 00401714
+0040171D   .  EB 01         JMP SHORT WTF_Crac.00401720              ; jmp 00401720
+0040171F   .  48            DEC EAX
+00401720    40              INC EAX                                  ; eax ++
+00401721    EB 05           JMP SHORT WTF_Crac.00401728              ; jmp 00401728
+00401723    35 FFE0C161     XOR EAX,61C1E0FF
+00401728    FFE0            JMP EAX                                  ; jmp 00401715
+
+00401715   ? /EB 0B         JMP SHORT WTF_Crac.00401722              ; jmp 00401722
+
+
+00401722   ?  05 35FFE0C1   ADD EAX,C1E0FF35                         ; valeur a la con inutile qui fout le souk
+00401727   ?  61            POPAD                                    ; recup les registres
+00401728   >  FFE0          JMP EAX                                  ; jmp 0040172D
+0040172A   /EB 00           JMP SHORT WTF_Crac.0040172C              ; fake
+0040172C   \61              POPAD                                    ; fake
+0040172D    8B15 3F174000   MOV EDX,DWORD PTR DS:[40173F]            ; edx = 0040173F
+00401733    52              PUSH EDX                                 ; met edx sur la pile
+
+
+;--------------------------------------------------------------------
+ Detection de Breakpoint (int 3)
+;--------------------------------------------------------------------
+00401734    B8 AB000000     MOV EAX,0AB                              ; eax = 0ABh
+00401739    83F0 67         XOR EAX,67                               ; eax = 0ABh + 67h = 0CCh (opcode int 3)
+0040173C    5A              POP EDX                                  ; on recup edx (00401743)
+0040173D    FF12            CALL DWORD PTR DS:[EDX]                  ; on call en 00401747 (jmp emule)
+0040173F    43              INC EBX                                  ; < c'est pas du code, c'est mon 00401743
+00401740    17              POP SS                                   ; qu'il vient chercher
+00401741    40              INC EAX                                  ; precedemment
+00401742    0047 17         ADD BYTE PTR DS:[EDI+17],AL              ; ainsi que le
+00401745    40              INC EAX                                  ; 00401747 >
+
+00401747    F2:AE           REPNE SCAS BYTE PTR ES:[EDI]             ; scanne le buffer pointe par edi (004016FD)
+00401749    85C9            TEST ECX,ECX                             ; sur ecx bytes, a la recherche de al (0CCh)
+0040174B    5A              POP EDX                                  ; sauve edx (00401743) sur la pile
+0040174C    EB 01           JMP SHORT WTF_Crac.0040174F              ; jmp 0040174F
+
+0040174F   /0F85 60010000   JNZ WTF_Crac.004018B5                    ; si ecx != 0 alors int 3  => badboy + crash
+;--------------------------------------------------------------------
+
+
+00401755   /EB 00           JMP SHORT WTF_Crac.00401757              ; jmp 00401757
+00401757   \83EC 04         SUB ESP,4                                ; dec esp, 4
+0040175A    C70424 67174000 MOV DWORD PTR SS:[ESP],WTF_Crac.00401767 ; esp = 00401767 (emulation d'un push 00401767)
+00401761    68 93174000     PUSH WTF_Crac.00401793                   ; push 00401793
+00401766    C3              RETN                                     ; emulation d'un jmp 00401793
+
+00401793    FC              CLD
+00401794    8D35 00304000   LEA ESI,DWORD PTR DS:[403000]            ; esi pointe sur le buffer qui contient le name entre
+0040179A    B8 C3174000     MOV EAX,WTF_Crac.004017C3                ; eax = 004017C3
+0040179F    B9 03000000     MOV ECX,3                                ; ecx = 3
+004017A4    60              PUSHAD                                   ; sauve les registres
+004017A5    E8 08000000     CALL WTF_Crac.004017B2                   ; call 004017B2 (dec esp)
+
+004017B2    58              POP EAX                                  ; eax = 004017AA
+004017B3    EB 01           JMP SHORT WTF_Crac.004017B6              ; jmp 004017B2
+004017B5    48              DEC EAX
+004017B6    40              INC EAX                                  ; eax ++
+004017B7    EB 05           JMP SHORT WTF_Crac.004017BE              ; jmp 004017BE
+004017B9    35 FFE0C161     XOR EAX,61C1E0FF
+004017BE    FFE0            JMP EAX                                  ; jmp 004017AB
+
+004017AB   /EB 0B           JMP SHORT WTF_Crac.004017B8              ; jmp 004017B8
+
+004017B8    05 35FFE0C1     ADD EAX,C1E0FF35                         ; eax = eax + valeur a la con
+004017BD    61              POPAD                                    ; restaure les registres
+004017BE   /FFE0            JMP EAX                                  ; jmp 004017C3
+
+
+;--------------------------------------------------------------------
+ Addition de 1Eh à certain bytes du Nom entré
+;--------------------------------------------------------------------
+004017C3    80048D 00304000>ADD BYTE PTR DS:[ECX*4+403000],1E        ; add 1Eh aux bytes pointes par ecx*4+debut_buffer_nom
+004017CB  ^\E0 F6           LOOPDNE SHORT WTF_Crac.004017C3          ; on boucle ecx fois (3) => byte 13, 9 puis 5
+004017CD    C3              RETN                                     ; emulation du jmp 00401767
+;--------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+ Cryptage xor du nom entré avec les valeurs du buffer Crypt_Nom
+;--------------------------------------------------------------------
+00401767    8A91 5F324000   MOV DL,BYTE PTR DS:[ECX+40325F]          ; on met le 1er byte du buffer Crypt_Nom dans dl
+0040176D    3091 00304000   XOR BYTE PTR DS:[ECX+403000],DL          ; on xor le 1er byte du buffer Nom avec dl
+00401773    41              INC ECX                                  ; ecx ++
+00401774    84D2            TEST DL,DL                               ; si dl != 0 (c'est pas la fin du buffer Crypt_Nom)
+00401776    75 05           JNZ SHORT WTF_Crac.0040177D              ; jmp 0040177D
+00401778    E9 54010000     JMP WTF_Crac.004018D1                    ; sinon en sort de la boucle (jmp 004018D1)
+0040177D  ^ EB E8           JMP SHORT WTF_Crac.00401767              ; puis rejumpe au debut de la boucle
+
+Contenu du buffer Crypt_Nom :
+0040325F  2C 35 E0 87 83 A9 23 04 02 01 73 37 87           ,5à‡ƒ©#s7‡
+;--------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+ Code en 004018B5 sur 7 octets passé en PAGE_EXECUTE_READWRITE
+;--------------------------------------------------------------------
+004018D1   > \68 7B324000   PUSH WTF_Crac.0040327B                   ; /pOldProtect = WTF_Crac.0040327B
+004018D6   .  6A 40         PUSH 40                                  ; |NewProtect = PAGE_EXECUTE_READWRITE
+004018D8   .  6A 07         PUSH 7                                   ; |Size = 7
+004018DA   .  68 B5184000   PUSH WTF_Crac.004018B5                   ; |Address = WTF_Crac.004018B5
+004018DF   .  E8 D4000000   CALL <JMP.&kernel32.VirtualProtect>      ; \VirtualProtect
+
+Contenu des 7 octets du buffer commencant en 004018B5
+004018B5  43 52 41 50 21 57 48 41 54 27 53 20 54 48 45 20  CRAP!WHAT'S THE
+004018C5  46 55 43 4B 20 48 45 52 45 3F EB 1E              FUCK HERE?ë
+;--------------------------------------------------------------------
+
+004018E4   .  8B0D 74344000 MOV ECX,DWORD PTR DS:[403474]            ;  ecx = longueur de la string dans buffer Nom
+004018EA   .^ E9 90FEFFFF   JMP WTF_Crac.0040177F                    ;  jmp 0040177F
+
+0040177F   > /8D3D B5184000 LEA EDI,DWORD PTR DS:[4018B5]                ;  edi pointe le buffer en 004018B5 ("Crap!" etc)
+00401785   . |F3:A4         REP MOVS BYTE PTR ES:[EDI],BYTE PTR DS:[ESI] ;  Mets chaque byte crypté du Nom dans le buffer Crap
+00401787   .  68 CE174000   PUSH WTF_Crac.004017CE                   ;  push 004017CE
+0040178C   .  FF0D 78344000 DEC DWORD PTR DS:[403478]                ;  [00403478] = (longueur string buffer Serial -1)
+00401792   .  C3            RETN                                     ;  jmp 004017CE emule
+
+004017CE   .  E8 09000000   CALL WTF_Crac.004017DC                   ;  call 004017DC
+
+
+;--------------------------------------------------------------------
+ Installation du nouveau SEH
+;--------------------------------------------------------------------
+004017DC   $  33C0          XOR EAX,EAX                              ;  eax = 0
+004017DE   .  64:FF30       PUSH DWORD PTR FS:[EAX]                  ;  sauve l'original SEH sur la pile
+004017E1   .  33C9          XOR ECX,ECX                              ;  ecx = 0
+004017E3   .  64:8920       MOV DWORD PTR FS:[EAX],ESP               ;  notre nouveau SEH ( = addr de retour de notre call)
+;--------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+ Cryptage du serial entré par add et sub
+;--------------------------------------------------------------------
+004017E6   >  8181 32304000>ADD DWORD PTR DS:[ECX+403032],696E       ;  ajoute 696Eh a tous les words du buffer Serial
+004017F0   .  41            INC ECX                                  ;  ecx++
+004017F1   .  3B0D 78344000 CMP ECX,DWORD PTR DS:[403478]            ;  ecx == (longueur serial entre - 2) ?
+004017F7   .  74 10         JE SHORT WTF_Crac.00401809               ;  si oui on sort de la boucle (jmp 00401809)
+004017F9   .  83A9 32304000>SUB DWORD PTR DS:[ECX+403032],63         ;  on soustrait 63h aux bytes pointes par (Serial + ecx)
+00401800   .  41            INC ECX                                  ;  ecx++
+00401801   .  3B0D 78344000 CMP ECX,DWORD PTR DS:[403478]            ;  ecx == (longueur serial entre - 2) ?
+00401807   .^ 75 DD         JNZ SHORT WTF_Crac.004017E6              ;  si ce n'est pas egal, on boucle (jmp 004017E6)
+;--------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+ Tentative de detection de debugger par le trap flag
+;--------------------------------------------------------------------
+00401809   >  9C            PUSHFD                                   ;  sauvegarde les flags registers
+0040180A   .  804C24 01 01  OR BYTE PTR SS:[ESP+1],1                 ;  met le trap flag sur Eflags (lancera l'exception single step et notre new SEH sera appele)
+0040180F   .  9D            POPFD                                    ;  restore les flags registers
+00401810   .  90            NOP                                      ;  le nop est parcouru et le xhandler est appele
+;--------------------------------------------------------------------
+
+;----------------------------------------------------------------------------------------------------------------------------------------
+ Xhandler (appelé uniquement s'il n'y a pas tracing avec un debugger en pas à pas)
+;----------------------------------------------------------------------------------------------------------------------------------------
+004017D3   .  FE05 4C324000 INC BYTE PTR DS:[40324C]                 ;  met le repere a 1
+004017D9   .  33C0          XOR EAX,EAX                              ;  eax = 0
+004017DB   .  C3            RETN
+;----------------------------------------------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------
+ On sort du SEH, et on teste si debugger actif ou pas
+;--------------------------------------------------------------------
+00401811   .  64:8F00       POP DWORD PTR FS:[EAX]                   ;  on remet le SEH precedent
+00401814   .  5A            POP EDX                                  ;  on reequilibre la pile
+00401815   .  FE0D 4C324000 DEC BYTE PTR DS:[40324C]                 ;  on decremente notre repere
+0040181B   .  0F88 94000000 JS WTF_Crac.004018B5                     ;  si le repere = -1, debugger car xhandler non appele
+00401821   .  EB 22         JMP SHORT WTF_Crac.00401845              ;  sinon goodboy et on jmp en 00401845
+;--------------------------------------------------------------------
+
+00401845   > \FF05 78344000 INC DWORD PTR DS:[403478]                ;  (longueur string Serial - 2) +1
+0040184B      68 23184000   PUSH WTF_Crac.00401823                   ;  push 00401823
+00401850   .  C3            RETN                                     ;  jmp 00401823 emule
+
+;--------------------------------------------------------------------
+ Cryptage xor du serial entré avec les valeurs du buffer Crypt_Serial
+;--------------------------------------------------------------------
+00401823   >  B8 51184000   MOV EAX,WTF_Crac.00401851                ;  eax = 00401851
+00401828   .  50            PUSH EAX                                 ;  push eax
+00401829   .  8B0D 78344000 MOV ECX,DWORD PTR DS:[403478]            ;  ecx = (longueur string Serial - 1)
+0040182F   >  8A91 6D324000 MOV DL,BYTE PTR DS:[ECX+40326D]          ;  met chaque byte pointe par [Crypt_Serial+ecx] dans dl
+00401835   .  3091 32304000 XOR BYTE PTR DS:[ECX+403032],DL          ;  xor chaque byte pointe par [Serial+ecx] avec dl
+0040183B   .  49            DEC ECX                                  ;  ecx --
+0040183C   .  79 02         JNS SHORT WTF_Crac.00401840              ;  tant que ecx != -1 on jmp en 00401840
+0040183E   .  EB 02         JMP SHORT WTF_Crac.00401842              ;  sinon on sort de la boucle (jmp 00401842)
+00401840   >^ EB ED         JMP SHORT WTF_Crac.0040182F              ;  qui nous fait jmper en 0040182F (retour boucle)
+00401842   >  58            POP EAX                                  ;  on restaure eax
+00401843   .  FFE0          JMP EAX                                  ;  jmp 00401851
+
+Contenu du buffer Crypt_Serial :
+0040326D  91 47 A3 26 80 4B 0F 23 3B 5B DB CE 21           ‘G£&€K#;[ÛÎ!
+;--------------------------------------------------------------------
+
+00401857   .  68 68184000   PUSH WTF_Crac.00401868                   ;  push 00401868
+0040185C   .  68 AE184000   PUSH WTF_Crac.004018AE                   ;  push 004018AE
+00401861   .  8D3D C2184000 LEA EDI,DWORD PTR DS:[4018C2]            ;  edi pointe sur le buffer débutant en 004018C2
+00401867   .  C3            RETN                                     ;  jmp 004018AE emule
+
+;--------------------------------------------------------------------
+Contenu du buffer débutant en 004018C2
+004018C2  48 45 20 46 55 43 4B 20 48 45 52 45 3F EB 1E 68  HE FUCK HERE?ëh
+;--------------------------------------------------------------------
+
+004018AE   .  8D35 32304000 LEA ESI,DWORD PTR DS:[403032]            ;  esi pointe sur le buffer Serial (crypté)
+004018B4   .  C3            RETN                                     ;  jmp 00401868 emule
+
+00401868   .  F3:A4         REP MOVS BYTE PTR ES:[EDI],BYTE PTR DS:[ESI] ;  on met chaque byte de notre Serial crypte dans le buffer "The fuck"
+
+;----------------------------------------------------------------------------------------------------------------------------------------
+ Decryptage du Buffer Caption de la future MessageBox avec un xor entre le debut du code de notre message box (mis dans le buffer "Crap")
+;----------------------------------------------------------------------------------------------------------------------------------------
+0040186A   .  B9 FFFFFFFF   MOV ECX,-1                                   ;  ecx = -1
+0040186F   >  41            INC ECX                                      ;  ecx = 0
+00401870   .  8B048D B51840>MOV EAX,DWORD PTR DS:[ECX*4+4018B5]          ;  eax = dword de [Buffer "Crap" + ecx*4]
+00401877   .  8B148D 4D3240>MOV EDX,DWORD PTR DS:[ECX*4+40324D]          ;  edx = dword [Buffer Caption+ecx*4]
+0040187E   .  33C2          XOR EAX,EDX                                  ;  eax, eax ^edx
+00401880   .  89048D 4D3240>MOV DWORD PTR DS:[ECX*4+40324D],EAX          ;  met eax dans [Buffer Caption+ecx*4]
+00401887   .  85C9          TEST ECX,ECX                                 ;  ecx == 0 ?
+00401889   .^ 74 E4         JE SHORT WTF_Crac.0040186F                   ;  si c'est egal, on repasse un coup dans la boucle
+
+Contenu du buffer Caption avant decryptage :
+0040324D  26 25 A3 9C 65 B4 77 1E                          &%£œe´w
+;----------------------------------------------------------------------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------------------------------------------------------------------
+ Decryptage du Buffer Text de la future MessageBox avec un xor entre la suite du code de notre message box (mis dans le buffer "The Fuck")
+;----------------------------------------------------------------------------------------------------------------------------------------
+0040188B   .  B9 FFFFFFFF   MOV ECX,-1                                   ;  ecx = -1
+00401890   >  41            INC ECX                                      ;  ecx = 0
+00401891   .  8B048D C21840>MOV EAX,DWORD PTR DS:[ECX*4+4018C2]          ;  eax = dword de [Buffer "The fuck" + ecx*4]
+00401898   .  8B148D 563240>MOV EDX,DWORD PTR DS:[ECX*4+403256]          ;  edx = dword [Buffer Text+ecx*4]
+0040189F   .  33C2          XOR EAX,EDX                                  ;  eax = eax ^edx
+004018A1   .  89048D 563240>MOV DWORD PTR DS:[ECX*4+403256],EAX          ;  met eax dans [Buffer Text+ecx*4]
+004018A8   .  85C9          TEST ECX,ECX                                 ;  ecx == 0 ?
+004018AA   .^ 74 E4         JE SHORT WTF_Crac.00401890                   ;  si c'est egal, on repasse un coup dans la boucle
+004018AC   .  EB 07         JMP SHORT WTF_Crac.004018B5                  ;  sinon jmp 004018B5 (code virtualprotecte, debut de notre code messagebox)
+004018AE   .  8D35 32304000 LEA ESI,DWORD PTR DS:[403032]                ;  esi pointe sur le buffer Serial
+004018B4   .  C3            RETN                                           ;  jmp 00401868 emule
+
+Contenu du buffer Text avant decryptage :
+00403256  03 12 37 69 3E 5D B7 20                          7i>]·
+;----------------------------------------------------------------------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------------------------------------------------------------------
+Si on a rentré le bon nom (Fuckin' 1337!) et le bon serial (You broke me!), on obtient ce code :
+;----------------------------------------------------------------------------------------------------------------------------------------
+004018B5   > \6A 40         PUSH 40                                      ;  MB_OK+ICONINFORMATION
+004018B7   .  83EC 04       SUB ESP,4                                    ;  emulation d'un push 0040324D
+004018BA   .  C70424 4D3240>MOV DWORD PTR SS:[ESP],WTF_Crac.0040324D     ; |ASCII "Le pass:"
+004018C1   .  B8 56324000   MOV EAX,WTF_Crac.00403256                    ; |ASCII "U winner"
+004018C6   .  50            PUSH EAX                                     ; |Text => "U winner"
+004018C7   .  33D2          XOR EDX,EDX                                  ; |
+004018C9   .  52            PUSH EDX                                     ; |hOwner => NULL
+004018CA   .  E8 7D000000   CALL <JMP.&user32.MessageBoxA>               ; \MessageBoxA
+004018CF   .  EB 1E         JMP SHORT WTF_Crac.004018EF                  ;  jmp 004018EF
+;----------------------------------------------------------------------------------------------------------------------------------------
+
+004018EF   > \61            POPAD                                        ;  on restaure les registres
+004018F0   .  C3            RETN                                         ;  on sort de la proc
+
+
+
+Elooo...

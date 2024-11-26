@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+	<title> Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" href="includes/style.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="titre">
+	<div class="barre_bleue"></div>
+	<div class="barre_bleue2"></div>
+	<div id="fretsdn"><a href="http://binary-reverser.org"></a></div>
+	<div class="menu"><ul>
+    <li><a href='screenshots1.php.html'>&#62; see in English version</a></li>
+    </ul></div>
+</div>
+
+<div id="menu">
+	<div class="barre_bleue3"></div>
+	<div class="barre_grise"></div>
+		<ul>
+	<li><a href="index.php.html">Accueil</a></li>
+	<li><a href="download.php.html">Téléchargements</a></li>
+	<li> <a href="screenshots.php.html">Screenshots</a></li>
+	<li> <a href="links.php.html">Documentations</a></li>
+	<li><a href="support.php.html">Support</a></li>
+	</ul>
+	<p><strong>BeaEngine documentation</strong></p>
+	<ul>
+	<li> <a href="fonction.php.html">fonction Disasm</a></li>
+	<li><a href="structure.php.html">structure _Disasm</a></li>
+	<li><a href="constants.php.html">Constantes</a></li>
+	<li><a href="exemples.php.html">Exemples</a></li>
+	<li><a href="licence.php.html">Licence</a></li>
+	</ul>
+ 
+</div>
+
+<div id="contenu">
+	<div class="barre_bleue">Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </div>
+<h1>Screenshots</h1>
+<p>
+Voici quelques résultats obtenus à l'aide de BeaEngine utilisée avec LookInside ou le plugin IDA.</p>
+
+<h1>BeaEngine pour 32 bits </h1>
+
+<!-- ========================================================================================= -->
+
+
+<div class="texte_tuto">
+<p>Voici un premier exemple de désassemblage d'un binaire 32 bits. LookInside utilise les fonctionnalités de BeaEngine pour coloriser les BranchInstruction à la OllyDebugger. On peut même faire la différence entre les Jcc et les Jncc ! BeaEngine permet également d'exploiter l'adresse renvoyée par un saut afin d'afficher une petite flèche par exemple.</p>
+
+<h6>
+<img src="images/lookinside32bits.png" title="LookInside32" alt="" />
+
+</h6>
+
+</div>
+
+<h1>BeaEngine pour 64 bits </h1>
+
+<!-- ========================================================================================= -->
+
+
+<div class="texte_tuto">
+<p>Ce second exemple concerne un désassemblage d'un binaire 64 bits. BeaEngine permet de faire le même travail que pour le 32 bits. On remarque que BeaEngine travaille dans ce cas sur des adresses de 64 bits bien évidemment !</p>
+
+<h6>
+<img src="images/LookInside64.png" title="LookInside64" alt="" />
+</h6>
+</div>
+
+
+<h1>Plugin OllyDbg 1.10 et Immunity Debugger 1.xx : FullDisasm.</h1>
+
+<!-- ========================================================================================= -->
+
+
+<div class="texte_tuto">
+<p>Ce plugin permet à OllyDbg 1.10 de changer de moteur de désassemblage et d'utiliser BeaEngine 3.0 pour reconnaitre les instructions récentes.Voyez plutôt l'exemple ci-dessous et comparez les deux désassemblages obtenus.</p>
+
+<h6>
+<img src="images/FullDisasm1.jpg" title="Sans FullDisasm" alt="" />
+</h6>
+<p> Avec FullDisasm (Ctrl+W) :</p>
+<h6>
+<img src="images/FullDisasm2.jpg" title="Avec FullDisasm" alt="" />
+</h6>
+<p> Avec FullDisasm (Ctrl+X) :</p>
+<h6>
+<img src="images/FullDisasm3.jpg" title="Avec FullDisasm" alt="" />
+</h6>
+
+<p>Ce plugin permet également plus de fantaisies. On peut par exemple afficher les instructions en utilisant la syntaxe GNU Assembler :</p>
+<h6>
+<img src="images/immunity.png" title="Avec FullDisasm" alt="" />
+</h6>
+
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//DE">
+<html>
+<head>
+
+<meta name="description" content="PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - Amiga - PC)">
+<meta name="author" content="Pha-Q/Paradox">
+<meta name="keywords" content="Paradox, PDX, Playstation, PSX, PC, Amiga, N64, Nintendo, Warez, CD, Cracking, Hacking, Phreaking, Patch, Trainer, Software, Hardware">
+<meta name="robots" content="nofollow">
+<meta name="revisit-after" content="07 days">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="de">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="pragma" content="no-cache">
+<link rel="FONTDEF" src="http://www.truedoc.com/pfrs/PosterBodoni.pfr">
+<script language="JavaScript" src="http://www.truedoc.com/activex/tdserver.js"></script>
+<link>
+<title>PARADOX online - the playground of the GENUINE Paradox sections (PSX - N64 - Amiga - PC)</title>
+<script language="JavaScript">
+<!--
+function changeBack(newImage) {
+    document ['Back'].src = eval(newImage + ".src");
+}
+    bak0 = new Image();
+    bak0.src  = "../buttons/but_back.png";
+    bak1 = new Image();
+    bak1.src  = "../buttons/but_bacl.png";
+// -->
+</script>
+<script language="JavaScript" src="../javascript/pdx_fade.js"></script>
+</head>
+<body bgcolor="#000000" text="#F0F0F0" link="#BB8866" alink="#FF0000" vlink="#DFDFDF" onload="window.status=('Tips &amp; Tricks');">
+<script language="JavaScript">
+<!--
+fadein();
+// -->
+</script>
+<table width="540" bgcolor="#333333" align="CENTER" border="0" cellspacing="0" cellpadding="2">
+<tr><td align="CENTER" bgcolor="#191919"><img src="../buttons/but_htip.png" width="142" height="70" alt="Tips &amp; Tricks"></td></tr>
+<tr><td height="10" bgcolor="#000000">&nbsp;</td></tr>
+<tr><td align="CENTER" bgcolor="#191919"><font color="#555555" face="PosterBodoni BT">P</font><font color="#5C5C5C" face="PosterBodoni BT">a</font><font color="#636363" face="PosterBodoni BT">r</font><font color="#6A6A6A" face="PosterBodoni BT">a</font><font color="#717171" face="PosterBodoni BT">d</font><font color="#787878" face="PosterBodoni BT">o</font><font color="#7F7F7F" face="PosterBodoni BT">x</font>&nbsp;
+<font color="#868686" face="PosterBodoni BT">C</font><font color="#8D8D8D" face="PosterBodoni BT">o</font><font color="#949494" face="PosterBodoni BT">d</font><font color="#9B9B9B" face="PosterBodoni BT">i</font><font color="#A2A2A2" face="PosterBodoni BT">n</font><font color="#A9A9A9" face="PosterBodoni BT">g</font>&nbsp;<font color="#B0B0B0" face="PosterBodoni BT">R</font><font color="#B7B7B7" face="PosterBodoni BT">e</font><font color="#BEBEBE" face="PosterBodoni BT">p</font><font color="#C5C5C5" face="PosterBodoni BT">o</font><font color="#CCCCCC" face="PosterBodoni BT">r</font><font color="#D3D3D3" face="PosterBodoni BT">t</font></td></tr>
+<tr><td>
+<p align="CENTER"><font size="5">PSX DONGLE PROTECTION INFO</font>
+
+<p align="JUSTIFY">
+Dongle protection has been applied to many 'press' PlayStation
+releases lately. Here is just another quick lesson to keep you
+informed.
+
+<p align="JUSTIFY">
+The 'dongles' are usual memory cards. No special hardware is
+attached, thus you have two choices:
+
+<p align="JUSTIFY">
+1) <b>Raw</b> copy the dongle to any memory card. This is a simple exercise
+if you ever worked with the <b>Sony</b> libraries. We in <b>Paradox</b> will be
+releasing a raw copy program in the future PLUS a CD image / AR exe
+that will let you create the raw copy that you desire - just for
+fun.
+
+<p align="JUSTIFY">
+2) Patch the program that checks for the desired memory card data.
+This is easier (if you know how to use a debugger properly) , and
+much more suitable for the 'normal' consumer, meaning the program
+will run easily without dongle.
+
+<p align="JUSTIFY">
+The 'protection' scheme is stored in the first memory card block.
+The usual size of a memory card is 16 blocks, but normal consumers
+will only be able to use 15 blocks. This is caused by the fact that
+the memory card is mounted as a device....meaning the first block
+keeps the file alloc table for the files that are stored on the
+memory card.
+
+<p align="JUSTIFY">
+This is the easy explanation why a dongle cannot be copied in the
+memory card manager - you would copy all the block information but
+<b>not all</b> the information stored in the file alloc table. Usually it's
+something like <b>game name &copy; by the releasing game company</b>, and the
+program just reads the memcard info raw and checks if that slogan is
+present. So all you do is trace the program for either the first
+memcard access (breakpoint) or you just tracewalk it to get to the
+specific routine. Parameters are usually given in a register (v0, t0
+etc.), so it's easy enough to patch that single instruction instead
+of really understanding <b>how</b> it works at all - always remember, the
+<b>result</b> is the aim, no matter how you really achieved it (noone will
+care afterwards anyhow).
+
+<p align="JUSTIFY"> So feel free to give yourself a go - if you are
+into r3k asm atleast a bit, you will get set sooner than you think.
+
+<p>
+Have phun,<p>
+<u>Freefall/PDX</u>
+</td></tr>
+<tr><td height="10" bgcolor="#000000">&nbsp;</td></tr>
+<tr><td bgcolor="#191919" align="CENTER">
+<img src="../buttons/but_back.png" name="Back" width="117" height="56" border="0" usemap="#Back">
+<map name="Back">
+<area shape="rect" alt="Back" coords="37,12,68,42" href="javascript:history.back();" onmouseover="changeBack('bak1');self.status='Back';return true" onmouseout="changeBack('bak0');self.status='';return true">
+</map></td></tr>
+
+</table>
+</body>
+</html>

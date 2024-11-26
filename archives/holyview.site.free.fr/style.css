@@ -1,0 +1,294 @@
+body
+{
+	background-color: Black;
+	margin: 0px;
+}
+
+.banniere
+{
+	background-image: url(images/holyview.gif);
+	padding-right: 40px;
+	height: 128px;
+	vertical-align: top;
+}
+
+.valid
+{
+	margin-top: 20px;
+	float: right;
+}
+
+.valid2
+{
+	margin-top: 4px;
+	border: 1px Black solid;
+}
+
+.tabFond
+{
+	background: #4B5867;
+	background-image: url(images/fond.gif);
+}
+
+.tabFondHaut
+{
+	background-image: url(images/fond_haut.gif);
+}
+
+.tabFondBas
+{
+	background-image: url(images/fond_bas.gif);
+}
+
+.contenu
+{
+	background-color: #616A7A;
+	background-image: url(images/traits.gif);
+	border: 1px;
+	border-style: solid;
+	border-color: #3A404A;
+	margin-left: 40px;
+	margin-right: 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding: 12px;
+	padding-bottom: 0px;
+}
+
+.contenu2
+{
+	margin-left: 40px;
+	margin-right: 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.texte
+{
+	border: 1px;
+	border-style: solid;
+	position: relative;
+	background-color: #B5C1D0;
+	padding: 8px;
+	display: block;
+	margin-bottom: 15px;
+}
+
+.texte2
+{
+	border: 1px;
+	border-style: solid;
+	position: relative;
+	background-color: #A4B3C5;
+	padding: 6px;
+	display: block;
+	margin-bottom: 15px;
+	margin-left: 220px;
+}
+
+
+/*---------------------------------[ MENU ]---------------------------------[*/
+
+.menu
+{
+	background-color: #3F4858;
+	border-style: solid;
+	border-width: 1px;
+	position: relative;
+	width: 200px;
+	float: left;
+}
+
+.TitreMenu{
+	background-color: #3F4858;
+	background: url(images/fond_menu_intitule.jpg);
+	color: #FFDC62;
+	border-style: solid;
+	border-width: 1px;
+	border-color: Black;
+	display: block;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-top-width: 0px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	text-align: center;
+	letter-spacing: 3px;
+}
+
+.SousMenu
+{
+	background-color: #C4C9D2;
+	background: url(images/fond_menu.jpg);
+	border-style: solid;
+	border-width: 1px;
+	display: block;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-top-width: 0px;
+	text-align: left;
+	padding-left: 10px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+
+/*---------------------------------[ LIEN ]---------------------------------[*/
+
+a{
+	text-decoration: none;
+	color: #790000;
+	border-color: Black;
+}
+
+a:visited{
+	text-decoration: none;
+	color: #790000;
+}
+
+a:active {
+	text-decoration: none;
+	color: White;
+}
+
+a:hover{
+	/*background-color: #98A2A9;*/
+	background: url(images/fond_menu_2.jpg);
+	text-decoration: none;
+	color: #141C41;
+}
+
+
+/*-------------------------------[ LIEN MENU ]-------------------------------[*/
+
+a.SousMenu{
+	text-decoration: none;
+	color: Black;
+	border-color: Black;
+}
+
+a.SousMenu:visited{
+	text-decoration: none;
+	color: Black;
+}
+
+a.SousMenu:active {
+	text-decoration: none;
+	color: White;
+}
+
+a.SousMenu:hover{
+	/*background-color: #98A2A9;*/
+	background: url(images/fond_menu_2.jpg);
+	text-decoration: none;
+	color: #141C41;
+}
+
+
+/*-----------------------------[ BTN DOWNLOAD ]-----------------------------[*/
+
+a.bouton {
+	font-family: Verdana, sans-serif;
+	font-size: 13px;
+	color: Black;
+	text-decoration: none;
+	background-color: #C0C2C7;
+	background: url(images/fond_btn_download.jpg);
+	border: 1px solid #223458;
+	padding-bottom: 4px;
+	padding-top: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+	font-weight: bold;
+	margin-left: 25px;
+	margin-top: 15px;
+	margin-bottom: 10px;
+	display: block;
+	width: 190px;
+}
+
+a.bouton:visited {
+	color: Black;
+}
+
+a.bouton:hover {
+	color: #680000;
+	background-color: #D0D2D7;
+	background: url(images/fond_btn_download_2.jpg);
+}
+
+
+/*------------------------------[ IMG ACCEUIL ]------------------------------[*/
+
+.img
+{
+	border: 1px;
+	border-style: solid;
+	border-color: Black;
+	padding: 0px;
+	margin-bottom: 30px;
+	margin-top: 40px;
+	width: 400px;
+}
+
+
+/*-----------------------------[ REMERCIEMENTS ]-----------------------------[*/
+
+.thanks
+{
+	border: 1px;
+	border-style: dashed;
+	border-color: #A7AECD;
+	position: relative;
+	background-color: #2A3338;
+	color: #758D9F;
+	padding: 6px;
+	display: block;
+	margin-top: 50px;
+	margin-bottom: 15px;
+}
+
+
+/*---------------------------------[ LIGNE ]---------------------------------[*/
+
+.ligne
+{
+	background-color: #B2C0C6;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #B2C0C6;
+	border-top-color: #CBD3D8;
+	border-bottom-color: #859AA4;
+	position: relative;
+	display: block;
+	margin-top: 32px;
+	margin-bottom: 32px;
+	padding-top: 1px;
+	padding-bottom: 0px;
+	margin-left: 2%;
+	margin-right: 2%;
+}
+
+
+.date
+{
+	background-color: #FFFFEC;
+	color: #1E3B1F;
+	font-family: "Courier New", sans-serif;
+	font-style: italic;
+	font-size: 14px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+.lien
+{
+	background-color: #C4C9C4;
+	color: #2E3B2E;
+	border: 1px solid #3A3A3A;
+	font-family: "Courier New", sans-serif;
+	font-size: 14px;
+	padding-left: 8px;
+	padding-right: 8px;
+}

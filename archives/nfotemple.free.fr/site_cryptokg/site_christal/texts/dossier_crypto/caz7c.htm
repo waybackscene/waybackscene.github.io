@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>The Cracking of SecurityPlus</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<P>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of SecurityPlus</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">by</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">Part C</FONT></P>
+<P>Caz presents : The Crack of SecurityPlus! by SoftByte Labs</P>
+<P><BR>
+(known-plaintext attack on a proprietary cipher)</P>
+<P><BR>
+
+<HR ALIGN="CENTER">
+
+<H2 ALIGN="CENTER">PART C. 'C' SOURCE CODE FOR CRACKER : CrackSP!</H2>
+<PRE>
+/****************************** BEGIN *******************************/
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;io.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;dos.h&gt;
+#include &lt;conio.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;alloc.h&gt;
+#include &lt;malloc.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;math.h&gt;
+
+
+
+/*************************** PROTOTYPES ******************************/
+void Read_Key_enc(int,unsigned char **);
+void Calc_Pwd_start(unsigned char *,int,unsigned char **);
+void Calc_Sum(int,unsigned char *,unsigned char **);
+void Calc_Pwd(int,unsigned char *,unsigned char *,unsigned char **);
+int Check_Pwd(int,unsigned char *,unsigned char *,unsigned char *);
+void Hi_folks(void);
+int Get_target(void);
+void Wait_key();
+void Print_pwd(int,unsigned char *);
+
+/***************************** GLOBALS *******************************/
+const int key_start_pos = 61;
+const int key_len = 61;
+
+static unsigned char Key_chk[] = &quot;*+*This file encrypted with SecurityPlus! &quot;
+				 &quot;(C)SoftByte Labs*+*&quot;;
+
+/****************************** MAIN ********************************/
+main()
+{
+int i,fn,extended;
+int pwd_len;
+int pwd_len_min=5;
+int pwd_len_max=60;
+unsigned char *Pwd;
+unsigned char *Key_enc;
+unsigned char *Key_dec;
+unsigned char *Sum;
+
+//memory allocation &amp; initialisation
+Pwd    =(unsigned char *)malloc(sizeof(unsigned char)*key_len);
+Key_enc=(unsigned char *)malloc(sizeof(unsigned char)*key_len);
+Key_dec=(unsigned char *)malloc(sizeof(unsigned char)*key_len);
+Sum    =(unsigned char *)malloc(sizeof(unsigned char)*key_len);
+for(i=0;i&lt;key_len;i++) {Pwd[i]=0; Key_enc[i]=0; Key_dec[i]=0; Sum[i]=0;}
+
+//start searching
+Hi_folks();
+fn=Get_target();
+Read_Key_enc(fn,&amp;Key_enc);
+//round 1 of 2 : Pwd's first character NOT extended
+//round 2 of 2 : Pwd's first character extended
+extended=0;
+for(extended=0;extended&lt;=1;extended++)
+   {
+   Calc_Pwd_start(Key_enc,extended,&amp;Pwd);
+   //for each pwd_len
+   for(pwd_len=pwd_len_min;pwd_len&lt;=pwd_len_max;pwd_len++)
+      {
+      Calc_Sum(pwd_len,Pwd,&amp;Sum);
+      Calc_Pwd(pwd_len,Sum,Key_enc,&amp;Pwd);
+      if(!Check_Pwd(pwd_len,Sum,Key_enc,Pwd))
+	 {
+	 Print_pwd(pwd_len,Pwd);
+	 exit(0);
+	 }
+      }
+   }
+}
+/***********************************************************************/
+/**************************   FUNCTIONS   ******************************/
+/***********************************************************************/
+
+/***********************************************************************/
+int Check_Pwd(int pwd_len,unsigned char *Sum,unsigned char *Key_enc,
+	      unsigned char *Pwd)
+{
+int i,pos;
+unsigned char temp;
+
+temp=(Key_enc[0]-Pwd[0]-Pwd[0]-Pwd[pwd_len-1]-key_len);
+if(Key_chk[0]!=temp) return(1);
+
+for(i=pwd_len;i&lt;(key_len-1);i++)
+   {
+   pos=fmod(i,pwd_len);
+   temp=(Key_enc[i+1]-Key_enc[i]-Key_chk[i+1]-(key_len-i-1)-Sum[i+1]);
+   if(Pwd[pos]!=temp) return(1);
+   }
+
+return(0);
+}
+
+/***********************************************************************/
+void Calc_Pwd(int pwd_len,unsigned char *Sum,unsigned char *Key_enc,
+	      unsigned char **Pwd)
+{
+int i;
+
+for(i=1;i&lt;pwd_len;i++)
+   {
+   (*Pwd)[i]=(Key_enc[i+1]-Key_enc[i]-Key_chk[i+1]-(key_len-i-1)-Sum[i+1]);
+   }
+}
+
+/***********************************************************************/
+void Calc_Sum(int pwd_len,unsigned char *Pwd,unsigned char **Sum)
+{
+int i,pos;
+
+(*Sum)[0]=Pwd[0];
+for(i=1;i&lt;key_len;i++)
+   {
+   pos=fmod(i,pwd_len);
+   if(!pos)
+      {
+      pos=pwd_len;
+      }
+   (*Sum)[i]=((*Sum)[i-1] + pos);
+   }
+}
+
+/***********************************************************************/
+void Calc_Pwd_start(unsigned char *Key_enc,int extended,unsigned char **Pwd)
+{
+(*Pwd)[0] = ((Key_enc[1] - Key_enc[0] - Key_chk[1] - key_len));
+(*Pwd)[0] /=2;
+if(extended) (*Pwd)[0]+=0x80;
+}
+
+/***********************************************************************/
+void Read_Key_enc(int fn,unsigned char **Key_enc)
+{
+int i;
+unsigned char Buffer[key_len];
+
+lseek(fn,key_start_pos,0);
+read(fn,Buffer,key_len);
+for(i=0;i&lt;key_len;i++)
+   {
+   (*Key_enc)[i]=Buffer[i];
+   }
+}
+
+/***********************************************************************/
+void Hi_folks(void)
+{
+printf(&quot;\n\nYet Another Password Cracker by CASIMIR {:-)&quot;);
+printf(&quot;\n-&gt; Target: SecurityPlus! v4.32 by SoftByte Labs\n&quot;);
+}
+
+/***********************************************************************/
+/*    try to open crypted file  (must be in the SAME directory)        */
+/*    - success : return file'handle                                   */
+/*    - failure : exit prg                                             */
+int Get_target(void)
+{
+unsigned char buf[110];
+int fn;
+
+printf(&quot;\nFile to decrypt [e.g: secret.sp$]?   &quot;);
+gets(buf);
+
+// try to open file
+fn=open(buf,O_BINARY|O_RDONLY);
+switch(fn)
+   {
+   case -1:printf(&quot;\nFILE NOT FOUND!&quot;);
+   printf(&quot;\n-&gt;File to crack MUST be in SAME directory as Cracker&quot;);
+   printf(&quot;\n-&gt;DO NOT forget file's extension ( usually: SP$ or SP% ) !\n&quot;);
+   Wait_key(); exit(0);
+   default: /*printf(&quot;\nOK, FILE FOUND&quot;)*/; return(fn);
+   }
+}
+
+/***********************************************************************/
+/*                   wait for key pressed                              */
+void Wait_key()
+{
+printf(&quot;\n&quot;);
+printf(&quot;              ******************\n&quot;);
+printf(&quot;              * hit any key... *\n&quot;);
+printf(&quot;              ******************\n&quot;);
+getch();       //kbhit
+}
+
+/***********************************************************************/
+/*                        display password                             */
+void Print_pwd(int pwd_len,unsigned char *Pwd)
+{
+int i;
+
+printf(&quot;\n\n ASCII seq: &quot;);
+for(i=0;i&lt;pwd_len;i++)
+   {
+   printf(&quot;[%d]&quot;,Pwd[i]);
+   if((i+1)%10==0) {printf(&quot;\n            &quot;);}
+   }
+
+printf(&quot;\n\n  PASSWORD: &gt;&gt;&gt;&quot;);
+for(i=0;i&lt;pwd_len;i++)
+   {
+   printf(&quot;%c&quot;,Pwd[i]);
+   }
+printf(&quot;&lt;&lt;&lt; (%d characters)\n\n&quot;,pwd_len);
+printf(&quot;(don't type &gt;&gt;&gt; or &lt;&lt;&lt;)\n&quot;);
+}
+
+/******************************* END ********************************</PRE>
+<P></P>
+
+<P>And now, for those who are still with me:</P>
+
+<P>
+<H2 ALIGN="CENTER">* BONUS TRACKS * BONUS TRACKS * BONUS TRACKS *</H2>
+<H2></H2>
+<P>3 crypto-software which deserve, IMO, the Snake-Oil award. They require no programming in order to break them,
+only a patch.</P>
+<P>I just put them here, in case someone cares...</P>
+<P>
+<H2 ALIGN="CENTER">Rocny! v3.4 (Evaluation) by NIZAR Developers</H2>
+<H2></H2>
+<P>Here is<A HREF="javascript:if(confirm('http://www.members.tripod.com/NicolasZaragoza/Productos/Rocny_ing.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.members.tripod.com/NicolasZaragoza/Productos/Rocny_ing.htm'" tppabs="http://www.members.tripod.com/NicolasZaragoza/Productos/Rocny_ing.htm"> Rocny! 3.4</A></P>
+<P>This one decrypts password from encrypted file in order to compare it to input... Bad idea. Even worst, it uses
+a VisualBasic function to perform the check (__vbaStrCmp)!!!</P>
+<PRE>module RO34EVAL.EXE
+
+:446034    mov eax , [ebp-44]            &lt;--- good password
+
+           push eax
+
+           mov ecx , [44A09C]            &lt;--- our input
+
+           push ecx
+
+           call [MSVBVM50!__vbaStrCmp]   &lt;--- sic!
+
+</PRE>
+<P>Look at the help file: on every footer, you'll see this sentence:</P>
+<PRE>                You Are the Most Important for Us
+
+</PRE>
+<P>Pathetic...</P>
+<P>
+<H2 ALIGN="CENTER">Exe Protect by Frederic Collin</H2>
+<H2></H2>
+<P>Here is <A HREF="javascript:if(confirm('http://fredc2000.cjb.net/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://fredc2000.cjb.net/'" tppabs="http://fredc2000.cjb.net/">Exe Protect</A></P>
+<P>Same mistake, but without the VB function. Here lays the password checking mechanism of main window:</P>
+<PRE>module EXEPROT.EXE
+
+:403BC1    mov ecx , [esi]   &lt;--- our input
+
+           mov ebx , [edi]   &lt;--- good password
+
+           cmp ecx , ebx
+
+</PRE>
+<P>Once you're in, you can unlock every file previously locked.</P>
+<P>
+<H2 ALIGN="CENTER">Encryption Lock Magic! v1.0 by Kaboom JSP</H2>
+<H2></H2>
+<P>Here is <A HREF="javascript:if(confirm('http://kaboom.jsp.net/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://kaboom.jsp.net/'" tppabs="http://kaboom.jsp.net/">Encryption Lock Magic</A></P>
+<P>Yeap, you guessed it, the same old mistake again...</P>
+<PRE>module ENCLOCKMAGIC.EXE
+
+:4510DB    mov edx , [ebp-2c]     &lt;--- good password
+
+           mov eax , [ebp-1c]     &lt;--- our input
+
+           call 403D38            &lt;--- comparaison routine
+
+</PRE>
+<P>Hope you enjoyed!</P>
+<P>Caz</P>
+<P>Copyright December 1999 by Casimir.</P>
+<P>Mail <A HREF="mailto:casimir2@club-internet.fr">Casimir</A></P>
+
+<P>Converted to hypertext by Joe Peschel December 14, 1999.
+
+</BODY>
+
+</HTML>

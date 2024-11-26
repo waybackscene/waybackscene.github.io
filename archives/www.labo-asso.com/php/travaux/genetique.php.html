@@ -1,0 +1,351 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td> <div align="center"> 
+                    <p><font color="#339999" size="5">Introduction &agrave; la 
+                      programmation<br>
+                      g&eacute;n&eacute;tique avec Python</font></p>
+                    <table border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                      <tr> 
+                        <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                            <tr> 
+                              <td><a href="../../download/genetique.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table>
+                  </div></td>
+                <td width="1"> <div align="right"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>
+            <br> <table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td colspan="2"><div align="justify">Quel joie d'&eacute;crire 
+                          mon premier article sur le site du LABO, et en plus 
+                          un article plus qu'orient&eacute; qui va donner le ton 
+                          en la mati&egrave;re. Suite &agrave; la lecture de l'article 
+                          de Virtualabs dans System Addict sur la programmation 
+                          g&eacute;n&eacute;tique, je me suis dit &laquo; Et pourquoi 
+                          pas moi ? &raquo;. Alors voil&agrave;, Python et SciTE 
+                          dehors, j'ai &eacute;crit mes premi&egrave;res lignes 
+                          et t&acirc;ter de la chose. 
+                          <p>Avant de continuer, je tiens &agrave; remercier Virtualabs 
+                            et toute la team de System Addict pour leur travail 
+                            sur le magazine.</p>
+                          <p>Passons maintenant au coeur du sujet, l'initiation 
+                            et la pr&eacute;sentation &laquo; &agrave; la mimas 
+                            &raquo; de la programmation g&eacute;n&eacute;tique. 
+                            Il faut signaler que je n'ai que peu d'exp&eacute;rience 
+                            en Python et que c'est la premi&egrave;re fois que 
+                            j'aborde la programmation g&eacute;n&eacute;tique. 
+                            Alors, par avance, soyez indulgent &agrave; mon &eacute;gard.</p>
+                          <p>La programmation g&eacute;n&eacute;tique est la r&eacute;solution 
+                            de probl&egrave;mes complexes en utilisant des &eacute;l&eacute;ments 
+                            simples. Pour faire un parall&egrave;le avec la vie 
+                            r&eacute;elle, et avoir un exemple moins th&eacute;orique, 
+                            nous allons prendre les fourmis et une miette de pain. 
+                            Le probl&egrave;me qui se pose alors est : &laquo; 
+                            comment est-ce que les fourmis vont mettre cette &eacute;norme 
+                            et app&eacute;tissante miette de pain dans leur fourmili&egrave;re 
+                            ? &raquo;. Si vous avez d&eacute;j&agrave; regard&eacute; 
+                            des fourmis, vous connaissez la r&eacute;ponse : elles 
+                            vont chacune tirer dans leur direction jusqu'&agrave; 
+                            ce que la miette finisse au garde-manger. Simple, 
+                            non ?!</p>
+                          <p>Nous allons faire presque la m&ecirc;me chose ici, 
+                            sauf que la miette de pain sera remplac&eacute;e par 
+                            une &eacute;quation, et les fourmis par des individus 
+                            de type YoLaFourmi. Ces individus ont comme particularit&eacute; 
+                            d'avoir un g&egrave;ne (une valeur qui servira &agrave; 
+                            r&eacute;soudre l'&eacute;quation) et de remplir une 
+                            fonction (ici ce sera la reproduction pour transmettre 
+                            leur g&egrave;ne car les YoLaFourmis sont connues 
+                            pour &ecirc;tre de chaudes cr&eacute;atures).</p>
+                          <p>Il nous faut tout d'abord conceptualiser tout &ccedil;a 
+                            et cr&eacute;er le monde qui verra &eacute;voluer 
+                            les YoLaFourmi, ou, plus simplement, comment devenir 
+                            Dieu en moins de dix le&ccedil;ons. Notre monde devra 
+                            &ecirc;tre capable de se peupler d'individu, de tester 
+                            si l'&eacute;quation est r&eacute;solue par un de 
+                            ses habitants, les YoLaFourmis, et de les faire &eacute;voluer 
+                            vers une autre g&eacute;n&eacute;ration afin que ce 
+                            monde trouve sa YoLaFourmi.</p>
+                          <p>Le sujet est d&eacute;j&agrave; bien implant&eacute;, 
+                            on sait maintenant que les YoLaFourmis devront user 
+                            de toutes leurs caract&eacute;ristiques pour cr&eacute;er 
+                            une g&eacute;n&eacute;ration suivante capable de r&eacute;ussir 
+                            l&agrave; o&ugrave; elles auront &eacute;chou&eacute;. 
+                            Mais, rassurons-nous, leur libido ne souffre pas de 
+                            cet &eacute;chec.</p>
+                          <p>Pour ne pas rendre la lecture du programme complexe, 
+                            nous aurons une gestion de la g&eacute;n&eacute;ration 
+                            suivante tr&egrave;s l&eacute;g&egrave;re et peu respectueuse 
+                            de notre monde : un des parents se transformera en 
+                            fils et l'autre survivra. Mais comme les deux parents 
+                            peuvent avoir mut&eacute; avant d'avoir copuler sauvagement, 
+                            le parent restant ne sera pas forc&eacute;ment le 
+                            m&ecirc;me qu'&agrave; sa naissance. L'&acirc;ge n'&eacute;pargne 
+                            personne, m&ecirc;me pas les YoLaFourmis. &Agrave; 
+                            moins que ce soit les radiations de Fallout qui soient 
+                            en cause.</p>
+                          <p>La transmission des g&ecirc;nes est effectu&eacute;e 
+                            gr&acirc;ce &agrave; l'op&eacute;ration (valeur_parent1 
+                            * valeur_parent2) / (valeur_parent1 + valeur_parent2). 
+                            Des YoLaFourmis peuvent na&icirc;tre spontan&eacute;ment 
+                            si les parents ne sont pas capables de concevoir, 
+                            &ccedil;-&agrave;-d si valeur_parent1 + valeur_parent2 
+                            = 0. Cela a du bon d'&ecirc;tre un dieu qui cr&eacute;&eacute; 
+                            son monde.</p>
+                          <p>Bien s&ucirc;r tout ceci sera mod&eacute;lis&eacute; 
+                            en objet dans un script python.</p>
+                          <p>Souvenez-vous avant de lire le code source du programme 
+                            qu'un monde appara&icirc;t et se peuple de YoLaFourmis. 
+                            Si une Yolafourmi est capable de r&eacute;soudre l'&eacute;quation 
+                            (qui est X^2 - X = 42) alors le monde n'aura plus 
+                            lieu d'&ecirc;tre. Dans le cas contraire, une nouvelle 
+                            g&eacute;n&eacute;ration de YoLaFourmi voit le jour.</p>
+                          <p>Avertissement : le code source du programme n'est 
+                            pas &agrave; mettre devant tous les yeux car la reproduction 
+                            en masse peut-&ecirc;tre choquante. Bref, d'ici peu 
+                            devrait voir appara&icirc;tre la notion &quot;Contains 
+                            explicit source code&quot; suite &agrave; la parution 
+                            de cet article. </p>
+                          </div>
+                        <table width="80%" border="0" align="center" cellpadding="1" cellspacing="0">
+                          <tr> 
+                            <td bgcolor="#339999"><table width="100%" border="0" cellpadding="5" cellspacing="0" bgcolor="#000000">
+                                <tr> 
+                                  <td nowrap> <p align="left"><font color="#33CC33">--- 
+                                      genetique.py ---</font><br>
+                                      from random import randint</p>
+                                    <p align="left"><font color="#33CC33"># ******************************************************************************</font><br>
+                                      class World:<br>
+                                      &nbsp;&nbsp;pop = {} &nbsp;&nbsp;&nbsp;&nbsp;# 
+                                      La population<br>
+                                      &nbsp;&nbsp;elements = 0 # Le nombre d'&eacute;l&eacute;ments 
+                                      peuplant le monde</p>
+                                    <p align="left"><br>
+                                      def __init__(self,elements = 10):<br>
+                                      &nbsp;&nbsp;<font color="#33CC33">&quot;&quot;&quot; 
+                                      Le constructeur du monde. Restons modestes 
+                                      &quot;&quot;&quot;</font><br>
+                                      &nbsp;&nbsp;self.elements = elements<br>
+                                      &nbsp;&nbsp;for i in range(elements):<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;self.pop[i]=YoLaFourmi()</p>
+                                    <p align="left"><br>
+                                      def Fornicate(self):<br>
+                                      &nbsp;&nbsp;<font color="#33CC33">&quot;&quot;&quot; 
+                                      On fait une petite sauterie chez les gens 
+                                      de ce monde &quot;&quot;&quot;</font><br>
+                                      &nbsp;&nbsp;self.count = self.count + 1<br>
+                                      &nbsp;&nbsp;print (&quot;Un peu plus tard&#8230;&quot;)<br>
+                                      &nbsp;&nbsp;for i in range(self.elements/2):<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;self.pop[i*2] = 
+                                      self.pop[i*2].ShagWith(self.pop[i*2+1])</p>
+                                    <p align="left"></p>
+                                    <p align="left"> def Resolved(self):<br>
+                                      &nbsp;&nbsp;<font color="#33CC33">&quot;&quot;&quot; 
+                                      Retourne True si la condition de &quot;fin 
+                                      du monde&quot; est atteinte &quot;&quot;&quot;</font><br>
+                                      &nbsp;&nbsp;for i in range(self.elements):<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;if (self.pop[i].value**2 
+                                      - self.pop[i].value) == 42:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print 
+                                      (&quot;**** On trouve %s en %s g&eacute;n&eacute;rations&quot;<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;% 
+                                      (self.pop[i].value, self.count))<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 
+                                      True<br>
+                                      &nbsp;&nbsp;return False</p>
+                                    <p align="left"><font color="#33CC33"><br>
+                                      # ******************************************************************************</font><br>
+                                      class YoLaFourmi:<br>
+                                      &nbsp;&nbsp;value = 0</p>
+                                    <p align="left"> &nbsp;&nbsp;def __init__(self, 
+                                      value = None):<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;if value == None:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.value 
+                                      = randint(1,300)<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;else:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.value 
+                                      = int(value)</p>
+                                    <p align="left"><br>
+                                      def Mutate(self):<br>
+                                      <font color="#33CC33">&nbsp;&nbsp;&quot;&quot;&quot; 
+                                      Mutations des individus &quot;&quot;&quot;</font><br>
+                                      &nbsp;&nbsp;rand = randint(0,20)</p>
+                                    <p align="left"> &nbsp;&nbsp;if rand == 1:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;self.value = self.value 
+                                      + 1<br>
+                                      &nbsp;&nbsp;elif rand == 4:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;self.value = self.value 
+                                      - 1<br>
+                                      &nbsp;&nbsp;elif rand == 12:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;self.value = randint(0,20)</p>
+                                    <p align="left"><br>
+                                      def ShagWith(self, partner):<br>
+                                      <font color="#33CC33">&nbsp;&nbsp;&quot;&quot;&quot; 
+                                      Rencontre chaleureuse entre deux individus 
+                                      &quot;&quot;&quot;</font></p>
+                                    <p align="left"> <font color="#33CC33">&nbsp;&nbsp;# 
+                                      On ajoute un brin de folie au cours de cette 
+                                      vie</font><br>
+                                      &nbsp;&nbsp;self.Mutate()<br>
+                                      &nbsp;&nbsp;partner.Mutate()</p>
+                                    <p align="left"> &nbsp;&nbsp;try:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;fils = YoLaFourmi((self.value 
+                                      * partner.value) /<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self.value 
+                                      + partner.value))<br>
+                                      &nbsp;&nbsp;except:<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;print(&quot;Oups...&quot;)<br>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;fils = YoLaFourmi(0) 
+                                      # G&eacute;n&eacute;ration spontan&eacute;e. 
+                                      Pop !<br>
+                                      &nbsp;&nbsp;return fils</p>
+                                    <p align="left"><br>
+                                      <font color="#33CC33"># ******************************************************************************<br>
+                                      # Ici commence l'histoire du monde</font><br>
+                                      myworld = World()<br>
+                                      while not myworld.Resolved():<br>
+                                      &nbsp;&nbsp;myworld.Fornicate()</p></td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        <p> 
+                        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                          <tr> 
+                            <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                                <tr> 
+                                  <td nowrap>Fabrice &quot;mimas&quot; T.</td>
+                                </tr>
+                              </table></td>
+                          </tr>
+                        </table>
+                        &nbsp;</td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="genetique.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+ </td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

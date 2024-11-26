@@ -1,0 +1,487 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>YO-bfuscator1 - solution par BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="fenetre">
+<div class="titre"></div>
+
+<div class="menu">
+<ul>
+<li><a href='index.html'>Introduction</a></li>
+<li><a href='demarche.html'>Ma démarche</a></li>
+<li><a href='crackme.html'>Le Crackme</a></li>
+<li><a href='obfuscation.html'>Obfuscation</a></li>
+<li><a href='conclusion.html'>Conclusion</a></li>
+</ul>
+
+</div>
+
+<div class="contenu">
+<p class="droite">Date de publication : 20 avril 2008 00h40</p>
+<p class="droite">Auteur : BeatriX</p>
+<div class="ligne"></div>
+
+<h1>3 . Le crackme.</h1>
+<p></p>
+<p>Nous pouvons donc, en appliquant les trois techniques d'attaque présentées précédemment , proposer le code du crackme en clair. Il va sans dire que malgré l'aide indispensable de mon émulateur, il n'a pas été trivial de reconstituer ce code source. Les raisons de cette complexité sont multiples. </p>
+<p>D'abord, l'obfuscation utilisée est résistante et utilise de l'obfuscation de type "constructions opaques" que nous aborderons dans la quatrième partie. Les algorithmes utilisés dans le back-stepping ont leur limite et ne sont pas encore capables de résoudre toutes les situations (mais ça viendra :) ). </p>
+<p>Ensuite, un émulateur, comme son nom l'indique, "EMULE". Il fait donc semblant avec tout ce que ça comprend ! Certaines portions de code du crackme ont perturbé l'émulateur parce qu'il est bourré de failles. Je ne compte donc pas le nombre de corrections de bugs mineurs qu'il a fallu que je fixe pour que l'ému fonctionne correctement.</p>
+<p>Enfin, le nombre de program points utilisés comme points de départ est assez conséquent (au bas mot, une bonne quarantaine) et comme cette phase est réalisée manuellement, c'est finalement assez laborieux à faire.</p>
+<p> On peut également dire que si le binaire avait été beaucoup plus gros comme par exemple une application complète, il m'aurait été impossible de proposer le code en clair. Je rappelle que les techniques utilisées ici sont "locales" et ne permettent d'étudier de façons convenables que quelques centaines de milliers de lignes de code. Un programme de plusieurs centaines de millions d'instructions ne pourrait pas être vu dans son ensemble. A cela s'ajoute le fait que le nombre d'appels à l'api windows est très limité et ne concerne que des fonctions très documentées. Je n'imagine pas un binaire truffé de fonctions incompréhensibles qu'il faudrait émuler sans trop savoir quoi en tirer...
+</p>
+<h2>3.1 Le code original</h2>
+<p>Voici donc le code intégral de ce crackme nettoyé de sa couche de protection. Nous avons donc supprimé approximativement 99,6 % des instructions utilisées. Il ne reste plus qu'une petite DialogBox !</p>
+<p>J'ai surligné en orangé les instructions obtenues par <strong><span class="bleu">analyse différentielle</span></strong> ( program points potentiels) et si vous survolez le code avec le pointeur, vous verrez apparaître en jaune les instructions obtenues par <strong><span class="jaune">Backward-Slicing</span></strong> et en vert les instructions obtenues par <strong><span class="vert">analyse du data-flow sur esp</span></strong>.</p>
+<pre>
+=============================================== 
+=
+=			PROC : 40AB81
+=
+===============================================
+		0040AB81h:
+		<strong class="vert">0040BBCF pushad </strong>
+		<strong class="vert">0040CEB5 push 47A1B1h</strong>
+		<strong class="vert">0040E0E9 push dword ptr fs:[0h] </strong>&#60--- Installation d'un SEH
+		<strong class="bleu">0040F5EF mov dword ptr fs:[0h], esp</strong>
+
+		<strong class="vert">00410903 push dword ptr [4937D8h]</strong>
+		<strong class="bleu">00412283 call 40103Ch =========&#62 IsWindowEnabled </strong>
+		<strong class="vert">00415B51 push eax</strong>
+		<strong class="vert">00417798 push eax</strong>
+		<strong class="vert">00418C62 push dword ptr [4937D8h]</strong>
+		<strong class="vert">0041A808 push eax</strong>
+		<strong class="vert">0041B98D push dword ptr [4937B8h]</strong>
+		<strong class="vert">0041D06F push eax</strong>
+		<strong class="vert">0041E2C8 push dword ptr [4937C0h]</strong>
+		<strong class="bleu">0041FB80 mov ebp, 3h</strong>
+		00420E30h:
+		<strong class="bleu">00421FCC call 40101Eh =========&#62 EnableWindow : eax</strong>
+		<strong class="jaune">004232AD dec ebp</strong>
+		<strong class="bleu">004232AE jne 420E30h </strong>
+		<strong class="jaune">00424760 pop eax</strong>
+		<strong class="bleu">00426036 cmp eax, 0h</strong>
+		<strong class="bleu">00426039 je 43264Ah</strong>
+		<strong class="bleu">00427C3B mov byte ptr [409078h], 0h</strong>
+		<strong class="vert">00429082 push 409078h</strong>
+		<strong class="vert">0042A304 push dword ptr [4937B8h]</strong>
+		<strong class="bleu">0042B5A1 call 40106Ch =========&#62 SetWindowTextA :  </strong>
+		<strong class="bleu">0042C9EE mov eax, 409027h</strong>
+		<strong class="bleu">00430BDA jmp 46E064h</strong>
+		0043264Ah:
+		<strong class="vert">00433B68 push 0FFh</strong>
+		<strong class="vert">00434DE6 push 409078h</strong>
+		<strong class="vert">0043677B push dword ptr [4937B8h]</strong>
+		<strong class="bleu">00437D69 call 401036h =========&#62 GetWindowTextA </strong>
+		; =============================================
+		;
+		;		Vérification du serial
+		;
+		; =============================================
+
+		<strong class="jaune">0043901A mov ebx, 6964654Ah</strong>
+		<strong class="jaune">0043A318 mov edi, 409078h </strong>
+
+	loc_0043B7ABh:
+		<strong class="jaune">0043C9D2 mov al, byte ptr [edi]</strong>
+		<strong class="jaune">0043E007 or al, al</strong>
+		<strong class="bleu">0043E009 je loc_449C3Ch</strong>
+
+		<strong class="jaune">0043F4FC xor ecx, ecx</strong>
+		<strong class="bleu">004406E9 mov cl, 8h</strong>
+
+	loc_00441B72h:
+		<strong class="jaune">00442D3B xor bl, al</strong>
+		<strong class="jaune">004444FB ror ebx, 1h</strong>
+		<strong class="jaune">00445E7C dec ecx</strong>
+		<strong class="bleu">00445E7D jne loc_441B72h</strong>
+
+		004472B9 inc edi
+		<strong class="bleu">0044859C jmp loc_43B7ABh</strong>
+
+	loc_00449C3Ch:
+		<strong class="jaune">0044AD47 xor ebx, 0AB979C82h</strong>
+
+		<strong class="bleu">0044D23C div ebx</strong> &#60-------------------- doit déclencher une exception de type divide error #DE
+
+		<strong class="jaune">0046CCBB mov eax, 409040h &#60---- Perdu !</strong>
+
+	loc_0046E064h: &#60---- Retour du handler du SEH
+
+		<strong class="vert">0046F51E push eax</strong>
+		<strong class="vert">00470921 push dword ptr [4937C4h]</strong>
+		<strong class="vert">00471C0B push dword ptr [4937A0h]</strong>
+		<strong class="bleu">004731E0 call 401060h =========&#62 SetDlgItemTextA</strong> 
+		<strong class="bleu">00476F16 popad </strong>
+		<strong class="bleu">00478BA9 ret</strong>
+=============================================== 
+=
+=			HANDLER : 47A1B1
+=
+===============================================
+47A1B1h:
+<strong class="vert">0047B3A6 pushad </strong>
+<strong class="jaune">0047C9A0 lea edi, dword ptr [esp+24h]</strong>
+<strong class="jaune">0047F3C4 mov esi, dword ptr [edi+8h]</strong>
+<strong class="bleu">00481A2A cmp dword ptr [esi+0B8h], 44D23Ch</strong>
+<strong class="bleu">00481A34 jne 48C80Ah</strong>
+<strong class="bleu">00482AD0 mov dword ptr [esi+0B0h], 409148h</strong> &#60----- pour éviter une recherche de constante !!
+<strong class="bleu">00483FA4 mov dword ptr [esi+0B8h], 46E064h</strong>
+<strong class="jaune">00485383 mov eax, dword ptr [edi+4h]</strong>
+<strong class="bleu">00486614 mov dword ptr [esi+0C4h], eax </strong>&#60---- esp pointe vers exception_registration principale
+<strong class="bleu">004876FA sub dword ptr [esi+0B0h], 0ECh
+004889A2 popad 
+0048AD5D ret</strong>
+
+loc_0048C80Ah:
+<strong class="bleu">0048DB92 popad </strong>
+<strong class="jaune">0048EDD9 mov eax, 1h </strong>
+<strong class="bleu">00490AD7 ret </strong>
+=============================================== 
+=
+=			WINPROC
+=
+===============================================
+
+00494B9Bh:
+<strong class="vert">00495F3F pushad </strong>
+<strong class="jaune">0049761B mov edi, dword ptr [esp+24h]</strong> 
+<strong class="jaune">00498B37 mov esi, dword ptr [esp+28h]</strong>
+<strong class="jaune">00499B26 mov ebp, dword ptr [esp+2Ch]</strong>
+
+<strong class="bleu">0049AE89 cmp esi, 110h </strong>&#60-- WM_INITDIALOG
+	<strong class="bleu">0049AE8F je 4B4BE0h</strong>
+
+<strong class="bleu">0049BCF3 cmp esi, 111h </strong>&#60-- WM_COMMAND
+	<strong class="bleu">0049BCF9 je 527348h</strong>
+
+<strong class="bleu">0049CF40 cmp esi, 136h </strong>&#60-- WM_CTLCOLORDLG
+	<strong class="bleu">0049CF46 je 4EE32Ch</strong>
+
+<strong class="bleu">0049E2B9 cmp esi, 138h </strong>&#60-- WM_CTLCOLORSTATIC
+	<strong class="bleu">0049E2BF je 4F3207h</strong>
+
+<strong class="bleu">0049F749 cmp esi, 133h </strong>&#60-- WM_CTLCOLOREDIT
+	<strong class="bleu">0049F74F je 50D0D7</strong>
+
+<strong class="bleu">004A0817 cmp esi, 135h </strong>&#60-- WM_CTLCOLORBTN
+	<strong class="bleu">004A081D je 51E57Ch</strong>
+
+<strong class="bleu">004A22A2 cmp esi, 10h</strong>
+	<strong class="bleu">004A22A5 jne 4AC158h</strong>
+	<strong class="vert">004A3C65 push 0h</strong>
+	<strong class="vert">004A4DA7 push edi</strong>
+	<strong class="bleu">004A5E38 call 401024h =========&#62 EndDialog </strong>
+004A7547h:
+	<strong class="jaune">004A8CAC xor eax, eax </strong>
+	<strong class="jaune">004A9BA0 inc eax </strong>
+	<strong class="bleu">004AADBD jmp 4AEB6Bh </strong>
+004AC158h:
+	004AD362 xor eax, eax
+004AEB6Bh:
+	<strong class="bleu">004AFF0A mov dword ptr [esp+1Ch], eax </strong>
+<strong class="bleu">004B1824 popad</strong>
+<strong class="bleu">004B31A2 retn 10h</strong>
+
+=============================================== 
+=
+=			WM_INITDIALOG
+=
+===============================================
+
+	004B4BE0h:
+	<strong class="bleu">004B609B mov dword ptr [4937A0h], edi</strong>
+
+	<strong class="vert">004B71E7 push 406A43h</strong>
+	<strong class="vert">004B8AEC push dword ptr [4937A0h]</strong>
+	<strong class="bleu">004BA00B call 40106Ch =========&#62 SetWindowTextA : YO-bfuscator_I :) </strong>
+	<strong class="vert">004BB9D2 push 67h</strong>
+	<strong class="vert">004BCDA3 push dword ptr [49379Ch]</strong>
+	<strong class="bleu">004BE7C2 call 401042h =========&#62 LoadBitmapA</strong>
+
+	<strong class="bleu">004C0443 mov dword ptr [4937A4h], eax</strong>
+
+	<strong class="vert">004C147C push 68h</strong>
+	<strong class="vert">004C28DB push dword ptr [49379Ch]</strong>
+	<strong class="bleu">004C3E20 call 401042h =========&#62 LoadBitmapA</strong>
+
+	<strong class="bleu">004C4F6C mov dword ptr [4937A8h], eax</strong>
+
+	<strong class="vert">004C5F3B push 66h</strong>
+	<strong class="vert">004C712E push dword ptr [49379Ch]</strong>
+	<strong class="bleu">004C8677 call 401042h =========&#62 LoadBitmapA</strong>
+
+	<strong class="bleu">004C97FF mov dword ptr [4937ACh], eax</strong>
+
+	<strong class="vert">004CABB1 push 69h</strong>
+	<strong class="vert">004CBFD2 push dword ptr [49379Ch]</strong>
+	<strong class="bleu">004CD2B6 call 401042h =========&#62 LoadBitmapA</strong>
+
+	<strong class="bleu">004CE56F mov dword ptr [4937B0h], eax </strong>
+
+	<strong class="jaune">004CF32D mov ebx, 4937B4h </strong>
+
+	004D0420h:
+	<strong class="vert">004D17B2 push ebx</strong>
+	<strong class="vert">004D3172 push dword ptr [ebx]</strong>
+	<strong class="vert">004D4E31 push dword ptr [4937A0h]</strong>
+	<strong class="bleu">004D61B3 call 401030h =========&#62 GetDlgItem</strong>
+	<strong class="jaune">004D73E1 pop ebx</strong>
+	<strong class="jaune">004D8DF7 add ebx, 4h</strong>
+	<strong class="bleu">004DA217 mov dword ptr [ebx], eax </strong>
+
+	<strong class="bleu">004DCFCE cmp ebx, 4937DCh</strong>
+	<strong class="bleu">004DCFD4 jc 4D0420h</strong>
+
+	<strong class="vert">004DF60A push dword ptr [49379Ch]</strong>
+	<strong class="bleu">004E0FEF call 401048h =========&#62 LoadIconA</strong>
+
+	<strong class="vert">004E2072 push eax</strong>
+	<strong class="vert">004E323C push 0h</strong>
+	<strong class="vert">004E4D64 push 80h</strong>
+	<strong class="vert">004E5F26 push dword ptr [4937A0h]</strong>
+	<strong class="bleu">004E7333 call 40105Ah =========&#62 SendMessageA : WM_SETICON</strong>
+
+	<strong class="vert">004E81D2 push 409027h</strong>
+	<strong class="vert">004E9558 push dword ptr [4937C4h]</strong>
+	<strong class="vert">004EA87E push dword ptr [4937A0h]</strong>
+	<strong class="bleu">004EBC58 call 401060h =========&#62 SetDlgItemTextA : Entrez un code valide... </strong>
+	<strong class="bleu">004ECE49 jmp 4A7547h</strong>
+=============================================== 
+=
+=			WM_CTLCOLORDLG
+=
+===============================================
+	004EE32Ch:
+	<strong class="vert">004EF93D push 4h</strong>
+	<strong class="bleu">004F0A77 call 401000h =========&#62 GetStockObject</strong>
+	<strong class="bleu">004F1E6A jmp 4AEB6Bh</strong>
+
+=============================================== 
+=
+=			WM_CTLCOLORSTATIC
+=
+===============================================
+	004F3207h:
+	<strong class="vert">004F411D push eax </strong>
+	<strong class="jaune">004F55B5 mov eax, esp </strong>
+	<strong class="vert">004F69FD push 4h </strong>
+	<strong class="vert">004F7D5F push eax </strong>
+	<strong class="vert">004F8F07 push dword ptr [4937C8h] </strong>
+	<strong class="bleu">004FA105 call 401036h =========&#62 GetWindowTextA </strong>
+	004FBB6B pop eax
+	<strong class="jaune">004FCDE8 mov ebx, 33CC33h </strong>
+	<strong class="jaune">004FDF60 cmp ax, 2D2Dh </strong>
+	<strong class="bleu">004FDF64 jne 500E16h </strong>
+	<strong class="jaune">004FF481 mov ebx, 0FFFF00h </strong>
+00500E16h:
+	<strong class="vert">00501DDB push ebx </strong>
+	<strong class="vert">00503116 push ebp </strong>
+	<strong class="bleu">00504582 call 40100Ch =========&#62 SetTextColor </strong>
+	<strong class="vert">005056B8 push 1h </strong>
+	<strong class="vert">00506B03 push ebp </strong>
+	<strong class="bleu">00507D27 call 401006h =========&#62 SetBkMode </strong>
+	<strong class="vert">0050987F push 4h </strong>
+	<strong class="bleu">0050AA72 call 401000h =========&#62 GetStockObject </strong>
+
+	<strong class="bleu">0050BDBB jmp 4AEB6Bh</strong>
+=============================================== 
+=
+=			WM_CTLCOLOREDIT
+=
+===============================================
+
+	0050D0D7h:
+
+	<strong class="vert">0050E6D4 push dword ptr [4937B8h]</strong>
+	<strong class="bleu">0050F95B call 401066h =========&#62 SetFocus </strong>
+
+	<strong class="vert">0051130D push 0FFFFh</strong>
+	<strong class="vert">00512DAD push ebp</strong>
+	<strong class="bleu">0051485A call 40100Ch =========&#62 SetTextColor</strong>
+
+	<strong class="vert">00515F07 push 1h</strong>
+	<strong class="vert">0051769B push ebp</strong>
+	<strong class="bleu">00518F4C call 401006h =========&#62 SetBkMode</strong>
+
+	<strong class="vert">0051A428 push 4h</strong>
+	<strong class="bleu">0051C188 call 401000h =========&#62 GetStockObject</strong>
+
+	<strong class="bleu">0051D54B jmp 4AEB6Bh </strong>
+
+=============================================== 
+=
+=			WM_CTLCOLORBTN
+=
+===============================================
+	0051E57Ch:
+	<strong class="vert">0051F63B push dword ptr [4937D8h] </strong>
+	<strong class="bleu">0052140B call 40103Ch =========&#62 IsWindowEnabled</strong>
+	<strong class="bleu">0052488D call 538FD9h </strong>
+	00525BE3 jmp 4A7547h
+
+=============================================== 
+=
+=			WM_COMMAND
+=
+===============================================
+00527348h:
+	<strong class="bleu">005286DB cmp ebp, 1h </strong>
+	<strong class="bleu">005286DE je 53225Bh </strong>
+	<strong class="bleu">0052A1E8 cmp ebp, 2h </strong>
+	<strong class="bleu">0052A1EB je 52D2A9h </strong>
+	<strong class="bleu">0052BDB4 jmp 4AC158h </strong>
+0052D2A9h:
+	<strong class="vert">0052EC77 push 0h </strong>
+	<strong class="bleu">0052FC70 call 401054h =========&#62 PostQuitMessage</strong>
+	<strong class="bleu">00531602 jmp 4A7547h</strong>
+
+0053225Bh:
+	<strong class="vert">00533B92 call 40AB81h</strong> &#60-------- Routine de vérification du serial
+	<strong class="vert">00534D99 push dword ptr [4937D0h] </strong>
+	<strong class="bleu">00536842 call 401066h =========&#62 SetFocus</strong>
+	<strong class="bleu">00537E69 jmp 4A7547h</strong>
+
+=============================================== 
+=
+=			PROC 538FD9h
+=
+===============================================
+
+	00538FD9h:
+	<strong class="vert">0053A4A5 push eax </strong>
+	<strong class="vert">0053B921 push dword ptr [4937D0h] </strong>
+	<strong class="bleu">0053C945 call 40102Ah =========&#62 GetDC</strong>
+	<strong class="jaune">0053DAD3 mov ebx, eax </strong>
+	0053EEAF mov eax, dword ptr [4937A4h]
+	<strong class="jaune">005403A0 cmp dword ptr [esp], 0h </strong>
+	<strong class="bleu">005403A4 je 542EEFh </strong>
+	005416FB mov eax, dword ptr [4937ACh]
+
+00542EEFh:
+	<strong class="bleu">005440E9 call 5527F0h </strong>
+	<strong class="vert">05457AF push dword ptr [4937D8h] </strong>
+	<strong class="bleu">005473DC call 40102A  =========&#62 GetDC</strong>
+	0054854C mov ebx, eax
+	00549884 mov eax, dword ptr [4937A8h]
+	<strong class="jaune">0054B4B8 cmp dword ptr [esp], 0 </strong>
+	<strong class="bleu">0054B4BC je 54D7D1h </strong>
+	0054C464 mov eax, dword ptr [4937B0h]
+0054D7D1h:
+	<strong class="bleu">0054E80D call 5527F0h </strong>
+	0054FC2C pop eax
+	<strong class="bleu">00550E5A ret </strong>
+
+=============================================== 
+=
+=			PROC 5527F0h
+=
+===============================================
+	005527F0h:
+	<strong class="vert">00553A5F push 4h</strong>
+	<strong class="vert">00554DF5 push 14h</strong>
+	<strong class="vert">00556357 push 36h</strong>
+	<strong class="vert">00557F7A push 0h</strong>
+	<strong class="vert">005591D1 push 0h</strong>
+	<strong class="vert">00559EAC push 0h</strong>
+	<strong class="vert">0055B0B7 push eax</strong>
+	<strong class="vert">0055C482 push 0h</strong>
+	<strong class="vert">0055D5FA push 0h</strong>
+	<strong class="vert">0055E7E5 push ebx </strong>
+	<strong class="bleu">0055FACC call 401018h =========&#62 DrawStateA </strong>
+	0056151E ret 
+
+
+=============================================== 
+=
+=			MAIN 
+=
+===============================================
+
+<strong class="vert">005689A6 push 5801CFh</strong>
+<strong class="vert">00569E8D push dword ptr fs:[eax]</strong>
+<strong class="bleu">0056B83C mov dword ptr fs:[eax], esp</strong>
+
+<strong class="vert">0056C763 push 0h</strong>
+<strong class="bleu">0056DE51 call 401078h =========&#62 GetModuleHandleA : Main</strong>
+
+<strong class="bleu">0056EED9 mov dword ptr [49379Ch], eax</strong>
+
+<strong class="vert">00570171 push 0h</strong>
+<strong class="vert">00571861 push 494B9Bh</strong>
+<strong class="vert">00572C0A push 0h</strong>
+<strong class="vert">00573C0E push 65h</strong>
+<strong class="vert">00574E46 push eax</strong>
+<strong class="bleu">005761FC call 401012h =========&#62 DialogBoxParamA</strong>
+<strong class="vert">0057B92A push eax</strong>
+<strong class="bleu">0057D469 call 401072h =========&#62 ExitProcess</strong>
+=============================================== 
+=
+=			HANDLER : 5801CF
+=
+===============================================
+005801CFh:
+<strong class="vert">005819C4 pushad </strong>
+<strong class="jaune">00582AB8 lea edi, dword ptr [esp+24h]</strong>
+<strong class="jaune">00583ACF mov esi, dword ptr [edi]</strong>
+<strong class="bleu">00587EE1 cmp dword ptr [esi], 80000003h</strong> &#60---- STATUS_BREAKPOINT
+<strong class="bleu">00587EE7 je loc_592F7Bh</strong>
+
+<strong class="vert">005892FD push 0h</strong>
+<strong class="vert">0058A5CB push 403BF9h</strong> &#60-- Erreur Fatale :(
+<strong class="vert">0058BACD push 40530Ah</strong> &#60-- Une Erreur fatale a tout fait planter.
+<strong class="vert">0058CD26 push 0h</strong>
+<strong class="bleu">0058E590 call 40104Eh =========&#62 MessageBoxA</strong>
+<strong class="vert">0058FE74 push 0h</strong>
+<strong class="bleu">00591ACC call 401072h =========&#62 ExitProcess</strong>
+loc_592F7Bh:
+<strong class="jaune">005943FB mov eax, dword ptr [edi+0B8h]</strong>
+<strong class="bleu">00595F0C cmp byte ptr [eax], 0CCh</strong>
+<strong class="bleu">00595F0F jne 598B98h</strong>
+<strong class="bleu">00596F43 inc dword ptr [edi+0B8h]</strong>
+598B98h:
+<strong class="bleu">0059A257 popad </strong> 
+<strong class="bleu">0059CA27 ret</strong>
+
+
+</pre>
+
+
+<h2>3.2 Remarques et explications</h2>
+<p>La première remarque qui vient est que le code source est composé pour moitié de code retrouvé par analyse différentielle. C'est indubitablement la grosse faille de ce crackme. Si vous survolez le code précédent, vous constatez qu'il est morcelé et que finalement, les routines sont assez éparsses. Ceci fait partie du plan pour rendre le code obscure. J'ai précisé plus haut que YoleJedi avait eu recours à deux techniques d'obfuscation : l'insertion de code et <strong>le réagencement du code</strong>. Une fois l'insertion de code supprimée, il nous reste le problème du réagencement. Ici, ce n'est pas un problème puisque le code reste relativement clair dans cet état. </p>
+<p>Pour ce qui est du crackme à proprement parlé, c'est en somme une dialogbox dont la WinProc, après un calcul savant sur le serial , doit générer une exception de type #DE pour passer la main au handler du SEH qui se chargera d'afficher le message "GAGNE". La routine de vérification du serial n'étant pas une bijection (relation one-one) car elle n'est pas injective (il n'y a pas unicité du serial), j'ai opté pour le bruteforce. Il existe une quantité industrielle de serials comme vous le montre ce <a href="keygen.exe">keygenerator</a>. Cependant, YoleJedi m'a précisé que le serial "un code valide..." était fonctionnel.</p>
+<p>On note que dans le handler chargé d'afficher le message de succès, l'adresse réelle de ce message n'est pas utilisée directement afin d'éviter une attaque par recherche de constante.</p>
+<p>On note également qu'il y a un autre handler d'un autre SEH. Ce dernier est mis en place assez tôt. Il se charge juste d'assurer la solidité du crackme en affichant un "Erreur Fatale" au cas où il se passe quelque chose d'imprévu. Cependant, avant d'afficher ce message, ce handler vérifie que l'exception générée n'est pas issue d'un breakpoint posé à l'aide de l'opcode CCh. Si ça se trouvait être le cas, EIP serait incrémenté ce qui amènerait fatalement le binaire à avoir un comportement imprévisible. Au mieux, le binaire ne tient pas compte du BP, au pire, il crashe. Cette protection permet au binaire de se prémunir du "just in time debugging". YoleJedi serait-il un adepte de SoftIce ?</p>
+<p>Pour le reste du code, il suffit de s'y pencher quelques minutes pour comprendre. Le binaire gère l'affichage de sa fenêtre en fonction des actions de l'utilisateur. Je n'entre pas dans le détail ici.</p>
+<p class="griser"> Copyright (C)- FRET (2008)</p>
+
+<div class="page_suivante">
+<a href="obfuscation.html"><img class ="noborder" src = "Images/hand.gif" alt="Page suivante" title="Page suivante" /></a>
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+
+</div>
+</div>
+</body>
+</html>

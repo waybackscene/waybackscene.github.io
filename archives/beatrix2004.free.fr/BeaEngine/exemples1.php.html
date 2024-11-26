@@ -1,0 +1,1058 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+	<title> Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" href="includes/style.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="titre">
+	<div class="barre_bleue"></div>
+	<div class="barre_bleue2"></div>
+	<div id="fretsdn"><a href="http://binary-reverser.org"></a></div>
+	<div class="menu"><ul>
+    <li><a href='exemples.php.html'>&#62; voir en version Française</a></li>
+    </ul></div>
+</div>
+
+<div id="menu">
+	<div class="barre_bleue3"></div>
+	<div class="barre_grise"></div>
+		<ul>
+	<li><a href="index1.php.html">Home</a></li>
+	<li><a href="download1.php.html">Downloads</a></li>
+	<li> <a href="screenshots1.php.html">Screenshots</a></li>
+	<li> <a href="links1.php.html">Documentations</a></li>
+	<li><a href="support1.php.html">Support</a></li>
+	</ul>
+	<p><strong>BeaEngine documentation</strong></p>
+	<ul>
+	<li> <a href="fonction1.php.html">Disasm function</a></li>
+	<li><a href="structure1.php.html">_Disasm structure</a></li>
+	<li><a href="constants1.php.html">Constants</a></li>
+	<li><a href="exemples1.php.html">Examples</a></li>
+	<li><a href="licence1.php.html">License</a></li>
+	</ul>
+ 
+</div>
+
+<div id="contenu">
+
+<div class="barre_bleue">Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64)</div>
+<h1>Examples - Tutorial</h1>
+<p> Each example you can see here is using one feature of the disassemble library. At first, you can see how to use the library in the simplest manner (to retrieve a simple instructions list). Then, you can see how to use specific options to make special tasks like data-flow analysis or control-flow analysis. You can download all these examples <a href="examples.rar">HERE</a></p>
+<ul>
+<li><a href="exemples1.php.html#Ex1">1- How to decode 100 lines of code ?</a></li>
+<li><a href="exemples1.php.html#Ex2">2- How to decode a limited block of bytes ?</a></li>
+<li><a href="exemples1.php.html#Ex3">3- How to decode bytes in an allocated buffer while keeping original virtual addresses ?</a></li>
+<li><a href="exemples1.php.html#Ex4">4- How to use nasm syntax with prefixed numbers ? </a></li>
+<li><a href="exemples1.php.html#Ex5">5- How to use the library with Python ? </a></li>
+<li><a href="exemples1.php.html#Ex6">6- How to retrieve only instructions that modify the register eax ? </a></li>
+<li><a href="exemples1.php.html#Ex7">7- How to decode instructions and 'follow' unconditional branch instructions ? </a></li>
+<li><a href="exemples1.php.html#Ex8">8- How to decode instructions on a 64 bits target ?</a></li>
+<li><a href="exemples1.php.html#Ex9">9- How to use BeaEngine with masm32, nasm, fasm ou GoAsm ? </a></li>
+<li><a href="exemples1.php.html#Ex10">10- How to use BeaEngine with masm64 ou GoAsm64 ? </a></li>
+<li><a href="exemples1.php.html#Ex11">11- How to use BeaEngine with WinDev (by Vincent Roy) ? </a></li>
+<li><a href="VS2008En.php.html">12- How to compile examples using Visual Studio 2008 ? </a></li>
+</ul>
+
+<a id="Ex1"></a>
+<h1>1- How to decode 100 lines of code ?(basic example)</h1>
+<p>BeaEngine does not need special initialization. The Disasm function do it for you. The only task you have to perform is setting to zero the _Disasm structure and filling the field MyDisasm.EIP.</p>
+<p> This small program desassemble 100 lines of its own code since the virtual address 0x401000.</p>
+<pre>
+#include &#60;windows.h&#62;
+#include &#60;stdio.h&#62;
+#include "BeaEngine.h"
+
+int main(void)
+{
+	/* ============================= Init datas */
+	DISASM MyDisasm;
+	int false = 0, true = 1;
+	int len, i = 0;
+	_Bool Error = false;
+
+	/* ============================= Init the Disasm structure (important !)*/
+	(void) memset (&MyDisasm, 0, sizeof(DISASM));
+
+	/* ============================= Init EIP */
+	MyDisasm.EIP = 0x401000;
+
+	/* ============================= Loop for Disasm */
+	while ((!Error) && (i<100)){
+		len = Disasm(&MyDisasm);
+		if (len != UNKNOWN_OPCODE) {
+			(void) puts(MyDisasm.CompleteInstr);
+			MyDisasm.EIP = MyDisasm.EIP + len;
+            	i++;
+		}
+		else {
+			Error = true;
+		}
+	};
+	return 0;
+}
+</pre>
+
+
+<a id="Ex2"></a>
+<h1>2- How to decode a limited block of bytes ? (SecurityBlock)</h1>
+<p> It is possible to ask to BeaEngine to decode a limited block of bytes. This small program decodes instructions of its own code located between 2 virtual addresses (0x401000 and 0x401020, arbitrary choice). That means BeaEngine won't read any bytes outside these limits even if it tries to decode an instruction starting just before the upper bound. To realize this restriction, BeaEngine uses the field MyDisasm.SecurityBlock that contains the number of bytes we want to read. By default, an intel instruction never exceed 15 bytes. Thus, only SecurityBlock values below this limit are used. In all cases, BeaEngine stops decoding an instruction if it exceeds 15 bytes.</p>
+<pre>
+#include &#60;windows.h&#62;
+#include &#60;stdio.h&#62;
+#include "BeaEngine.h"
+
+int main(void)
+{
+	/* ============================= Init datas */
+	DISASM MyDisasm;
+	int false = 0, true = 1;
+	int len;
+	_Bool Error = false;
+	int EndCodeSection = 0x401020;
+
+	/* ============================= Init the Disasm structure (important !)*/
+	(void) memset (&MyDisasm, 0, sizeof(DISASM));
+
+	/* ============================= Init EIP */
+	MyDisasm.EIP = 0x401000;
+
+	/* ============================= Loop for Disasm */
+	while (!Error){
+		/* ============================= Fix SecurityBlock */
+		MyDisasm.SecurityBlock = EndCodeSection - MyDisasm.EIP;
+
+		len = Disasm(&MyDisasm);
+		if (len == OUT_OF_BLOCK) {
+			(void) printf("disasm engine is not allowed to read more memory \n");
+			Error = true;
+		}
+		else if (len == UNKNOWN_OPCODE) {
+			(void) printf("unknown opcode");
+			Error = true;
+		}
+		else {
+			(void) puts(MyDisasm.CompleteInstr);
+			MyDisasm.EIP = MyDisasm.EIP + len;
+			if (MyDisasm.EIP >= EndCodeSection) {
+				(void) printf("End of buffer reached ! \n");
+				Error = true;
+			}
+		}
+	};
+	return 0;
+}
+</pre>
+
+<a id="Ex3"></a>
+<h1>3- How to decode bytes in an allocated buffer while keeping original virtual addresses ?</h1>
+<p> This time, we are in a real and usual situation. We want to decode bytes copied in an allocated buffer. However, you want to see original virtual addresses. The following program allocates a buffer with the function <strong>malloc</strong> , copies in it 100 bytes from the address <strong>&main</strong> and decodes the buffer :</p>
+<pre>
+#include &#60;windows.h&#62;
+#include &#60;stdio.h&#62;
+#include &#60;stdlib.h&#62;
+#include "BeaEngine.h"
+
+/* ============================= Init datas */
+DISASM MyDisasm;
+int len;
+_Bool Error = 0;
+void *pBuffer;
+int  (*pSourceCode) (void); 	/* function pointer */
+
+/* ================================================================================= */
+/*															*/
+/*		Disassemble code in the specified buffer using the correct VA					*/
+/*															*/
+/*==================================================================================*/
+
+void DisassembleCode(char *StartCodeSection, char *EndCodeSection, int (*Virtual_Address)(void))
+{
+
+	/* ============================= Init the Disasm structure (important !)*/
+	(void) memset (&MyDisasm, 0, sizeof(DISASM));
+
+	/* ============================= Init EIP */
+	MyDisasm.EIP = (int) StartCodeSection;
+	/* ============================= Init VirtualAddr */
+	MyDisasm.VirtualAddr = (long long) Virtual_Address;
+
+	/* ============================= set IA-32 architecture */
+	MyDisasm.Archi = 0;
+	/* ============================= Loop for Disasm */
+	while ( !Error){
+		/* ============================= Fix SecurityBlock */
+		MyDisasm.SecurityBlock = (int) EndCodeSection - MyDisasm.EIP;
+
+		len = Disasm(&MyDisasm);
+		if (len == OUT_OF_BLOCK) {
+			(void) printf("disasm engine is not allowed to read more memory \n");
+			Error = 1;
+		}
+		else if (len == UNKNOWN_OPCODE) {
+			(void) printf("unknown opcode");
+			Error = 1;
+		}
+		else {
+            (void) printf("%.8X %s\n",(int) MyDisasm.VirtualAddr, &MyDisasm.CompleteInstr);
+			MyDisasm.EIP = MyDisasm.EIP + len;
+			MyDisasm.VirtualAddr = MyDisasm.VirtualAddr + len;
+			if (MyDisasm.EIP >= (int) EndCodeSection) {
+				(void) printf("End of buffer reached ! \n");
+				Error = 1;
+			}
+		}
+	};
+	return;
+}
+
+/* ================================================================================= */
+/*														*/
+/*						MAIN		*/
+/*														*/
+/*==================================================================================*/
+int main(void)
+{
+	pSourceCode =  &main;
+
+	pBuffer = malloc(100);
+	/* ============================= Let's NOP the buffer */
+	(void) memset (pBuffer, 0x90, 100);
+
+	/* ============================= Copy 100 bytes in it */
+	(void) memcpy (pBuffer,(void*)(int) pSourceCode, 100);
+
+	/* ============================= Disassemble code located in that buffer */
+	DisassembleCode (pBuffer, (char*) pBuffer + 100, pSourceCode);
+	return 0;
+}
+</pre>
+
+<a id="Ex4"></a>
+<h1>4- How to use nasm syntax with prefixed numbers ?</h1>
+<p> BeaEngine is able to use a set of syntaxes : masm, nasm, GoAsm, GNU Assembler. You can display numbers under two formats : suffixed numbers and prefixed numbers. You can display or not the segment registers used in memory addressing. You can even use a tabulation between mnemonic and first operand.</p>
+<pre>
+#include &#60;windows.h&#62;
+#include &#60;stdio.h&#62;
+#include &#60;stdlib.h&#62;
+#include "BeaEngine.h"
+
+/* ============================= Init datas */
+DISASM MyDisasm;
+int len;
+_Bool Error = 0;
+void *pBuffer;
+int  (*pSourceCode) (void); 	/* function pointer */
+
+/* DisassembleCode function is documented in previous examples */
+
+int main(void)
+{
+
+	/* ============================= Init the Disasm structure (important !)*/
+	(void) memset (&MyDisasm, 0, sizeof(DISASM));
+
+	pSourceCode =  &main;
+	pBuffer = malloc(100);
+	/* ============================= Let's NOP the buffer */
+	(void) memset (pBuffer, 0x90, 100);
+	/* ============================= Copy 100 bytes in it */
+	(void) memcpy (pBuffer,(void*)(int) pSourceCode, 100);
+
+
+	/* ============================= Select Display Option */
+	MyDisasm.Options = Tabulation + NasmSyntax + PrefixedNumeral + ShowSegmentRegs;
+	/* ============================= Disassemble code located in that buffer */
+	DisassembleCode (pBuffer, (char*) pBuffer + 100, pSourceCode);
+
+
+	return 0;
+}
+</pre>
+
+<a id="Ex5"></a>
+<h1>5- How to use the library with Python ? </h1>
+<p> BeaEngine can be used under Python thanks to the ctypes library. </p>
+<pre>
+from BeaEnginePython import *
+
+Instruction = DISASM()
+
+# ====================================== Open File2Disasm.exe
+try:
+    FileObject = open('File2Disasm.exe','rb')
+except IOError:
+    print "can't find specified file"
+else:
+    FileObject.seek(0,0)
+    Buffer= FileObject.read()
+    FileObject.close()
+
+    # ====================================== Create a ctypes buffer
+    Target = create_string_buffer(Buffer,len(Buffer))
+
+    # ====================================== init structure
+    Instruction.EIP = addressof(Target) + 0x200	# Jump on the ".text" section with RawOffset = 0x200
+    Instruction.VirtualAddr = 0x401000
+    Instruction.Options = Tabulation + NasmSyntax + SuffixedNumeral  + ShowSegmentRegs		#define syntax
+
+    # ====================================== Disasm 20 instructions
+
+    for i in range(20):
+        InstrLength = Disasm(addressof(Instruction))
+        print hex(Instruction.VirtualAddr),"   ",Instruction.CompleteInstr
+        if InstrLength == -1:
+            Instruction.EIP = Instruction.EIP + 1
+            Instruction.VirtualAddr = Instruction.VirtualAddr + 1
+        else:
+            Instruction.EIP = Instruction.EIP + InstrLength 
+            Instruction.VirtualAddr= Instruction.VirtualAddr+ InstrLength 
+
+
+</pre>
+
+<a id="Ex6"></a>
+<h1>6- How to retrieve only instructions that modify the register eax ? </h1>
+<p>This is the first example of how to realize a data-flow analysis with BeaEngine. By using MyDisasm.Argument1.AccessMode and MyDisasm.Argument1.ArgType , you can determine for example if the register eax is modified or not by the analyzed instruction. AccessMode allows us to know if the argument is written or only read. ArgType allows us to know if the register is eax. We don't forget that some instructions can modify registers implicitly. We can control that by looking at the field MyDisasm.Instruction.ImplicitModifiedRegs .</p> 
+<pre>
+#include &#60;windows.h&#62;
+#include &#60;stdlib.h&#62;
+#include &#60;stdio.h&#62;
+#include "BeaEngine.h"
+/* ============================= Init datas */
+DISASM MyDisasm;
+int len;
+_Bool Error = 0;
+void *pBuffer;
+int  (*pSourceCode) (void); 	/* function pointer */
+
+/* ================================================================================= */
+/*																*/
+/*						Disassemble code in the specified buffer using the correct VA			*/
+/*																*/
+/*==================================================================================*/
+
+void DisassembleCode(char *StartCodeSection, char *EndCodeSection, int (*Virtual_Address)(void))
+{
+
+	Error = 0;
+
+	/* ============================= Init EIP */
+	MyDisasm.EIP = (int) StartCodeSection;
+	/* ============================= Init VirtualAddr */
+	MyDisasm.VirtualAddr = (long long) Virtual_Address;
+
+	/* ============================= set IA-32 architecture */
+	MyDisasm.Archi = 0;
+	/* ============================= Loop for Disasm */
+	while ( !Error){
+		/* ============================= Fix SecurityBlock */
+		MyDisasm.SecurityBlock = (long) EndCodeSection - MyDisasm.EIP;
+
+		len = Disasm(&MyDisasm);
+		if (len == OUT_OF_BLOCK) {
+			(void) printf("disasm engine is not allowed to read more memory \n");
+			Error = 1;
+		}
+		else if (len == UNKNOWN_OPCODE) {
+			(void) printf("unknown opcode");
+			Error = 1;
+		}
+		else {
+			/* ============================= Make a filter on Instruction */
+			if ((MyDisasm.Argument1.AccessMode == WRITE)
+				&& (MyDisasm.Argument1.ArgType & GENERAL_REG)
+				&& (MyDisasm.Argument1.ArgType & REG0))  {
+					(void) printf("%.8X %s\n",(int) MyDisasm.VirtualAddr, &MyDisasm.CompleteInstr);
+			}
+			else if ((MyDisasm.Argument2.AccessMode == WRITE)
+                    		&& (MyDisasm.Argument2.ArgType & GENERAL_REG)
+                    		&& (MyDisasm.Argument2.ArgType & REG0))  {
+                        		(void) printf("%.8X %s\n",(int) MyDisasm.VirtualAddr, &MyDisasm.CompleteInstr);
+			}
+			else if (MyDisasm.Instruction.ImplicitModifiedRegs & REG0) {
+				(void) printf("%.8X %s\n",(int) MyDisasm.VirtualAddr, &MyDisasm.CompleteInstr);
+		}
+			MyDisasm.EIP = MyDisasm.EIP + len;
+			MyDisasm.VirtualAddr = MyDisasm.VirtualAddr + len;
+			if (MyDisasm.EIP >= (long) EndCodeSection) {
+				(void) printf("End of buffer reached ! \n");
+				Error = 1;
+			}
+		}
+	};
+	return;
+}
+/* ================================================================================= */
+/*														*/
+/*												MAIN		*/
+/*														*/
+/*==================================================================================*/
+int main(void)
+{
+
+	/* ============================= Init the Disasm structure (important !)*/
+	(void) memset (&MyDisasm, 0, sizeof(DISASM));
+
+
+	pSourceCode =  &main;
+	pBuffer = malloc(0x600);
+	/* ============================= Let's NOP the buffer */
+	(void) memset (pBuffer, 0x90, 0x600);
+	/* ============================= Copy 100 bytes in it */
+	(void) memcpy (pBuffer,(void*)(int) pSourceCode, 0x600);
+
+	(void) printf("******************************************************* \n");
+	(void) printf("Display only Instructions modifying EAX. \n");
+	(void) printf("******************************************************* \n");
+
+	/* ============================= Select Display Option */
+	MyDisasm.Options = Tabulation + MasmSyntax;
+	/* ============================= Disassemble code located in that buffer */
+	DisassembleCode (pBuffer, (char*) pBuffer + 0x600, pSourceCode);
+
+	return 0;
+}
+</pre>
+
+<a id="Ex7"></a>
+<h1>7- How to decode instructions and 'follow' unconditional branch instructions ? </h1>
+<p>In some cases, unconditional jumps are used in obfuscation mechanisms. This program shows how to eliminate these naugthy jumps by "following" them.  To realize that task, we have to use the fields MyDisasm.Instruction.BranchType and MyDisasm.Instruction.AddrValue. In the next program, I have coded the function RVA2OFFSET just to convert the virtual address pointed by the unconditional jump in a "real" address that can be used by MyDisasm.EIP.</p>
+<pre>
+#include &#60;windows.h&#62;
+#include &#60;stdlib.h&#62;
+#include &#60;stdio.h&#62;
+#include "BeaEngine.h"
+/* ============================= Init datas */
+DISASM MyDisasm;
+int len,i,FileSize;
+_Bool Error = 0;
+unsigned char *pBuffer;
+int  (*pSourceCode) (void); 	/* function pointer */
+FILE *FileHandle;
+
+int RVA2OFFSET(int Address, unsigned char *pBuff);
+
+/* =================================================================================*/
+/*														*/
+/*						eliminate JUMPS  and reorder instructions  	*/
+/*														*/
+/*==================================================================================*/
+
+void DisassembleCodeFilter(unsigned char *StartCodeSection, unsigned char *EndCodeSection, int (Virtual_Address))
+{
+	Error = 0;
+	MyDisasm.EIP = (int) StartCodeSection;
+	MyDisasm.VirtualAddr = (long long) Virtual_Address;
+	MyDisasm.Archi = 0;
+
+	/* ============================= Loop for Disasm */
+	while (!Error){
+		MyDisasm.SecurityBlock = (int) EndCodeSection - MyDisasm.EIP;
+		len = Disasm(&MyDisasm);
+		if ((len != OUT_OF_BLOCK) && (len != UNKNOWN_OPCODE)) {
+			if ((MyDisasm.Instruction.BranchType == JmpType) && (MyDisasm.Instruction.AddrValue != 0)) {
+			    MyDisasm.EIP = RVA2OFFSET((int) MyDisasm.Instruction.AddrValue - 0x400000,pBuffer);
+			    MyDisasm.VirtualAddr = MyDisasm.Instruction.AddrValue;
+			}
+			else {
+                      (void) printf("%.8X %s\n",(int) MyDisasm.VirtualAddr, &MyDisasm.CompleteInstr);
+			    MyDisasm.EIP = MyDisasm.EIP+len;
+                	    MyDisasm.VirtualAddr = MyDisasm.VirtualAddr+len;
+			}
+            	if (MyDisasm.EIP >= (long) EndCodeSection)  {
+				Error = 1;
+            	}
+		}
+		else {
+			Error = 1;
+		}
+	}
+	return;
+}
+/* =================================================================================*/
+/*														*/
+/*	        Convert Relative Virtual Address to offset in the file                */
+/*          works fine even in naughty binaries							*/
+/*			BeatriX manufacture :)								*/
+/*														*/
+/*==================================================================================*/
+
+int RVA2OFFSET(int RVA, unsigned char *pBuff)
+{
+int RawSize, VirtualBorneInf, RawBorneInf, SectionHeader;
+int OffsetNtHeaders,OffsetSectionHeaders, NumberOfSections, SizeOfOptionalHeaders, VirtualAddress;
+
+OffsetNtHeaders = (int) *((int*) (pBuff + 0x3c));
+NumberOfSections = (int) *((unsigned short*) (pBuff + OffsetNtHeaders + 6));
+SizeOfOptionalHeaders = (int) *((unsigned short*) (pBuff + OffsetNtHeaders + 0x14));
+OffsetSectionHeaders = OffsetNtHeaders + SizeOfOptionalHeaders + 0x18;
+VirtualBorneInf = 0;
+RawBorneInf = 0;
+VirtualAddress = 0;
+SectionHeader = 0;
+while (VirtualAddress <= RVA) {
+    if (VirtualAddress != 0) {
+        VirtualBorneInf = VirtualAddress;
+        RawSize = (int) *((unsigned int*) (pBuff + OffsetSectionHeaders + 0x10));
+        RawBorneInf = (int) *((unsigned int*) (pBuff + OffsetSectionHeaders + 0x14));
+    }
+    VirtualAddress = (int) *((unsigned int*) (pBuff + OffsetSectionHeaders + SectionHeader*0x28 + 0x0C));
+    SectionHeader ++;
+}
+if ((RVA-VirtualBorneInf)>RawSize) return -1;
+RawBorneInf = RawBorneInf >> 8;
+if (RawBorneInf & 1) RawBorneInf--;
+RawBorneInf = RawBorneInf << 8;
+return RVA - VirtualBorneInf + RawBorneInf + (int) pBuff;
+}
+/* =================================================================================*/
+/*														*/
+/*												MAIN		*/
+/*														*/
+/*==================================================================================*/
+int main(void)
+{
+
+	FileHandle = fopen("msgbox.exe", "rb");
+	(void)fseek(FileHandle,0,SEEK_END);
+	FileSize = ftell(FileHandle);
+	(void)rewind(FileHandle);
+	pBuffer = malloc(FileSize);
+
+	(void)fread(pBuffer,1,FileSize, FileHandle);
+	(void)fclose(FileHandle);
+	/* ============================= Init the Disasm structure (important !)*/
+	(void) memset (&MyDisasm, 0, sizeof(DISASM));
+
+	(void) printf("******************************************************* \n");
+	(void) printf("Disassemble code by following jumps\n");
+	(void) printf("******************************************************* \n");
+
+	DisassembleCodeFilter ((unsigned char*) pBuffer + 0x400, (unsigned char*) pBuffer + 0x430, 0x401000);
+	return 0;
+}
+</pre>
+
+<a id="Ex8"></a>
+<h1>8- How to decode instructions on a 64 bits target ? </h1>
+<p>BeaEngine is compiled here for windows for 32 bits and 64 bits architectures. But, in these two cases, BeaEngine is able to decode 32 bits or 64 bits targets.</p>
+<pre>
+	/* =================== Define 64 bits architecture =================== */
+	MyDisasm.Archi = 64;
+</pre>
+
+<a id="Ex9"></a>
+<h1>9- How to use BeaEngine with masm32, nasm, fasm ou GoAsm ? </h1>
+<p>BeaEngine is distributed with headers for nasm, GoAsm, fasm , masm. </p>
+<p><strong>Using BeaEngine with masm32</strong></p>
+<pre>
+.386
+.MODEL flat,stdcall
+option casemap:none
+.mmx
+
+include \masm32\include\kernel32.inc
+include \masm32\include\windows.inc
+includelib \masm32\lib\kernel32.lib
+include BeaEngineMasm.inc
+
+puts PROTO:DWORD
+
+.data
+
+    MyDisasm        _Disasm         <>
+    szoutofblock    BYTE            "Security alert. Disasm tries to read unreadable memory",0
+    i               DWORD           100
+    
+.code
+
+start:
+
+    ; *********************** Init EIP
+    mov eax, start
+    mov MyDisasm.EIP, eax
+
+    ; *********************** Just for fun : init VirtualAddr with funky value :)
+    mov eax, 0bea2008h
+    movd mm0, eax
+    movq MyDisasm.VirtualAddr, mm0
+
+    ; *********************** loop for disasm
+    MakeDisasm:
+        push offset MyDisasm
+        call Disasm
+        .if (eax == OUT_OF_BLOCK)
+            push offset szoutofblock
+            call puts
+            add esp, 4
+            push 0
+            call ExitProcess
+        .elseif (eax == UNKNOWN_OPCODE)
+            push offset MyDisasm.CompleteInstr
+            call puts                           
+            add esp, 4
+            push 0
+            call ExitProcess
+        .endif
+        add MyDisasm.EIP, eax
+        push offset MyDisasm.CompleteInstr
+        call puts                           
+        add esp, 4
+        dec i
+        jne MakeDisasm
+    
+    push 0
+    call ExitProcess
+End start                         
+
+</pre>
+
+<p><strong>Using BeaEngine with nasm</strong></p>
+<pre>
+extern _puts@4				; define external symbols
+extern _ExitProcess@4
+extern _Disasm@4
+global start
+%include "BeaEngineNasm.inc"
+
+section .data use32
+
+    i       db 100
+    
+    MyDisasm:
+            istruc _Disasm
+            iend    
+
+section .text use32
+
+start: 
+
+    ; ***************************** Init EIP
+    mov eax, start
+    mov [MyDisasm+EIP], eax
+
+    ; ***************************** just for fun : init VirtualAddr with weird address :)
+    mov eax, 0xbea2008
+    movd mm0, eax
+    movq [MyDisasm+VirtualAddr], mm0
+    
+    ; ***************************** loop for disasm
+MakeDisasm:
+    push MyDisasm
+    call _Disasm@4
+    cmp eax, UNKNOWN_OPCODE
+    je IncreaseEIP
+        add [MyDisasm+EIP], eax
+        jmp DisplayInstruction
+    
+    IncreaseEIP:
+        inc dword [MyDisasm+EIP]
+    
+    DisplayInstruction:
+        push MyDisasm+CompleteInstr
+        call _puts@4
+        add esp, 4
+        dec byte [i]
+        jne MakeDisasm
+    push 0
+    call _ExitProcess@4
+
+
+
+</pre>
+
+<p><strong>Using BeaEngine with fasm</strong></p>
+<pre>
+format MS COFF
+
+; ************************************** Define "prototype"
+
+extrn '_puts@4' as puts:dword
+extrn '_Disasm@4' as Disasm:dword
+extrn '_ExitProcess@4' as ExitProcess:dword
+
+; ************************************** includes
+include '\fasm\INCLUDE\win32ax.inc'     ; <--- extended headers to enable macroinstruction .if .elseif .end
+include 'BeaEngineFasm.inc'
+
+
+section '.data' data readable writeable
+
+
+    MyDisasm       _Disasm       <>
+    i               db            100
+    szoutofblock    db            "Security alert. Disasm tries to read unreadable memory",0
+
+
+section '.text' code readable executable
+
+ public start
+
+ start:
+
+    ; *********************** Init EIP
+    mov eax, start
+    mov [MyDisasm.EIP], eax
+   
+    ; *********************** loop for disasm
+    MakeDisasm:
+        push MyDisasm
+        call Disasm
+        .if eax = OUT_OF_BLOCK
+            push szoutofblock
+            call puts
+            add esp, 4
+            push 0
+            call ExitProcess
+        .elseif eax = UNKNOWN_OPCODE
+            inc [MyDisasm.EIP]
+        .else
+            add [MyDisasm.EIP], eax
+        .endif
+        push MyDisasm.CompleteInstr
+        call puts                           
+        add esp, 4
+        dec byte [i]
+        jne MakeDisasm
+    push 0
+    call ExitProcess
+
+
+
+
+
+</pre>
+
+<p><strong>Using BeaEngine with GoAsm</strong></p>
+<pre>
+#include BeaEngineGoAsm.inc
+Disasm = BeaEngine.lib:Disasm
+
+.data
+    
+    MyDisasm       _Disasm      <>
+    szoutofblock    db           "Security alert. Disasm tries to read unreadable memory",0
+    i               db            100
+.code
+
+start:
+
+    ; *********************** Init EIP
+    mov eax, offset start
+    mov [MyDisasm.EIP], eax
+
+    ; *********************** loop for disasm
+MakeDisasm:
+    push offset MyDisasm
+    call Disasm
+    cmp eax, OUT_OF_BLOCK
+    jne >
+        push offset szoutofblock
+        call puts
+        add esp, 4
+        push 0
+        call ExitProcess
+    :
+    cmp eax, UNKNOWN_OPCODE
+    jne >
+        inc d[MyDisasm.EIP]
+        jmp Display
+    :
+        add [MyDisasm.EIP], eax
+Display:        
+    push offset MyDisasm.CompleteInstr
+    call puts                           
+    add esp, 4
+    dec b[i]
+    jne MakeDisasm
+    push 0
+    call ExitProcess
+</pre>
+
+<a id="Ex10"></a>
+<h1>10- How to use BeaEngine with masm64 ou GoAsm64 ? </h1>
+<p><strong>Using BeaEngine with masm64</strong></p>
+<pre>
+include ..\..\HEADERS\BeaEngineMasm.inc
+
+extrn puts:PROC
+extrn ExitProcess: PROC
+
+
+.data
+
+    MyDisasm        _Disasm         <>
+    szoutofblock    BYTE            "Security alert. Disasm tries to read unreadable memory",0
+    i               DWORD           100
+
+
+.code
+
+main proc
+
+    ; *********************** Init EIP
+    mov rax, main
+    mov MyDisasm.EIP, rax
+
+    ; *********************** Init Architecture
+    mov MyDisasm.Archi, 64
+
+    ; *********************** loop for disasm
+    MakeDisasm:
+        mov rcx, offset MyDisasm
+        call Disasm
+        cmp eax, OUT_OF_BLOCK
+        jne @F
+            mov rcx, offset szoutofblock
+            sub rsp, 20h
+            call puts
+            add rsp, 20h
+            mov rcx, 0
+            call ExitProcess
+        @@:
+        cmp eax, UNKNOWN_OPCODE
+        jne @F
+            inc MyDisasm.EIP
+            jmp Display
+        @@:
+            add MyDisasm.EIP, rax
+    Display:
+        mov rcx, offset MyDisasm.CompleteInstr
+        sub rsp, 20h
+        call puts                           
+        add rsp, 20h
+        dec i
+        jne MakeDisasm
+    
+    mov rcx, 0
+    call ExitProcess
+main endp
+
+end
+
+</pre>
+
+<p><strong>Using BeaEngine with GoAsm64</strong></p>
+<pre>
+#include BeaEngineGoAsm.inc
+Disasm = BeaEngine64.lib:Disasm
+
+.data
+    
+    MyDisasm       _Disasm      <>
+    szoutofblock    db           "Security alert. Disasm tries to read unreadable memory",0
+    i               db            100
+.code
+
+start:
+
+    ; *********************** Init EIP
+    mov rax, offset start
+    mov q [MyDisasm.EIP], rax
+
+    ; *********************** Init Architecture
+    mov d [MyDisasm.Archi], 64
+
+    ; *********************** loop for disasm
+MakeDisasm:
+    mov rcx, offset MyDisasm
+    call Disasm
+    cmp rax, OUT_OF_BLOCK
+    jne >
+        mov rcx, offset szoutofblock
+        sub rsp, 20h
+        call puts
+        add rsp, 20h
+        mov rcx, 0
+        call ExitProcess
+    :
+    cmp rax, UNKNOWN_OPCODE
+    jne >
+        inc q[MyDisasm.EIP]
+        jmp Display
+    :
+        add q[MyDisasm.EIP], rax
+Display:        
+    mov rcx, offset MyDisasm.CompleteInstr
+    sub rsp, 20h
+    call puts                           
+    add rsp, 20h
+    dec b[i]
+    jne MakeDisasm
+    mov rcx, 0
+    call ExitProcess
+
+
+
+
+
+</pre>
+
+<a id="Ex11"></a>
+<h1>11- How to use BeaEngine with WinDev (by Vincent Roy) ? </h1>
+<p> Here is an example coded by a friend, <a href="http://vroy1.free.fr/wpfr/?p=36">Vincent Roy</a>, specialized in WinDev language. </p>
+<pre>
+// Creation du Header beaEngine pour Windev
+
+// Creation des constantes
+CONSTANT
+	NoTabulation 	= 0x0
+	Tabulation 	= 0x1
+	MasmSyntax 	= 0x000
+	GoAsmSyntax 	= 0x100
+	NasmSyntax 	= 0x200
+      ATSyntax = 0x400
+	PrefixedNumeral = 0x10000
+	SuffixedNumeral = 0x00000
+      ShowSegmentRegs = 0x1000000
+	UNKNOWN_OPCODE  = -1
+FIN
+
+// Creation des structures
+// Rajout Code Vince pour la nouvelle DLL de beatrix2004
+REX_Struct est une structure
+	W_ est un entier sur 1 octets
+	R_ est un entier sur 1 octets
+	X_ est un entier sur 1 octets
+	B_ est un entier sur 1 octets
+	state est un entier sur 1 octets
+FIN
+
+PREFIXINFO est une structure
+	Number est un entier
+	NbUndefined est un entier
+	LockPrefix est un entier sur 1 octets
+	OperandSize est un entier sur 1 octets
+	AddressSize est un entier sur 1 octets
+	RepnePrefix est un entier sur 1 octets
+	RepPrefix est un entier sur 1 octets
+	FSPrefix est un entier sur 1 octets
+	SSPrefix est un entier sur 1 octets
+	GSPrefix est un entier sur 1 octets
+	ESPrefix est un entier sur 1 octets
+	CSPrefix est un entier sur 1 octets
+	DSPrefix est un entier sur 1 octets
+	REX est un REX_Struct
+FIN
+
+
+EFLStruct est une structure
+	nOF_ est un entier sur 1 octet
+	nSF_ est un entier sur 1 octet
+	nZF_ est un entier sur 1 octet
+	nAF_ est un entier sur 1 octet
+	nPF_ est un entier sur 1 octet
+	nCF_ est un entier sur 1 octet
+	nTF_ est un entier sur 1 octet
+	nIF_ est un entier sur 1 octet
+	nDF_ est un entier sur 1 octet
+	nNT_ est un entier sur 1 octet
+	nRF_ est un entier sur 1 octet
+	nAlignment est un entier sur 1 octet
+FIN
+
+MEMORYTYPE est une structure
+	nBaseRegister est un entier sur 4 octets
+	nIndexRegister est un entier sur 4 octets
+	nScale est un entier sur 4 octets
+	nDisplacement est un entier sur 8 octets
+FIN
+
+INSTRTYPE est une structure
+	nCategory est un entier sur 4 octets
+	nOpcode est un entier sur 4 octets
+	Mnemonic est une chaîne fixe sur 16
+	nBranchType est un entier sur 4 octets
+	stFlags est un EFLStruct
+	nAddrValue est un entier sur 8 octets
+	nImmediat est un entier sur 8 octets
+	nImplicitModifiedRegs est un entier sur 4 octets
+FIN
+
+ARGTYPE est une structure
+	ArgMnemonic est une chaîne fixe sur 32
+	nArgType est un entier sur 4 octets
+	nArgSize est un entier sur 4 octets
+	nAccessMode est un entier sur 4 octets
+	stMemory est un MEMORYTYPE
+      nSegmentReg est un entier sur 4 octets
+FIN
+
+_Disasm est une structure
+	EIP est un entier sans signe sur 8 octets
+	VirtualAddr est un entier sans signe sur 8 octets
+	SecurityBlock est un entier sur 4 octets
+	CompleteInstr est une chaîne fixe sur 64
+	Archi est un entier sur 4 octets
+	nOptions est un entier sur 4 octets
+	stInstruction est un INSTRTYPE
+	stArgument1 est un ARGTYPE
+	stArgument2 est un ARGTYPE
+	stArgument3 est un ARGTYPE
+	Prefix est un PREFIXINFO
+FIN
+
+// Creation d un objet Disasm (equivalent à struct _Disasm MonDisasm; en C)
+Disasm est un _Disasm
+
+// Mise à jour des Options (optionnel)
+Disasm:nOptions = Tabulation+NasmSyntax+PrefixedNumeral
+
+// Chargement de la dll BeaEngine (ChargeDLL est une fonction windev)
+HandleDLL est un entier = ChargeDLL ("C:\BeaEngine.dll")
+si HandleDLL = -1 ALORS
+	Erreur ("chargement impossible de la DLL.")
+	RETOUR
+FIN
+
+// Initialisation des Datas
+Disasm:EIP		= 0x401000
+Disasm:VirtualAddr 	= 0x0
+Disasm:Archi 		= 0
+
+len 	est un entier 	= 0
+myError est un entier 	= 0
+i 	est un entier 	= 1
+
+
+TANTQUE (i<=100 ET myError=0)
+
+	// Appel de la fonction exportée Disam (AppelDLL32 est une fonction windev)
+	len = AppelDLL32("C:\BeaEngine.dll","Disasm",&Disasm)
+	SI (len=UNKNOWN_OPCODE) ALORS
+		myError = 1
+	SINON
+		// Liste les instructions (Trace est une fonction windev. Elle affiche une fenetre de "Trace" de couleur jaune)
+		Trace (Disasm:CompleteInstr)
+		Disasm:EIP += len
+		i++
+	FIN
+FIN
+
+dechargeDLL (HandleDLL)
+
+</pre>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

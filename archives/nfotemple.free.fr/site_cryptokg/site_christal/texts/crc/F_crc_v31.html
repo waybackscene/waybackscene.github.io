@@ -1,0 +1,310 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!-- TlJHdR Ver 3.12 1/8/97 -->
+<LINK REL="home" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/index-3.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/index.htm">
+<LINK REL="toc" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/F_ToC.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_ToC.html">
+<LINK REV="made" HREF="mailto:filipg@repairfaq.org">
+<META HTTP-EQUIV="Reply-to" CONTENT="filipg@repairfaq.org (Filip Gieszczykiewicz)">
+<meta name="description" content="HTML-ized FAQs that I need to link to. LOTS of electronics/life related FAQs.">
+<meta name="keywords" content="AD4PC CPM CallerID ChangeLog DSO DTMF Dating FD_steppers FM10 FM10_more Hardware Homebuilt IDE-tech LCD_HD44780 LCD_menu LCD_progr LINK_IN MIDI MacroVision OnHook PCjr Pads_LOG_Man Pads_PCB_Man Phrack_Mag Running SCSI SMPTE_faq Tech_LCD Theory_LCD UPS Woman_speak archivers cardreader crc_uP crc ibmkey mail_order meeting midi2 pal_gal pixcon quiz touchscreen Keyboard MODEMS PARALLEL Parallel The_Serial_Port gameport isabus rs-232 rs232c PC IBMPC IBM Port 68hc11 8051 ATA COP8 ELE I2C PIC ST6 8085 8080 8088 8086 6811 Parallax MicroChip Programmer GAL PAL PLD">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Fil's FAQ-Link-In Corner: CRC algorithms</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/Background.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Background.gif">
+
+<H1>A PAINLESS GUIDE TO CRC ERROR DETECTION ALGORITHMS</H1>
+<P>Contents:</P>
+
+<UL>
+<!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI><A HREF="F_crc_v31.html#CRCV_001"><B>1</B>. Preface</A>
+	<LI><A HREF="F_crc_v31.html#CRCV_002">&nbsp;&nbsp;1.1) About the Author &amp; Copyright</A>
+	<LI><A HREF="F_crc_v31.html#CRCV_003">&nbsp;&nbsp;1.2) Abstract</A>
+	<LI><A HREF="F_crc_v31.html#CRCV_004"><B>2</B>. Introduction: Error Detection</A>
+	<LI><A HREF="F_crc_v31.html#CRCV_005"><B>3</B>. The Need For Complexity</A>
+	<LI><A HREF="F_crc_v31.html#CRCV_006"><B>4</B>. The Basic Idea Behind CRC Algorithms</A>
+	<LI><A HREF="F_crc_v31.html#CRCV_007"><B>5</B>. Polynomical Arithmetic</A> <!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI>Jump to [<A HREF="F_crc_v32.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_crc_v32.html">Next</A>] segment
+</UL>
+
+<!-- TlJHdR TLJSETVERSION 3.00 -->
+<P>[Document Version: <B>3.00</B>] <!-- TlJHdR TLJSETDATE 9/24/96 --> [Last Updated: <B>9/24/96</B>] <BR>
+<BR>
+
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_001"></A><B>1</B>. Preface</H1>
+<P>
+<HR ALIGN="CENTER">
+
+<H2><A NAME="CRCV_002"></A>&nbsp;&nbsp;1.1) About the Author &amp; Copyright</H2>
+<P>&quot;Everything you wanted to know about CRC algorithms, but were afraid to ask for fear that errors in your
+understanding might be detected.&quot;</P>
+
+<UL>
+	<LI>Author : Ross N. Williams
+	<LI>E-Mail : <A HREF="mailto:ross@guest.adelaide.edu.au">ross@guest.adelaide.edu.au</A>
+	<LI>Date : 19 August 1993
+	<LI>Version : 3.00
+	<LI>FTP: <A HREF="javascript:if(confirm('ftp://ftp.adelaide.edu.au/pub/rocksoft/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='ftp://ftp.adelaide.edu.au/pub/rocksoft/'" tppabs="ftp://ftp.adelaide.edu.au/pub/rocksoft/">ftp.adelaide.edu.au/pub/rocksoft</A>/crc_v3.txt
+	<LI>Company : Rocksoft(tm) Pty Ltd
+	<LI>Snail : 16 Lerwick Avenue, Hazelwood Park 5066, Australia
+	<LI>Fax : +61 8 373-4911 (c/- Internode Systems Pty Ltd)
+	<LI>Phone : +61 8 379-9217 (10am to 10pm Adelaide Australia time)
+	<LI>Note : &quot;Rocksoft&quot; is a trademark of Rocksoft Pty Ltd, Australia
+	<LI>Status: Copyright (C) Ross Williams, 1993,1994,1995,1996. However, permission is granted to make and distribute
+	verbatim copies of this document provided that this information block and copyright notice is included. Also, <STRONG>the
+	C code modules included in this document are fully PUBLIC DOMAIN (PD)</STRONG>.
+	<LI>Thanks: Thanks to Jean-loup Gailly (<A HREF="mailto:jloup@chorus.fr">jloup@chorus.fr</A>) and Mark Adler (<A
+	HREF="mailto:me@quest.jpl.nasa.gov">me@quest.jpl.nasa.gov</A>) who both proof read this document and picked out
+	lots of nits as well as some big fat bugs.
+</UL>
+
+<P>C sources to are referenced in this document:</P>
+
+<UL>
+	<LI><A HREF="crcmodel.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/crcmodel.htm">crcmodel.h</A> (0KB) <!-- TLJ AutoSize 2.00 -->
+	<LI><A HREF="crcmodel_c.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/crcmodel_c.htm">crcmodel.c</A> (0KB)
+	<LI><A HREF="crctable_c.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/crctable_c.htm">crctable.c</A> (0KB)
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H2><A NAME="CRCV_003"></A>&nbsp;&nbsp;1.2) Abstract</H2>
+<P>This document explains CRCs (Cyclic Redundancy Codes) and their table-driven implementations in full, precise
+detail. Much of the literature on CRCs, and in particular on their table-driven implementations, is a little obscure
+(or at least seems so to me). This document is an attempt to provide a clear and simple no-nonsense explanation
+of CRCs and to absolutely nail down every detail of the operation of their high-speed implementations. In addition
+to this, this document presents a parameterized model CRC algorithm called the &quot;Rocksoft^tm Model CRC Algorithm&quot;.
+The model algorithm can be parameterized to behave like most of the CRC implementations around, and so acts as
+a good reference for describing particular algorithms. A low-speed implementation of the model CRC algorithm is
+provided in the C programming language. Lastly there is a section giving two forms of high-speed table driven implementations,
+and providing a program that generates CRC lookup tables.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_004"></A><B>2</B>. Introduction: Error Detection</H1>
+<P>The aim of an error detection technique is to enable the receiver of a message transmitted through a noisy (error-introducing)
+channel to determine whether the message has been corrupted. To do this, the transmitter constructs a value (called
+a checksum) that is a function of the message, and appends it to the message. The receiver can then use the same
+function to calculate the checksum of the received message and compare it with the appended checksum to see if
+the message was correctly received. For example, if we chose a checksum function which was simply the sum of the
+bytes in the message mod 256 (i.e. modulo 256), then it might go something as follows. All numbers are in decimal.</P>
+<P>
+<PRE>   Message                    :  6 23  4
+   Message with checksum      :  6 23  4 33
+   Message after transmission :  6 27  4 33
+</PRE>
+<P>In the above, the second byte of the message was corrupted from 23 to 27 by the communications channel. However,
+the receiver can detect this by comparing the transmitted checksum (33) with the computer checksum of 37 (6 + 27
++ 4). If the checksum itself is corrupted, a correctly transmitted message might be incorrectly identified as a
+corrupted one. However, this is a safe-side failure. A dangerous-side failure occurs where the message and/or checksum
+is corrupted in a manner that results in a transmission that is internally consistent. Unfortunately, this possibility
+is completely unavoidable and the best that can be done is to minimize its probability by increasing the amount
+of information in the checksum (e.g. widening the checksum from one byte to two bytes).</P>
+<P>Other error detection techniques exist that involve performing complex transformations on the message to inject
+it with redundant information. However, this document addresses only CRC algorithms, which fall into the class
+of error detection algorithms that leave the data intact and append a checksum on the end. i.e.:</P>
+<P>
+<PRE>      &lt;original intact message&gt; &lt;checksum&gt;
+</PRE>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_005"></A><B>3</B>. The Need For Complexity</H1>
+<P>In the checksum example in the previous section, we saw how a corrupted message was detected using a checksum
+algorithm that simply sums the bytes in the message mod 256:</P>
+<P>
+<PRE>   Message                    :  6 23  4
+   Message with checksum      :  6 23  4 33
+   Message after transmission :  6 27  4 33
+</PRE>
+<P>A problem with this algorithm is that it is too simple. If a number of random corruptions occur, there is a
+1 in 256 chance that they will not be detected. For example:</P>
+<P>
+<PRE>   Message                    :  6 23  4
+   Message with checksum      :  6 23  4 33
+   Message after transmission :  8 20  5 33
+</PRE>
+<P>To strengthen the checksum, we could change from an 8-bit register to a 16-bit register (i.e. sum the bytes
+mod 65536 instead of mod 256) so as to apparently reduce the probability of failure from 1/256 to 1/65536. While
+basically a good idea, it fails in this case because the formula used is not sufficiently &quot;random&quot;; with
+a simple summing formula, each incoming byte affects roughly only one byte of the summing register no matter how
+wide it is. For example, in the second example above, the summing register could be a Megabyte wide, and the error
+would still go undetected. This problem can only be solved by replacing the simple summing formula with a more
+sophisticated formula that causes each incoming byte to have an effect on the entire checksum register.</P>
+<P>Thus, we see that at least two aspects are required to form a strong checksum function:</P>
+
+<DL>
+	<DT><STRONG>WIDTH</STRONG></DT>
+	<DD>A register width wide enough to provide a low a-priori probability of failure (e.g. 32-bits gives a 1/2^32
+	chance of failure).
+	<DT><STRONG>CHAOS</STRONG></DT>
+	<DD>A formula that gives each input byte the potential to change any number of bits in the register.
+</DL>
+
+<P><STRONG>Note</STRONG>: The term &quot;checksum&quot; was presumably used to describe early summing formulas,
+but has now taken on a more general meaning encompassing more sophisticated algorithms such as the CRC ones. The
+CRC algorithms to be described satisfy the second condition very well, and can be configured to operate with a
+variety of checksum widths.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_006"></A><B>4</B>. The Basic Idea Behind CRC Algorithms</H1>
+<P>Where might we go in our search for a more complex function than summing? All sorts of schemes spring to mind.
+We could construct tables using the digits of pi, or hash each incoming byte with all the bytes in the register.
+We could even keep a large telephone book on-line, and use each incoming byte combined with the register bytes
+to index a new phone number which would be the next register value. The possibilities are limitless.</P>
+<P>However, we do not need to go so far; the next arithmetic step suffices. While addition is clearly not strong
+enough to form an effective checksum, it turns out that division is, so long as the divisor is about as wide as
+the checksum register.</P>
+<P>The basic idea of CRC algorithms is simply to treat the message as an enormous binary number, to divide it by
+another fixed binary number, and to make the remainder from this division the checksum. Upon receipt of the message,
+the receiver can perform the same division and compare the remainder with the &quot;checksum&quot; (transmitted
+remainder).</P>
+<P>Example: Suppose the the message consisted of the two bytes (6,23) as in the previous example. These can be
+considered to be the hexadecimal number 0617 which can be considered to be the binary number 0000-0110-0001-0111.
+Suppose that we use a checksum register one-byte wide and use a constant divisor of 1001, then the checksum is
+the remainder after 0000-0110-0001-0111 is divided by 1001. While in this case, this calculation could obviously
+be performed using common garden variety 32-bit registers, in the general case this is messy. So instead, we'll
+do the division using good-'ol long division which you learned in school (remember?). Except this time, it's in
+binary:</P>
+<P>
+<PRE>          ...0000010101101 = 00AD =  173 = QUOTIENT
+         ____-___-___-___-
+9= 1001 ) 0000011000010111 = 0617 = 1559 = DIVIDEND
+DIVISOR   0000.,,....,.,,,
+          ----.,,....,.,,,
+           0000,,....,.,,,
+           0000,,....,.,,,
+           ----,,....,.,,,
+            0001,....,.,,,
+            0000,....,.,,,
+            ----,....,.,,,
+             0011....,.,,,
+             0000....,.,,,
+             ----....,.,,,
+              0110...,.,,,
+              0000...,.,,,
+              ----...,.,,,
+               1100..,.,,,
+               1001..,.,,,
+               ====..,.,,,
+                0110.,.,,,
+                0000.,.,,,
+                ----.,.,,,
+                 1100,.,,,
+                 1001,.,,,
+                 ====,.,,,
+                  0111.,,,
+                  0000.,,,
+                  ----.,,,
+                   1110,,,
+                   1001,,,
+                   ====,,,
+                    1011,,
+                    1001,,
+                    ====,,
+                     0101,
+                     0000,
+                     ----
+                      1011
+                      1001
+                      ====
+                      0010 = 02 = 2 = REMAINDER
+</PRE>
+<P>In decimal this is &quot;1559 divided by 9 is 173 with a remainder of 2&quot;.</P>
+<P>Although the effect of each bit of the input message on the quotient is not all that significant, the 4-bit
+remainder gets kicked about quite a lot during the calculation, and if more bytes were added to the message (dividend)
+it's value could change radically again very quickly. This is why division works where addition doesn't.</P>
+<P>In case you're wondering, using this 4-bit checksum the transmitted message would look like this (in hexadecimal):
+06172 (where the 0617 is the message and the 2 is the checksum). The receiver would divide 0617 by 9 and see whether
+the remainder was 2.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_007"></A><B>5</B>. Polynomical Arithmetic</H1>
+<P>While the division scheme described in the previous section is very very similar to the checksumming schemes
+called CRC schemes, the CRC schemes are in fact a bit weirder, and we need to delve into some strange number systems
+to understand them.</P>
+<P>The word you will hear all the time when dealing with CRC algorithms is the word &quot;polynomial&quot;. A given
+CRC algorithm will be said to be using a particular polynomial, and CRC algorithms in general are said to be operating
+using polynomial arithmetic. What does this mean?</P>
+<P>Instead of the divisor, dividend (message), quotient, and remainder (as described in the previous section) being
+viewed as positive integers, they are viewed as polynomials with binary coefficients. This is done by treating
+each number as a bit-string whose bits are the coefficients of a polynomial. For example, the ordinary number 23
+(decimal) is 17 (hex) and 10111 binary and so it corresponds to the polynomial:</P>
+<P>
+<PRE>   1*x^4 + 0*x^3 + 1*x^2 + 1*x^1 + 1*x^0
+</PRE>
+<P>or, more simply:</P>
+<P>
+<PRE>   x^4 + x^2 + x^1 + x^0
+</PRE>
+<P>Using this technique, the message, and the divisor can be represented as polynomials and we can do all our arithmetic
+just as before, except that now it's all cluttered up with Xs. For example, suppose we wanted to multiply 1101
+by 1011. We can do this simply by multiplying the polynomials:</P>
+<P>
+<PRE>(x^3 + x^2 + x^0)(x^3 + x^1 + x^0)
+= (x^6 + x^4 + x^3
+ + x^5 + x^3 + x^2
+ + x^3 + x^1 + x^0) = x^6 + x^5 + x^4 + 3*x^3 + x^2 + x^1 + x^0
+</PRE>
+<P>At this point, to get the right answer, we have to pretend that x is 2 and propagate binary carries from the
+3*x^3 yielding:</P>
+<P>
+<PRE>   x^7 + x^3 + x^2 + x^1 + x^0
+</PRE>
+<P>It's just like ordinary arithmetic except that the base is abstracted and brought into all the calculations
+explicitly instead of being there implicitly. So what's the point?</P>
+<P>The point is that IF we pretend that we DON'T know what x is, we CAN'T perform the carries. We don't know that
+3*x^3 is the same as x^4 + x^3 because we don't know that x is 2. In this true polynomial arithmetic the relationship
+between all the coefficients is unknown and so the coefficients of each power effectively become strongly typed;
+coefficients of x^2 are effectively of a different type to coefficients of x^3.</P>
+<P>With the coefficients of each power nicely isolated, mathematicians came up with all sorts of different kinds
+of polynomial arithmetics simply by changing the rules about how coefficients work. Of these schemes, one in particular
+is relevant here, and that is a polynomial arithmetic where the coefficients are calculated MOD 2 and there is
+no carry; all coefficients must be either 0 or 1 and no carries are calculated. This is called &quot;polynomial
+arithmetic mod 2&quot;. Thus, returning to the earlier example:</P>
+<P>
+<PRE>(x^3 + x^2 + x^0)(x^3 + x^1 + x^0)
+= (x^6 + x^4 + x^3
+ + x^5 + x^3 + x^2
+ + x^3 + x^1 + x^0)
+= x^6 + x^5 + x^4 + 3*x^3 + x^2 + x^1 + x^0
+</PRE>
+<P>Under the other arithmetic, the 3*x^3 term was propagated using the carry mechanism using the knowledge that
+x=2. Under &quot;polynomial arithmetic mod 2&quot;, we don't know what x is, there are no carries, and all coefficients
+have to be calculated mod 2. Thus, the result becomes:</P>
+<P>
+<PRE>= x^6 + x^5 + x^4 + x^3 + x^2 + x^1 + x^0
+</PRE>
+<P>As Knuth [Knuth81] says (p.400):</P>
+
+<DL>
+	<DD>&quot;The reader should note the similarity between polynomial arithmetic and multiple-precision arithmetic
+	(Section 4.3.1), where the radix b is substituted for x. The chief difference is that the coefficient u_k of x^k
+	in polynomial arithmetic bears little or no relation to its neighboring coefficients x^{k-1} [and x^{k+1}], so
+	the idea of &quot;carrying&quot; from one place to another is absent. In fact polynomial arithmetic modulo b is
+	essentially identical to multiple precision arithmetic with radix b, except that all carries are suppressed.&quot;
+</DL>
+
+<P>Thus polynomical arithmetic mod 2 is just binary arithmetic mod 2 with no carries. While polynomials provide
+useful mathematical machinery in more analytical approaches to CRC and error-correction algorithms, for the purposes
+of exposition they provide no extra insight and some encumbrance and have been discarded in the remainder of this
+document in favour of direct manipulation of the arithmetical system with which they are isomorphic: binary arithmetic
+with no carry. <!-- Footer --></P>
+
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

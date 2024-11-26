@@ -1,0 +1,279 @@
+Alors comme promis, ma solution rapidos :p
+Je préviens tout de suite, je n'ai pas étudié l'algo au complet, juste ce qui 
+m'interessait pour venir à bout du truc, donc pas grand chose en fait :)
+
+Donc re-situons un peu les choses : lorsque j'ai téléchargé le zip du crackme, 
+il n'y avait dedans que cracklume.exe, le 2eme fichier qui s'y trouve actuellement
+n'était pas présent.
+Quand j'exécutais le crackme en dehors du debugger, il m'affichait le message 
+d'entrée avec la demande de pass, ne me laissait pas la main pour taper la moindre 
+chose puis m'affichait le message BadBoy.
+
+Intuitivement, je me suis dit qu'il allait forcément chercher le serial ailleurs 
+(je rappelle que je n'étais pas encore au courant que DooMeeR avait fait une boulette
+et qu'il avait oublié le fameux fichier).
+
+Je pars donc à la recherche d'un ReadFile, et je pose des bp sur l'appel à ces 
+fonctions. Je trace un peu et je m'aperçois vite qu'il veut un "youplaboum.doom",
+donc pas de problème je lui crée ça en vitesse, et puis d'emblée je lui colle dedans
+une pauvre string "abcde" :)
+
+Je continue à tracer et je vois une routine où il commence à piocher dans le fameux
+fichier et qui se présente ainsi :
+
+
+00412DC1  |.  6A 00         PUSH 0                                   ; /Arg2 = 00000000
+00412DC3  |.  6A 00         PUSH 0                                   ; |Arg1 = 00000000
+00412DC5  |.  8BC6          MOV EAX,ESI                              ; |
+00412DC7  |.  E8 5CEBFFFF   CALL Cracklum.00411928                   ; \Cracklum.00411928
+00412DCC  |.  E9 5D010000   JMP Cracklum.00412F2E
+00412DD1  |>  BA 7C584100   /MOV EDX,Cracklum.0041587C
+00412DD6  |.  B9 01000000   |MOV ECX,1
+00412DDB  |.  8BC6          |MOV EAX,ESI
+00412DDD  |.  8B38          |MOV EDI,DWORD PTR DS:[EAX]
+00412DDF  |.  FF57 0C       |CALL DWORD PTR DS:[EDI+C]
+00412DE2  |.  A0 7C584100   |MOV AL,BYTE PTR DS:[41587C]             ;  recup 1er char
+00412DE7  |.  04 9F         |ADD AL,9F                               ;  Switch (cases FFFFFD23..FFFFFF64)
+00412DE9  |.  2C 04         |SUB AL,4
+00412DEB  |.  73 7B         |JNB SHORT Cracklum.00412E68             ;  jmp
+00412DED  |.  BA 7C584100   |MOV EDX,Cracklum.0041587C               ;  Cases FFFFFF61,FFFFFF62,FFFFFF63,FFFFFF64 of switch 00412DE7
+00412DF2  |.  B9 01000000   |MOV ECX,1
+00412DF7  |.  8BC6          |MOV EAX,ESI
+00412DF9  |.  8B38          |MOV EDI,DWORD PTR DS:[EAX]
+00412DFB  |.  FF57 0C       |CALL DWORD PTR DS:[EDI+C]
+00412DFE  |.  803D 7C584100>|CMP BYTE PTR DS:[41587C],31             ;  teste si 2eme char = 31h
+00412E05  |.  75 25         |JNZ SHORT Cracklum.00412E2C
+00412E07  |.  BA 84584100   |MOV EDX,Cracklum.00415884
+00412E0C  |.  A1 B4444100   |MOV EAX,DWORD PTR DS:[4144B4]
+00412E11  |.  B9 C8000000   |MOV ECX,0C8
+00412E16  |.  E8 4500FFFF   |CALL Cracklum.00402E60
+00412E1B  |.  A1 B4444100   |MOV EAX,DWORD PTR DS:[4144B4]
+00412E20  |.  E8 4700FFFF   |CALL Cracklum.00402E6C
+00412E25  |.  E8 32F9FEFF   |CALL Cracklum.0040275C
+00412E2A  |.  EB 22         |JMP SHORT Cracklum.00412E4E
+00412E2C  |>  803D 7C584100>|CMP BYTE PTR DS:[41587C],32             ;  teste si 2eme char = 32h
+00412E33  |.  75 19         |JNZ SHORT Cracklum.00412E4E
+00412E35  |.  A1 24444100   |MOV EAX,DWORD PTR DS:[414424]
+00412E3A  |.  BA 84584100   |MOV EDX,Cracklum.00415884
+00412E3F  |.  E8 4002FFFF   |CALL Cracklum.00403084
+00412E44  |.  E8 4702FFFF   |CALL Cracklum.00403090
+00412E49  |.  E8 0EF9FEFF   |CALL Cracklum.0040275C
+00412E4E  |>  803D 7C584100>|CMP BYTE PTR DS:[41587C],33             ;  teste si 2eme char = 33h
+00412E55  |.  0F85 D3000000 |JNZ Cracklum.00412F2E
+00412E5B  |.  84DB          |TEST BL,BL
+00412E5D  |.  0F84 F5000000 |JE Cracklum.00412F58
+00412E63  |.  E9 C6000000   |JMP Cracklum.00412F2E
+00412E68  |>  A0 7C584100   |MOV AL,BYTE PTR DS:[41587C]
+00412E6D  |.  04 9B         |ADD AL,9B
+00412E6F  |.  2C 04         |SUB AL,4
+00412E71  |.  73 16         |JNB SHORT Cracklum.00412E89
+00412E73  |.  BA 80584100   |MOV EDX,Cracklum.00415880               ;  Cases FFFFFECA,FFFFFECB,FFFFFECC,FFFFFECD of switch 00412DE7
+00412E78  |.  B9 04000000   |MOV ECX,4
+00412E7D  |.  8BC6          |MOV EAX,ESI
+00412E7F  |.  8B38          |MOV EDI,DWORD PTR DS:[EAX]
+00412E81  |.  FF57 0C       |CALL DWORD PTR DS:[EDI+C]
+00412E84  |.  E9 A5000000   |JMP Cracklum.00412F2E
+00412E89  |>  A0 7C584100   |MOV AL,BYTE PTR DS:[41587C]
+00412E8E  |.  04 97         |ADD AL,97
+00412E90  |.  2C 04         |SUB AL,4
+00412E92  |.  73 2A         |JNB SHORT Cracklum.00412EBE
+00412E94  |.  BA 50594100   |MOV EDX,Cracklum.00415950               ;  Cases FFFFFE37,FFFFFE38,FFFFFE39,FFFFFE3A of switch 00412DE7
+00412E99  |.  B9 04000000   |MOV ECX,4
+00412E9E  |.  8BC6          |MOV EAX,ESI
+00412EA0  |.  8B38          |MOV EDI,DWORD PTR DS:[EAX]
+00412EA2  |.  FF57 0C       |CALL DWORD PTR DS:[EDI+C]
+00412EA5  |.  84DB          |TEST BL,BL
+00412EA7  |.  0F85 81000000 |JNZ Cracklum.00412F2E
+00412EAD  |.  A1 50594100   |MOV EAX,DWORD PTR DS:[415950]
+00412EB2  |.  99            |CDQ
+00412EB3  |.  52            |PUSH EDX                                ; /Arg2
+00412EB4  |.  50            |PUSH EAX                                ; |Arg1
+00412EB5  |.  8BC6          |MOV EAX,ESI                             ; |
+00412EB7  |.  E8 6CEAFFFF   |CALL Cracklum.00411928                  ; \Cracklum.00411928
+00412EBC  |.  EB 70         |JMP SHORT Cracklum.00412F2E
+00412EBE  |>  A0 7C584100   |MOV AL,BYTE PTR DS:[41587C]
+00412EC3  |.  04 8D         |ADD AL,8D
+00412EC5  |.  2C 08         |SUB AL,8
+00412EC7  |.  73 3A         |JNB SHORT Cracklum.00412F03
+00412EC9  |.  BA 7C584100   |MOV EDX,Cracklum.0041587C               ;  Cases FFFFFDAE,FFFFFDAF,FFFFFDB0,FFFFFDB1,FFFFFDB2,FFFFFDB3,FFFFFDB4,FFFFFDB5 of switch 00412DE7
+00412ECE  |.  B9 01000000   |MOV ECX,1
+00412ED3  |.  8BC6          |MOV EAX,ESI
+00412ED5  |.  8B18          |MOV EBX,DWORD PTR DS:[EAX]
+00412ED7  |.  FF53 0C       |CALL DWORD PTR DS:[EBX+C]
+00412EDA  |.  BA 7D584100   |MOV EDX,Cracklum.0041587D
+00412EDF  |.  B9 01000000   |MOV ECX,1
+00412EE4  |.  8BC6          |MOV EAX,ESI
+00412EE6  |.  8B18          |MOV EBX,DWORD PTR DS:[EAX]
+00412EE8  |.  FF53 0C       |CALL DWORD PTR DS:[EBX+C]
+00412EEB  |.  33C0          |XOR EAX,EAX
+00412EED  |.  A0 7C584100   |MOV AL,BYTE PTR DS:[41587C]
+00412EF2  |.  8A80 84584100 |MOV AL,BYTE PTR DS:[EAX+415884]
+00412EF8  |.  3A05 7D584100 |CMP AL,BYTE PTR DS:[41587D]
+00412EFE  |.  0F94C3        |SETE BL
+00412F01  |.  EB 2B         |JMP SHORT Cracklum.00412F2E
+00412F03  |>  A0 7C584100   |MOV AL,BYTE PTR DS:[41587C]
+00412F08  |.  04 93         |ADD AL,93
+00412F0A  |.  2C 06         |SUB AL,6
+00412F0C  |.  73 4A         |JNB SHORT Cracklum.00412F58
+00412F0E  |.  BA 50594100   |MOV EDX,Cracklum.00415950               ;  Cases FFFFFD23,FFFFFD24,FFFFFD25,FFFFFD26,FFFFFD27,FFFFFD28 of switch 00412DE7
+00412F13  |.  B9 04000000   |MOV ECX,4
+00412F18  |.  8BC6          |MOV EAX,ESI
+00412F1A  |.  8B38          |MOV EDI,DWORD PTR DS:[EAX]
+00412F1C  |.  FF57 0C       |CALL DWORD PTR DS:[EDI+C]
+00412F1F  |.  A1 50594100   |MOV EAX,DWORD PTR DS:[415950]
+00412F24  |.  99            |CDQ
+00412F25  |.  52            |PUSH EDX                                ; /Arg2
+00412F26  |.  50            |PUSH EAX                                ; |Arg1
+00412F27  |.  8BC6          |MOV EAX,ESI                             ; |
+00412F29  |.  E8 FAE9FFFF   |CALL Cracklum.00411928                  ; \Cracklum.00411928
+00412F2E  |>  8BC6           MOV EAX,ESI
+00412F30  |.  8B10          |MOV EDX,DWORD PTR DS:[EAX]
+00412F32  |.  FF12          |CALL DWORD PTR DS:[EDX]
+00412F34  |.  52            |PUSH EDX
+00412F35  |.  50            |PUSH EAX
+00412F36  |.  8BC6          |MOV EAX,ESI
+00412F38  |.  E8 CBE9FFFF   |CALL Cracklum.00411908
+00412F3D  |.  3B5424 04     |CMP EDX,DWORD PTR SS:[ESP+4]
+00412F41  |.  75 0D         |JNZ SHORT Cracklum.00412F50
+00412F43  |.  3B0424        |CMP EAX,DWORD PTR SS:[ESP]
+00412F46  |.  5A            |POP EDX
+00412F47  |.  58            |POP EAX
+00412F48  |.^ 0F82 83FEFFFF |JB Cracklum.00412DD1
+00412F4E  |.  EB 08         |JMP SHORT Cracklum.00412F58
+00412F50  |>  5A            |POP EDX
+00412F51  |.  58            |POP EAX
+00412F52  |.^ 0F8C 79FEFFFF \JL Cracklum.00412DD1
+00412F58  |>  8BC6          MOV EAX,ESI                              ;  Default case of switch 00412DE7
+00412F5A  |.  E8 1106FFFF   CALL Cracklum.00403570
+00412F5F  |>  FF15 80584100 CALL DWORD PTR DS:[415880]               ;  en [415880], il fout 
+les 4 chars suivants dans le fichier (à l'envers -> forme adresse mémoire)
+
+
+En 00412DE2, je vois qu'il récupère mon "a" de ma string, et fout sa valeur hexa dans
+al. Ensuite il additionne 9Fh à la al, puis lui retranche 4, autrement dit, ce qui 
+revient simplement à additionner 9Bh à al. 
+A l'issue si al < 0, il va récupérer mon "b", va le comparer à 31h, si c'est pas égal
+il va ensuite le comparer à 32h et si c'est toujours pas égal va ensuite le comparer
+à 33h.
+Arrivée ici je me suis dit que j'allais voir ce qui se passait si al était >= 0 après 
+le 1er test.
+Déjà il fallait trouver une valeur pour que al soit >= 0.
+
+al correspond à une valeur sur 8 bits, en cas de dépassement, ça va déborder sur ah, 
+mais vu qu'on ne prend en compte que al les bits supérieurs seront ignorés.
+On comprend vite qu'il ne faut pas chercher à obtenir 0 après avoir additionné 9Bh à 
+la valeur hexa du caractère mais 100h (le 1 sera stocké dans ah donc ne sera donc pas 
+pris en compte et on aura bien 0 dans al).
+100h - 9Bh = 65h = "e"
+Donc si le 1er caractère dans le fichier est un "e" on aura al = 0, avec un "f" on 
+aura al = 1, etc
+
+Avec notre "e" du coup on jump en 00412E68 (JNB SHORT Cracklum.00412E68) et on y voit 
+alors qu'il reprend la valeur hexa de notre "e", lui additionne 9Bh puis lui soustrait 4 
+(en gros il lui additionne 97h quoi), et cette fois il jump en 00412E68 si al >= 0 
+(JNB SHORT Cracklum.00412E89). Avec mon "e" je ne jump pas vu que je récupère 
+97h + 65h = 0FCh, soit une valeur négative.
+Et je passe donc dans le call qui suit (CALL DWORD PTR DS:[EDI+C] ) puis je continue 
+dans le jump inconditionnel (JMP Cracklum.00412F2E).
+Je trace avec F8 telle la bourrine (je voulais vraiment voir à la base ce qui se 
+passait "en gros"), et je constate vite que je sors de la routine et je m'approche 
+de deux call :
+
+00412F5A  |.  E8 1106FFFF   CALL Cracklum.00403570
+00412F5F  |>  FF15 80584100 CALL DWORD PTR DS:[415880]  
+
+Je passe le 1er avec F8 et arrivée sur le 2eme je repère de suite un truc :
+en [415880] se trouve les valeurs hexa des 4 caractères qui suivent mon "e" dans le 
+fichier,mais à l'envers :p 
+En gros il fait un call à l'adresse représentée par les valeurs hexa accolées de 
+Char5Char4Char3Char2.
+
+Bon ben là y'a pas besoin de réfléchir longtemps, il faut mettre dans le fichier à 
+la suite de mon "e", l'adresse mémoire qui va correspondre au début de la fonction 
+qui va m'afficher le GoodBoy. Reste à la trouver :)
+
+Si on foire totalement dès le 1er caractère ce fameux call, nous amène ici (c'est la 
+fonction qui va nous afficher BadBoy)
+
+00412BC0   .  A1 24444100   MOV EAX,DWORD PTR DS:[414424]
+00412BC5   .  8B15 58594100 MOV EDX,DWORD PTR DS:[415958] ; offset string BadBoy
+00412BCB   .  E8 241AFFFF   CALL Cracklum.004045F4
+00412BD0   .  E8 BB04FFFF   CALL Cracklum.00403090
+00412BD5   .  E8 82FBFEFF   CALL Cracklum.0040275C
+00412BDA   .  A1 B4444100   MOV EAX,DWORD PTR DS:[4144B4]
+00412BDF   .  E8 8802FFFF   CALL Cracklum.00402E6C
+00412BE4   .  E8 73FBFEFF   CALL Cracklum.0040275C
+00412BE9   .  C3            RETN
+
+On voit que DS:[415958] contient l'offset de la string BadBoy. Allons jeter un oeil 
+dans le dump :
+
+
+00415954  10 0B 88 00  ; offset goodboy
+00415958  C4 0B 88 00  ; offset badboy
+0041595C  18 0C 88 00  ; offset message d'entree
+00415960  B0 0C 88 00  ; offset nom du fichier
+
+Après un petit follow dans le dump des valeurs pointées, on remarque vite qu'en 
+00415954, se trouve l'adresse du début de la string GoodBoy :
+
+00880B10  42 69 65 6E 76 65 6E 75 65 20 64 61 6E 73 20 6E  Bienvenue dans n
+00880B20  6F 74 72 65 20 6F 72 67 61 6E 69 73 61 74 69 6F  otre organisatio
+00880B30  6E 20 73 75 70 65 72 2D 73 65 63 72 65 74 65 20  n super-secrete
+00880B40  62 6C 61 62 6C 61 62 6C 61 20 65 74 63 21 20 54  blablabla etc! T
+00880B50  61 20 70 72 65 6D 69 65 72 65 20 6D 69 73 73 69  a premiere missi
+00880B60  6F 6E 20 73 65 72 61 20 64 65 20 72 65 64 69 67  on sera de redig
+00880B70  65 72 20 75 6E 20 74 75 74 20 70 6F 75 72 20 63  er un tut pour c
+00880B80  65 20 63 72 61 63 6B 6D 65 2E 20 53 69 20 62 69  e crackme. Si bi
+00880B90  65 6E 20 73 75 72 20 74 75 20 6C 65 20 76 61 75  en sur tu le vau
+00880BA0  78 2E 2E 2E 20 68 65 75 2E 2E 2E 20 76 65 75 78  x... heu... veux
+00880BB0  20 62 69 65 6E                                    bien
+
+Intuitivement de nouveau, je me dis que la fonction d'affichage du message GoodBoy 
+doit être similaire à celle qui affiche le BadBoy, sauf que 
+MOV EDX,DWORD PTR DS:[415958] devrait être remplacé par 
+MOV EDX,DWORD PTR DS:[00415954]
+
+Je me mets donc à chercher MOV EDX,DWORD PTR DS:[00415954] dans le listing asm 
+(Search for -> command) et Bingo j'arrive ici :
+
+00412B48  /$  A1 24444100   MOV EAX,DWORD PTR DS:[414424]
+00412B4D  |.  8B15 54594100 MOV EDX,DWORD PTR DS:[415954]            ;  GoodBoy
+00412B53  |.  E8 9C1AFFFF   CALL Cracklum.004045F4
+00412B58  |.  E8 3305FFFF   CALL Cracklum.00403090
+00412B5D  |.  E8 FAFBFEFF   CALL Cracklum.0040275C
+00412B62  |.  A1 B4444100   MOV EAX,DWORD PTR DS:[4144B4]
+00412B67  |.  E8 0003FFFF   CALL Cracklum.00402E6C
+00412B6C  |.  E8 EBFBFEFF   CALL Cracklum.0040275C
+00412B71  \.  C3            RETN
+
+Je décide alors de remplacer le "ebcde" contenu dans mon fichier par "eH+A.e" soit 
+en valeurs hexa : 65482B410065 (482B4100 étant l'adresse mémoire du début de la 
+fonction qui va afficher GoodBoy -> 00412B48 à l'endroit :p ). Le 65 final (qui 
+correspondait au "e" final de "abcde") est resté dans le fichier mais il n'est pas 
+nécessaire, et là Clap Clap Clap, apparemment on est entré dans l'organisation 
+super-secrète sans avoir besoin de mot de pass :>
+
+Je suis revenue sur la routine au-dessus, au niveau du 2eme check, (où il 
+additionnait le 1er char du fichier avec 97h), et comme je l'ai dit tout à l'heure on 
+récupérait 0FCh dans al avec "e", mais on a de la marge encore avant d'avoir al >= 0 :)
+Et pour le 1er check il fallait al >= 0 (l'inverse donc), mais là avec "e" on n'a 
+testé quand prenant al = 0.
+En fait les 2 checks restent valides si le 1er caractère dans le fichier est un "e", 
+un "f",un "g" ou un "h" :) Donc 4 possibilités pour le fichier avec 5 caractères 
+maxi :
+65482B4100
+66482B4100
+67482B4100
+68482B4100
+
+Voilou :)
+C'est incomplet étant donné que je n'ai pas entièrement expliqué/étudié la routine,
+que je n'ai pas non plus trouvé UN serial valide, mais que j'ai crée le fichier 
+youplaboum.doom (qui pour moi était absent quand j'ai téléchargé le crackme, je 
+le rappelle) afin qu'un mot de pass ne soit plus nécessaire.
+Ceci dit je sais pas si j'ai été super claire dans ma rédaction, je l'espère :|
+
+A+
+elooo.
+ 

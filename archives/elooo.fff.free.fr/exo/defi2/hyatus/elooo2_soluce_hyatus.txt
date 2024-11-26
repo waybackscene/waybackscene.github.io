@@ -1,0 +1,254 @@
+Ok c'est partie pour la soluce du crackme correspondant au defi 2 d'elooo
+Je precise que le travail s'est effectué sur ollydbg :
+
+
+1) Execution du binaire :
+
+Donc aprés avoir dl le crackme, le plus simple et de l'extraire sur votre table de travail :)
+On clique dessus, et la on observe une interface classique de la box à serial ;)
+
+Bon on va taper un serial bidon '1234' histoire de voir comment reagit la bete :p
+...Rien ne se passe, ok bon on va passer au debug ;)
+
+
+
+2) Penetrer dans les méandres du binaire avec OllyDbg :
+
+Ok donc on lance Olly...
+(remarquer l'intimité qui se crée avec notre outil préféré;))
+
+La premiére à chose à faire avant de se plonger dans le code est de rechercher
+les datas strings sous olly,
+il vous suffit de faire un clique droit > search for > All Referenced Text String
+
+Voila le resultat >>
+
+Text strings referenced in elooo2:.text
+Address    Disassembly                               Text string
+00401000   PUSH 0                                    (Initial CPU selection)
+004010D9   PUSH elooo2.0040303B                      ASCII "`k=p(`w6jRan``PNVM$+QjQ<%,grai"
+004010EE   PUSH elooo2.0040305D                      ASCII "... "
+004010F3   PUSH elooo2.0040305A                      ASCII "OK"
+
+Bon trés bien le 1er correspond à l'initialisation du CPU
+ensuite on observe une chaine de caractére étrange :p
+Enfin les 2 derniéres adresses semblent correspondre au message synonyme de VICTOIRE :p
+
+Rendons nous sur les lieux proprement dit, Double cliquez sur l'une des 2 dernieres lignes...
+Vous vous retrouvez projeter à l'endroit du code qui correspond à la ligne.
+
+Voici le resultat >>
+
+004010EC  |. 6A 00          PUSH 0                                   ; /Style = MB_OK|MB_APPLMODAL
+004010EE  |. 68 5D304000    PUSH elooo2.0040305D                     ; |Title = "... "
+004010F3  |. 68 5A304000    PUSH elooo2.0040305A                     ; |Text = "OK"
+004010F8  |. FF75 08        PUSH DWORD PTR SS:[EBP+8]                ; |hOwner
+004010FB  |. E8 4C000000    CALL <JMP.&user32.MessageBoxA>           ; \MessageBoxA
+
+Ok on constate l'appel à la routine MessageBoxA, c'est bien la BOX qui confirmera la validation du challenge.
+Regardons ce qu'il se passe tout juste au dessus :)
+
+00401114  |. 75 14          JNZ SHORT elooo2.0040112A
+
+Oh Tres interessant, un saut conditionnel, tiens tiens :p
+Celui si nous dit que si pas egal à 0 on saute à l'offset 0040112A qui correspond à une porte de sortie --->[]
+Or nous ce qui nous interesse, c'est que le code continue gentiment sa route afin d'executer l'appel situé juste en dessous
+et qui correspond au 'OK'.
+Donc quelque soit l'Operation effectué plus en amont, le resultat doit être egale à 0.
+
+Observons ce qui se passe justement au dessus du JNZ >>
+
+004010D9  |. 68 3B304000    PUSH elooo2.0040303B                     ; /String2 = "`k=p(`w6jRan``PNVM$+QjQ<%,grai"
+004010DE  |. 68 00304000    PUSH elooo2.00403000                     ; |String1 = ""
+004010E3  |. E8 82000000    CALL <JMP.&kernel32.lstrcmpA>            ; \lstrcmpA
+004010E8  |. 85C0           TEST EAX,EAX
+
+
+
+Oh un appel à la fonction lstrcmpA...
+
+Petit rappel>>
+Son rôle est de comparer 2 chaines de caractéres, à noter qu'a l'instar de sa petite soeur "lstrcmpi", la comparaison
+prend en compte la casse :p
+
+Donc reprenons, on a vu que le JNZ vu precedemment était lié à cette appel, ce dernier correspondant
+à la comparaison entre la string2 et la string1, qui est ici encore vide...
+La string 2 serait donc le resultat attendu par le crackme !!!
+En effet pour que le message 'OK' apparaisse les 2 strings doivent être egales, soit donc que notre
+serial ou plutot le traitement infligé à notre serial soit egal à "`k=p(`w6jRan``PNVM$+QjQ<%,grai"
+
+Ok bon trés bien essayons de forcer le binaire à accepter un serial afin de determiner
+les differentes étapes qui nous ameneront à un resultat similaire à la string2 :)
+
+
+Allons directement à l'endroit qui nous interesse c'est à dire le moment ou notre serial
+va être pushé sur la pile pour ensuite être manipulé par les instructions
+de notre el diablo préféré ooole :p
+
+004010A7  |. 6A 2D          PUSH 2D                                  ; /Count = 2D (45.)
+004010A9  |. 68 00304000    PUSH elooo2.00403000                     ; |Buffer = elooo2.00403000
+004010AE  |. 68 EB030000    PUSH 3EB                                 ; |ControlID = 3EB (1003.)
+004010B3  |. FF75 08        PUSH DWORD PTR SS:[EBP+8]                ; |hWnd
+004010B6  |. E8 85000000    CALL <JMP.&user32.GetDlgItemTextA>       ; \GetDlgItemTextA
+
+ok on voit clairement l'appel à GetDlgItemTextA, cette fonction
+permet de récuperer un texte que vous avez tapé dans une boite de dialogue...
+C'est la routine qui nous interesse.
+
+Posons un break sur le CALL avec F2 pour Olly huuuuu, lorsque l'on va effectué un run,
+olly va s'arreter sur le break, c'est à dire pour nous juste avant la recuperation du serial,
+et sa sauvegarde sur la pile ---> PUSH elooo2.00403000
+
+Ok on run avec F9, olly stop sur le break, la boite de dialogue arrive on tape notre serial, toujours 1234,
+on test, yeaaaaaaah notre serial a bien été pris en compte :p
+
+C'est bon on va maintenant pouvoir analyser le doux chatiment que lui a prévu la diabolique elooo ;)
+
+
+
+3) Analyse des intructions :
+
+On continue donc notre analyse mais maintenant on va tracer pas à pas
+en utilisant la touche F7 avec olly ;)
+
+004010BB  |. 33F6           XOR ESI,ESI
+004010BD  |. 8D05 00304000  LEA EAX,DWORD PTR DS:[403000]
+
+Ok donc ici en gros on prepare le terrain ;)
+C'est ici que notre serial va être chargé dans le registre EAX pour y subir
+son chatiment :)
+
+On continue le tracage est on arrive sur la boucle suivante >>
+
+004010C3  |> 83FE 08        /CMP ESI,8                         <---- ESI est comparé à la valeur 8
+004010C6  |. 7C 02          |JL SHORT elooo2.004010CA          <------ tant que ESI < 8 on jump (JL) en 4010CA
+004010C8  |. 33F6           |XOR ESI,ESI                       <------ Lorsque ESI est >= 8, on le remet à niveau
+004010CA  |> 8A96 32304000  |MOV DL,BYTE PTR DS:[ESI+403032]   <---- Tres interessant     
+004010D0  |. 3010           |XOR BYTE PTR DS:[EAX],DL          <---- Tres Tres interessant 
+004010D2  |. 46             |INC ESI                           <---- ESI est incrementé de 1
+004010D3  |. 40             |INC EAX                           <---- EAX est incrementé de 1
+004010D4  |. 8038 00        |CMP BYTE PTR DS:[EAX],0           <---- Tant qu'il reste des caractéres on continue ;)
+004010D7  |.^75 EA          \JNZ SHORT elooo2.004010C3
+
+
+Expliquons de facon plus precise les 2 instructions qui me semblent 'tres interessantes' >>
+
+*** MOV DL,BYTE PTR DS:[ESI+403032]
+
+Petit rappel
+>>DL correspond à l'octet de poid faible du registre EDX c'est à dire pour nous celui situé à droite :)
+
+Donc ici la valeur située à l'adresse ESI+403032 va être deplacé vers edx et precisemment vers DL.
+Interessons nous de suite à cette adresse ESI+403032 -->>
+
+-->>Pour cela on va s'aider du dump d'olly, lorsque vous arrivez à la hauteur de cette instruction,
+faites un clic droit > Follow in Dump > Selection
+Vous arrivez alors à l'offset qui nous interesse.
+
+Avant la boucle l'ESI se trouvant à 0, DL (le registre de bits faible d'EDX) va donc se voir affecter la valeur situé
+à 403032 egale à "03", continuons, au 2éme passage rappellons que l'ESI a été incrementé de 1, sa valeur est
+donc maintenant à l'offset 403032+1 soit 403033 qui correspond à "07"...
+...au 8éme passage l'ESI vaut 7, DL va donc
+prendre la valeur correspondant à l'adresse 7+403032 soit 403039 -> "01"
+Au 9éme passage, l'ESI sera egal à 8 BIP BIP ! 
+Souvenez vous que à chaque passage le registre ESI est comparer à cette valeur, il va donc 
+être remis à 0 ;)
+On repart donc à l'offset 00403032, c'est à dire que DL va reprendre la 1ere valeur :)
+
+Il serait judicieux de penser que ce sont les 8 valeurs qui seront utilisés afin de modifier la valeur
+de votre serial de depart...mmmmmmm 
+
+***XOR BYTE PTR DS:[EAX],DL
+
+La voila la veritable instruction maîtresse du crackme, le fameux XOR
+
+Petit rappel
+>>L'instruction XOR (OU Exclusif) met le bit du résultat à 1 si un des deux bits
+de même poids de la source et de la destination est égal à 1 (mais pas les deux),
+dans les autres cas il le met à zéro...
+
+En d'autres termes les valeurs que prend DL à chaque passage dans la boucle vont être
+affecté un par un à eax sur les bits de meme poid je vous le rappelle.
+Tiens c'est marrant car EAX est lui aussi incrementé de 1 à chaque passage :p
+
+Avant la boucle, 004010BD  |. 8D05 00304000  LEA EAX,DWORD PTR DS:[403000]
+La valeur d'EAX est celle situé à 403000 c'est à dire notre serial du depart '1234'
+Vous pouvez effectivement verifier par vous meme dasn le dump, votre serial s'y trouve bien
+sous sa forme hexa : 31 32 33 34 :))
+
+Ok au 1er passage EAX correspond à la valeur située à l'offset 403000 soit "31", DL lui vaut "03"
+
+Ok mais n'oubliez pas que le XOR s'effectue sur les bits de meme poids, l'octet qui nous interesse
+est celui de droite(à poids faible...)
+Le XOR va donc agir sur le 1 de "31" et le 3 de "03" :p
+Soit en binaire :
+
+00000001 <--- binaire de 1
+00000011 <--- binaire de 3
+00000010 <--- binaire de 2
+
+Vous l'aurez compris le resultat du XOR au 1er passage sera de 00000010 soit 2, valeur qui sera affectée
+à l'offset 00403000 qui correspond à la 1ére valeur du serial bidon :p
+
+Notre 1 de depart a été changé en 2 ;)
+
+Au 2éme passage, l'EAX s'est incrémenté de 1, la valeur qui lui est affecté à cette offset est
+de 2 (soit 32 dans le Dump), DL lui vaut 07
+Soit en binaire :
+
+00000010
+00000111
+00000101 <--- binaire de 5
+
+Notre valeur situé à l'offset 403000+1 va donc être modifié de 2 à 5 :)
+
+Regarder votre string1 qui se modifie, c'est cette derniére qui sera comparé à la string2 ;)
+Vous allez me dire trés bien mais on est loin de la chaine de caractére qui nous faut la :p
+
+Oui bien sur mais vous avez compris le mécanisme qui conduit à la modification de votre entrée
+et en plus vous avez le resultat !! (cf string 2)
+
+Il suffit donc de prendre chaque caractére de la string2 est de lui faire faire le chemin inverse...
+OUai c'est une solution mais je ne sais pas si vous avez mattez la taille de cette chaine !!!!
+30 caractéres !!!!
+C'est bien trop fastidieux, on va pas se faire chier ;)
+
+
+Oui il y a une chose que j'ai omis de vous expliquer precedemment, le XOR etant un OU exclusif le resultat
+de n'importe quelle chaine de caractere aprés modification pourra être retrouvé en réalisant 
+avec les memes operandes un autre xor
+  
+En d'autres termes si on applique le XOR à l'ensemble de la chaine de caractére situé en string2,
+nous aurons comme resultat la valeur du véritable SERIAL !!!
+
+Il vous suffira donc de copier/coller la string2 dans votre boite à serial, de runner jusqu'a modification
+des 30 caractéres, le resultat sera votre SERIAL !!!
+
+Voici ;>
+
+`k=p(`w6jRan``PNVM$+QjQ<%,grai <----xorisation par les mêmes operandes------> cl?v!es7iUchieTOUJ&-XoU=&+ethl
+
+       [String2]                                                                     [string1]
+
+
+
+Voila la soluce du defi correspondant au crackme n°2 s'acheve pour ma part,
+j'espére que sa lecture vous a été aussi agréable que pour moi à la rediger :))
+
+hyatus
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,280 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!-- TlJHdR Ver 3.12 1/8/97 -->
+<LINK REL="home" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/index-3.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/index.htm">
+<LINK REL="toc" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/F_ToC.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_ToC.html">
+<LINK REV="made" HREF="mailto:filipg@repairfaq.org">
+<META HTTP-EQUIV="Reply-to" CONTENT="filipg@repairfaq.org (Filip Gieszczykiewicz)">
+<meta name="description" content="HTML-ized FAQs that I need to link to. LOTS of electronics/life related FAQs.">
+<meta name="keywords" content="AD4PC CPM CallerID ChangeLog DSO DTMF Dating FD_steppers FM10 FM10_more Hardware Homebuilt IDE-tech LCD_HD44780 LCD_menu LCD_progr LINK_IN MIDI MacroVision OnHook PCjr Pads_LOG_Man Pads_PCB_Man Phrack_Mag Running SCSI SMPTE_faq Tech_LCD Theory_LCD UPS Woman_speak archivers cardreader crc_uP crc ibmkey mail_order meeting midi2 pal_gal pixcon quiz touchscreen Keyboard MODEMS PARALLEL Parallel The_Serial_Port gameport isabus rs-232 rs232c PC IBMPC IBM Port 68hc11 8051 ATA COP8 ELE I2C PIC ST6 8085 8080 8088 8086 6811 Parallax MicroChip Programmer GAL PAL PLD">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Fil's FAQ-Link-In Corner: CRC algorithms</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/Background.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Background.gif">
+
+<H1>A PAINLESS GUIDE TO CRC ERROR DETECTION ALGORITHMS</H1>
+<P>Contents:</P>
+
+<UL>
+<!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI><A HREF="F_crc_v35.html#CRCV_001">Chapter 17) A Catalog of Parameter Sets for Standards</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_002">Chapter 18) An Implementation of the Model Algorithm</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_003">Chapter 19) Roll Your Own Table-Driven Implementation</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_004">Chapter 20) Generating A Lookup Table</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_005">Chapter 21) Summary</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_006">Chapter 22) Corrections</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_007">Chapter 23) Glossary</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_008">Chapter 24) References</A>
+	<LI><A HREF="F_crc_v35.html#CRCV_009">Chapter 25) References I Have Detected But Haven't Yet Sighted</A> <!-- TlJHdR AutoNext_Back 1.05 -->
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_001"></A>Chapter 17) A Catalog of Parameter Sets for Standards</H1>
+<P>At this point, I would like to give a list of the specifications for commonly used CRC algorithms. However,
+most of the algorithms that I have come into contact with so far are specified in such a vague way that this has
+not been possible. What I can provide is a list of polys for various CRC standards I have heard of:</P>
+<P>
+<PRE> X25   standard : 1021       [CRC-CCITT, ADCCP, SDLC/HDLC]
+ X25   reversed : 0811
+
+ CRC16 standard : 8005
+ CRC16 reversed : 4003       [LHA]
+
+ CRC32          : 04C11DB7   [PKZIP, AUTODIN II, Ethernet, FDDI]
+</PRE>
+<P>I would be interested in hearing from anyone out there who can tie down the complete set of model parameters
+for any of these standards.</P>
+<P>However, a program that was kicking around seemed to imply the following specifications. Can anyone confirm
+or deny them (or provide the check values (which I couldn't be bothered coding up and calculating)).</P>
+<P>
+<PRE>   Name   : &quot;CRC-16/CITT&quot;
+   Width  : 16
+   Poly   : 1021
+   Init   : FFFF
+   RefIn  : False
+   RefOut : False
+   XorOut : 0000
+   Check  : ?
+
+   Name   : &quot;XMODEM&quot;
+   Width  : 16
+   Poly   : 8408
+   Init   : 0000
+   RefIn  : True
+   RefOut : True
+   XorOut : 0000
+   Check  : ?
+
+   Name   : &quot;ARC&quot;
+   Width  : 16
+   Poly   : 8005
+   Init   : 0000
+   RefIn  : True
+   RefOut : True
+   XorOut : 0000
+   Check  : ?
+</PRE>
+<P>Here is the specification for the CRC-32 algorithm which is reportedly used in PKZip, AUTODIN II, Ethernet,
+and FDDI.</P>
+<P>
+<PRE>   Name   : &quot;CRC-32&quot;
+   Width  : 32
+   Poly   : 04C11DB7
+   Init   : FFFFFFFF
+   RefIn  : True
+   RefOut : True
+   XorOut : FFFFFFFF
+   Check  : CBF43926
+</PRE>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_002"></A>Chapter 18) An Implementation of the Model Algorithm</H1>
+<P>Here is an implementation of the model algorithm in the C programming language. The implementation consists
+of a header file (.h) and an implementation file (.c). If you're reading this document in a sequential scroller,
+you can skip this code by searching for the string &quot;Roll Your Own&quot;.</P>
+<P>To ensure that the following code is working, configure it for the CRC-16 and CRC-32 algorithms given above
+and ensure that they produce the specified &quot;check&quot; checksum when fed the test string &quot;123456789&quot;
+(see earlier).</P>
+<P>Link to C program:</P>
+
+<UL>
+	<LI><A HREF="crcmodel.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/crcmodel.htm">crcmodel.h</A> (Header File)
+	(0KB) <!-- TLJ AutoSize 2.00 -->
+	<LI><A HREF="crcmodel_c.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/crcmodel_c.htm">crcmodel.c</A> (C src) (0KB)
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_003"></A>Chapter 19) Roll Your Own Table-Driven Implementation</H1>
+<P>Despite all the fuss I've made about understanding and defining CRC algorithms, the mechanics of their high-speed
+implementation remains trivial. There are really only two forms: normal and reflected. Normal shifts to the left
+and covers the case of algorithms with Refin=FALSE and Refot=FALSE. Reflected shifts to the right and covers algorithms
+with both those parameters true. (If you want one parameter true and the other false, you'll have to figure it
+out for yourself!) The polynomial is embedded in the lookup table (to be discussed). The other parameters, Init
+and XorOt can be coded as macros. Here is the 32-bit normal form (the 16-bit form is similar).</P>
+<P>
+<PRE> unsigned long crc_normal ();
+ unsigned long crc_normal (blk_adr,blk_len)
+ unsigned char *blk_adr;
+ unsigned long  blk_len;
+ {
+  unsigned long crc = INIT;
+  while (blk_len--)
+     crc = crctable[((crc&gt;&gt;24) ^ *blk_adr++) &amp; 0xFFL] ^ (crc &lt;&lt; 8);
+  return crc ^ XOROT;
+ }
+</PRE>
+<P>Here is the reflected form:</P>
+<P>
+<PRE> unsigned long crc_reflected ();
+ unsigned long crc_reflected (blk_adr,blk_len)
+ unsigned char *blk_adr;
+ unsigned long  blk_len;
+ {
+  unsigned long crc = INIT_REFLECTED;
+  while (blk_len--)
+     crc = crctable[(crc ^ *blk_adr++) &amp; 0xFFL] ^ (crc &gt;&gt; 8));
+  return crc ^ XOROT;
+ }
+</PRE>
+<P>Note: I have carefully checked the above two code fragments, but I haven't actually compiled or tested them.
+This shouldn't matter to you, as, no matter WHAT you code, you will always be able to tell if you have got it right
+by running whatever you have created against the reference model given earlier. The code fragments above are really
+just a rough guide. The reference model is the definitive guide.</P>
+<P>Note: If you don't care much about speed, just use the reference model code!</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_004"></A>Chapter 20) Generating A Lookup Table</H1>
+<P>The only component missing from the normal and reversed code fragments in the previous section is the lookup
+table. The lookup table can be computed at run time using the cm_tab function of the model package given earlier,
+or can be pre-computed and inserted into the C program. In either case, it should be noted that the lookup table
+depends only on the POLY and RefIn (and RefOt) parameters. Basically, the polynomial determines the table, but
+you can generate a reflected table too if you want to use the reflected form above.</P>
+<P>The following program generates any desired 16-bit or 32-bit lookup table. Skip to the word &quot;Summary&quot;
+if you want to skip over this code.</P>
+<P>Link to C program:</P>
+
+<UL>
+	<LI><A HREF="crctable_c.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/crctable_c.htm">crctable.c</A> (0KB)
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_005"></A>Chapter 21) Summary</H1>
+<P>This document has provided a detailed explanation of CRC algorithms explaining their theory and stepping through
+increasingly sophisticated implementations ranging from simple bit shifting through to byte-at-a-time table-driven
+implementations. The various implementations of different CRC algorithms that make them confusing to deal with
+have been explained. A parameterized model algorithm has been described that can be used to precisely define a
+particular CRC algorithm, and a reference implementation provided. Finally, a program to generate CRC tables has
+been provided.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_006"></A>Chapter 22) Corrections</H1>
+<P>If you think that any part of this document is unclear or incorrect, or have any other information, or suggestions
+on how this document could be improved, please context the author. In particular, I would like to hear from anyone
+who can provide Rocksoft(tm) Model CRC Algorithm parameters for standard algorithms out there.</P>
+<P>E-Mail me, Ross N. Williams, at <A HREF="mailto:ross@guest.adelaide.edu.au">ross@guest.adelaide.edu.au</A></P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_007"></A>Chapter 23) Glossary</H1>
+
+<DL>
+	<DT><STRONG>CHECKSUM</STRONG></DT>
+	<DD>A number that has been calculated as a function of some message. The literal interpretation of this word &quot;Check-Sum&quot;
+	indicates that the function should involve simply adding up the bytes in the message. Perhaps this was what early
+	checksums were. Today, however, although more sophisticated formulae are used, the term &quot;checksum&quot; is
+	still used.
+	<DT><STRONG>CRC</STRONG></DT>
+	<DD>This stands for &quot;Cyclic Redundancy Code&quot;. Whereas the term &quot;checksum&quot; seems to be used
+	to refer to any non-cryptographic checking information unit, the term &quot;CRC&quot; seems to be reserved only
+	for algorithms that are based on the &quot;polynomial&quot; division idea.
+	<DT><STRONG>G</STRONG></DT>
+	<DD>This symbol is used in this document to represent the Poly.
+	<DT><STRONG>MESSAGE</STRONG></DT>
+	<DD>The input data being checksummed. This is usually structured as a sequence of bytes. Whether the top bit or
+	the bottom bit of each byte is treated as the most significant or least significant is a parameter of CRC algorithms.
+	<DT><STRONG>POLY</STRONG></DT>
+	<DD>This is my friendly term for the polynomial of a CRC.
+	<DT><STRONG>POLYNOMIAL</STRONG></DT>
+	<DD>The &quot;polynomial&quot; of a CRC algorithm is simply the divisor in the division implementing the CRC algorithm.
+	<DT><STRONG>REFLECT</STRONG></DT>
+	<DD>A binary number is reflected by swapping all of its bits around the central point. For example, 1101 is the
+	reflection of 1011.
+	<DT><STRONG>ROCKSOFT(tm) MODEL CRC ALGORITHM</STRONG></DT>
+	<DD>A parameterized algorithm whose purpose is to act as a solid reference for describing CRC algorithms. Typically
+	CRC algorithms are specified by quoting a polynomial. However, in order to construct a precise implementation,
+	one also needs to know initialization values and so on.
+	<DT><STRONG>WIDTH</STRONG></DT>
+	<DD>The width of a CRC algorithm is the width of its polynomical minus one. For example, if the polynomial is 11010,
+	the width would be 4 bits. The width is usually set to be a multiple of 8 bits.
+</DL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_008"></A>Chapter 24) References</H1>
+
+<UL>
+	<LI>[Griffiths87] Griffiths, G., Carlyle Stones, G., &quot;The Tea-Leaf Reader Algorithm: An Efficient Implementation
+	of CRC-16 and CRC-32&quot;, Communications of the ACM, 30(7), pp.617-620. Comment: This paper describes a high-speed
+	table-driven implementation of CRC algorithms. The technique seems to be a touch messy, and is superceded by the
+	Sarwete algorithm.
+	<LI>[Knuth81] Knuth, D.E., &quot;The Art of Computer Programming&quot;, Volume 2: Seminumerical Algorithms, Section
+	4.6.
+	<LI>[Nelson 91] Nelson, M., &quot;The Data Compression Book&quot;, M&amp;T Books, (501 Galveston Drive, Redwood
+	City, CA 94063), 1991, ISBN: 1-55851-214-4. <STRONG>Comment:</STRONG> If you want to see a real implementation
+	of a real 32-bit checksum algorithm, look on pages 440, and 446-448.
+	<LI>[Sarwate88] Sarwate, D.V., &quot;Computation of Cyclic Redundancy Checks via Table Look-Up&quot;, Communications
+	of the ACM, 31(8), pp.1008-1013. <STRONG>Comment:</STRONG> This paper describes a high-speed table-driven implementation
+	for CRC algorithms that is superior to the tea-leaf algorithm. Although this paper describes the technique used
+	by most modern CRC implementations, I found the appendix of this paper (where all the good stuff is) difficult
+	to understand.
+	<LI>[Tanenbaum81] Tanenbaum, A.S., &quot;Computer Networks&quot;, Prentice Hall, 1981, ISBN: 0-13-164699-0. Comment:
+	Section 3.5.3 on pages 128 to 132 provides a very clear description of CRC codes. However, it does not describe
+	table-driven implementation techniques.
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_009"></A>Chapter 25) References I Have Detected But Haven't Yet Sighted</H1>
+
+<UL>
+	<LI>Boudreau, Steen, &quot;Cyclic Redundancy Checking by Program,&quot; AFIPS Proceedings, Vol. 39, 1971.
+	<LI>Davies, Barber, &quot;Computer Networks and Their Protocols,&quot; J. Wiley &amp; Sons, 1979.
+	<LI>Higginson, Kirstein, &quot;On the Computation of Cyclic Redundancy Checks by Program,&quot; The Computer Journal
+	(British), Vol. 16, No. 1, Feb 1973.
+	<LI>McNamara, J. E., &quot;Technical Aspects of Data Communication,&quot; 2nd Edition, Digital Press, Bedford,
+	Massachusetts, 1982.
+	<LI>Marton and Frambs, &quot;A Cyclic Redundancy Checking (CRC) Algorithm,&quot; Honeywell Computer Journal, Vol.
+	5, No. 3, 1971.
+	<LI>Nelson M., &quot;File verification using CRC&quot;, Dr Dobbs Journal, May 1992, pp.64-67.
+	<LI>Ramabadran T.V., Gaitonde S.S., &quot;A tutorial on CRC computations&quot;, IEEE Micro, Aug 1988.
+	<LI>Schwaderer W.D., &quot;CRC Calculation&quot;, April 85 PC Tech Journal, pp.118-133.
+	<LI>Ward R.K, Tabandeh M., &quot;Error Correction and Detection, A Geometric Approach&quot; The Computer Journal,
+	Vol. 27, No. 3, 1984, pp.246-253.
+	<LI>Wecker, S., &quot;A Table-Lookup Algorithm for Software Computation of Cyclic Redundancy Check (CRC),&quot;
+	Digital Equipment Corporation memorandum, 1974.
+</UL>
+
+<!-- Footer -->
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

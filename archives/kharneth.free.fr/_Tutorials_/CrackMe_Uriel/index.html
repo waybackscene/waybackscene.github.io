@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!--	#04 		 										 	 //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>CrackMe_Uriel</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#FFFFFF;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+'img {  border-width:2;border-style:inset;border-color:#FFFFFF; }
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">CrackMe de Uriel<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- PEId<br>&nbsp;- OllyDbg<br>&nbsp;- Calculatrice<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant en Cracking<br>ayant des connaissances de base en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/CrackMe2.exe">CrackMe_Uriel</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<tr><td width="20%"><b>1 - PEId</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comme d'habitude, on commence par une analyse rapide avec <i>PeId</i> pour vérifier que le programme n'est pas compressé ou crypté. 
+Il ne l'est pas. PEId nous signale juste que c'est une application console.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On va donc le charger dans <i>OllyDbg</i>.
+</p></td></tr>
+
+<tr><td nowrap><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence par chercher des chaînes de caractères intéressantes et on voit "...Entrez le mot de passe..." et "Bonne reponse..." dans la liste des chaînes  référencées. On double-click sur la première et on arrive sur La routine! Tout ce qu'on a besoin de voir se touve dans ces quelques lignes:
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La fonction <i>printf</i> affiche le texte qui nous demande d'entrer un mot de passe. La fonction <i>scanf</i> récupère ce mot de passe sous forme d'entier, indiqué par le paramètre <i>"%d"</i>.
+ Ensuite, on a une boucle, en 0x00401312, qui doit effectuer des opérations sur le pass, puis une comparaison en 0x00401343 suivie d'un saut conditionnel qui nous envoie sur une fonction <i>printf</i> qui affiche "Mauvais pass".<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comme le code est clair et assez court, on va se le frapper en Dead Listing. <i>OllyDbg</i> n'est pas vraiment fait pour, mais je n'aime pas l'interface de W32Dasm ou de IDA. Je trouve le code beaucoup plus clair sous <i>OllyDbg</i> et puis je ne sais pas encore me servir correctement de IDA. On peut malgré tout insérer des commentaires facilement en double-clickant sur la ligne qu'on veut dans la zone commentaire (la plus à droite dans la fenêtre).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En fait, on va prendre chaque ligne en essayant de comprendre ce qu'elle fait. Pour que ce soit plus clair, on va noter en commentaire l'équivalent en langage C de chaque instruction importante. Au final, on aura un listing C qui devrait être assez proche du code original. Mais comment déterminer qu'une instruction est intéressante? Eh bien, il faut comprendre un minimum l'assembleur et le fonctionnement d'un programme. So, let's go!
+</p><img src="Captures/Olly02.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Les 2 premières lignes sauvegardent l'état de la pile et sont normalement présentes au début de chaque routine appellée par un <i>CALL</i>. Les 2 dernières instructions <i>LEAVE</i> et <i>RETN</i> restaurent l'état de la pile et continuent l'exécution du programme après le <i>CALL</i>. Ensuite, toutes les instructions du style <i>ADD ESP, XX</i> correspondent à des déplacements dans la pile et ne nous concernent pas.<br>
+</p><img src="Captures/Olly03.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On commence donc l'analyse à la 5<sup>ième</sup> instructions avec 3 initialisations de variable. C'est à dire que des valeurs sont placées en mémoire à une certaine adresse. On remarque que la 2<sup>ième</sup> valeur est utilisée comme compteur dans la boucle et que la 3<sup>ième</sup> valeur est utilisée dans l'instruction de comparaison. C'est surement la valeur finale que doit avoir notre mot de passe.<br>
+</p><img src="Captures/Olly04.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite vient un appel de la fonction <i>printf</i> qui prend comme argument la chaîne "Crackme pour info...", et va l'afficher dans la console.<br>
+</p><img src="Captures/Olly05.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une adresse est placée dans le registre EAX puis passée en paramètre à la fonction <i>scanf</i>. Le 2<sup>ième</sup> paramètre ("%d") indique que la valeur récupérée sera au format numérique entier. Cette fonction récupère les caractères saisis au clavier et les place dans une variable (<a href="http://www.cplusplus.com/ref/cstdio/scanf.html" target="blank">voir cours de C</a>). C'est à dire que le mot de passe que l'on va taper sera stocké à l'adresse [valeur de EBP - 14].<br>
+</p><img src="Captures/Olly06.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La 2<sup>ième</sup> variable déclarée ( j ) est placée dans EAX puis multipliée par la 1<sup>ère</sup> ( i ). On a donc l'opération EAX = 0 * 1 = 0. Le résultat est déplacé dans EDX puis notre mot de passe lui est ajouté. Attention, toutes les valeurs numériques sont exprimées en hexadécimal. Par exemple, si notre mot de passe est "123456", en hexadécimal, il devient 1E240 (noté 0x1E240 en C). A ce moment, EDX contient donc notre pass.<br>
+</p><img src="Captures/Olly07.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L'instruction suivante effectue en fait 2 opérations: ajouter 2 à la valeur contenue dans EDX (notre pass) et déplacer le résultat dans EAX. Ce nombre est ensuite écrit à l'adresse [EBP - 10] que l'on va définir comme étant la variable "temp".<br> 
+</p><img src="Captures/Olly08.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La 4<sup>ième</sup> instruction de cette partie (LEA ESI...) n'est jamais exécutée car les 2 sauts (JNZ et JMP) lui passe dessus, donc on s'en fout! Les 3 autres instructions servent à la gestion de la boucle. Une comparaison est faite entre la variable j et la valeur 3. Ce qui indique que la boucle sera exécutée 3 fois. Le saut du JNZ sera effectué jusqu'à ce que le compteur soit égal à 3. A ce moment, le JMP nous fera sortir de la boucle.<br>
+</p><img src="Captures/Olly09.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D'abord, notre variable temp est placée dans EAX pour lui ajouter 2. Ensuite, on place j dans EDX pour le multiplier par i. EDX est transféré dans ECX pour lui ajouter notre pass. On a donc EAX = temp + 2 et  ECX = pass + i * j. Ces 2 valeurs sont aditionnées, puis le résultat est placé dans EDX. La valeur finale est enfin copiée dans notre variable temp.<br>
+</p><img src="Captures/Olly10.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le compteur de la boucle, j, est incrémenté ainsi que la variable i. Ensuite, le JMP nous renvoit au début de la boucle pour une nouvelle itération.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici les opérations effectuées sur notre pass à ce stade:<br>
+<center>temp = pass + 0 * 1 + 2 + pass + 0 * 1 + 2.</center>  
+Les variables i et j étant incrémentées à chaque passage dans la boucle, nous ajouterons à la formule précédente, au second passage (i et j valant respectivement 1 et 2):
+<center>pass + 1 * 2 + 2</center>
+Puis au 3<sup>ième</sup> passage, avec i = 2 et j = 3
+<center>pass + 2 * 3 + 2</center>
+</p><img src="Captures/Olly11.gif" alt=""><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalement, le résultat de tous ces calculs est placé dans EAX pour être comparé à la valeur 0x1A05A88 déclarée en début de routine. Si ces 2 valeurs sont différentes, le JNZ saute sur la fonction printf qui affiche "Mauvais pass...", sinon la fonction printf affiche "Bonne reponse..." puis le JMP saute vers la fonction system qui permet au programme d'attendre que l'utilisateur appuie sur une touche avant de quitter.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant que l'on sait ce que fait le programme, nous allons reprendre les 3 formules pour les simplifier. Au final, on obtient la formule suivante:
+<br><br>
+<center>temp = pass + 0 * 1 + 2 + pass + 0 * 1 + 2 + pass + 1 * 2 + 2 + pass + 2 * 3 + 2</center><br>
+On peut simplifier de la façon suivante:<br>
+<br><center>0x1A05A88 = 4 * pass + 16</center><br>
+Donc on sort la calculatrice et on obtient le bon mot de passe! (0x1A05A88 = 27286152) <br>
+<br><center>pass = (27286152 - 16) / 4 = <b>6821534</b></center><br>
+</p>
+</td></tr>
+
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+All the children are insane<br>
+Waiting for the summer rain, yeah
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

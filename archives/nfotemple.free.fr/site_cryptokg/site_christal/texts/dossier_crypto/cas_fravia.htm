@@ -1,0 +1,398 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Template" CONTENT="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Forcement de Crypt-o-Text v1</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC" LINK="blue" VLINK="purple">
+
+<H1 ALIGN="CENTER"></H1>
+<H1 ALIGN="CENTER"><BR>
+<FONT COLOR="blue" FACE="Arial">Reverse de Crypt-o-Text v1.21 et v1.24</FONT></H1>
+<H2 ALIGN="CENTER"><FONT SIZE="4" COLOR="blue" FACE="Arial">Par</FONT></H2>
+<H2 ALIGN="CENTER"><FONT SIZE="4" COLOR="blue" FACE="Arial">CASIMIR</FONT></H2>
+<P><FONT SIZE="2" FACE="Arial">Extrait de la documentation de Savard Software: &quot;</FONT><I><FONT SIZE="2" FACE="Arial">En
+utilisant Crypt-o-Text, vous pouvez crypter votre message pour qu'il soit illisible... De plus, vous pouvez utiliser
+des mots de passe de telle sorte que le message ne puisse &ecirc;tre lu que par votre destinataire...</FONT></I><FONT
+SIZE="2" FACE="Arial">&quot;</FONT></P>
+<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">EN &Ecirc;TES-VOUS S&Ucirc;RS ? ? ?</FONT></B></P>
+<P><B><FONT FACE="Arial">Note :</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Le programme &eacute;tudi&eacute; dans ce fichier est COT.EXE v1.21 [349696, 09/10/96].
+Le m&eacute;canisme de chiffrage est EXACTEMENT LE M&Ecirc;ME dans la derni&egrave;re version (v1.24), la seule
+diff&eacute;rence est que la v1.21 accepte jusqu'&agrave; 16 caract&egrave;res pour les mots de passe, tandis que
+la v1.24 peut en accepter jusqu'&agrave; 45. MAIS cette diff&eacute;rence de longueur ne remet pas en cause le
+principe de chiffrage si vous employez une &quot;cracking approach&quot; pour le casser au lieu d'une strat&eacute;gie
+&quot;Brute-force&quot;, comme nous verrons.</FONT></P>
+<P><B><FONT FACE="Arial">Amusez-vous bien... Et UTILISEZ PGP!!!</FONT></B></P>
+<H2 ALIGN="CENTER"><FONT SIZE="4" FACE="Arial">Commen&ccedil;ons!</FONT></H2>
+<P><FONT SIZE="2" FACE="Arial">Lancez Winice &agrave; partit du DOS-prompt.<BR>
+Lancez COT, entrez un message et encryptez le avec par exemple: &quot;CASIMIR&quot; :-)</FONT><FONT SIZE="2">&nbsp;</FONT></P>
+<P><B><FONT FACE="Arial">1. O&ugrave; est mon ENTR&Eacute;E ?</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">D'habitude, pour d&eacute;couvrir ce qu'un programme fait avec mon entr&eacute;e
+(pwd, num&eacute;ro d'enregistrement... Ce que vous voulez), je mets un breakpoint (BPX) aux fonctions suivantes
+: GetDlgItemText, GetDlgItemInt... et j'ai atterri droit dans la routine de contr&ocirc;le de mon entr&eacute;e.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Essayez : vous d&eacute;couvrirez qu'ELLE NE FONCTIONNE PAS dans ce cas. Je n'ai
+toujours pas trouv&eacute; comment COT fait exactement pour saisir les entr&eacute;s. Aucune importance, car le
+programme beep stupidement quand l'entr&eacute;e est fausse, aussi ex&eacute;cutons les actions suivantes :</FONT></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Winice : BPX MESSAGEBEEP<BR>
+	COT : entrez &agrave; pwd faux <BR>
+	! Winice : F11 pour retourner &agrave; la fonction appelante</FONT></P>
+</BLOCKQUOTE>
+
+<P><B><FONT FACE="Arial">Note :</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">&quot;Le !&quot; utilis&eacute; comme pr&eacute;fixe signifie un break sec dans
+Winice quand, par exemple, un BPX a eu une touche. Aucun pr&eacute;fixe signifie que nous avons ouvert Winice en
+utilisant CTRL-D</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Notre position actuelle est maintenant (*) :</FONT></P>
+<PRE><B><FONT SIZE="2">CODE:OFFSET  0137:00434E22   JZ 00434E55               // 0 =&gt; good guy    
+        434E24   PUSH 10                              // bad guy, let's beep him
+        434E26   CALL USER32!MessageBeep             // code that triggered Winice 
+        434E2B * PUSH 00</FONT></B></PRE>
+<P><B><FONT FACE="Arial">2. V&eacute;rification de la longueur du mot de passe</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Jetons un regard dans le code (aux offsets un peu plus haut) et en mettant quelque
+BPX, nous trouvons ceci :</FONT></P>
+<PRE><B><FONT SIZE="2">0137:00434CAA * CMP EAX,[EBP-20]  // EAX=bogus pwd lenght, [EBP-20]=good pwd
+       434CAD   JNE 434E24                                          lenght (7)</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Nous savons maintenant quelle doit &ecirc;tre la longueur du mot de passe (si vous
+ne me croyez pas, essayez avec des pwd faux de tailles diverses)! Nous d&eacute;couvrirons plus tard &agrave; quel
+endroit il est cach&eacute; dans le fichier crypt&eacute;.</FONT></P>
+<P><B><FONT FACE="Arial">3. Damned, mais o&ugrave; est l'&Eacute;CHO ?</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Ne serait ce pas agr&eacute;able si COT ex&eacute;cutait les actions suivantes :</FONT></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">1-r&eacute;cup&egrave;re le pwd de l'utilisateur<BR>
+	2-encrypte le bon pwd stock&eacute; dans fichier crypt&eacute;<BR>
+	3-les comparent</FONT></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">Et dans ce cas, s'il y a comparaison, on devrait trouver l'&eacute;cho du bon pwd
+quelque part en m&eacute;moire... Donc trouvons o&ugrave; cette comparaison se fait.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Nous pouvons supposer que la comparaison a lieu entre CS:434CAD et CS:434E22.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">En cherchant un peu, la s&eacute;quence CMP se montre dans toute sa Gloire :<BR>
+( Entrez &quot;1212121&quot; comme faux password)</FONT></P>
+<PRE><B><FONT SIZE="2"> 0137:00434E17   MOV EAX,[EBP-34]  -&gt; 31.32.31.32.31.32.31 (&quot;1212121&quot;)
+        434E1A   MOV EDX,[EBP-38]  -&gt; D2.54.D1.A5.C2.7A.26
+        434E1D   CALL 00403700    // trace it 
+        434E22   JZ 00434E55      // 0 =&gt; good guy      </FONT></B></PRE>
+<PRE><B><FONT SIZE="2">        0137:00403700   PUSH BPX 
+               .               .
+        403729   MOV ECX,[ESI]   -&gt; 31.32.31.32.31.32.31 (&quot;1212121&quot;)
+        40372B   MOV EBX,[EDI]   -&gt; D2.54.D1.A5.C2.7A.26 // funny string
+        40372D   CMP ECX,EBX</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Oh mon Dieu! Il n'y a AUCUN &eacute;cho du bon pwd en m&eacute;moire. Au lieu de
+&quot;CASIMIR&quot;, nous obtenons cette dr&ocirc;le de s&eacute;rie : D2.54.D1.A5.C2.7A.26. Mais si nous entrons
+un bon pwd, nous obtenons 43.41.53.49.4D.49.52 (&quot;CASIMIR&quot;) au lieu de cette </FONT><B><FONT SIZE="2"
+FACE="Arial">funny_string</FONT></B><FONT SIZE="2" FACE="Arial"> sans signification. Il me semble que l'auteur
+de COT n'a pas voulu que le bon pwd soit encrypt&eacute; lors de l'entr&eacute;e d'un faux pwd, cela aurait &eacute;t&eacute;
+une sacr&eacute; br&egrave;che dans leur syst&egrave;me de s&eacute;curit&eacute; (et je ne serai pas en train
+d'&eacute;crire ce texte &agrave; trois heures du matin).</FONT></P>
+<P><B><FONT FACE="Arial">4. D'o&ugrave; cette dr&ocirc;le de string (funny_string ) peut elle venir?</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">C'est la question...</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">En mettant des douzaines de BPRS, je d&eacute;couvre finalement que cette string
+surgit par morceaux en m&eacute;moire &agrave; DS : [68FB41 68FB42]:</FONT></P>
+<PRE><B><FONT SIZE="2">0137:00434D78    MOV EAX,100                
+                 CALL 00402984
+                 XOR EDX,EDX      // clean EDX                 
+                 MOV DL,[EBP-3F]
+                 XOR EAX,EDX      // EAX=6E  EDX=BC
+                 MOV [EBP-3F],AL  // AL=D2 : 1&deg; byte of funny_string 
+                 MOV EAX,100                 
+                 CALL 00402984
+                 XOR EDX,EDX      // clean EDX                
+                 MOV DL,[EBP-3E]
+                 XOR EAX,EDX      // EAX=4A  EDX=1E
+                 MOV [EBP-3E],AL  // AL=54 : 2&deg; byte of funny_string
+                 MOV EAX,100 
+                 CALL 00402984
+                 MOV EBX,EAX                 
+                 XOR EAX,EAX      // clean EAX
+                 MOV AL,[EBP-3D]
+                 XOR EBX,EAX      // EBX=8A  EAX=5B
+ 0137:00434DB3   MOV [EBP-3D],BL  // BL=D1 : 3&deg; byte de la funny_string</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Cette routine est appel&eacute;e plusieurs fois, avant que la funny_string ne soit
+cr&eacute;e. Nous obtenons quelques octets suppl&eacute;mentaires si la longueur du pwd n'est pas un multiple de
+3 (par exemple : si pwd lengh t= 7, nous obtenons 7 octets valables + 2 octets inutiles). Maintenant essayons avec
+un pwd correct (&quot;CASIMIR&quot;) :</FONT></P>
+<PRE><B><FONT SIZE="2">     LEFT                 RIGHT               CHECK
+     VECTOR               VECTOR              VECTOR 
+     EAX=FF      xor      EDX=BC      =&gt;      AL=43 (&quot;C&quot;) 
+     EAX=5F      xor      EDX=1E      =&gt;      AL=41 (&quot;A&quot;) 
+     EBX=08      xor      EAX=5B      =&gt;      BL=53 (&quot;S&quot;)  
+        .                    .                  .
+        .                    .                  .
+        .                    .                  .</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">... Et cetera. Seuls les vecteurs de GAUCHE changent (notre funny_string), ceux
+de DROITE restent les m&ecirc;mes. La solution me semble assez &eacute;vidente : les vecteusr de gauche sont utilis&eacute;s
+comme fonctions d'entr&eacute;e, tandis que les vecteurs de droite servent pour le bon pwd (stock&eacute; dans
+le fichier crypt&eacute;, o&ugrave; ailleurs ? ? ?).</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Alors le check_vector est construit par &quot;XORization&quot; des vecteurs de gauche
+et simplement compar&eacute; avec l'entr&eacute;e.</FONT></P>
+<PRE><B><FONT SIZE="2">               = &gt; BONNE entr&eacute;e : entr&eacute;e = check_vector               
+               = &gt; MAUVAISE entr&eacute;e : entr&eacute;e! = check_vector
+</FONT></B></PRE>
+<P><B><FONT FACE="Arial">5. La Fabrication du vecteur gauche </FONT><FONT SIZE="2" FACE="Arial"><BR>
+<BR>
+</FONT></B><FONT SIZE="2" FACE="Arial">Ne soyez pas si impatient et arr&ecirc;tez de vous plaindre! Nous avons
+presque fini, COT est d&eacute;j&agrave;, humm, mort &agrave; 25 % ...<BR>
+<BR>
+BIEN, quel est le r&ocirc;le que joue le pwd entr&eacute; dans la fabrication du vecteur gauche ? Examinons les
+call myst&eacute;rieux &agrave; 00402984. Voici ce a quoi nous arrivons :</FONT></P>
+<PRE><B><FONT SIZE="2">
+1&deg; call 0137:00402984   IMUL EDX,[0043902C],08088405  // [0043902C]=00000857
+                 INC EDX                              // EDX=FF0505B3
+                 MOV [0043902C],EDX                   // EDX=FF0505B4
+                 MUL EDX                              // EDX=100*EDX  
+                 MOV EAX,EDX                          // EDX=FF (higher-weight byte)
+ 0137:00402999   RET              2&deg; call
+ 0137:00402984   IMUL EDX,[0043902C],08088405         // [0043902C]=FF0505B4
+                 INC EDX                              // EDX=5FA9EC84
+                 MOV [0043902C],EDX                   // EDX=5FA9EC85
+                 MUL EDX                              // EDX=100*EDX    
+                 MOV EAX,EDX                          // EDX=5F
+ 0137:00402999   RET</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Nous tra&ccedil;ons un troisi&egrave;me call juste pour le fun (et nous assurer
+il n'y a aucun bl&egrave;me) :</FONT></P>
+<PRE><B><FONT SIZE="2">3&deg; call
+ 0137:00402984   IMUL EDX,[0043902C],08088405  // [0043902C]=5FA9EC85
+                 INC EDX                       // EDX=086E3299
+                 MOV [0043902C],EDX            // EDX=086E329A
+                 MUL EDX                       // EDX=100*EDX    
+                 MOV EAX,EDX                   // EDX=08
+ 0137:00402999   RET </FONT></B><FONT SIZE="2">           
+</FONT><FONT SIZE="2" FACE="Arial"> </FONT></PRE>
+<P><FONT SIZE="2" FACE="Arial">Pseudo-code:<BR>
+for(i=0;i&lt;pwd_lenght;i++) { Seed = (08088405*Seed + 1); left_vector[i] = 100*Seed; }&nbsp;</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Question subsidiaire : qu'est ce qui a construit le Seed ?</FONT></P>
+<P><B><FONT FACE="Arial">6. Le Seed</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Pr&ecirc;tez attention &agrave; l'adresse m&eacute;moire en DS:0043902C …</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Cette adresse a-t-elle d&eacute;j&agrave; &eacute;t&eacute; utilis&eacute;e dans
+le code ? Oui Monsieur! Juste apr&egrave;s la v&eacute;rification de la taille du pwd [la partie 2 de ce fichier],
+nous avons :</FONT></P>
+<PRE><B><FONT SIZE="2"> 0137:00434CAA   CMP EAX,[EBP-20]                   
+                 JNE 434E24                 
+                 MOV EAX,[EBP-34]    -&gt; &quot;CASIMIR&quot;
+                 CALL 00433978
+ 0137:00434CBB   MOV [0043902C],EAX  // EAX=857</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Le seed semble venir du call en 433978. Comme d'habitude, nous prenons notre mitrailleuse
+et allons voir cela de plus pr&ecirc;t :</FONT></P>
+<PRE><B><FONT SIZE="2"> 0137:00433978   PUSH EBP  
+                 XOR EBX,EBX  // EBX
+        4339A2   MOV EDX,EAX  // pwd_lenght (7)
+                 TEST EDX,EDX
+                 JLE 004339CC
+                 MOV EAX,00000001
+ *****&gt; 4339AD   MOV ECX,[EBP-04]
+ *               MOVZX ECX,BYTE PTR[ECX+EAX-01] // ECX=43,41,53,49,4D,49,52
+ *               IMUL ECX,EAX                               (&quot;CASIMIR&quot;)
+ *               JNO 004339BF
+ *               CALL 00402B10
+ *      4339BF   ADD EBX,ECX  // EBX=1*43+2*41+3*53+4*49+5*4D+6*49+7*52=857
+ *               JNO 004339C8 
+ *               CALL 00402B10
+ *      4339C8   INC EAX
+ *               DEC EDX
+ **************&lt; JNZ 004339AD  // check if pwd'end reached</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">La boucle est ex&eacute;cut&eacute;e jusqu'&agrave; &eacute;puisement des caract&egrave;res
+du pwd, additionnant chaque valeur ascii &agrave; sa position dans le mot de passe :</FONT></P>
+
+<UL>
+	<H2><FONT SIZE="2" FACE="Arial">Seed = 1*car_1 + 2*car_2 +... + n*car_n</FONT></H2>
+</UL>
+
+<P><FONT SIZE="2" FACE="Arial">Donc des entr&eacute;es DIFF&Eacute;RENTES peuvent produire le M&Ecirc;ME Seed,
+MAIS le right_vector fera croire &agrave; COT qu'il est correct!</FONT></P>
+<P><B><FONT FACE="Arial">7. R&Eacute;SUM&Eacute; et M&eacute;ditation</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">BIEN, tout le monde est l&agrave; ? Personne ne s'est perdu dans le code ? Laissons
+COT de cot&eacute; (juste un moment) le temps de souffler, une bonne tasse de Th&eacute; &agrave; la main (ne vous
+endormez pas, la partie agr&eacute;able de l'histoire arrive!!!).</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Voici les actions ex&eacute;cut&eacute;es par COT :</FONT></P>
+
+<BLOCKQUOTE>
+	<PRE><FONT SIZE="2" FACE="Arial">1. Obtenir le user'input
+2. Construire le Seed (la somme pond&eacute;r&eacute;e)
+3. Construire le left_vector
+4. R&eacute;cup&eacute;rer le right_vector du fichier crypt&eacute;
+5. Construire le check_vector
+6. Si entr&eacute;e = check_vector = &gt; GOOD BOY, d&eacute;cryptons le fichier pour lui
+    Si entr&eacute;e! =check_vector = &gt; BAD BOY, signal sonore et coup de pied au cul!</FONT></PRE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="2" FACE="Arial">HUUUMMMMM..... (cogitation intense, CA FAIT MAL!!!) nous pouvons trouver la pwd_lenght
+et le right_vector en employant notre vieil ami Winice... A partir de pwd_lenght, quel seed possible avons nous?
+En &eacute;tudiant un peu, avec des entr&eacute;e du type ALT 0, ALT 1..., ALT 255 et en observant comment COT
+les traduit, nous apprenons que COT ne traite que 136 valeurs ascii en additionnant les caract&egrave;res entr&eacute;s
+(voir &quot;car_set&quot; dans CRACKCOT.CPP).</FONT></P>
+<H2><FONT SIZE="2" FACE="Arial">Code_MIN=0x20, code_MAX=0xF7:</FONT></H2>
+<P>
+<PRE><B><FONT SIZE="2">Seed_MIN = (1+2+...+pwd_lenght)*code_MIN
+                        = 0.5*pwd_lenght*(pwd_lenght+1)*code_MIN 
+               Seed_MAX = 0.5*pwd_lenght*(pwd_lenght+1)*code_MAX</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">COT v1.24 accepte jusqu'&agrave; 45 caract&egrave;res entr&eacute;s, et nous obtenons
+:</FONT></P>
+<PRE><B><FONT SIZE="2">            Seed_MIN=0.5*45*46*32 Seed_MAX=0.5*45*46*247                  =33120 = 255645</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Ainsi, avec un pwd_lenght = 45 (le pire cas de figure du point de vue du cracker),
+nous obtenons SEULEMENT (Seed_MAX-Seed-MIN) 222525 seed possibles!!!</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Quel PETIT nombre!!!</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">La faiblesse de COT vient- principalement de ce ridicule 222525...</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">&Eacute;crivons rapidement un m&eacute;chant petit programme en C:</FONT></P>
+
+<OL>
+	<H2><FONT SIZE="2" FACE="Arial"></FONT></H2>
+	<LI><B><FONT SIZE="2" FACE="Arial">Calculer Seed_MIN et Seed_MAX 2.</FONT></B>
+</OL>
+
+<H2><FONT SIZE="2" FACE="Arial">for(seed=Seed_MIN;seed&amp;lt;=Seed_MAX;seed++) { for(i=1;i&amp;lt;=pwd_lenght;i++)</FONT></H2>
+<H2><FONT SIZE="2" FACE="Arial">{ 1. build left_vector[i] 2. build check_vector[i]=left_vector[i] XOR right_vector[i]
+3. TEST1 is check_vector[i] a valid character, i.e member of car set? valid=FALSE =&amp;gt; break; let's try next
+seed valid=TRUE =&amp;gt; OK, goto TEST2 4. TEST2 is check_vector built to this point valid? (we must have: 1*check_vector[1]+...+i*check_vector[i]</FONT></H2>
+<H2><FONT SIZE="2" FACE="Arial">seed IF i&lt;pwd_lenght</FONT></H2>
+<H2><FONT SIZE="2" FACE="Arial">&quot; &quot; &quot; &quot; == seed IF i==pwd_lenght)</FONT></H2>
+<H2><FONT SIZE="2" FACE="Arial">valid=FALSE =&gt;</FONT></H2>
+<H2><FONT SIZE="2" FACE="Arial">break; let's try next seed, valid=TRUE =&amp;gt; if i&lt;pwd_lenght : go on, we
+are on the good way, but pwd_lenght not reached if i==pwd_lenght : PASSWORD FOUND !!!</FONT><FONT SIZE="2">&nbsp;</FONT></H2>
+<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">F&Eacute;LICITATIONS!!! NOUS L'AVONS FAIT!!!</FONT></H2>
+<P><B><FONT FACE="Arial">8. Traque du pwd_lenght et du right_vector</FONT></B></P>
+<P><FONT SIZE="2" FACE="Arial">Bien, nous pouvons maintenant d&eacute;couvrir comment le pwd a &eacute;t&eacute;
+employ&eacute; pour chiffrer le fichier, mais dans ce but nous devons d'abord d&eacute;couvrir le pwd_lenght et
+le right_vector en utilisant Winice... Ennuyant et long, mais finissons le travail.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">La d&eacute;couverte du pwd_lenght n'exige pas de reverse, de tra&ccedil;age, ou
+de stack-fishing</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">... utilisez COT et chiffrez des fichiers divers en employant des mots de passe
+de tailles diff&eacute;rentes. REGARDEZ et si ne voyez rien, REGARDEZ DE PLUS PR&Egrave;S!!!</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">OUI, ces types l'ont juste not&eacute;, entre le 3 &deg; et le 4 &deg; slash, sans
+cryptage ou quoi que ce soit d'autre. Jamais je n'ai vu une telle confiance en soi...</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Par exemple :</FONT></P>
+
+<UL>
+	<PRE><B><FONT SIZE="2">  Pwd_lenght=10 : CoT/0121/01/10/7Pwd_lenght=45 : CoT/0124/03/45/3</FONT></B></PRE>
+</UL>
+
+<P><FONT SIZE="2" FACE="Arial">Il suffit juste d'ouvrir le fichier crypt&eacute; et de le lire.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">La d&eacute;couverte du right_vector est un peu plus compliqu&eacute;e. Tout d'abord,
+ouvrez COT et chiffrez le message &quot;LONGUE VIE &Agrave; CASIMIR&quot; en utilisant &quot;CASIMIR&quot; comme
+pwd. Voici ce que nous obtenons :</FONT></P>
+<PRE><B><FONT SIZE="2">********************** START  Crypt-o-Text **********************
+ CoT/0121/01/7/20 CLy68KoYUEBAFiqBzkfCTGjGiH-+k-LHaQnpio+Z1 CoT/5225
+ **********************  END   Crypt-o-Text **********************
+0137:00434D78   MOV EAX,100                     ...
+                 MOV DL,[EBP-3F]-&gt;SS:0068FB41                     ...
+                 MOV DL,[EBP-3E]-&gt;SS:0068FB42                     ...
+                 MOV AL,[EBP-3D]-&gt;SS:0068FB43                     ...
+ 0137:00434DB3   MOV [EBP-3D],BL</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Humm... Ca vaut certainement la peine d'espionner ces adresses m&eacute;moire. En
+faisant ainsi, nous d&eacute;couvrons que quelque chose se passe ici :</FONT></P>
+<PRE><B><FONT SIZE="2"> 0137:00433D71   MOV DL,[EBP-04]     -&gt; 4C (&quot;L&quot;)
+                 CALL 0040358C
+                 MOV EAX,[EBP-14]    -&gt; 4C (&quot;L&quot;)
+                 MOV EDX,[004388F8]  -&gt; AaBbCc...
+                 CALL 0040387C
+                 MOV EBX,EAX         // EAX=17
+                 SUB EBX,1           // EBX=16                    ...
+      00433D97   IMUL EBX,[004388DC] // EBX=40000*16=580000
+                    ...      
+      00433DA4   MOV DL,[EBP-03]     -&gt; 79 (&quot;y&quot;)
+                 CALL 0040358C
+                 MOV EAX,[EBP-14]    -&gt; 79 (&quot;y&quot;)
+                 MOV EDX,[004388F8]  -&gt; AaBbCc... 
+                 CALL 0040387C
+                 SUB EAX,1           // EAX=31                    ...
+      00433DC4   IMUL DWORD PTR [004388E4] // EAX=1000*31=31000
+                    ...
+      00433DD1   ADD EBX,EAX // EBX=EBX+EAX=580000+31000=5B1000
+                    ...      
+      00433DDD   MOV DL,[EBP-02]     -&gt; 36 (&quot;6&quot;)
+                 CALL 0040358C
+                 MOV EAX,[EBP-14]    -&gt; 36 (&quot;6&quot;)
+                 MOV EDX,[004388F8]  -&gt; AaBbCc...
+                 CALL 0040387C
+                 SUB EAX,1           // EAX=3A                    ...
+      00433DFD   IMUL DWORD PTR [004388EC] // EAX=40*3A=E80
+                    ...
+      00433E0A   ADD EBX,EAX // EBX=EBX+EAX=5B1000+E80=5B1E80
+                    ...
+      00433E16   MOV DL,[EBP-01]     -&gt; 38 (&quot;8&quot;)
+                 CALL 0040358C
+                 MOV EAX,[EBP-14]    -&gt; 38 (&quot;8&quot;)
+                 MOV EDX,[004388F8]  -&gt; AaBbCc...
+                 CALL 0040387C
+                 SUB EAX,1           // EAX=3C                    ...
+      00433E36   IMUL DWORD PTR [004388F0] // EAX=1*3C=3C         ...
+ 0137:00433E43   ADD EBX,EAX // EBX=EBX+EAX=5B1E80+3C=5B1EBC</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">5B1EBC??? BC,1E,5B!!! Le Right_vector lui-m&ecirc;me! Il est extrait du fichier
+crypt&eacute;, commen&ccedil;ant sur la deuxi&egrave;me ligne juste apr&egrave;s &quot;C&quot; : Ly68...</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Les valeurs Ascii du fichier crypt&eacute; sont lu 4 par 4, avant que le right_vector
+ne soient construit.<BR>
+Mais une question reste en suspend: comment savons-nous , par exemple, qu'un &quot;8&quot; (38) lu dans le fichier
+crypt&eacute; produira un &quot;&lt;&quot; (3C) ?<BR>
+Pour en apprendre plus, examinons les call &agrave; 0040387C. Avant le tra&ccedil;age du call, remarquez qu'EDX
+pointe sur la structure de DONN&Eacute;ES suivante :</FONT></P>
+<PRE><B><FONT SIZE="2"> DS : 00432E3C   Aa Bb Cc Dd Ee Ff Gg Hh
+ DS : 00432E4C   Ii Jj Kk Ll Mm Nn Oo Pp
+ DS : 00432E5C   Qq Rr Ss Tt Uu Vv Ww Xx
+ DS : 00432E6C   Yy Zz 01 23 45 67 89 +-</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">BIEN, maintenant nous pouvons tracer le call :</FONT></P>
+<PRE><B><FONT SIZE="2"> 0137:0040387C   TEST EAX,EAX                    ...
+      0040388B   MOV ECX,[EDI-04] // ECX=40 (size of look-up table shown above)
+                 PUSH EDI
+                 MOV EDX,[ESI-04] // EDX=1 (we are looking for 1 character)
+                 DEC EDX
+                 JS 004038B0
+                 MOV AL,[ESI]     -&gt;38 (&quot;8&quot;): we are looking for &quot;8&quot; in table 
+                 INC ESI
+                 SUB ECX,EDX
+                 JLE 004038B0
+                 REPNZ SCASB     -&gt;search 38
+                 JNZ 004038B0    -&gt;NOT FOUND (file corrupted?)
+                     ...
+      004038B8   MOV EAX,EDI     // EDI=432E79=our actual position in table (&quot;9&quot;)    
+                 SUB EAX,EDX     // EDX=432E3C=first position in table (&quot;A&quot;)</FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Ainsi : EAX=3D (offset de &quot;8&quot; + 1). Apr&egrave;s la call 0040387C, nous
+avons un SUB EAX, 1 pour obtenir l'offset correct.</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">La formule finale est donc :</FONT></P>
+<PRE><B><FONT SIZE="2">         right_vector=40000*offset(&quot;L&quot;)+1000*offset(&quot;y&quot;)+40*offset(&quot;6&quot;)+1*offset(&quot;8&quot;) </FONT></B></PRE>
+<P><FONT SIZE="2" FACE="Arial">Ce syst&egrave;me permet &agrave; COT de transformer ind&eacute;pendamment le right_vector
+en une s&eacute;rie ASCII que n'importe quelle traitement de texte peut manipuler...</FONT></P>
+<P><FONT SIZE="2" FACE="Arial">Maintenant nous ajoutons cette am&eacute;lioration &agrave; notre prg en C et nous
+obtenons un agr&eacute;able CRACKCOT.EXE</FONT></P>
+<H2><FONT SIZE="4" FACE="Arial">9. Benchmark et code Source</FONT><FONT SIZE="2" FACE="Arial">&nbsp;</FONT></H2>
+
+<UL>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">PWD PROCESSING TIME</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">1 &divide; &lt;1s</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">10 &divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;
+	3s</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">20 &divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;
+	10s</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">30 &divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;
+	21s</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">40 &divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;
+	36s</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">45 &divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;&divide;
+	46s</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">input : name of crypted file</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT SIZE="2" FACE="Arial">output : password and equivalent ALT sequence</FONT></H2>
+	<H2 ALIGN="CENTER"><FONT FACE="Arial">THAT'S ALL, FOLKS !!!</FONT></H2>
+	<H2><FONT SIZE="2" FACE="Arial">Si vous avez des questions, suggestions, des interrogations m&eacute;taphysiques,
+	n'h&eacute;sitez pas &agrave; entrer en contact </FONT><A HREF="mailto:casimir2@club-internet.fr"><FONT SIZE="2"
+	FACE="Arial">avec Casimir</FONT></A></H2>
+	<H3><FONT SIZE="2" FACE="Arial">Note :</FONT></H3>
+	<UL>
+		<UL>
+			<H2><FONT SIZE="2" FACE="Arial">COT peut &ecirc;tre trouv&eacute; &agrave; </FONT><A HREF="javascript:if(confirm('http://www.savard.com/crypt-o-text/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.savard.com/crypt-o-text/'" tppabs="http://www.savard.com/crypt-o-text/"><FONT
+			SIZE="2">Savard Software</FONT></A>
+		</UL>
+	</UL>
+</UL>
+
+
+</BODY>
+
+</HTML>

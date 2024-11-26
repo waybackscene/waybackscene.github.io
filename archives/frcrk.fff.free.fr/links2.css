@@ -1,0 +1,6 @@
+BODY {SCROLLBAR-FACE-COLOR: #FFFFFF; SCROLLBAR-HIGHLIGHT-COLOR: #FFFFFF; SCROLLBAR-SHADOW-COLOR: #999999; SCROLLBAR-3DLIGHT-COLOR: #FFFFFF; SCROLLBAR-ARROW-COLOR:  #000000; SCROLLBAR-TRACK-COLOR: #E3E3E3; SCROLLBAR-DARKSHADOW-COLOR: #666666; }
+a:active {  font-family: Arial, Helvetica, sans-serif; font-size: x-small; text-decoration: none}
+a:hover {  font-family: Arial, Helvetica, sans-serif; font-size: x-small; color: #FFFFFF; text-decoration: none; filter: Inverser; background: #000000}
+a:link {  font-family: Arial, Helvetica, sans-serif; font-size: x-small; color: #000000; text-decoration: none}
+a:visited {  font-family: Arial, Helvetica, sans-serif; font-size: x-small; text-decoration: none}
+/*

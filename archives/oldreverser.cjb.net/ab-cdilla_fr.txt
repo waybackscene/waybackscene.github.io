@@ -1,0 +1,432 @@
+
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S -- - ‹   ˙     ˙
+     ∞    ‹  ∞      ‹ ‹  ‹       ∞ ‹∞          ∞ ‹     ‹         ﬁ€‹   ‹ ∞
+  ‹€€≤ﬂﬂ€€€›‹≤€ﬂﬂﬂ€€€›ﬁ€›ﬁ€€€ﬂﬂﬂ€≤‹ﬁ≤€€ﬂﬂ€€€‹∞‹≤€› ﬂ‹  ﬁ€€€ﬂﬂ€€€‹∞≤€€‹ ﬁ€≤‹
+  €€€› ∞≤€€›€€€ ∞ﬂﬂﬂﬂ ﬂﬂﬂ €€€ ∞ €€€›€€€  ﬁ€€≤∞≤€€ ∞ €€›ﬁ€€€› ﬁ€€≤ €€€ﬂ€‹€€€›
+  ≤€€ﬂﬂﬂ€€€›€€€›∞ ∞≤€›€€€›€€€ ∞ €€€›€€€ﬂﬂﬂ€€‹ﬁ€€€ ∞ €€€ﬁ€€€ﬂﬂ≤€€‹ €€€› ﬂ€€€›
+ ∞≤€€›∞ €€€ ≤€€›∞ €€€›€€€∞≤€€ ∞ﬁ€€€›€€€› ‹€€€ﬁ€€€›∞∞≤€€∞≤€€› ﬁ€€€›€€€›∞ €€€‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€∞≤€€›∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞ €€€›€€€›∞ €€≤ﬂ‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€ﬁ€€€ ∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞∞≤€€ ≤€€›∞ €€›
+ ﬁ€€≤ ∞ﬁ€€≤ﬂ±€€‹‹‹€€€±€€≤ﬁ€€€‹‹€€±ﬂ≤€€€‹‹€€€€ﬂ€€€€‹≤€€€ﬂ≤€±‹ ﬁ€ﬂ ∞≤€€€ ﬁ€ﬂ
+  ﬂ      ﬂ∞  ﬂ    ﬂ    ﬂ       ﬂ          ﬂ         ﬂ   ∞    ﬂ      ﬂ  ﬂ
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ˙     ˙
+                                SRT - CRO
+
+
+				CDilla Cracking:						
+
+      MidTown Madness version Francaise: Une autre approche sur cdilla   
+								 
+		Cour par ACiD BuRN [Immortal Descendants]			 
+                             (6 Octobre 1999) 		
+
+
+
+
+Outils nescessaires:   * CD Original de Midtown madness
+                       * Soft ice 3.23			 
+                       * soft ice tool pour patcher soft ice (pour dumper les sections)
+                       * Hexworkshop
+	               * Frog ice (pour cacher soft ice)
+                       * Procdump (comme PE Editor)
+	               * Exescope
+
+
+
+Introduction:
+
+salut a tous , je sais qu'il y a deja un cour sur Midtown madness par black check
+mais la methode que j'utilise n'est pas la meme que lui...
+Je vais expliquer le plus de choses possible et en plus c'est le 1er cour sur
+cdilla en francais !!!
+il serait preferable de lire le cour de black check avant , et d'avoir quelques
+connaissances sur le format PE...
+
+
+
+
+A Mort cdilla:
+
+
+Apres avoir installer le jeux , editer le PE du fichier ".icd" avec procdump.
+(lancez procdump , clicker sur PE Editor , allez ou se trouve votre fichier ".icd")
+le fichier est : Midtown.icd 
+
+Maintenant , vous devez voir ceci:
+
+
+		     - Entry Point : 00166C10
+		     - Image Base  : 00400000
+
+ok , nous allons avoir besoin de l'OEP (original Entry point) plus tard donc
+nous allons la calculer des maintenant.
+Pour cela on a besoin de l' Image base et de l' entry point que l'on obtient avec 
+procdump : 00400000 + 00166C10 = 566C10  (on les additiones)
+
+
+Maintenant, clicker sur le bouton "sections" pour voir toutes les sections du fichier.
+
+On ne va avoir besoin que des valeurs Virtual Offset , Raw Size , et  Raw Offset !
+
+
+- pour la section ".text" :
+
+
+   Virtual Offset: 00001000 
+         Raw Size: 18D78F
+       Raw Offset: 600
+
+
+- pour la section ".Rdata" :
+
+
+   Virtual Offset: 0018F000
+         Raw Size: 14C99
+       Raw Offset: 18DE00
+
+
+
+- pour la section ".data" :
+
+
+   Virtual Offset: 001A4000
+         Raw Size: 3D8A4
+       Raw Offset: 1A2C00
+
+
+
+- pour la section ".data1" :
+
+
+   Virtual Offset: 00314000
+         Raw Size: 20
+       Raw Offset: 1E0600
+
+
+- pour la section ".rsrc" :
+
+
+   Virtual Offset: 00315000
+         Raw Size: CB3
+       Raw Offset: 1E0800
+
+
+Nous allons donc dumper toutes les sections du fichier ".icd" excepter la section ".Rdata" 
+car , c'est plus complique pour celle ci !!
+
+il faut tout abord additioner l'image base avec le virtual Offset de toutes les sections:
+
+.text  : 400000 + 00001000 = 00401000
+.rdata : 400000 + 0018F000 = 0058F000
+.data  : 400000 + 001A4000 = 005A4000
+.data1 : 400000 + 00314000 = 00714000
+.rsrc  : 400000 + 00315000 = 00715000
+
+
+ok , maintenant nous allons dumper les sections... 
+Pour cela ,  mettez un breakpoint sur EOP (566C10 pour ce jeux ).
+Vous avez surement remarque , que si vous lancez le jeux avec soft ice charge , il
+vous envois chier , car il y an de l'anti soft ice.
+cdilla utilise meltice (createfilea) et l'int68h pour detecter sice.
+Le mieux , c d'utiliser frogice , pour le cacher.J'utlise la version 0.20b , mais
+il faut la patcher pour qu'il cache completement soft ice de la detection par int68h.
+dans le cour de black check on voit qui faut rechercher dans le fichier: FrogSice. vxd
+
+-60 80 7d 1d 43
+et le remplacer par :
+-C3 80 7d 1d 43
+
+voila , maintenant , plus aucun problem avec la detection de soft ice , on va pouvoir
+s'occuper des choses serieuses !!
+Lancez votre frog ice (version patche) et lancer le jeux.
+Pendant la video , faites apparaitre soft ice (ctrl+D) et mettez votre bpx sur l'OEP:
+Bpx 56CC10 pour ce jeux...
+
+presser F5 , le jeux continue de se lancer, et quitter le.
+Maintenant relancez le et soft ice breaks sur 56CC10. Si soft ice ce break pas , regardez
+si vous avez bien mis votre bpx au bon endroit!(tapez bl et vous devez obtenir qq chose
+comme ca #025F:56CC10)
+
+Donc , soft ice break sur l' OEP , vous avez plus qu'a dumper les sections :)
+
+Avant le dump desactiver tous les bpx (bd *) car on veut pas de merdes dans nos sections
+dumpes ehe !!
+
+grace a sice tool , vous avez modifie la commande pagein qui vous permettra de dumper... 
+la commande pagein fonctionne donc comme ceci pour dumper:
+
+pagein "l'addresse du debut du dump" "longeur du dump" "nom du fichier"
+Donc dans soft ice , tapez:
+
+
+pagein 401000 18D78F c:\text.bin
+pagein 5A4000 3D8A4 c:\data.bin
+pagein 714000 20 c:\data1.bin
+pagein 715000 CB3 c:\rsrc.bin
+
+Voila , nous avons donc nos sections sur le disque dur !!!!
+
+
+Passons aux choses serieuses !!! : La Section Rdata :
+
+
+Bon , pour dumper cette section , c'est pas aussi simple =)
+
+
+Tout d'abord , nous devons trouver l'adresse reelle de la fonction de decryptage et pour 
+cela nous allons tracer dans le call qui appelle dans la section rdata...
+Apres que soft ice est stope sur l'OEP, on arrive ici :
+
+
+
+
+00566C10   PUSH    EBP               <-- on stop ici sur l'entry point
+00566C11   MOV     EBP,ESP
+00566C13   PUSH    FF
+00566C15   PUSH    005968D0
+00566C1A   PUSH    00566724
+00566C1F   MOV     EAX,FS:[00000000]
+00566C25   PUSH    EAX
+00566C26   MOV     FS:[00000000],ESP
+00566C2D   ADD     ESP, -5C
+00566C30   PUSH    EBX
+00566C31   PUSH    ESI
+00566C32   PUSH    EDI
+00566C33   MOV     [EBP-18],ESP
+00566C36   CALL    [0058F14C]        <-- voici notre call, on trace dedans (F8)
+
+
+Dans le call , on arrive ici :
+
+009A6485     pushad
+009A6486     push 00000031              
+009A6488     push 00000000       ---> 0 designe les imports kernels , pour les users ca sera 1
+009A6490     call [9A64A6]       ---> l'addresse reelle de la fonction (9A64A6)
+009A6496     add esp, 8
+009A6499     popad
+.......      jmp [XXXXXXXX]
+
+
+Tracer dans le call et vous allez voir que le jmp [XXXXXXXX] devient jmp [KERNEL32!GetVersion]
+ok , c'est normal, on est sur le bon chemin :o)
+Nous allons bientot programmer le Call fixer...
+mais avant tout, nous devons connaitre le nombre d'import de Kernels and users qu'il y a dans
+le jeux que l'on crack.
+Pour cela , plusieurs methode , on peut desassembler le fichier ".icd" avec wdasm
+et les compter ou bien tracer avec soft ice , mais j'ai utiliser un programme nommÈ : EXESCOPE
+pour savoir le nombre d'import ...
+Donc dans le fichier midtown.icd j'ai :
+
+- 127 imports pour kernel32
+- 42 import pour user32
+
+Ok , nous avons besoin des ses valeurs en hexadecimal, car dans soft ice on n'utilise pas de 
+decimal:
+
+127 = 7Fh
+ 42 = 2Ah
+
+Ma partie preferÈe qd on crack cdilla:  Programmer le call fixer.
+Nous n'avons pas l'access en ecriture dans la section Rdata , donc nous allons la deplacer
+dans la section rdata...
+Pour coder le call fixer , je commence sur l'entry point , donc il faut reactiver le bpx
+sur l'OEP , et relancer le jeux.Attendez que le jeux stop dans soft ice.
+
+Maintenant on va deplacer notre rdata section a la place de la data section en memoire.
+Pour faire ca : taper :
+
+m "le virtual offset de la section RDATA + l'image base" l "la longeur de RDATA" "le virtual offset de la section DATA"
+
+NOTE: Pour le virtual offset de la section data , utiliser un nombre plus grand, c'est mieux...
+
+
+5A4000 est notre virtual offset , j'ai utilise 5B0000 (Plus grand comme je vous ai dis)
+
+Vous avez donc a taper:
+
+m 58F000 l 14C99 5B0000
+
+Maintenant, Nous allons programmer le call fixer !!
+
+Vous etes donc a la ligne: 566C10     PUSH   EBP
+
+ce que nous allons taper va ressembler a cela:
+
+00 pushad
+01 push ebx
+02 push 0
+04 call [XXXXXXXX]
+0A add esp,8
+0D mov edx, XXXXXX 
+12 cmp eax,[edx] 
+14 je 20
+16 inc edx
+17 cmp edx, XXXXXX + XXXXX
+1D jne 12
+1F int 03       
+20 mov [edx],ecx
+22 popad
+23 inc ebx
+24 cmp ebx, XX  
+2A jne 00
+2C int 03
+
+
+C'est partis !!!
+
+Tapez dans soft ice: A "et la touche entrer"
+
+et programmer :
+
+566C10   pushad
+566C11   push ebx
+566C12   push 0
+566C14   call [009A64A6]            <-- addresse de la fonction trouvÈ en tracant dans le call
+566C1A   add esp,8
+566C1D   mov edx, 5B0000            <-- addresse ou nous avons copiÈ notre section .rdata 
+566C22   cmp eax,[edx]    
+566C24   je 566C40
+566C26   inc edx
+566C27   cmp edx, 5B0000 + 14C99   <-- addresse ou nous avons copiÈ notre section .rdata + rdata size 
+566C3D   jne 566C22
+566C3F   int 03                     <-- par securite, si il ne trouve rien , il stop ici
+566C40   mov [edx],ecx    
+566C42   popad
+566C43   inc ebx
+566C44   cmp ebx, 7F                <-- Nombre d'API a reparer 
+566C4A   jne 566C10
+566C4C   int 03
+
+
+mettez ebx ‡ 0 (R ebx 0) , et votre eip ‡ la ligne  0 (ligne 0 = 566C10 ici, donc: R EIP 566C10)
+tapez "i3here on" et pressez F5 pour executer le code, normalement on devrait stopper sur 566C4C
+remettez votre ebx a 0, changez la ligne 02 (56CC12 ici) en "push 1" et changer la  ligne 24 en
+'cmp ebx, user_import_number' (2A for us) et remettez votre eip ‡ la ligne 0 (R EIP 566C10). 
+executer ca encore (F5).Normalement tout est ok , et on doit encore avoir stoper sur 566C4C
+Nous pouvons maintenant dumper la section rdata sans crainte car tous est decrypter :o)
+
+pagein 5B0000 14C99 c:\rdata.bin
+
+
+hehe !! maintenant on va reconstruire un fichier executable qui va etre le fichier final.
+j'ai essayer Procdump pour importer les sections , mais cette merde n'a rien changer GRR !
+Donc, je l'ai fais a la main comme un grand ;)
+voila comment faire :
+
+En premier faites une copy du fichier ".icd" (Midtown.icd) et renomer le en ce que vous voulez
+mais avec l"extension ".exe" ex: fuckit.exe
+
+Ok , lancez hexworkshop , ouvrez "Damnit.exe" ,ansi que le fichier de notre premier section
+dumpÈ :
+
+c'etais: c:\text.bin
+
+On va avoir besoin du Raw offset de chaque section , on les trouves au debut du cour mais
+je vais vous les remettres pour une meilleur comprehension:
+
+ for the ".text" section : Raw Offset: 600         size : 18D78F 
+for the ".Rdata" section : Raw Offset: 18DE00      size : 14C99
+ for the ".data" section : Raw Offset: 1A2C00      size : 3D8A4
+for the ".data1" section : Raw Offset: 1E0600      size : 20
+ for the ".rsrc" section : Raw Offset: 1E0800      size : CB3
+
+ok , you got all shits here !! we want to do the 1st section ".text" so :
+
+Dans hexworkshop , pressez alt+f5 , entrez le Raw offset de la section que vous voulez importer
+ici : 600 et cliquer sur ok. Allez dans le menu Edit, et cliquer sur "select block"
+entrez la longeur (size) de la section , ici : 18D78F...
+Regardez le fichier ouvert (text.bin) et pressez 'ctrl+a' pour tout selectioner..
+copiez tout ca avec 'ctrl+c'.
+Retournez dans la fenetre principal de l'executable dans hexworkshop (damnit.exe), et coller 
+ce que vous venez de copier dans le press papier , faites: 'ctrl+v' ou menu Edit et paste.
+Enregistrez votre fichier , cool !! voila , c finis pour la section '.text' elle est maintenant
+decrypter!!
+
+
+ok , je vais vous montrer l'import d'une autre section et vous ferez les autres de la meme facon!
+
+
+2eme section : Rdata!
+
+Vous pouvez fermer la fenetre 'text.bin' , et ouvrez le fichier: 'rdata.bin' avec hexworkshop 
+Retournez dans la fenetre de l'executable et pressez 'alt+f5' , entrez le Raw offset de la
+section rdata: 18DE00.
+Cliquer sur le menu Edit , et cliquer sur "select block" entrez la longeur (size) de la
+section , ici : 14C99
+
+regardez la fenetre de rdata.bin , pressez 'ctrl+a' pour selectioner tout et copier les bytes 
+avec 'ctrl+c'... 
+retournez dans la fenetre de l'executable (damnit.exe) dans hexworkshop et coller avec 
+'ctrl+v' ou avec le menu Edit..
+
+ok , je pensse que vous avez compris maintenant , faites de memes avec toutes les sections 
+et enregistrez les modifications dans l'executable..
+
+Vous puvez quitter frog ice car l'anti sice n'est plus dans notre nouvel executable !!
+Virez le cd original de midtown madness et lancez 'damnit.exe'.
+
+WOW , le jeux marche  se lance tres rapidement et sans cette merde de fenetre qui nous dis
+d'attendre durant la verification du CD.
+Le jeux marche superbement bien :o)
+
+Mais pour faire une executable parfait, il faut reconstruire le PE en utilistant Procdump
+afin qu'il marche avec tous les OS.
+
+Si vous lancez le jeux sur une autre version de Windows ca va planter :(
+Allez , on va reparer ca !!
+
+
+-Lancez Procdump (Merci G-RoM :)
+allez dans les Options et selectioner:
+
+[X]Recompute Object Size
+[X]Optmize PE Structure
+
+[X] Use actual import infos
+et cliquer sur OK
+
+Cliquer sur Rebuild PE , et cherchez notre nouveau fichier (Damnit.exe for us)
+
+Procdump nous fais une valide import table et notre executable est PARFAIT :o)
+du moins , j'espere hehe !!
+
+Voila !! Le cour est termine , mais si vous avez une quesion ou un commentaire mailez moi!!
+Acid2600@hotmail.com or ACiD_BuRN@nema.com
+NOTES: Les mails ayant pour but une request seront effacer directement!!!
+
+Tout mes tuts sont ici : http://acidburn2000.cjb.net/
+
+
+Remerciment pour l'aidre sur cdilla :
+
+- BIG FAT THX goes to R!SC for all the help , and answers to my questions...
+this dude rox !! he just cracked the new cdilla , PHEAR :p
+
+- thx to noos , for some help too :)
+- Killer_3K : 'lo ;)
+- G-RoM , for procdump and some nice chat ;p
+
+and now , my usual greetings for all my friends :
+
+
+Greetings: 
+group greetings : ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE- +HCU
+
+Also greetingz to: (no specific order)
+
+Cyber Blade, ^Inferno^, AB4DS,  Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , 
+TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup , zoltan ...
+
+J'ai oublie du monde j'en suis , mais je suis desole :-/
+
+
+copyright (c) ACiD BuRN and the Immortal Descendants.
+
+			
+				http://www.immortaldescendants.com/
+

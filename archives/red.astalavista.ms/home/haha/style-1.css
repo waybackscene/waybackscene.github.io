@@ -1,0 +1,217 @@
+body
+{
+	background-image: url(bg.gif);
+	color: #666666;
+	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+	margin: 5px 0px 10px 0px;
+	padding: 0px;
+}
+a:link, body_alink
+{
+	background: transparent;
+	color: #33637D;
+}
+a:visited, body_avisited
+{
+	background: transparent;
+	color: #33637D;
+}
+a:hover, a:active, body_ahover
+{
+	background: transparent;
+	color: #33637D;
+}
+.page
+{
+	//background: #000000;
+}
+td, th, p, li
+{
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.tborder
+{
+	background: #000000;
+	border: 1px solid #666666;
+}
+.tcat
+{
+	background: url(th.gif) repeat-x top left;
+	color: #FFFFFF;
+	font-weight: bold;
+    font-size: 11px;
+	padding: 3px;
+}
+.tcat a:link, .tcat_alink
+{
+	color: #ffffff;
+	text-decoration: none;
+}
+.tcat a:visited, .tcat_avisited
+{
+	color: #ffffff;
+	text-decoration: none;
+}
+.tcat a:hover, .tcat a:active, .tcat_ahover
+{
+	color: #FFA800;
+	text-decoration: none;
+}
+.tfoot
+{
+	background: #4893AF;
+	color: #E0E0F6;
+	border-top:1px solid #cccccc;
+}
+.tfoot a:link, .tfoot_alink
+{
+	color: #E0E0F6;
+	text-decoration: none;
+}
+.tfoot a:visited, .tfoot_avisited
+{
+	color: #E0E0F6;
+	text-decoration: none;
+}
+.tfoot a:hover, .tfoot a:active, .tfoot_ahover
+{
+	color: #FFA800;
+	text-decoration: none;
+}
+.alt1
+{
+	background: #000000;
+	color: #666666;
+	font-size: 11px;
+}
+.navigation
+{
+	background: #000000;
+	color: #FF6600;
+	font-size: 11px;
+}
+.navigation a:link, a:visited
+{
+	color: #FF6600;
+	font-size: 11px;
+	text-decoration: none;
+}
+.navigation a:hover
+{
+	color: #FF6600;
+	font-size: 11px;
+	text-decoration: underline;
+}
+.cellule
+{
+	background: #000000;
+	color: #666666;
+	font-size: 11px;
+}
+.cellule a
+{
+	color: #666666;
+	font-size: 11px;
+}
+.alt1 a:link
+{
+	color: #FF6600;
+	text-decoration: none;
+}
+.alt1 a:visited
+{
+	color: #FF6600;
+	text-decoration: none;
+}
+.alt1 a:hover, .alt1 a:active, a:hover
+{
+	color: #FF6600;
+	text-decoration: underline;
+}
+.alt2, .alt2Active
+{
+	background: #DFE9EF;
+	color: #000000;
+	border-top:1px solid #ffffff;
+	border-left:1px solid #ffffff;
+}
+.alt2 a:link, .alt2_alink, .alt2Active a:link, .alt2Active_alink
+{
+	color: #33637D;
+	text-decoration: none;
+}
+.alt2 a:visited, .alt2_avisited, .alt2Active a:visited, .alt2Active_avisited
+{
+	color: #33637D;
+	text-decoration: none;
+}
+.alt2 a:hover, .alt2 a:active, .alt2_ahover, .alt2Active a:hover, .alt2Active a:active, .alt2Active_ahover
+{
+	color: #FFA800;
+	text-decoration: none;
+}
+.info {
+color: #FFFFFF;
+}
+.niveau1 {
+color: #009900;
+}
+.niveau2 {
+color: #FF6600;
+}
+.niveau3 {
+color: #FF0000;
+}
+.erreur {
+width: 65%;
+padding: 5px;
+color: red;
+border-top: 1px dashed #666666;
+border-left: 1px dashed #666666;
+border-right: 1px dashed #333333;
+border-bottom: 1px dashed #333333;
+}
+.information {
+width: 65%;
+padding: 5px;
+color: green;
+border-top: 1px dashed #666666;
+border-left: 1px dashed #666666;
+border-right: 1px dashed #333333;
+border-bottom: 1px dashed #333333;
+}
+.information2 {
+color: #FF6600;
+}
+.champs {
+	background: url(haha/th.gif) repeat-x top left;
+	color: #666666;
+    font-size: 11px;
+	border: 1px solid #666666;
+}
+textarea, .bginput
+{
+	font: 10pt verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.bginput option, .bginput optgroup
+{
+	font-size: 10pt;
+	font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.button
+{
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+select
+{
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+option, optgroup
+{
+	font-size: 11px;
+	font-family: verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}
+.smallfont
+{
+	font: 11px verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
+}

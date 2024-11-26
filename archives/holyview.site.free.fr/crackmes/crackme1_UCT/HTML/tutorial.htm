@@ -1,0 +1,759 @@
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="feuillestyle.css">
+	<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+  <title>Tutorial crackme1 [HolyView] - par [HolyView] - UCT :)</title>
+</head>
+
+<body>
+
+
+<div class="titre">Tutorial crackme1 [HolyView] - par [HolyView] - UCT</div>
+
+
+
+<div class="paragraphe">
+	Ce tutorial a été créé dans le but de mieux appréhender les méthodes d'analyse de code ASM 
+	généré par Delphi. La taille des fichiers étant souvent supérieure à 400ko il n'est pas 
+	facile de s'y retrouver ! Ce tutorial présente quelques approches possibles face à un soft 
+	programmé sous Delphi.
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">Outils utilisés :</div>
+	
+	<p>
+		- Editeur de ressource : eXescope 6.41<br>
+		- Désassembleur/débuggeur : OllyDbg 1.10<br>
+		- Editeur héxadécimal : Hex Workshop 4.0<br>
+		- Désassembleur Delphi : DéDé 3.50.02<br>
+		- PEiD 0.92 pour connaître le compilateur ou si l'exe est packé/crypté<br>
+		- Un cerveau avec des vrais neurones qui vont bien dedans :)
+	</p>
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">Le crackme :</div>
+	
+	<p>
+		Voila la liste des tâches à faire :<br><br>
+		- Supprimer les informations de démonstration (messages, titre ...) à l'aide d'un éditeur 
+		de ressources<br>
+		- Supprimer les informations de démonstration (messages, titre ...) à l'aide de OllyDbg 
+		+ éditeur héxa<br>
+		- Faire de cette version une version enregistrable<br>
+		- S'enregistrer en utilisant n'importe quel nom+sérial<br>
+		- S'enregistrer en faisant un keygen
+	</p>
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">0) Première approche</div>
+	
+	<p>
+		Bon on commence à exécuter le crackme, on a un message de démonstration au démarrage et 
+		à la fermeture de l'application. Dans l'intitulé de la fenêtre on voit qu'il s'agit d'une 
+		version de démonstration. Si on parcourt le menu, le menu <i>Enregistrer le logiciel ...
+		</i> est grisé. Une fois dégrisé, il doit être possible d'enregistrer le crackme via une 
+		boite de dialogue. C'est à peu près tout ...
+	</p>
+	<img src="img/splash_debut.jpg"><br><br>
+	<img src="img/fenetre.jpg"><br><br>
+	<img src="img/splash_fin.jpg"><br>
+	<p>
+		Afin de voir avec quel compilateur a été utilisé on prends PEiD. Celui-ci nous indique : 
+		<i>Borland Delphi 6.0 - 7.0</i>. Il s'agit en effet de Delphi 7.0. Lorsque l'on a affaire 
+		à du Delphi le plus simple est souvent d'utiliser DéDé qui est spécialisé dans l'analyse 
+		de code Delphi.	
+	</p>
+</div>
+
+
+<div class="paragraphe">
+	<div class="soustitre">1) Supprimer les informations de démonstration à l'aide d'un éditeur de ressources</div>
+	
+	<p>
+		L'éditeur utilisé ici est eXescope, il en existe beaucoup d'autres, plus ou moins bien. 
+		On ouvre le crackme avec eXescope. On va dans <i>Resource / RCData / TFORM1</i>, c'est là 
+		que se situent les informations concernant la fenêtre principale.
+	</p>
+	<p>
+		Nous allons modifier 3 choses :<br>
+		- le titre de la fenêtre<br>
+		- suppression du message au démarrage<br>
+		- suppression du message à la fermeture
+	</p>
+	<p>
+		La propriété <i>caption</i> indique le titre de la fenêtre. On modifie donc la ligne : 
+		<i>Caption = 'Crackme UCT - Delphi power - Version d'#233'mo'</i> en <i>Caption = 
+		'Crackme UCT - Delphi power :)'</i>
+	</p>
+	<p>
+		La propriété <i>OnCreate</i> correspond à la fonction exécutée au démarrage. Dans la ligne 
+		<i>OnCreate = FormCreate</i> la fonction exécutée s'appelle <i>FormCreate()</i>. On supprime 
+		donc cette ligne afin que le message n'apparaisse pas. Ici cela ne pose pas de problèmes 
+		car la fonction ne fait qu'afficher le message au démarrage ...
+	</p>
+	<p>
+		La fonction <i>OnCloseQuery</i> correspond à la fonction exécutée juste avant la fermeture 
+		d'un programme. On supprime également la ligne <i>OnCloseQuery = FormCloseQuery</i><br><br>
+		On sauve ce qu'on vient de modifier en cliquant sur <i>Save Update</i>. Fermez eXescope et 
+		lancer le crackme : Il n'a a plus de messages de démonstration et l'intitulé de la fenêtre 
+		a changé !. Et hop voila une bonne chose de faite ... ;-)
+	</p>
+</div>
+	
+	
+	
+<div class="paragraphe">
+	<div class="soustitre">2) Supprimer les informations de démonstration à l'aide de OllyDbg + éditeur héxa</div>
+	
+	<p>
+		Je vais aborder dans ce passage plusieurs manières d'arriver à ses fins, plus ou moins 
+		efficaces .... :)
+	</p>
+	<p>
+		<div class="soustitre2">Première approche : SDR - 1</div>
+		On ouvre le crackme avec OllyDbg puis on va chercher toutes les chaînes de caractères 
+		présentes dans le programme. Pour cela il suffit de faire un clique droit dans la fenêtre 
+		de désassemblage puis <i>Search for / All referenced text strings</i>. On va rechercher 
+		dans la liste les chaînes qui nous intéressent : clique droit, <i>Search for text</i>. Au 
+		démarrage la boite de dialogue contient le message suivant : <i>Crackme UCT - [HolyView] , 
+		Version non enregistrable ... , Merci d'acquérir la version enregistrable :-)</i>On cherche 
+		donc la chaîne <i>acquérir</i>. Bizarrement, celle ci ne semble pas exister. Dans notre 
+		cas, il s'agit d'un petit problème d'analyse d'OllyDbg. On va donc chercher directement 
+		dans le code désassemblé. Clique droit, <i>Search for / Binary string</i> (Ctrl B). On 
+		tape <i>acquérir</i> en prenant soin de décocher <i>Case sensitive</i> et en cochant <i>
+		Entire scope</i>. On a un seul résulat en <span class="adresse">004555AB</span>.
+
+		<pre><div class="code">0045556C     43                 DB 43                                <font color="#006080">;  CHAR 'C'</font>
+0045556D     72                 DB 72                                <font color="#006080">;  CHAR 'r'</font>
+0045556E     61                 DB 61                                <font color="#006080">;  CHAR 'a'</font>
+0045556F     63                 DB 63                                <font color="#006080">;  CHAR 'c'</font>
+00455570     6B                 DB 6B                                <font color="#006080">;  CHAR 'k'</font>
+00455571     6D                 DB 6D                                <font color="#006080">;  CHAR 'm'</font>
+00455572     65                 DB 65                                <font color="#006080">;  CHAR 'e'</font>
+00455573   . 20                 DB 20                                <font color="#006080">;  CHAR ' '</font>
+00455574   . 55 43 54 20 2D 20 &gt;ASCII "UCT - [HolyView]"
+00455584   . 0D 56 65 72 73 69 &gt;ASCII ".Version non enr"
+00455594     65                 DB 65                                <font color="#006080">;  CHAR 'e'</font>
+00455595     67                 DB 67                                <font color="#006080">;  CHAR 'g'</font>
+00455596     69                 DB 69                                <font color="#006080">;  CHAR 'i'</font>
+00455597     73                 DB 73                                <font color="#006080">;  CHAR 's'</font>
+00455598     74                 DB 74                                <font color="#006080">;  CHAR 't'</font>
+00455599     72                 DB 72                                <font color="#006080">;  CHAR 'r'</font>
+0045559A     61                 DB 61                                <font color="#006080">;  CHAR 'a'</font>
+0045559B     62                 DB 62                                <font color="#006080">;  CHAR 'b'</font>
+0045559C     6C                 DB 6C                                <font color="#006080">;  CHAR 'l'</font>
+0045559D     65                 DB 65                                <font color="#006080">;  CHAR 'e'</font>
+0045559E     20                 DB 20                                <font color="#006080">;  CHAR ' '</font>
+0045559F     2E                 DB 2E                                <font color="#006080">;  CHAR '.'</font>
+004555A0     2E                 DB 2E                                <font color="#006080">;  CHAR '.'</font>
+004555A1     2E                 DB 2E                                <font color="#006080">;  CHAR '.'</font>
+004555A2     0D                 DB 0D
+004555A3     4D                 DB 4D                                <font color="#006080">;  CHAR 'M'</font>
+004555A4     65                 DB 65                                <font color="#006080">;  CHAR 'e'</font>
+004555A5     72                 DB 72                                <font color="#006080">;  CHAR 'r'</font>
+004555A6     63                 DB 63                                <font color="#006080">;  CHAR 'c'</font>
+004555A7     69                 DB 69                                <font color="#006080">;  CHAR 'i'</font>
+004555A8     20                 DB 20                                <font color="#006080">;  CHAR ' '</font>
+004555A9     64                 DB 64                                <font color="#006080">;  CHAR 'd'</font>
+004555AA     27                 DB 27                                <font color="#006080">;  CHAR '''</font>
+004555AB     61                 DB 61                                <font color="#006080">;  CHAR 'a'</font>
+004555AC     63                 DB 63                                <font color="#006080">;  CHAR 'c'</font>
+004555AD     71                 DB 71                                <font color="#006080">;  CHAR 'q'</font>
+004555AE     75                 DB 75                                <font color="#006080">;  CHAR 'u'</font>
+004555AF     E9                 DB E9
+004555B0   . 72 69 72 20 6C 61 &gt;ASCII "rir la version e"
+004555C0   . 6E 72 65 67 69 73 &gt;ASCII "nregistrable :-)"
+004555D0   . 00                 ASCII 0</div></pre>
+		
+		Le message commence en <span class="adresse">0045556C</span>. Pour l'affichage de ce message, 
+		il faut bien que le programme pointe vers son adresse. On va donc rechercher la constante 
+		<span class="adresse">0045556C</span> dans le listing. Clique droit, <i>Search for / Constant
+		</i>. On a une occurence juste au dessus en <span class="adresse">00455558</span>. (On peut 
+		aussi cliquer sur la ligne à l'@ <span class="adresse">0045556C</span>. Clique droit, <i>
+		Find references to / Selected address</i> (Ctrl-R).
+
+		<pre><div class="code">00455558   . B8 6C554500        MOV <font color="#A06000">EAX</font>,modif2.0045556C              <font color="#006080">;  @ du message</font>
+0045555D   . E8 2221FDFF        <font color="#007000">CALL</font> modif2.00427684                 <font color="#006080">;  Affichage du message (fonction ShowMessage)</font>
+00455562   . C3                 <font color="#700090">RETN</font></div></pre>
+		
+		Il ne reste plus qu'à "nopper" tout ca :). Double clique sur l'instruction dans le listing, 
+		puis on tape <i>nop</i> afin que les 2 instructions soient remplacées par des nop.
+
+		<pre><div class="code">00455558     90                 NOP                                  <font color="#006080">;  @ du message</font>
+00455559     90                 NOP
+0045555A     90                 NOP
+0045555B     90                 NOP
+0045555C     90                 NOP
+0045555D     90                 NOP                                  <font color="#006080">;  Affichage du message (ShowMessage)</font>
+0045555E     90                 NOP
+0045555F     90                 NOP
+00455560     90                 NOP
+00455561     90                 NOP
+00455562   . C3                 <font color="#700090">RETN</font></div></pre>
+		
+		Il est enfin l'heure de voir ce que tout cela donne. On exécute le programme (F9). Cool ! 
+		plus de vilain message :). On réinitialise le programme (Ctrl F2) puis on "noppe" comme 
+		au dessus.<br>
+		Il ne reste qu'à enregistrer les modifications. Clique droit, <i>Copy to executable / All 
+		modifications / Copy all ( / Oui)</i>. Clique droit dans la nouvelle fenêtre, <i>Save file 
+		/ Enregistrer / Oui</i>.<br>
+		Le fichier a été modifié, il est désormais possible de le lancer depuis le disque.<br><br>
+		Il ne reste qu'à faire de même pour le message lorsque l'on ferme le programme :
+		
+		<pre><div class="code">004554B8   . B8 CC544500         MOV <font color="#A06000">EAX</font>,_origina.004554CC           <font color="#006080">;  @ du message - nopper</font>
+004554BD   . E8 C221FDFF         <font color="#007000">CALL</font> _origina.00427684              <font color="#006080">;  Affichage msg (ShowMessage) - nopper</font>
+004554C2   . C3                  <font color="#700090">RETN</font>
+004554C3     00                  DB 00
+004554C4     FF                  DB FF
+004554C5     FF                  DB FF
+004554C6     FF                  DB FF
+004554C7     FF                  DB FF
+004554C8     37                  DB 37                               <font color="#006080">;  CHAR '7'</font>
+004554C9     00                  DB 00
+004554CA     00                  DB 00
+004554CB     00                  DB 00
+004554CC     56                  DB 56                               <font color="#006080">;  CHAR 'V'</font>
+004554CD     65                  DB 65                               <font color="#006080">;  CHAR 'e'</font>
+004554CE     72                  DB 72                               <font color="#006080">;  CHAR 'r'</font>
+004554CF     73                  DB 73                               <font color="#006080">;  CHAR 's'</font>
+004554D0     69                  DB 69                               <font color="#006080">;  CHAR 'i'</font>
+004554D1     6F                  DB 6F                               <font color="#006080">;  CHAR 'o'</font>
+004554D2     6E                  DB 6E                               <font color="#006080">;  CHAR 'n'</font>
+004554D3     20                  DB 20                               <font color="#006080">;  CHAR ' '</font>
+004554D4     64                  DB 64                               <font color="#006080">;  CHAR 'd'</font>
+004554D5     65                  DB 65                               <font color="#006080">;  CHAR 'e'</font>
+004554D6     20                  DB 20                               <font color="#006080">;  CHAR ' '</font>
+004554D7     64                  DB 64                               <font color="#006080">;  CHAR 'd'</font>
+004554D8     E9                  DB E9
+004554D9   . 6D 6F 6E 73 74 72 6&gt;ASCII "monstration, Mer"
+004554E9   . 63 69 20 64 65 20 7&gt;ASCII "ci de vous enreg"
+004554F9   . 69 73 74 72 65 72 2&gt;ASCII "istrer ...",0</div></pre>
+		
+
+	</p>
+	<p>
+		<div class="soustitre2">Seconde approche : SDR - 2</div>
+		Dans cette seconde étape nous allons rechercher la procédure lancée au démarrage de l'application 
+		et celle lancée à sa fermeture. Nous avons vu dans l'éditeur de ressource les lignes suivantes : 
+		<i>OnCreate = FormCreate</i> et <i>OnCloseQuery = FormCloseQuery</i>. Il nous faut maintenant 
+		localiser ces 2 fonctions dans le listing ASM.<br>
+		Il suffit de faire une simple recherche dans les SDR avec <i>FormCreate</i> et <i>FormCloseQuery
+		</i>. On trouve les occurences suivantes :
+		
+		<pre><div class="code">00455443     00                   DB 00
+00455444   . 58554500             DD modif2.00455558                    <font color="#006080">;  l'@ de la procedure -&gt; $455558</font>
+00455448   . 0A                   DB 0A
+00455449   . 46 6F 72 6D 43 72 65&gt;ASCII "FormCreate"                    <font color="#006080">;  Procedure lancee au demarrage</font>
+00455453     11                   DB 11</div></pre>
+		
+		<pre><div class="code">004553F8     00                   DB 00
+004553F9   . B8544500             DD modif2_2.004554B8                  <font color="#006080">;  l'@ de la procedure -&gt; $4554B8</font>
+004553FD   . 0E                   DB 0E
+004553FE   . 46 6F 72 6D 43 6C 6F&gt;ASCII "FormCloseQuery"                <font color="#006080">;  Procedure lancee quand on quitte</font>
+0045540C     14                   DB 14</div></pre>
+		
+		L'@ de chaque procédure est en fait "en dur" dans l'exécutable, placée juste avant le nom de la 
+		procédure. Nous avons ici les @ <span class="adresse">455558</span> et <span class="adresse">4554B8
+		</span>. Un coup d'oeil à ces @ nous ramène à ce que nous avons vu précedemment :
+		
+		<pre><div class="code">00455558   . B8 6C554500         MOV <font color="#A06000">EAX</font>,modif2.0045556C            <font color="#006080">;  @ du message - nopper</font>
+0045555D   . E8 2221FDFF         <font color="#007000">CALL</font> modif2.00427684               <font color="#006080">;  Affichage msg (fonction ShowMessage) - nopper</font>
+00455562   . C3                  <font color="#700090">RETN</font></div></pre>
+		
+		<pre><div class="code">004554B8   . B8 CC544500         MOV <font color="#A06000">EAX</font>,_origina.004554CC          <font color="#006080">;  @ du message - nopper</font>
+004554BD   . E8 C221FDFF         <font color="#007000">CALL</font> _origina.00427684             <font color="#006080">;  Affichage msg (ShowMessage) - nopper</font>
+004554C2   . C3                  <font color="#700090">RETN</font></div></pre>
+
+
+	</p>
+	<p>
+		<div class="soustitre2">Troisième approche : APIs Delphi</div>
+		Le but est ici de poser un breakpoint sur la fonction de Delphi qui permet l'affichage d'un 
+		message. En effet Delphi utilise ses propres APIs afin de simplifier la programmation pour 
+		le codeur. La principale fonction permettant l'affichage d'un message est <i>ShowMessage()
+		</i>. Etudions cette fonction :<br>
+		Voici l'affichage d'un simple message lors du clic sur un bouton en Delphi :
+		
+		<pre><code><div class="code2">. <b>procedure</b> TForm1.Button1Click(Sender: TObject);
+. <b>begin</b>
+.   ShowMessage(<font color="#A03000">'Bonjour !'</font>);
+. <b>end</b>;</div></code></pre>
+		
+		Et le code ASM de ShowMessage ... (Breapoint puis Fenêtre CPU de Delphi -> Ctrl-Alt-C)
+		
+		<pre><div class="code">ShowMessage:
+004274EC 83C9FF           or ecx,-$01
+004274EF 83CAFF           or edx,-$01
+004274F2 E801000000       call ShowMessagePos
+004274F7 C3               ret</div></pre>
+
+		Sachant que les APIs de Delphi sont forcément inclues dans l'exécutable au moment de la 
+		compilation, il devient assez facile de retrouver le code ASM de la fonction voulue, et 
+		donc de poser un point d'arrêt.<br>
+		Revenons à notre crackme :)<br>
+		Nous allons rechercher dans le listing le code de l'API ShowMessage qui ne changera jamais 
+		: ici, les deux <i>or</i> seront toujours présents.<br>
+		On fait donc une recherche dans le listing ASM : clique droit, <i>Search for / Sequence 
+		of commands</i> (Ctrl-S). On inscrit ceci dans la fenêtre (on coche <i>Entire block</i>) :
+		
+		<pre><div class="code">or ecx,-01
+or edx,-01</div></pre>
+
+		Une seule occurence est trouvée, il s'agit du code de la fonction ShowMessage().
+		
+		<pre><div class="code">00427684  /$ 83C9 FF              OR <font color="#A06000">ECX</font>,FFFFFFFF
+00427687  |. 83CA FF              OR <font color="#A06000">EDX</font>,FFFFFFFF
+0042768A  |. E8 01000000          <font color="#007000">CALL</font> modif2.00427690
+0042768F  \. C3                   <font color="#700090">RETN</font></div></pre>
+
+		Le $ devant le code indique le début de la fonction. On clique sur cette ligne. Dans la 
+		fenêtre juste en dessous du listing on peut lire :<br>
+		<i>Local calls from 004550E1, 004550ED, 004550F9, 004554BD, 0045555D</i><br>
+		Ce sont les @ qui appellent cette fonction. Si l'on regarde à chacune de ces @, 2 nous 
+		intéresse pour l'instant : <span class="adresse">004554BD</span> et <span class="adresse">
+		0045555D</span>.<br>
+		On retombe sur ce qu'on a vu précédemment ... ;-)<br><br>
+		
+		On vient de voir rapidement l'utilisation des APIs Delphi. Des programmes tels DéDé ou IDA 
+		permettent d'afficher les APIs Delphi dans leur code désassemblé. Le principe est similaire, 
+		c'est à dire qu'ils utilisent des signatures qui existent pour chaque fonction. La technologie 
+		utilisée s'appelle d'ailleurs FLIRT. DéDé 3.50.02 permet d'afficher les signatures de chaque 
+		fonction (<i>Options / Symboles / DSF / Load / VCL7.dsf / View functions [ / Filter / 
+		Showmessage] )</i><br>
+		Je recommande très vivement d'aller lire les essais de DaFixer (DéDé) qui sont très riches 
+		d'enseignement.<br>
+		PS : il me semble qu'il existe un plug-in pour ajouter ces signatures à OllyDbg mais je n'ai 
+		jamais essayé ... 8)
+
+
+	</p>
+	<p>
+		<div class="ligne"></div>
+		
+		On va maintenant modifier rapidement l'intitulé du crackme afin que ce soit tout beau :). 
+		Pour cela on utilise notre éditeur héxa préféré, pour moi ce sera : Hex Workshop. On charge 
+		le crackme et on cherche la chaîne de texte <i>Version démo</i>. Celle-ci ne devrait pas 
+		être trouvée car les caractères spéciaux (<i>é</i>) sont ... spéciaux justement :)<br>
+		On recherche alors la chaîne de texte <i>Version d</i>. On obtiens plusieurs occurences 
+		mais une seule nous intéresse, celle en <span class="adresse">$00065F0E</span>. On va modifier 
+		le texte tout en gardant le même nombre de caractères ! Par exemple on passe de ça :
+
+		<pre><div class="code">00065EF1 4372 6163 6B6D 6520 5543 5420 2D20 4465 6C70 6869 2070 6F77 6572 202D Crackme UCT - Delphi power -
+00065F0D 2056 6572 7369 6F6E 2064 C3A9 6D6F 0C43 6C69 656E 7448 6569 6768 7403  Version d..mo.ClientHeight.</div></pre>
+		
+		A ça :
+
+		<pre><div class="code">00065EF1 4372 6163 6B6D 6520 5543 5420 2D20 4465 6C70 6869 2070 6F77 6572 202D Crackme UCT - Delphi power -
+00065F0D 2048 656C 6C6F 2021 2100 0000 0000 0C43 6C69 656E 7448 6569 6768 7403  Hello !!......ClientHeight.</div></pre>
+		
+		Il ne reste plus qu'à enregistrer et c'est bon !<br>
+		On a fini cette deuxième partie ... chouette ! :)
+	</p>
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">3) Faire de cette version une version enregistrable</div>
+	
+	<p>
+		Il va maintenant falloir réactiver le menu <i>Enregistrer le logiciel ...</i> qui est grisé. 
+		Pour cela nous n'allons n'utiliser qu'OllyDbg, bien qu'ici il soit possible d'utiliser un 
+		éditeur de ressource ou même DéDé :).
+	</p>
+	<p>
+	  Chargeons donc notre programme avec OllyDbg. Une des fonctions API permettant d'activer / 
+	  désactiver un menu est <i>EnableMenuItem</i>. Une petite recherche dans les noms de 
+	  fonctions (Ctrl N) nous donne ceci :
+	  
+	  <pre><div class="code">00459620   .idata     Import    user32.EnableMenuItem</div></pre>
+
+		Clique droit / <i>Set breapoint on every reference</i><br>
+		Si l'on exécute (F9), le programme breake plusieurs fois mais le code n'est pas très 
+		intéressant ... Enfin si l'on clique sur le menu <i>Aide</i>, rien ne se passe :(<br>
+		Pourquoi que ca marche pas heinn ????<br>
+	</p>
+	<p>
+	  Regardons les points d'arrêts que nous avons mis :
+	  
+	  <pre><div class="code">Breakpoints
+Address    Module     Active      Disassembly                                    Comment
+004064D0   modif3     Always      JMP DWORD PTR DS:[&lt;&user32.EnableMenuItem&gt;]    Inutile
+00445B45   modif3     Always      CALL &lt;JMP.&user32.EnableMenuItem&gt;              Interessant :)
+0044F135   modif3     Always      CALL &lt;JMP.&user32.EnableMenuItem&gt;              Pas terrible
+0044F151   modif3     Always      CALL &lt;JMP.&user32.EnableMenuItem&gt;              Pas terrible</div></pre>
+
+		Allons à l'@ <span class="adresse">$00445B45</span>. Vu l'aspect du code il semblerait que 
+		l'API EnableMenuItem soit englobée dans une fonction de la VCL de Delphi (comme souvent). 
+		Si l'on remonte au début de la fonction, à l'@ <span class="adresse">445AE0</span>, on peut 
+		voir qu'elle est appelée à 4 adresses. Pour ne pas s'embéter à aller voir à toutes ces @, 
+		on place un point d'arrêt (F2) à l'@ <span class="adresse">445AE0</span>. On clique sur le 
+		menu <i>Aide</i> dans le crackme, et là OllyDbg breake :). On trace (F8) jusqu'à atteindre 
+		l'instruction <i>RETN</i>. On remarque au passage que ca jumpe rapidement vers la fin de la 
+		sous-fonction. On arrive ici :
+
+		<pre><div class="code">004555D4     33D2           XOR <font color="#A06000">EDX</font>,<font color="#A06000">EDX</font>                              <font color="#006080">;  Si edx=0 alors menu desactive</font>
+004555D6   . 8B80 10030000  MOV <font color="#A06000">EAX</font>,DWORD PTR DS:[<font color="#A06000">EAX</font>+310]           <font color="#006080">;  @ du menu dans eax</font>
+004555DC   . E8 FF04FFFF    <font color="#007000">CALL</font> modif3.00445AE0                     <font color="#006080">;  Fonction TMenuItem.SetEnabled() de la VCL</font>
+004555E1   . C3             <font color="#700090">RETN</font></div></pre>
+
+		Si l'on regarde un peu le code au-dessus, celui en-dessous, et que l'on remarque qu'on est 
+		en bas du listing, alors on peut facilement en déduire que l'on est dans une des fonctions 
+		de clic sur un bouton, démarrage de l'application .... Ici, on est dans la fonction qui 
+		s'exécute lorsque l'on clique sur le menu <i>Aide</i><br>
+		PS : pour ceux qui ne comprennent rien :) , regardez avec DéDé dans l'onglet <i>Procedures 
+		...</i><br>
+		Le code démarre donc en <span class="adresse">$004555D4</span>. On en déduit que le clique 
+		sur le menu <i>Aide</i> ne fait que désactiver un des éléments (en l'occurrence le premier).
+	</p>
+	<p>
+	  Revenons un instant sur le fait que l'API EnableMenuItem n'était pas exécuté alors que la 
+	  fonction a pour but de le faire.<br>
+	  Delphi vérifie l'état d'un menu avant de le cocher, de l'activer, de le désactiver ... Si 
+	  cet état n'a pas changé alors il est inutile de perdre du temps à faire l'opération, vu que 
+	  le résultat sera le même. Voila ! Cela peut juste poser quelques problème lors du debuggage 
+	  quand on ne connait pas trop bien la facon de procéder de Delphi. ;)
+	</p>
+	<p>
+		La question du jour : Comment allons-nous procéder pour inverser l'état, c'est à dire passer 
+		de inactif à actif ....<br>
+		En effet il faut modifier l'instruction en <span class="adresse">$004555D4</span> de façon à 
+		avoir edx à 1. La seule solution qui permet de ne pas supprimer d'informations est de faire 
+		un <i>mov dl, 01</i> qui tient sur 2 octets. Cette solution n'est pas très propre mais bon ...
+		
+		<pre><div class="code">004555D4     B2 01          MOV <font color="#E07000">DL</font>,1                                 <font color="#006080">;  Si edx=1 alors menu active</font>
+004555D6   . 8B80 10030000  MOV <font color="#A06000">EAX</font>,DWORD PTR DS:[<font color="#A06000">EAX</font>+310]           <font color="#006080">;  @ du menu dans eax</font>
+004555DC   . E8 FF04FFFF    <font color="#007000">CALL</font> modif3.00445AE0                     <font color="#006080">;  Fonction TMenuItem.SetEnabled() de la VCL</font>
+004555E1   . C3             <font color="#700090">RETN</font></div></pre>
+
+	</p>
+	<p>
+		On lance le prog. Cool le menu est activé !<br>
+	  Il ne reste qu'à enregistrer les modifications (après avoir fait un Ctrl F2) comme précisé 
+	  plus haut et on passe à la suite :)
+	</p>
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">4) S'enregistrer en utilisant n'importe quel nom+sérial</div>
+	
+	<p>
+		Si l'on teste l'enregistrement du programme avec nom + pass bidons, on a le droit à un joli 
+		message : <i>C'est faux !</i>. On va essayer de trouver à quel endroit s'affiche ce message. 
+		2 possibilités pour trouver : SDR et APIs Delphi (voir précédemment). Dans tous les cas on 
+		arrive en <span class="adresse">00455010</span>. Il s'agit de la procédure de vérification 
+		du sérial.
+
+		<pre><div class="code">00455010  /. 55             PUSH <font color="#A06000">EBP</font>
+00455011  |. 8BEC           MOV <font color="#A06000">EBP</font>,<font color="#A06000">ESP</font>
+00455013  |. 6A 00          PUSH 0
+00455015  |. 6A 00          PUSH 0
+00455017  |. 6A 00          PUSH 0
+00455019  |. 53             PUSH <font color="#A06000">EBX</font>
+0045501A  |. 56             PUSH <font color="#A06000">ESI</font>
+0045501B  |. 8BD8           MOV <font color="#A06000">EBX</font>,<font color="#A06000">EAX</font>
+0045501D  |. 33C0           XOR <font color="#A06000">EAX</font>,<font color="#A06000">EAX</font>
+0045501F  |. 55             PUSH <font color="#A06000">EBP</font>
+00455020  |. 68 19514500    PUSH _origina.00455119
+00455025  |. 64:FF30        PUSH DWORD PTR FS:[<font color="#A06000">EAX</font>]
+00455028  |. 64:8920        MOV DWORD PTR FS:[<font color="#A06000">EAX</font>],<font color="#A06000">ESP</font>
+0045502B  |. 8D55 FC        LEA <font color="#A06000">EDX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+0045502E  |. 8B83 FC020000  MOV <font color="#A06000">EAX</font>,DWORD PTR DS:[<font color="#A06000">EBX</font>+2FC]
+00455034  |. E8 B7F0FDFF    <font color="#007000">CALL</font> _origina.004340F0
+00455039  |. 8D55 F8        LEA <font color="#A06000">EDX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+0045503C  |. 8B83 00030000  MOV <font color="#A06000">EAX</font>,DWORD PTR DS:[<font color="#A06000">EBX</font>+300]
+00455042  |. E8 A9F0FDFF    <font color="#007000">CALL</font> _origina.004340F0
+00455047  |. 8B45 FC        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+0045504A  |. E8 11F2FAFF    <font color="#007000">CALL</font> _origina.00404260
+0045504F  |. 83F8 04        CMP <font color="#A06000">EAX</font>,4
+00455052  |. 0F8C 9C000000  <font color="#900000">JL </font>_origina.004550F4                     <font color="#006080">;  vers bad boy</font>
+00455058  |. 8B45 F8        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+0045505B  |. E8 00F2FAFF    <font color="#007000">CALL</font> _origina.00404260
+00455060  |. 83F8 04        CMP <font color="#A06000">EAX</font>,4
+00455063  |. 0F8C 8B000000  <font color="#900000">JL </font>_origina.004550F4
+00455069  |. 8B45 FC        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+0045506C  |. 0FB600         MOVZX <font color="#A06000">EAX</font>,BYTE PTR DS:[<font color="#A06000">EAX</font>]
+0045506F  |. 8B55 F8        MOV <font color="#A06000">EDX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+00455072  |. 0FB652 03      MOVZX <font color="#A06000">EDX</font>,BYTE PTR DS:[<font color="#A06000">EDX</font>+3]
+00455076  |. 03C2           ADD <font color="#A06000">EAX</font>,<font color="#A06000">EDX</font>
+00455078  |. 8B55 FC        MOV <font color="#A06000">EDX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+0045507B  |. 0FB652 02      MOVZX <font color="#A06000">EDX</font>,BYTE PTR DS:[<font color="#A06000">EDX</font>+2]
+0045507F  |. 8B4D F8        MOV <font color="#A06000">ECX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+00455082  |. 0FB649 01      MOVZX <font color="#A06000">ECX</font>,BYTE PTR DS:[<font color="#A06000">ECX</font>+1]
+00455086  |. 0FAFD1         IMUL <font color="#A06000">EDX</font>,<font color="#A06000">ECX</font>
+00455089  |. 03C2           ADD <font color="#A06000">EAX</font>,<font color="#A06000">EDX</font>
+0045508B  |. 8945 F4        MOV DWORD PTR SS:[<font color="#A06000">EBP</font>-C],<font color="#A06000">EAX</font>
+0045508E  |. 33DB           XOR <font color="#A06000">EBX</font>,<font color="#A06000">EBX</font>
+00455090  |. 8B45 F8        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+00455093  |. E8 C8F1FAFF    <font color="#007000">CALL</font> _origina.00404260
+00455098  |. 85C0           TEST <font color="#A06000">EAX</font>,<font color="#A06000">EAX</font>
+0045509A  |. 7E 13          <font color="#900000">JLE </font>SHORT _origina.004550AF
+0045509C  |. BA 01000000    MOV <font color="#A06000">EDX</font>,1
+004550A1  |&gt; 8B4D F8        /MOV <font color="#A06000">ECX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+004550A4  |. 0FB64C11 FF    |MOVZX <font color="#A06000">ECX</font>,BYTE PTR DS:[<font color="#A06000">ECX</font>+<font color="#A06000">EDX</font>-1]
+004550A9  |. 03D9           |ADD <font color="#A06000">EBX</font>,<font color="#A06000">ECX</font>
+004550AB  |. 42             |INC <font color="#A06000">EDX</font>
+004550AC  |. 48             |DEC <font color="#A06000">EAX</font>
+004550AD  |.^75 F2          \<font color="#900000">JNZ </font>SHORT _origina.004550A1
+004550AF  |&gt; BE A9070000    MOV <font color="#A06000">ESI</font>,7A9
+004550B4  |. 8B45 FC        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+004550B7  |. E8 A4F1FAFF    <font color="#007000">CALL</font> _origina.00404260
+004550BC  |. 83E8 03        SUB <font color="#A06000">EAX</font>,3
+004550BF  |. 7C 14          <font color="#900000">JL </font>SHORT _origina.004550D5
+004550C1  |. 40             INC <font color="#A06000">EAX</font>
+004550C2  |. BA 03000000    MOV <font color="#A06000">EDX</font>,3
+004550C7  |&gt; 8B4D FC        /MOV <font color="#A06000">ECX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+004550CA  |. 0FB64C11 FF    |MOVZX <font color="#A06000">ECX</font>,BYTE PTR DS:[<font color="#A06000">ECX</font>+<font color="#A06000">EDX</font>-1]
+004550CF  |. 03F1           |ADD <font color="#A06000">ESI</font>,<font color="#A06000">ECX</font>
+004550D1  |. 42             |INC <font color="#A06000">EDX</font>
+004550D2  |. 48             |DEC <font color="#A06000">EAX</font>
+004550D3  |.^75 F2          \<font color="#900000">JNZ </font>SHORT _origina.004550C7
+004550D5  |&gt; 335D F4        XOR <font color="#A06000">EBX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-C]
+004550D8  |. 3BF3           CMP <font color="#A06000">ESI</font>,<font color="#A06000">EBX</font>
+004550DA  |. 75 0C          <font color="#900000">JNZ </font>SHORT _origina.004550E8              <font color="#006080">;  vers bad boy ...</font>
+004550DC  |. B8 30514500    MOV <font color="#A06000">EAX</font>,_origina.00455130                <font color="#006080">;  Good Boy :)</font>
+004550E1  |. E8 9E25FDFF    <font color="#007000">CALL</font> _origina.00427684
+004550E6  |. EB 16          <font color="#0000C0">JMP </font>SHORT _origina.004550FE
+004550E8  |&gt; B8 64514500    MOV <font color="#A06000">EAX</font>,_origina.00455164                <font color="#006080">;  ASCII "C'est faux !"</font>
+004550ED  |. E8 9225FDFF    <font color="#007000">CALL</font> _origina.00427684
+004550F2  |. EB 0A          <font color="#0000C0">JMP </font>SHORT _origina.004550FE
+004550F4  |&gt; B8 64514500    MOV <font color="#A06000">EAX</font>,_origina.00455164                <font color="#006080">;  ASCII "C'est faux !"</font>
+004550F9  |. E8 8625FDFF    <font color="#007000">CALL</font> _origina.00427684
+004550FE  |&gt; 33C0           XOR <font color="#A06000">EAX</font>,<font color="#A06000">EAX</font>
+00455100  |. 5A             POP <font color="#A06000">EDX</font>
+00455101  |. 59             POP <font color="#A06000">ECX</font>
+00455102  |. 59             POP <font color="#A06000">ECX</font>
+00455103  |. 64:8910        MOV DWORD PTR FS:[<font color="#A06000">EAX</font>],<font color="#A06000">EDX</font>
+00455106  |. 68 20514500    PUSH _origina.00455120
+0045510B  |&gt; 8D45 F8        LEA <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+0045510E  |. BA 02000000    MOV <font color="#A06000">EDX</font>,2
+00455113  |. E8 ACEEFAFF    <font color="#007000">CALL</font> _origina.00403FC4
+00455118  \. C3             <font color="#700090">RETN</font></div></pre>
+
+		Il nous faut donc aller en <span class="adresse">004550DC</span>. Pour cela la facon la plus 
+		simple est de modifier le jl en <span class="adresse">00455052</span> par un jmp vers la bonne 
+		adresse.
+		
+		<pre><div class="code">0045504F  |. 83F8 04        CMP <font color="#A06000">EAX</font>,4
+00455052     90             NOP
+00455053     E9 84000000    <font color="#0000C0">JMP </font>modif4.004550DC                      <font color="#006080">;  vers good boy :)</font>
+00455058  |. 8B45 F8        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]</div></pre>
+
+		Et voila on a le droit au message de réussite à chaque fois ... :)<br>
+		On enregistre et on passe à la partie sérieuse ;)
+	</p>
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">5) S'enregistrer en faisant un keygen</div>
+	
+	<p>
+		Bon là c'est un peu plus marrant :)<br>
+		On va poser un breakpoint (F2) en <span class="adresse">00455047</span> afin de voir en détail 
+		ce que fait ce petit crackme ... On rentre par exemple comme nom : <i>uctteam</i> et comme 
+		pass : <i>1337</i> :). Voila le résultat de l'analyse :
+		
+		<pre><div class="code">00455047  |. 8B45 FC        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]           <font color="#006080">;  nom</font>
+0045504A  |. E8 11F2FAFF    <font color="#007000">CALL</font> modif3.00404260
+0045504F  |. 83F8 04        CMP <font color="#A06000">EAX</font>,4                              <font color="#006080">;  nb carac du nom = 4 ?</font>
+00455052  |. 0F8C 9C000000  <font color="#900000">JL </font>modif3.004550F4                     <font color="#006080">;  -&gt; bad boy si &lt;4</font>
+00455058  |. 8B45 F8        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]           <font color="#006080">;  serial</font>
+0045505B  |. E8 00F2FAFF    <font color="#007000">CALL</font> modif3.00404260
+00455060  |. 83F8 04        CMP <font color="#A06000">EAX</font>,4                              <font color="#006080">;  nb carac du serial = 4 ?</font>
+00455063  |. 0F8C 8B000000  <font color="#900000">JL </font>modif3.004550F4                     <font color="#006080">;  -&gt; bad boy si &lt;4</font>
+00455069  |. 8B45 FC        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+0045506C  |. 0FB600         MOVZX <font color="#A06000">EAX</font>,BYTE PTR DS:[<font color="#A06000">EAX</font>]            <font color="#006080">;  nom[1]</font>
+0045506F  |. 8B55 F8        MOV <font color="#A06000">EDX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+00455072  |. 0FB652 03      MOVZX <font color="#A06000">EDX</font>,BYTE PTR DS:[<font color="#A06000">EDX</font>+3]          <font color="#006080">;  serial[4]</font>
+00455076  |. 03C2           ADD <font color="#A06000">EAX</font>,<font color="#A06000">EDX</font>                            <font color="#006080">;   eax = nom[1] + serial[4]</font>
+00455078  |. 8B55 FC        MOV <font color="#A06000">EDX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+0045507B  |. 0FB652 02      MOVZX <font color="#A06000">EDX</font>,BYTE PTR DS:[<font color="#A06000">EDX</font>+2]          <font color="#006080">;  nom[3]</font>
+0045507F  |. 8B4D F8        MOV <font color="#A06000">ECX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+00455082  |. 0FB649 01      MOVZX <font color="#A06000">ECX</font>,BYTE PTR DS:[<font color="#A06000">ECX</font>+1]          <font color="#006080">;  serial[2]</font>
+00455086  |. 0FAFD1         IMUL <font color="#A06000">EDX</font>,<font color="#A06000">ECX</font>                           <font color="#006080">;   edx = nom[3] * serial[2]</font>
+00455089  |. 03C2           ADD <font color="#A06000">EAX</font>,<font color="#A06000">EDX</font>                            <font color="#006080">;  eax = eax + edx</font>
+0045508B  |. 8945 F4        MOV DWORD PTR SS:[<font color="#A06000">EBP</font>-C],<font color="#A06000">EAX</font>
+0045508E  |. 33DB           XOR <font color="#A06000">EBX</font>,<font color="#A06000">EBX</font>
+00455090  |. 8B45 F8        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+00455093  |. E8 C8F1FAFF    <font color="#007000">CALL</font> modif3.00404260
+00455098  |. 85C0           TEST <font color="#A06000">EAX</font>,<font color="#A06000">EAX</font>
+0045509A  |. 7E 13          <font color="#900000">JLE </font>SHORT modif3.004550AF
+0045509C  |. BA 01000000    MOV <font color="#A06000">EDX</font>,1                              <font color="#006080">;  i=1</font>
+004550A1  |&gt; 8B4D F8        /MOV <font color="#A06000">ECX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-8]
+004550A4  |. 0FB64C11 FF    |MOVZX <font color="#A06000">ECX</font>,BYTE PTR DS:[<font color="#A06000">ECX</font>+<font color="#A06000">EDX</font>-1]     <font color="#006080">;  serial[i]</font>
+004550A9  |. 03D9           |ADD <font color="#A06000">EBX</font>,<font color="#A06000">ECX</font>                           <font color="#006080">;   ebx = ebx + serial[i]</font>
+004550AB  |. 42             |INC <font color="#A06000">EDX</font>
+004550AC  |. 48             |DEC <font color="#A06000">EAX</font>
+004550AD  |.^75 F2          \<font color="#900000">JNZ </font>SHORT modif3.004550A1
+004550AF  |&gt; BE A9070000    MOV <font color="#A06000">ESI</font>,7A9                            <font color="#006080">;  esi = $7A9</font>
+004550B4  |. 8B45 FC        MOV <font color="#A06000">EAX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+004550B7  |. E8 A4F1FAFF    <font color="#007000">CALL</font> modif3.00404260
+004550BC  |. 83E8 03        SUB <font color="#A06000">EAX</font>,3
+004550BF  |. 7C 14          <font color="#900000">JL </font>SHORT modif3.004550D5
+004550C1  |. 40             INC <font color="#A06000">EAX</font>
+004550C2  |. BA 03000000    MOV <font color="#A06000">EDX</font>,3                              <font color="#006080">;  i=3</font>
+004550C7  |&gt; 8B4D FC        /MOV <font color="#A06000">ECX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-4]
+004550CA  |. 0FB64C11 FF    |MOVZX <font color="#A06000">ECX</font>,BYTE PTR DS:[<font color="#A06000">ECX</font>+<font color="#A06000">EDX</font>-1]     <font color="#006080">;  nom[i]</font>
+004550CF  |. 03F1           |ADD <font color="#A06000">ESI</font>,<font color="#A06000">ECX</font>                           <font color="#006080">;   esi = esi + nom[i]</font>
+004550D1  |. 42             |INC <font color="#A06000">EDX</font>
+004550D2  |. 48             |DEC <font color="#A06000">EAX</font>
+004550D3  |.^75 F2          \<font color="#900000">JNZ </font>SHORT modif3.004550C7
+004550D5  |&gt; 335D F4        XOR <font color="#A06000">EBX</font>,DWORD PTR SS:[<font color="#A06000">EBP</font>-C]           <font color="#006080">;   ebx = ebx XOR $17C8 ($17C8 = eax)</font>
+004550D8  |. 3BF3           CMP <font color="#A06000">ESI</font>,<font color="#A06000">EBX</font>                            <font color="#006080">;  esi = ebx ?</font>
+004550DA  |. 75 0C          <font color="#900000">JNZ </font>SHORT modif3.004550E8              <font color="#006080">;  -&gt; si esi != ebx alors bad boy ....</font>
+004550DC  |. B8 30514500    MOV <font color="#A06000">EAX</font>,modif3.00455130                <font color="#006080">;  Good boy :)</font>
+004550E1  |. E8 9E25FDFF    <font color="#007000">CALL</font> modif3.00427684
+004550E6  |. EB 16          <font color="#0000C0">JMP </font>SHORT modif3.004550FE
+004550E8  |&gt; B8 64514500    MOV <font color="#A06000">EAX</font>,modif3.00455164                <font color="#006080">;  ASCII "C'est faux !"</font>
+004550ED  |. E8 9225FDFF    <font color="#007000">CALL</font> modif3.00427684
+004550F2  |. EB 0A          <font color="#0000C0">JMP </font>SHORT modif3.004550FE
+004550F4  |&gt; B8 64514500    MOV <font color="#A06000">EAX</font>,modif3.00455164                <font color="#006080">;  ASCII "C'est faux !"</font>
+004550F9  |. E8 8625FDFF    <font color="#007000">CALL</font> modif3.00427684
+004550FE  |&gt; 33C0           XOR <font color="#A06000">EAX</font>,<font color="#A06000">EAX</font></div></pre>
+
+		Résumons l'algorithme :
+
+		<pre><div class="code">. Si (Nom>=4 caracteres) ET (Serial>=4 caracteres)
+.   tmp1 = nom[1] + serial[4]
+.   tmp2 = nom[3] * serial[2]
+.   tmp3 = tmp1 + tmp2
+.
+.   tmp4 = 0
+.   Pour (i variant de 1 a longueur(serial))
+.     tmp4 = tmp4 + serial[i]
+.   Fin pour
+.
+.   tmp5 = $7A9
+.   Pour (i variant de 3 a longueur(nom))
+.     tmp5 = tmp5 + nom[i]
+.   Fin pour
+.  
+.   tmp4 = tmp4 XOR tmp3
+.  
+.   tmp5 = tmp4 ?
+. Fin si</div></pre>
+	</p>
+	<br>
+
+	<p>
+		Voila ce que nous allons faire afin de calculer un sérial à partir d'un nom :<br>
+		- Calcul de tmp5 d'après le nom<br>
+		- On impose une valeur à tmp3 afin que ca marche à chaque fois (plusieurs tests)<br>
+		- On calcule serial[2] et serial[4] d'après tmp3<br>
+		- On calcule tmp4 (tmp4 = tmp5 xor tmp3)<br>
+		- On en déduit le sérial ...
+	</p>
+	<br>
+	
+	<p>
+		<u>Détail du calcul :</u><br><br>
+		
+		tmp5 = $7A9 + nom[3] + nom[4] + ...<br><br>
+		
+		Soit tmp3 = 4000 (calculé pour fonctionner au mieux)<br>
+		tmp3 = tmp1 + tmp2<br>
+		tmp2 = 4000 - tmp1<br>
+		tmp2 = 4000 - nom[1] - serial[4]<br>
+		tmp2 + serial[4] = ( 4000 - nom[1] )<br>
+		( nom[3] * serial[2] ) + serial[4] = ( 4000 - nom[1] )<br><br>
+		
+		serial[2] et serial[4] sont les inconnues<br>
+		Pour résoudre cette équation on fait comme cela :<br><br>
+		
+		serial[2] = ( 4000 - nom[1] ) / nom[3]<br>
+		serial[4] = ( 4000 - nom[1] ) modulo nom[3]<br><br>
+		
+		Rappel : le modulo est le reste de la division ...<br>
+		L'algo devrait fonctionner pour à peu près tous les noms<br>
+		La valeur ASCII de serial[4] pourra être comprise entre 0 et ASCII(nom[3])-1<br><br>
+		
+		tmp4 = tmp5 xor tmp3 = tmp5 xor 4000<br><br>
+		
+		On trouve un sérial valide selon la valeur de tmp4 :)
+	</p>
+	<br>
+	
+	<p>
+		<u>Essai avec un nom :</u><br><br>
+			
+		Prenons comme nom : <i>uctteam</i><br><br>
+		
+		Valeurs ASCII :<br>
+		- u : 117<br>
+		- c : 99<br>
+		- t : 116<br>
+		- e : 101<br>
+		- a : 97<br>
+		- m : 109<br><br>
+		
+		tmp5 = $7A9 + 116 + 116 + 101 + 97 + 109<br>
+		tmp5 = 2500<br><br>
+		
+		tmp3 = 4000<br>
+		tmp2 = 4000 - 117<br>
+		tmp2 = 3883<br><br>
+		
+		33 * 116 = 3828<br>
+		33 * 116 + 55 = 3883<br><br>
+		
+		=> serial[2] = 33 = "!"<br>
+		=> serial[4] = 55 = "7"<br><br>
+		
+		tmp4 = 2500 xor 4000 = 1636<br><br>
+		
+		On cherche les caractères du sérial à l'exception de serial[2] et serial[4]<br><br>
+		
+		1636 - ( 33 + 55 ) = 1548<br><br>
+		
+		1548 correspond à l'addition de la valeur ASCII de 12 caractères "z" + 1 caractère "T"<br>
+		Le sérial pourra donc être : <i>z!z7zzzzzzzzzzT</i>
+	</p>
+	<br>
+	
+	<p>
+		<u>Le keygen :</u><br><br>
+		Le keygen que j'ai programmé a été fait sous Delphi ...<br>
+		<a href="src_keygen.rar"><i>Download ...</i></a>
+	</p>
+</div>
+
+
+
+<div class="paragraphe">
+	<div class="soustitre">Outroduction ...</div>
+	
+	<p>
+		J'espère que ce petit crackme vous aura appris des choses, notamment sur le débuggage 
+		d'applications Delphi.<br>
+		Je me suis bien amusé à faire le keygen, étant donné que j'avais fait l'algo sans savoir 
+		s'il serait possible de le reverser :). Enfin je m'en suis sortis sans brute-force pour 
+		une fois !!!<br><br>
+		
+		Je voudrais remercier certaines personnes pour ce qu'elles m'ont apportés :<br>
+		Deamon, BeatriX, +Analyst, Lautheking, Kef, elooo, Crisanar, Mars, Clandestino, SeVen, 
+		mimas, Candirù, Randiox, etranger, Neitsa, BigBang, KasBX, DaFixer, Kaine, DelphiCool 
+		... et les autres  :)<br><br><br>
+		
+		<i>[HolyView] - UCT - 2004/2005</i>
+	</p>
+</div>
+
+
+</body>
+
+
+</html>

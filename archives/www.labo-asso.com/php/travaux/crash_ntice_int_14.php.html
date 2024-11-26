@@ -1,0 +1,608 @@
+<html>
+<head>
+<title>-=&curren; Labo Skopia &curren;=-</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="Yoyo">
+<meta name="keywords" content="reverse engineering,
+							   informatique,
+							   informatics,
+							   computer science,
+							   programmation,
+							   programming,
+							   coding,
+							   assembleur,
+							   assembler,
+							   asm,
+							   C,
+							   C++,
+							   java,
+							   sécurité,
+							   security,
+							   computer security,
+							   sécurité informatique,
+							   microprocesseur,
+							   microprocessor,
+							   debugger,
+							   debugging,
+							   cpu,
+							   intel,
+							   pentium,
+							   x86,
+							   80x86,
+							   286,
+							   386,
+							   asm,
+							   softice,
+							   ntice,
+							   trace,
+							   anti-cracking,
+							   exploit">
+<meta name="description" content="Ligue des Assoiffés de Bricolage sur Ordinateur">
+<meta name="copyright" content="Labo-Asso">
+<meta name="robots" content="all">
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+</head><body>
+<script language="JavaScript" type="text/JavaScript">
+	var fond = "/images/fond.gif";
+	var aleatoire = Math.round(Math.random(0)*2) ^ Math.round(Math.random(0)*2);	
+	//var img_back = document.body.background;
+	//var index = img_back.lastIndexOf ("/");
+	
+	if (aleatoire) fond = "/images/fond_2.gif";
+	document.body.background = fond; 
+	
+	//document.body.background = img_back.substring(0,(index+1)) + fond;	
+	//if (index>0 && index<img_back.length)
+	//{				
+	//}
+</script>
+
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+  <tr> 
+    <td><table width="100%" height="0" border="0" cellpadding="8" cellspacing="0" bgcolor="#000000">
+        <tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="1"> <div align="left"><img src="../../images/logo_labo_skopia.gif"></div></td>
+                <td nowrap> <div align="center"> 
+                    <p><font color="#339999" size="5">Compuware SoftIce<br>
+                      Local Denial of Service.</font><br>
+                      (ou comment faire croire &agrave; softice qu'une erreur<br> 
+                      vient de se produire dans son propre code.)<br>
+                      -=&curren; Lionel d'Hauenens &curren;=-</p>
+                    <p><table border="0" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                      <tr> 
+                        <td><table border="0" cellpadding="4" cellspacing="0" bgcolor="#000000">
+                            <tr> 
+                              <td><a href="../../download/ntice_page_fault_crash_system.zip" target="_blank"><img src="../../images/download.gif" width="64" height="14" border="0"></a></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table></p>					  
+                  </div></td>
+                <td width="1"> <div align="right"><img src="../../images/logo_labo_skopia.gif"></div></td>
+              </tr>
+            </table>
+            <br> <table width="100%" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+              <tr> 
+                <td><table width="100%" height="0" border="0" align="center" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td colspan="2"><div align="left"> 
+                          <p> cible&nbsp;&nbsp; : Driver Studio verison 3.2<br>
+                            Syst&egrave;me : Windows 2000 SP4/Windows XP PRO SP2 
+                          </p>
+                          <p><font size="5">Pr&eacute;ambule</font></p>
+                          <p align="justify">Softice est un outil tr&egrave;s 
+                            puissant qui permet de directement d&eacute;boguer 
+                            en mode noyau la machine h&ocirc;te. Pour arriver 
+                            &agrave; cette prouesse, Softice doit se fondre dans 
+                            le syst&egrave;me afin de fonctionner avec lui et 
+                            de pouvoir prendre le contr&ocirc;le total lorsque 
+                            cela le demande.</p>
+                          <p align="justify"><font size="5">Etat des lieux</font></p>
+                          <p align="justify">Au del&agrave; des niveaux de priorit&eacute; 
+                            des threads, il existe une couche plus basse appel&eacute; 
+                            niveau de requ&ecirc;te d'interruption (IRQL - Interrupt 
+                            Request Level). L'IRQL se situe au niveau du syst&egrave;me 
+                            et permet la gestion des priorit&eacute;s des interruptions. 
+                            <br>
+                            Tous les threads utilisateurs ne peuvent fonctionner 
+                            qu'&agrave; un niveau IRQL &eacute;gal &agrave; 0 
+                            (PASSIVE_LEVEL). Mais les threads en mode noyau n'ont 
+                            pas cette restriction et peuvent modifier leur IRQL 
+                            suivant les circonstances.</p>
+                          <p align="justify">En temps normal avec un IRQL &eacute;gal 
+                            &agrave; 0 (PASSIVE_LEVEL) ou 1 (APC_LEVEL), lorsqu'une 
+                            page n'est pas en m&eacute;moire physique et demande 
+                            &agrave; &ecirc;tre acc&eacute;d&eacute;e, une interruption 
+                            14 (0xE) est d&eacute;clanch&eacute;e. C'est alors 
+                            la routine KiTrap0E du syst&egrave;me qui s'occupe 
+                            de mapper la page en m&eacute;moire physique et de 
+                            laisser la t&acirc;che interrompue reprendre son cours.</p>
+                          <p align="justify">Mais &agrave; partir du niveau IRQL 
+                            &eacute;gal &agrave; 2 (DISPATCH_LEVEL) et sup&eacute;rieur, 
+                            une faute de page ne peut pas &ecirc;tre g&eacute;r&eacute;e 
+                            par le syst&egrave;me. C'est une restriction due aux 
+                            m&eacute;canismes internes de Windows.<br>
+                            Dans le cas d'un IRQL sup&eacute;rieur ou &eacute;gal 
+                            &agrave; 2, l'acc&egrave;s &agrave; la m&eacute;moire 
+                            ne peut se faire que sur des pages r&eacute;sidant 
+                            en m&eacute;moire physique. Sans quoi, l'interruption 
+                            14 g&eacute;n&eacute;r&eacute;e par une faute de page 
+                            m&egrave;ne tout droit &agrave; un effondrement du 
+                            syst&egrave;me.</p>
+                          <p align="justify">Softice fonctionne au niveau noyau. 
+                            Il peut donc &ecirc;tre amen&eacute; &agrave; interagir 
+                            sur des flux de code fonctionnant &agrave; n'importe 
+                            quel niveau d'IRQL. Et dans cet environnement l&agrave;, 
+                            l'acc&egrave;s &agrave; la m&eacute;moire devient 
+                            tr&egrave;s d&eacute;licat.</p>
+                          <p align="justify">Pour garantir une stabilit&eacute; 
+                            &agrave; Softice, il a &eacute;t&eacute; con&ccedil;u 
+                            avec un m&eacute;canisme de rattrapage de fautes de 
+                            page.</p>
+                          <p align="justify"> Le principe est simple. Lorsqu'une 
+                            faute de page intervient, Softice v&eacute;rifie, 
+                            avant le syst&egrave;me, l'origine du code ayant g&eacute;n&eacute;r&eacute;e 
+                            l'interruption 14. Et suivant certains cas pr&eacute;d&eacute;finis 
+                            &agrave; la compilation, Softice peut &ecirc;tre amen&eacute; 
+                            &agrave; modifier le retour de l'interruption. Ceci 
+                            lui permet de rattraper des fautes de pages g&eacute;n&eacute;r&eacute;es 
+                            dans ses propres portions de code identifi&eacute;es 
+                            comme &agrave; risque.</p>
+                          <p align="justify">Pour pouvoir contr&ocirc;ler les 
+                            fautes de page, Softice hooke, lors de son initialisation, 
+                            l'interruption 14 directement dans la table des descripteurs 
+                            d'interruption (IDT) de chaque processeur pr&eacute;sent. 
+                            A partir de ce moment l&agrave;, Softice v&eacute;rifie 
+                            l'origine de toutes les fautes de page et agit en 
+                            cons&eacute;quent.</p>
+                          <p align="justify">Voici un sch&eacute;ma simplifi&eacute; 
+                            qui d&eacute;crit le fonctionnement de ce m&eacute;canisme 
+                            install&eacute; par Softice :</p>
+                          <p align="center"><img src="../../images/faute_de_page_ntice.gif" width="783" height="939"></p>
+                          <p align="justify">&nbsp;</p>
+                          <p align="justify">A l'origine, le descripteur d'interruption 
+                            14 pointe directement sur la routine KiTrap0E de ntoskrnl.exe. 
+                            Le sch&eacute;ma ci-dessus montre le chemin que peut 
+                            parcourir le flux de code lorsque Softice est install&eacute; 
+                            et actif.</p>
+                          <p align="justify">Nous pouvons aussi apercevoir la 
+                            pr&eacute;sence d'un autre driver : CptHook.sys (Capitain 
+                            Hook ;). Ce driver fait parti de Softice et est toujours 
+                            actif m&ecirc;me lorsque Softice (NTice.sys) ne l'est 
+                            pas. CptHook.sys contient aussi un filtre basique 
+                            permettant de rattraper les fautes de page de certaines 
+                            de ses propres routines.</p>
+                          <p align="justify">Mais le plus important dans ce sch&eacute;ma 
+                            est la pr&eacute;sence d'une impasse dans NTice.sys. 
+                            Cette impasse a s&ucirc;rement &eacute;t&eacute; mise 
+                            en place pour pr&eacute;venir de tout probl&egrave;me 
+                            grave dans NTice.sys, permettant ainsi d'en informer 
+                            les d&eacute;veloppeurs. Malheureusement, un probl&egrave;me 
+                            au niveau de l'identification du code ayant provoqu&eacute; 
+                            la faute de page permet de faire un d&eacute;ni de 
+                            service &agrave; partir d'un simple programme utilisateur. 
+                            Ce d&eacute;ni est sans appel et m&egrave;ne tout 
+                            droit &agrave; un effondrement du syst&egrave;me (BSOD).</p>
+                          <p align="justify"><font size="5">Description</font></p>
+                          <p align="justify">Lorsqu'une faute de page se produit, 
+                            le processeur enregistre dans la pile syst&egrave;me 
+                            les informations permettant &agrave; l'interruption 
+                            de reprendre son cours et d&eacute;tourne le thread 
+                            vers la routine de gestion d'interruption appropri&eacute;e.</p>
+                          <p align="justify">Pour l'interruption 14, les informations 
+                            enregistr&eacute;es sur la pile commencent toujours 
+                            par un code d'erreur, le registre EIP, le registre 
+                            de segment CS et le registre EFlag. Et si le code 
+                            ayant g&eacute;n&eacute;r&eacute; la faute de page 
+                            vient d'un niveau de privil&egrave;ge &eacute;gal 
+                            &agrave; 3 alors le registre de pile ESP et de segment 
+                            de pile SS sont rajout&eacute;s &agrave; la suite.</p>
+                          <p align="justify">Lorsque l'on &eacute;tudie en profondeur 
+                            le code de Softice on peut s'apercevoir que seul le 
+                            registre EIP que l'on trouve dans la pile est utilis&eacute; 
+                            pour identifier l'origine du code ayant g&eacute;n&eacute;r&eacute; 
+                            la faute de page. Ceci est une erreur d'appr&eacute;ciation 
+                            et nous allons voir comment il est possible de l'exploiter.</p>
+                          <p align="justify">Mais avant d'aller plus loin, &eacute;tablissons 
+                            un r&eacute;sum&eacute; des points importants des 
+                            m&eacute;canismes d&eacute;crits dans le sch&eacute;ma.</p>
+                          <p align="justify"><strong>Pour ce qui est de NTice.sys 
+                            :</strong></p>
+                        </div>
+                        <ul>
+                          <li> 
+                            <div align="justify">Pour le premier test, le registre 
+                              EIP (dans la pile) est contr&ocirc;l&eacute; afin 
+                              de voir s'il pointe dans du code surveill&eacute; 
+                              de NTice.sys</div>
+                          </li>
+                          <li> 
+                            <div align="left"> 
+                              <div align="justify">Si EIP passe le premier test, 
+                                Softice recherche s'il pointe dans une de ses 
+                                portions de code prot&eacute;g&eacute;es.</div>
+                            </div>
+                          </li>
+                          <li> 
+                            <div align="left"> 
+                              <div align="justify">Si oui, il change la valeur 
+                                du registre EIP afin de le faire pointer vers 
+                                la routine de sortie ad&eacute;quate et relance 
+                                la t&acirc;che avec l'instruction assembleur &quot;iretd&quot;.</div>
+                            </div>
+                          </li>
+                          <li> 
+                            <div align="left"> 
+                              <div align="justify">Si non, Softice analyse le 
+                                probl&egrave;me comme &eacute;tant tr&egrave;s 
+                                grave puisque venant de son propre code. Il se 
+                                dirige alors vers une impasse.</div>
+                            </div>
+                          </li>
+                        </ul>
+                        <div align="left"> 
+                          <p align="justify"><strong>Pour ce qui est de CptHook.sys 
+                            :</strong></p>
+                        </div>
+                        <ul>
+                          <li> 
+                            <div align="justify">Pour seul et unique test, CptHook.sys 
+                              v&eacute;rifie si EIP pointe dans une de ses portions 
+                              de code prot&eacute;g&eacute;es.</div>
+                          </li>
+                          <li> 
+                            <div align="justify"> Si oui, il change la valeur 
+                              du registre EIP afin de le faire pointer vers son 
+                              unique routine de sortie et relance la t&acirc;che 
+                              avec l'instruction assembleur &quot;iretd&quot;.</div>
+                          </li>
+                        </ul>
+                        <div align="left"> 
+                          <p align="justify">La grosse diff&eacute;rence &agrave; 
+                            noter entre les 2 modules est que NTice.sys surveille 
+                            en plus du code qui ne peut pas &ecirc;tre rattrap&eacute;. 
+                            Et s'il y a un probl&egrave;me dans ce code l&agrave;, 
+                            il se dirige tout droit dans l'impasse.</p>
+                          <p align="justify">Tout ceci peut para&icirc;tre tout 
+                            &agrave; fait logique mais c'est oublier qu'un programme 
+                            utilisateur peut tr&egrave;s bien essayer d'ex&eacute;cuter 
+                            du code dans la m&eacute;moire du syst&egrave;me. 
+                            Ce code ne pourra bien s&ucirc;r pas &ecirc;tre ex&eacute;cut&eacute; 
+                            mais il aura pour effet de <font color="#00FFFF">g&eacute;n&eacute;rer 
+                            une faute de page !</font></p>
+                          <p align="justify">En suivant cette id&eacute;e et au 
+                            vu de ce qui vient d'&ecirc;tre expos&eacute;, il 
+                            est tout &agrave; fait possible &agrave; un programme 
+                            utilisateur de faire croire &agrave; NTice.sys qu'une 
+                            faute de page vient de se produire dans son propre 
+                            code et donc de le forcer &agrave; se diriger dans 
+                            l'impasse. Et un thread (venant du mode utilisateur) 
+                            qui reste bloqu&eacute; dans une routine d'interruption 
+                            avec les interruptions de r&eacute;activ&eacute;es 
+                            (Bit IF du registre EFlags &agrave; 1) est sans appel: 
+                            <font color="#00FFFF"> Effondrement du syst&egrave;me 
+                            (Message : IRQL_NOT_LESS_OR_EQUAL). </font></p>
+                          <p align="justify"><font size="5">Preuve du Concept 
+                            ;) (POC)</font></p>
+                          <p>La mani&egrave;re la plus simple pour exploiter ce 
+                            probl&egrave;me consiste &agrave; ex&eacute;cuter 
+                            un &quot;scanne en ex&eacute;cution&quot; sur toute 
+                            la m&eacute;moire syst&egrave;me. Voici un petit exemple 
+                            :</p>
+                          <table width="0%" height="0" border="0" align="center" cellpadding="1" cellspacing="0" bgcolor="#339999">
+                            <tr> 
+                              <td><table width="0%" height="0" border="0" align="center" cellpadding="8" cellspacing="0" bgcolor="#000000">
+                                  <tr> 
+                                    <td><table width="0%" height="0" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#000000">
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>start proc near</td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td width="0%" nowrap>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                                          </td>
+                                          <td width="0%" nowrap> <p>push offset 
+                                              SEH<br>
+                                              push large dword ptr fs:0<br>
+                                              mov large fs:0, esp<br>
+                                              <br>
+                                              xor eax, eax<br>
+                                              sub eax, 100h<br>
+                                              <br>
+                                            </p></td>
+                                          <td width="0%" nowrap> <p><br>
+                                              <br>
+                                              <br>
+                                              <br>
+                                              <br>
+                                              ; pas du scanne<br>
+                                            </p></td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>Loop_scan_with_eip: 
+                                          </td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td width="0%" nowrap>&nbsp;</td>
+                                          <td width="0%" valign="middle" nowrap>jmp 
+                                            eax</td>
+                                          <td width="0%" nowrap>; tentative d'ex&eacute;cution 
+                                            de<br>
+                                            ; code en m&eacute;moire syst&egrave;me</td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>Continue: </td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td width="0%" nowrap>&nbsp;</td>
+                                          <td width="0%" nowrap>sub eax, 100h 
+                                            <br>
+                                            cmp eax, 80000000h<br>
+                                            jnb short Loop_scan_with_eip 
+                                            <p>mov esp, large fs:0<br>
+                                              pop large dword ptr fs:0<br>
+                                              add esp, 4<br>
+                                              <br>
+                                              retn</p></td>
+                                          <td width="0%" nowrap>; pas du scanne<br> 
+                                            <br> <br> <br> <br> <br> <br> <br>
+                                            ; sortie</td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>start endp </td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>&nbsp;</td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>SEH proc near 
+                                          </td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td width="0%" nowrap>&nbsp;</td>
+                                          <td width="0%" nowrap>lea eax, [esp+4] 
+                                            <br>
+                                            mov eax, [eax+8] <br>
+                                            mov dword ptr [eax+0B8h], offset Continue 
+                                            <br>
+                                            mov eax, 0 <br>
+                                            retn</td>
+                                          <td width="0%" nowrap>; except_handler<br>
+                                            ; except_handler.ContextRecord<br>
+                                            ; CONTEXT.Eip<br>
+                                            ; ExceptionContinueExecution</td>
+                                        </tr>
+                                        <tr valign="top"> 
+                                          <td colspan="3" nowrap>SEH endp</td>
+                                        </tr>
+                                      </table></td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table>
+                          <p>&nbsp;</p>
+                          <p align="justify">Ce petit programme est pens&eacute; 
+                            pour un syst&egrave;me 32 Bits avec 2 Go de m&eacute;moire 
+                            syst&egrave;me (0x80000000-0xFFFFFFFF). Il essaye 
+                            tout simplement d'ex&eacute;cuter du code dans la 
+                            m&eacute;moire du syst&egrave;me tous les 0x100 octets. 
+                            La routine SEH s'occupe de rattraper les violations 
+                            d'acc&egrave;s g&eacute;n&eacute;r&eacute;es par le 
+                            &quot;jmp eax&quot; et de faire en sorte que le scanne 
+                            puisse continuer son cours. Comme nous avons pu le 
+                            voir, les violations d'acc&egrave;s per&ccedil;ues 
+                            ici par le programme utilisateur viennent directement 
+                            de fautes de page du point de vu du syst&egrave;me.</p>
+                          <p align="justify">Ce code est tr&egrave;s primaire 
+                            et le scanne de toute la m&eacute;moire du syst&egrave;me 
+                            peut s'av&eacute;rer &ecirc;tre assez long. Mais il 
+                            a l'avantage de ne pas utiliser d'API. Le pas du scanne 
+                            permet de l'optimiser un peu. Mais ce pas ne doit 
+                            pas &ecirc;tre trop grand au risque de passer &agrave; 
+                            c&ocirc;t&eacute; du code recherch&eacute;. Nous verrons 
+                            plus loin un moyen d'optimiser le scanne afin d'obtenir 
+                            l'effondrement du syst&egrave;me quasi instantan&eacute;ment.</p>
+                          <p align="justify">Mais avant cela, il devient int&eacute;ressant 
+                            d'analyser les diff&eacute;rents cas de figure que 
+                            peut g&eacute;n&eacute;rer ce programme. Nous avons 
+                            en fait 3 situations importantes :</p>
+                        </div>
+                        <div align="justify"> 
+                          <ol>
+                            <li>Le scanne tombe sur du code prot&eacute;g&eacute; 
+                              de CptHook.sys<br>
+                              <br>
+                              Dans ce cas de figure, CptHook.sys redirige la t&acirc;che, 
+                              avec l'instruction &quot;iretd&quot;, vers son unique 
+                              routine de sortie. Mais la t&acirc;che interrompue 
+                              vient d'un niveau de privil&egrave;ge utilisateur 
+                              (Ring 3). Lorsque la t&acirc;che reprend son cours, 
+                              celle-ci re-g&eacute;n&egrave;re donc une faute 
+                              de page dans la routine de sortie. Mais cette routine 
+                              de sortie se trouve elle-m&ecirc;me recens&eacute;e 
+                              comme code prot&eacute;g&eacute; de CptHook.sys. 
+                              <br>
+                              Cette situation g&eacute;n&egrave;re une boucle 
+                              infinie de faute de page sur la premi&egrave;re 
+                              instruction de la routine de sortie de CptHook.sys.<br>
+                              Ceci provoque tr&egrave;s rapidement une fermeture 
+                              du programme utilisateur sans aucun message de la 
+                              part du syst&egrave;me. <br>
+                              <br>
+                            </li>
+                            <li>Le scanne tombe sur du code prot&eacute;g&eacute; 
+                              de NTice.sys<br>
+                              <br>
+                              Dans ce cas de figure, NTice.sys redirige la t&acirc;che, 
+                              avec l'instruction &quot;iretd&quot;, vers la routine 
+                              de sortie ad&eacute;quate. Mais la t&acirc;che interrompue 
+                              vient d'un niveau de privil&egrave;ge utilisateur 
+                              (Ring 3). Lorsque la t&acirc;che reprend son cours, 
+                              celle-ci re-g&eacute;n&egrave;re donc une faute 
+                              de page sur la premi&egrave;re instruction de la 
+                              routine sortie. Contrairement &agrave; CptHook.sys, 
+                              les routines de sortie de NTice.sys ne sont pas 
+                              prot&eacute;g&eacute;es. La deuxi&egrave;me faute 
+                              de page ainsi g&eacute;n&eacute;r&eacute;e est donc 
+                              identifi&eacute;e par NTice.sys comme un probl&egrave;me 
+                              non pr&eacute;vu et grave car venant de son propre 
+                              code. NTice.sys dirige alors le flux du code directement 
+                              vers l'impasse. Ceci g&eacute;n&egrave;re un effondrement 
+                              du syst&egrave;me (IRQL_NOT_LESS_OR_EQUAL). <br>
+                              <br>
+                            </li>
+                            <li> Le scanne tombe sur du code surveill&eacute; 
+                              par NTice.sys mais pas prot&eacute;g&eacute;<br>
+                              <br>
+                              Dans ce cas figure, NTice.sys analyse le probl&egrave;me 
+                              comme non pr&eacute;vu et grave car venant de son 
+                              propre code. Il dirige donc le flux du code directement 
+                              vers l'impasse. Ceci g&eacute;n&egrave;re un effondrement 
+                              du syst&egrave;me (IRQL_NOT_LESS_OR_EQUAL). </li>
+                          </ol>
+                          <p>Pour obtenir le d&eacute;ni de service avec NTice.sys 
+                            et donc obtenir un effondrement du syst&egrave;me, 
+                            il faut faire en sorte de tomber &agrave; coup s&ucirc;r 
+                            dans NTice.sys en &eacute;vitant scrupuleusement de 
+                            scanner CptHook.sys. Pour cela, nous pouvons faire 
+                            appel &agrave; l'API NtQuerySystemInformation de ntdll.dll 
+                            afin d'obtenir les renseignements sur les modules 
+                            du syst&egrave;me actuellement actifs et mapp&eacute;s.<br>
+                            L'exemple suivant montre une mani&egrave;re plus cibl&eacute;e 
+                            de scanner NTice.sys en utilisant cette API. La recherche 
+                            sur les noms des modules a &eacute;t&eacute; exclue 
+                            car certains outils (comme IceExt) permettent de &quot;cacher&quot; 
+                            NTice.sys en modifiant son nom dans la liste des modules 
+                            du syst&egrave;me. Le probl&egrave;me a donc &eacute;t&eacute; 
+                            abord&eacute; d'une autre mani&egrave;re.<br>
+                            La majorit&eacute; des drivers sont de petits modules 
+                            et CptHook.sys fait parti de cette cat&eacute;gorie. 
+                            Par contre NTice.sys est un driver qui fait exception 
+                            par sa grande taille avec quelques autres modules 
+                            tels que ntoskrnl.exe ou win32k.sys.<br>
+                            C'est donc sur la taille des modules d&eacute;crits 
+                            dans la liste que le filtre est op&eacute;r&eacute;. 
+                            Ceci donne un r&eacute;sultat tr&egrave;s efficace 
+                            avec un effondrement du syst&egrave;me quasi instantan&eacute;.</p>
+                        </div>
+                        <div align="left"> 
+                          <p align="justify"><font size="5">S&eacute;curit&eacute; 
+                            ? </font></p>
+                          <p align="justify">Le d&eacute;ni de service avec effondrement 
+                            du syst&egrave;me ne remet en rien la s&eacute;curit&eacute; 
+                            de la machine. A part perdre quelques informations 
+                            non sauvegard&eacute;es lors du crash, on ne risque 
+                            pas grand chose.</p>
+                          <p align="justify">Par contre, un point plus inqui&eacute;tant 
+                            est de pouvoir, &agrave; partir du mode utilisateur, 
+                            forcer NTice.sys ou CptHook.sys &agrave; rediriger 
+                            une t&acirc;che vers une de leurs propres routines 
+                            de rattrapage. Certaines de ces routines ne comportent 
+                            que 2 instructions assembleurs, &quot;stc&quot; et 
+                            &quot;retn&quot;. En r&eacute;ussissant &agrave; forcer 
+                            Softice &agrave; placer, avant de rediriger la t&acirc;che, 
+                            le registre CS (dans la pile) &agrave; un niveau de 
+                            privil&egrave;ge noyau, il deviendrait tout &agrave; 
+                            fait possible d'ex&eacute;cuter du code &agrave; un 
+                            niveau de privil&egrave;ge maximum directement dans 
+                            la pile utilisateur. Je crains que l'op&eacute;ration 
+                            soit difficilement r&eacute;alisable. Mais la routine 
+                            &quot;NticeTrap0E&quot; est une routine complexe qui 
+                            peut interagir sur beaucoup de chose suivant les situations. 
+                            Et il y a s&ucirc;rement beaucoup d'autres fa&ccedil;ons 
+                            d'aborder ce probl&egrave;me. </p>
+                          <p align="justify">Quoi qu'il en soit, le fait est qu'il 
+                            est possible d'influencer le flux du code en mode 
+                            noyau en trompant Softice sur l'origine d'une faute 
+                            de page. Et rien que ceci place cette faille de s&eacute;curit&eacute; 
+                            &agrave; un niveau que je qualifierais de potentiellement 
+                            dangereux.</p>
+                        </div>
+                        <div align="left"> 
+                          <p><font size="5">Solution</font></p>
+                          <p align="justify">Pour rem&eacute;dier &agrave; ce 
+                            probl&egrave;me, il faudrait v&eacute;rifier, avant 
+                            tout, le niveau de privil&egrave;ge du code qui a 
+                            g&eacute;n&eacute;r&eacute; la faute de page. Pour 
+                            cela, il suffit de regarder le champ CPL du registre 
+                            de segment de code CS se trouvant dans la pile. Un 
+                            CPL &eacute;gal &agrave; 3 indique une faute de page 
+                            g&eacute;n&eacute;r&eacute;e par du code utilisateur 
+                            (Ring 3). Dans ce cas l&agrave;, Softice n'a alors 
+                            pas &agrave; v&eacute;rifier si la faute de page vient 
+                            de son propre code et le probl&egrave;me dispara&icirc;t.</p>
+                          <p align="justify">That's all folks ! </p>
+                          <p align="right">28 janvier 2007</p>
+                          <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right">
+                            <tr> 
+                              <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+                                  <tr> 
+                                    <td nowrap><font color="#339999" size="2" face="Fixedsys">Lionel 
+                                      d'Hauenens</font></td>
+                                  </tr>
+                                </table></td>
+                            </tr>
+                          </table>&nbsp;
+                        </div></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <div align="center"> <br>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>
+  <font size="1">&nbsp;<br></font> 
+Labo - Association Loi 1901 - 04200 PEIPIN - France 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+              <tr> 
+                <td nowrap><div align="center"><a href="http://creativecommons.org/licenses/by-nc/3.0/" target="_blank" rel="license"> 
+                <img src="../../images/creative_common_88x31.png" alt="Creative Commons License" width="88" height="31" border="0" style="border-width:0"/> 
+                </a></div></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>  
+  <div align="justify"><br>
+    <strong>D&eacute;sengagement</strong> : <strong>Laboskopia</strong> se d&eacute;sengage 
+    de toute responsabilit&eacute; quand &agrave; l&#8217;utilisation ou le mauvais 
+    usage qui peut &ecirc;tre fait des informations contenues dans son site. Les 
+    renseignements contenus dans la publication des Bulletins peuvent changer 
+    et &eacute;voluer. L'utilisation de ces renseignements constitue l'acceptation 
+    des conditions. Toutes utilisations de ces informations se fait au risque 
+    de l'utilisateur. &nbsp; </div>
+  <table width="33%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#33CC33">
+    <tr> 
+      <td><img src="../../images/pixel_transp.gif" width="1" height="1"></td> 
+    </tr>
+  </table>    
+</div>
+<div align="right"> 
+    <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+        <tr> 
+          <td>
+		   <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000">
+              <tr> 
+                <td nowrap><a href="crash_ntice_int_14.php.html#">Labo Skopia</a></td>
+              </tr>
+            </table>
+			</td>
+        </tr>
+      </table>
+</div>	  
+		
+ 
+			</td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

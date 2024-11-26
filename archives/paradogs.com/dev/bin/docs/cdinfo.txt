@@ -1,0 +1,191 @@
+--------------------------------------------------------------------------
+Quick CDrom explanation...                                     1999/doomed
+
+There's a *LOT* missing here, and the other half might be incorrect, so
+i won't take any responsibility for strange stuff happening. It should
+give you some pointers in the right direction for your own CD explorations
+though. More might follow at some later time..
+--------------------------------------------------------------------------
+CDREG0 = $1f801800
+CDREG1 = $1f801801
+CDREG2 = $1f801802
+CDREG3 = $1f801803
+--------------------------------------------------------------------------
+CDREG0   write    : 0 - to send a command
+                    1 - to get the result
+         read     : I/O status?
+                    bit 0- 0 REG1 command send
+                         - 1 REG1 data read
+                    bit 1- 0 data transfer finished
+                           1 data transfer ready/in progress
+                    bit 7- 1 command being processed.
+
+CDREG1   write    : command
+         read     : results
+
+CDREG2   write    : send arguments
+         write    : 7 = flush arg buffer?
+
+CDREG3   write    : 7 = flush irq
+         read     : hi nibble: ?
+                    low nibble: interrupt status
+--------------------------------------------------------------------------
+Modes for SetMode:
+ModeSpeed      $80        0: normal speed  1: double speed
+ModeRT         $40        0: ADPCM off     1: ADPCM on
+ModeSize1      $20        0: 2048 byte     1: 2340 byte
+ModeSize0      $10        0: -             1: 2328 byte
+ModeSF         $08        0: Channel off   1: Channel on
+ModeRept       $04        0: Report off    1: Report on
+ModeAP         $02        0: AutoPause off 1: AutoPause on
+ModeDA         $01        0: CD-DA off     1: CD-DA on
+
+These modes can be set using the setmode command. There's 2 more for
+streaming, don't know about them.. (they seem to be 9 bits?)
+--------------------------------------------------------------------------
+Status bits:
+StatPlay       $80        playing CD-DA
+StatSeek       $40        seeking
+StatRead       $20        reading data sectors
+StatShellOpen  $10        once shell open
+StatSeekError  $04        seek error detected
+StatStandby    $02        spindle motor rotating
+StatError      $01        command error detected
+
+These are the bit values for the status byte recieved from CD commands.
+--------------------------------------------------------------------------
+Interrupt values:
+NoIntr      $00        No interrupt
+DataReady   $01        Data Ready
+Acknowledge $02        Acknowledge
+Complete    $03        Command Complete
+DataEnd     $04        End of Data Detected
+DiskError   $05        Error Detected
+
+These are returned in the low nibble of CDREG3. First write a 1 to CDREG0
+before reading CDREG3. When a command is completed it returns 3.
+To acknowledge an irq value after you've handled it, write a 1 to CDREG0
+then a 7 to both CDREG2 and CDREG3. Another interrupt may be queued, so
+you should check CDREG3 again if 0 or if there's another interrupt to
+be handled.
+--------------------------------------------------------------------------
+CD Commands:               In                Out
+Nop            $01         -                 status
+                           Does nothing?, except return status.
+Setloc         $02         min,sec,sector    status
+                           Sets the location for any play and seek operations
+Play*          $03         -                 status
+                           Starts audio playback
+Forward        $04         -                 status
+                           Moves forward, maybe set speed with setloc?
+Backward       $05         -                 status
+                           Moves backwards
+ReadN*         $06         -                 status
+                           Read with retry
+Standby        $07         -                 status
+                           Standby with disk rotating
+Stop           $08         -                 status
+                           Stop motor
+Pause          $09         -                 status
+                           Pause at current location
+????           $0a         ???
+                           Is called in cd init routines.. don't know
+                           what it does.
+Mute           $0b         -                 status
+                           Mute audio playback
+Demute         $0c         -                 status
+                           Unmute audio playback
+Setfilter      $0d         file,channel      status
+
+Setmode        $0e         mode              status
+
+Getparam       $0f         -                 status,mode,file?,chan?,?,?
+
+GetlocL        $10         -                 min,sec,sector,mode,file,channel
+
+GetlocP        $11         -                 track,index,min,sec,frame,amin,
+                                             asec,aframe
+
+GetTN          $13         -                 status,first,total (BCD)
+                           Gets first track and total tracks in the TOC.
+GetTD          $14         track(BCD)        status,min,sec (BCD)
+                           Gets location of a track from the TOC.
+SeekL*         $15         -                 status
+                           Logical seek (data sector)
+SeekP*         $16         -                 status
+                           Physical seek (audio sector)
+ReadS*         $1B         -                 status
+                           Commence data read without retry
+Reset          $1C         -                 status
+                           Reset the CD drive.
+
+The commands marked with * require that you set the target location with
+Setloc ($02) first.
+--------------------------------------------------------------------------
+To send a command:
+
+- First send any arguments by writing 0 to CDREG0, then all arguments
+  sequentially to CDREG2
+
+- Then write 0 to CDREG0, and the command to CDREG1.
+
+To wait for a command to complete:
+
+- Wait until a CDrom irq occurs (bit 3 of the interrupt regs) The cause
+  of the cdrom irq is in the low nibble of CDREG3. This is usually 3
+  on a succesful comletion. Failure to complete the command will result
+  in a 5. If you don't wish to use irq's you can just check for the
+  low nibble of cdreg3 to become something other than 0, but make sure
+  it doesn't get cleared in any irq setup by the bios or some such.
+
+To Get the results
+
+- Write a 1 to CDREG0, then read CDREG0, If bit 5 is set, read a return
+  value from CDREG1, then read CDREG0 again repeat until bit 5 goes low.
+
+To Clear the irq
+
+- After command completion the irq cause should be cleared, do this by
+  writing a 1 to CDREG0 then 7 to CDREG2 and CDREG3. My guess is that
+  the write to CDREG2 clears the arguments previously set from some
+  buffer.
+  Note that irq's are queued, and if you clear the current, another may
+  come up directly..
+--------------------------------------------------------------------------
+To init the CD:
+
+-Flush all irq's
+-CDREG0=0
+-CDREG3=0
+-Com_Delay=4901 ($1f801020)
+-Send 2 NOP's
+-Command $0a, no args.              (<- what's this??)
+-Demute
+--------------------------------------------------------------------------
+To set up the cd for audio playback, some weird init stuff needs to be
+done:
+
+CDREG0=2
+CDREG2=$80
+CDREG3=0
+CDREG0=3
+CDREG1=$80
+CDREG2=0
+CDREG3=$20
+
+Also don't forget to init the SPU. (CDvol and CD enable especially)
+--------------------------------------------------------------------------
+You should not send some commands while the CD is seeking. (ie. status
+returns with bit 6 set.) Thing is that the status only gets updated after
+a new command. I haven't tested this for other command, but for the
+play command ($03) you can just keep repeating the command and checking
+the status returned by that, for bit 6 to go low(and bit 7 to go high in
+this case) If you don't and try to do a getloc directly after the play
+command reports it's done, the cd will stop. (I guess the cd can't
+get it's current location while it's seeking, so the logic stops the seek
+to get an exact fix, but never restarts..)
+
+--------------------------------------------------------------------------
+psx.rules.org                www.padua.org                  doomed@c64.org
+--------------------------------------------------------------------------
+

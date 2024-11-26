@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+  <title>KeygenMe par SyntaxError // ECLiPSE - Solution (Keygen)</title>
+  <meta name="author" content="jB" />
+  <meta name="revisit-after" content="15 days" />
+  <meta name="robots" content="index,follow" />
+  <meta name="description" content="Jardinez chez jB - Solution du keygenme de SyntaxError" />
+  <meta name="keywords" content="keygens, tutorial, crypto, cryptography, tea, source, asm, assembly, assembleur" />
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <link href="../../includes/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<div id="principal">
+<div id="principal2">
+<div id="haut"><div id="coingh"></div><div id="coindh"></div></div>
+<div id="tutorial">
+	<h1>KeygenMe par SyntaxError // ECLiPSE - Solution par jB</h1>
+	<h2>Aperçu</h2>
+	<strong>Type de protection:</strong> name / serial<br />
+  <strong>Difficulté:</strong>relativement simple<br />
+  <strong>Outils utilisés:</strong>
+  <ul>
+    <li><a href="http://www.ollydbg.de/">OllyDbg v1.09c</a></li>
+    <li>TASM v5.0</li>
+    <li>CryptTool v1.2</li>
+    <li><a href="http://upx.sourceforge.net">UPX v1.24w</a></li>
+  </ul>
+  <h2>Fichiers joints</h2>
+  <ul>
+  	<li><a href="syntax-error-keygenme.zip">Keygenme</a> : Le keygenme de syntaxerror</li>
+  	<li><a href="syntax-error-keygenme-keygen.zip">Keygen</a> : le keygen et sa source (TASM)</li>
+  </ul>
+  	
+  <h2>Exposé</h2>
+<p>Ce KeygenMe est très intéressant pour commencer un peu la crypto. Il utilise des algorithmes connus. Le deuxième algorithme 
+est légèrement modifié, mais ça ne le rend pas plus difficile à reverser pour autant.</p>
+<p>Le programme est packé avec UPX. Pour l'unpacker, on tape simplement: <code class="code">upx -d KeygenMe.exe</code>
+et on obtient l'exe original, non compressé.</p>
+
+<p>On ouvre le KeygenMe avec Olly, et on jette un coup d'oeil rapide au listing (c'est assez court). On trouve très 
+facilement la routine qui va récupérer le nom et le serial. On pose donc un breakpoint à l'entrée de la routine, en .401B71:
+<img src="images/1.jpg" alt="capture olly 1" width="602" height="182" /></p>
+
+<p>On remarque déjà l'appel à deux routines qui peuvent être très intéressantes: l'une en 
+	<code>.401D90</code> et l'autre en <code>.401C70</code>. Le premier appel à <code>GetDlgItemTextA</code> récupère le serial, 
+et le copie en <code>.406D00</code>. Le second appel récupère le nom, et le copie en <code>.40603C</code>.</p>
+<pre><code>cmp		eax, 10h
+jnz		mauvais_serial</code></pre>
+<p>Le serial doit donc faire 10h=16 caract&egrave;res.</p>
+
+<p>On lance ensuite le programme (F9), on entre un nom ( jB ),et un serial à la con ( 1122334455667788 ). Puis on appuie 
+sur 'OK'. Le breakpoint a bien fonctionné. On se retrouve en <code>.401B71</code>.</p>
+<p>On trace avec F8, et on entre dans le premier call intéressant (<code>.401D90</code>) avec F7.On arrive ici:
+<img src="images/2.jpg" alt="capture olly 2" width="634" height="505" /></p>
+
+<p>La routine est très simple à comprendre en la traçant: le serial entré est mis en majuscules avec <code>CharUpperA</code>.
+	Puis les 8 premiers caractères du serial sont convertis en un dword, et stockés en <code>[4060A4]</code>. Les 8 derniers 
+	caractères sont également convertis en un dword, et sont stockés en <code>[4060A0]</code>.</p>
+
+<p>On sort de la procédure, et on entre dans le second call:
+<img src="images/3.jpg" alt="capture olly 3" width="471" height="253" /></p>
+
+<p>On entre dans le premier call, en <code>.401000</code>, pour voir un peu ce qui se passe:
+<img src="images/4.jpg" alt="capture olly 4" width="398" height="75" /></p>
+<p>Les choses sérieuses commencent. On reconnait l'initialisation typique d'un hash (MD, RipeMD ou SHA-1). Il faut tracer 
+un peu plus loin pour connaître le hash utilisé.</p>
+<p>Le call suivant n'a pas l'air très intéressant. 
+On ne rentre pas dedans. Celui d'après par contre contient la routine de hash. Comme généralement les routines de hash 
+sont assez longues, et que personne n'a envie de se faire mal à la tête en les analysant, on va passer cette routine 
+également.</p>
+
+<p>Le pricipal est de comprendre comment la procédure de hash est appellée. On remarque le push edx juste au dessus du 
+	<code>call KeygenMe.00401A10</code>. C'est donc un paramètre de la fonction appellée.</p>
+		
+<p>A la sortie de la fonction, on jette un coup d'oeil au buffer pointé par ce paramètre: <code>Ctrl + g --&gt; ebp-14</code>. 
+On voit ceci:
+<img src="images/5.jpg" alt="capture olly 5" width="446" height="41" />
+On reconnait alors le hash MD5 de 'jB': <code>DAEC5A118F2324ED3B58D355B107898E</code>. (Pour 
+reconnaitre les hash j'utilise  <em>CryptTool v1.2</em> de christal, très pratique).</p>
+
+<p>On arrive à la partie la plus délicate du programme (rien de très compliqué toutefois).
+On récapitule avant d'aborder la routine:</p>
+<pre><code>[4060A4]=code[0]
+[4060A0]=code[1]</code></pre>
+si on considère <code>code</code> comme un tableau de deux dwords.
+
+<p>Le hash se trouve à l'offset <code>ebp-14</code>. On a donc, en considérant hash comme un tableau de dwords également:</p>
+<pre><code>[ebp-14]=hash[0]
+[ebp-10]=hash[1]
+[ebp-0c]=hash[2]
+[ebp-08]=hash[3]</code></pre>
+
+<p>Voici la routine commentée:
+<img src="images/6.jpg" alt="capture olly 6" width="736" height="559" /></p>
+<p>On note:<code>sum=[406ce4]</code>. On a donc:</p>
+<pre><code>[ebp-80]=code[0]-(code[1]&lt;&lt;4+hash[2]^code[1]+sum^code[1]&gt;&gt;5+hash[3])
+[ebp-7c]=code[1]-([ebp-80]&lt;&lt;4+hash[0]^[ebp-80]+sum^[ebp-80]&gt;&gt;5+hash[1])</code></pre>
+<p>et il faut que cela vérifie:</p>
+<pre><code>[ebp-80]=656D6E65h
+[ebp-7C]=6779656Bh</code></pre>
+
+<p>Cet algorithme ressemble fortement à du TEA, avec quelques différences toutefois:</p>
+<ul>
+	<li>le delta number est ici égal à <code>hash[0]^hash[2]</code>, et pas à <code>9e3779b9h</code>.</li>
+	<li>il n'y a qu'un cycle, alors qu'il y en a en général 32 dans le TEA standard.</li>
+</ul>
+
+<p>Il faut maintenant reverser tout ça. On note <code>y=[ebp-80]</code> et <code>z=[ebp-7c]</code>.</p>
+<pre><code>z=code[1]-(y&lt;&lt;4+hash[0]^y+sum^y&gt;&gt;5+hash[1])</code></pre>
+<p>Comme <code>y</code> doit être égal à <code>656D6E65h</code>, on a alors: <code>code[1]=z+(y&lt;&lt;4+hash[0]^y+sum^y&gt;&gt;5+hash[1])</code>
+avec <code>y=656D6E65h</code>.</p>
+<p>On en déduit:<code>code[0]=y+(code[1]&lt;&lt;4+hash[2]^code[1]+sum^code[1]&gt;&gt;5+hash[3])</code>. Ce qui donne, pour 'jB':</p>
+<pre><code>code[0]=0E49910Bh
+code[1]=9902E4D9h</code></pre>
+<p>Le serial est donc: <code>0E49910B9902E4D9</code>. Et voilà, c'est terminé.</p>
+
+<h2>References</strong></h2>
+ <ul>
+   <li><a href="http://www.cacr.math.uwaterloo.ca/hac/">Handbook of Applied Cryptography</a></li>
+   <li><a href="http://www.ftp.cl.cam.ac.uk/ftp/papers/djw-rmn/djw-rmn-tea.html">TEA, a Tiny Encryption Algorithm</a></li>
+ </ul>
+
+<p id="footer">Tutoriel écrit par jB pour le Memento 6 de la <a href="http://www.shmeitcorp.tk">ShmeitCorp</a> paru le 16 Fév. 2004</p>
+  </div>
+ <div id="bas"><div id="coingb"></div><div id="coindb"></div></div></div>
+</div>
+
+</body>
+
+</html>

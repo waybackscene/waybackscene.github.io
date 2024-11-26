@@ -1,0 +1,259 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Translator" content="Michel Arboi">
+<meta name="Description"
+      content="Traduction française de la FAQ de sci.crypt">
+<meta name="Keywords" content="cryptologie, cryptographie, cryptanalyse,
+      cryptology, cryptography, sci.crypt, FAQ, traduction, français,
+      traduction française,
+      cryptologie mathématique, clé privée, clé secrète, attaque,
+      texte chiffré seul, cryptogramme seul, 
+      texte clair connu, libellé connu, texte clair choisi,
+      libellé choisi, force brute, chiffrement, déchiffrement,
+      décrypter, mathématique, clé aléatoire une fois, masque jetable,
+      one time pad, devinette">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FAQ de sci.crypt, chapitre 4: cryptologie math&eacute;matique</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><FONT SIZE="5" FACE="Arial">Cryptologie math&eacute;matique</FONT></H1>
+<P><STRONG><FONT FACE="Arial">Table des mati&egrave;res</FONT></STRONG>
+
+<UL>
+	<LI><FONT SIZE="2" FACE="Arial">2.1 </FONT><A HREF="scicryptFR4.htm#1"><FONT SIZE="2" FACE="Arial">En termes math&eacute;matiques,
+	qu'est-ce qu'un syst&egrave;me &agrave; cl&eacute; priv&eacute;e?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.2. </FONT><A HREF="scicryptFR4.htm#2"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une attaque?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.3. </FONT><A HREF="scicryptFR4.htm#3"><FONT SIZE="2" FACE="Arial">Quels est l'int&eacute;r&ecirc;t
+	de formuler tout ceci math&eacute;matiquement?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.2. </FONT><A HREF="scicryptFR4.htm#4"><FONT SIZE="2" FACE="Arial">Pourquoi le masque jetable
+	est-il s&ucirc;r?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.5. </FONT><A HREF="scicryptFR4.htm#5"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une attaque &quot;texte
+	chiffr&eacute; seul&quot;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.6. </FONT><A HREF="scicryptFR4.htm#6"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une attaque &quot;texte
+	clair connu&quot;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.7. </FONT><A HREF="scicryptFR4.htm#7"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une attaque &quot;texte
+	clair choisi&quot;?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.8. </FONT><A HREF="scicryptFR4.htm#8"><FONT SIZE="2" FACE="Arial">En termes math&eacute;matiques,
+	que peut-on dire d'une attaque par force brute?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">2.9. </FONT><A HREF="scicryptFR4.htm#9"><FONT SIZE="2" FACE="Arial">Qu'est-ce qu'une attaque par
+	&quot;devinette&quot;? Qu'est-ce que l'entropie?</FONT></A>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Lecteur, attention: ce chapitre est hautement math&eacute;matique. Bon, peut-&ecirc;tre
+	pas </FONT><EM><FONT SIZE="2" FACE="Arial">hautement</FONT></EM><FONT SIZE="2" FACE="Arial"> math&eacute;matique,
+	mais il y a un bon paquet de symboles et de formules effrayantes. Vous &ecirc;tes pr&eacute;venu. <BR clear = "all">
+	</FONT>
+	<H2><A NAME="1"></A><FONT SIZE="4" FACE="Arial">2.1. En termes math&eacute;matiques, qu'est-ce qu'un syst&egrave;me
+	&agrave; cl&eacute; priv&eacute;e?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Un cryptosyst&egrave;me &agrave; cl&eacute; priv&eacute;e est constitu&eacute; d'un
+	syst&egrave;me de chiffrement E et d'un syst&egrave;me de d&eacute;chiffrement D. Le syst&egrave;me de chiffrement
+	E est un ensemble de fonctions E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">,
+	index&eacute; par les cl&eacute;s K, d&eacute;finies d'un ensemble de textes clairs P vers un ensemble de textes
+	chiffr&eacute;s C. De m&ecirc;me, le syst&egrave;me de d&eacute;chiffrement D est un ensemble de fonctions D</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> telles que D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P))=P
+	pour tout texte clair P. C'est-&agrave;-dire que le d&eacute;chiffrement d'un cryptogramme dans le bon texte clair
+	n&eacute;cessite la m&ecirc;me cl&eacute; (index) qui a &eacute;t&eacute; utilis&eacute;e lors du chiffrement.
+	De tels syst&egrave;mes, o&ugrave; la m&ecirc;me cl&eacute; est utilis&eacute;e pour chiffrer et d&eacute;chiffrer
+	sont aussi appel&eacute;s syst&egrave;mes sym&eacute;triques.</FONT>
+	<H2><A NAME="2"></A><FONT SIZE="4" FACE="Arial">2.2. Qu'est-ce qu'une attaque?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">En termes intuitifs, une attaque (passive) contre un cryptosyst&egrave;me est une
+	m&eacute;thode qui, &agrave; partir d'informations sur des textes clairs et leurs textes chiffr&eacute;s avec une
+	certaine cl&eacute; (inconnue), permet de trouver plus d'information sur les textes clairs. Il est possible d'exprimer
+	math&eacute;matiquement ce que cela signifie. Allons-y. <BR>
+	<BR>
+	Soient F, G et H des fonctions de n variables. Soit un cryptosyst&egrave;me E, et un ensemble de textes clairs
+	et de cl&eacute;s. <BR>
+	<BR>
+	Une attaque contre E utilisant G, supposant F, avec H donn&eacute;, avec une probabilit&eacute; p est un algorithme
+	A ayant deux entr&eacute;es f et g et une sortie h, ayant une probabilit&eacute; p de calculer h=H(P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">) si on a f=F(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">) et g=G(E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">),...,E</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">)). Notez que cette probabilit&eacute; d&eacute;pend de la distribution du vecteur (K,P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">). <BR>
+	<BR>
+	L'attaque est triviale s'il y a une probabilit&eacute; au moins &eacute;gale &agrave; p de calculer h=H(P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">) si f=F(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">) et g=G(C</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">,...,C</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">).
+	<BR>
+	Ici C</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,C</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial"> varient uniform&eacute;ment parmi tous les cryptogrammes
+	possibles et n'ont pas de relations particuli&egrave;res avec P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">.
+	En d'autres termes, une attaque est triviale si elle n'utilise pas les chiffrements E</FONT><SUB><FONT SIZE="2"
+	FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">),...,E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">). <BR>
+	<BR>
+	Une attaque est appel&eacute;e &agrave; un cryptogramme si n=1, &agrave; deux cryptogrammes si n=2, et ainsi de
+	suite.</FONT>
+	<H2><A NAME="3"></A><FONT SIZE="4" FACE="Arial">2.3. Quel est l'int&eacute;r&ecirc;t de formuler tout ceci math&eacute;matiquement?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">En cryptologie de base vous ne pouvez jamais prouver qu'un cryptosyst&egrave;me
+	est s&ucirc;r; &quot;un cryptosyst&egrave;me robuste doit avoir cette propri&eacute;t&eacute;, mais avoir cette
+	propri&eacute;t&eacute; ne garantit pas que le cryptosyst&egrave;me soit robuste!&quot;. <BR>
+	<BR>
+	Au contraire, le but de la cryptologie math&eacute;matique est de formuler pr&eacute;cis&eacute;ment et si possible
+	de prouver que le cryptosyst&egrave;me est robuste. On dit, par exemple, que le syst&egrave;me r&eacute;siste &agrave;
+	toutes les attaques (passives) si toute attaque non triviale contre le syst&egrave;me est trop lente pour &ecirc;tre
+	utilisable. Si on peut prouver ceci alors on saura que le cryptosyst&egrave;me r&eacute;sistera &agrave; toute
+	technique cryptanalytique (passive). Si on peut ramener cette proposition &agrave; un probl&egrave;me non r&eacute;solu
+	bien connu, alors on saura que le cryptosyst&egrave;me n'est pas facile &agrave; casser. <BR>
+	<BR>
+	D'autres parties de la cryptologie peuvent &ecirc;tre formul&eacute;es math&eacute;matiquement. L&agrave; encore
+	le but est de d&eacute;finir explicitement les hypoth&egrave;ses que l'on fait et de prouver qu'on produit les
+	r&eacute;sultats d&eacute;sir&eacute;s. On peut se demander ce que signifie pour un cryptosyst&egrave;me particulier
+	d'&ecirc;tre utilis&eacute; &quot;correctement&quot;: &ccedil;a veut juste dire que les hypoth&egrave;ses sont
+	valides. <BR>
+	<BR>
+	La m&ecirc;me m&eacute;thodologie est utile pour la cryptanalyse aussi. Le cryptanalyste peut tirer partie des
+	hypoth&egrave;ses incorrectes. Souvent il peut essayer de construire une preuve de la s&eacute;curit&eacute; du
+	syst&egrave;me, voir o&ugrave; la preuve &eacute;choue, et utiliser cette faille comme le point de d&eacute;part
+	de son analyse.</FONT>
+	<H2><A NAME="4"></A><FONT SIZE="4" FACE="Arial">2.2. Qu'est-ce que le masque jetable?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Par d&eacute;finition, le masque jetable est un cryptosyst&egrave;me o&ugrave; les
+	textes clairs, chiffr&eacute;s et les cl&eacute;s sont tous des cha&icirc;nes (disons des chaines d'octets) de
+	longueur m, et E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P) est juste
+	la somme (disons le OU exclusif) de K et P. <BR>
+	<BR>
+	Il est facile de prouver math&eacute;matiquement qu'il n'existe </FONT><EM><FONT SIZE="2" FACE="Arial">aucune</FONT></EM><FONT
+	SIZE="2" FACE="Arial"> attaque non triviale &agrave; un cryptogramme contre le masque jetable, en supposant que
+	les cl&eacute;s soient distribu&eacute;es uniform&eacute;ment. Notez que l'on a pas besoin d'une distribution uniforme
+	des textes clairs. <BR>
+	(voici la preuve: soit A une attaque, c'est-&agrave;-dire un algorithme prenant deux entr&eacute;es f et g et une
+	sortie h, avec une probabilit&eacute; p que h=H(P) si f=F(P) et g=G(E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(P)) (i.e., g=G(K+P)). <BR>
+	Alors, comme la distribution de K est uniforme et ind&eacute;pendante de P, la distribution de K+P est aussi uniforme
+	et ind&eacute;pendante de P. Mais la distribution de C est aussi uniforme et ind&eacute;pendante de P. Donc il
+	y a une probabilit&eacute; exactement &eacute;gale &agrave; p que h=H(P) si f=F(P) et g=G(C), pour tous P et C.
+	Donc l'attaque A est triviale) <BR>
+	<BR>
+	[NdT: je trouve tout ceci passablement &quot;brain damaged&quot;, surtout apr&egrave;s mon passage. Grossi&egrave;rement,
+	on ne peut pas casser le masque jetable, m&ecirc;me en essayant toutes les cl&eacute;s car tous les libell&eacute;s
+	sont &eacute;quiprobable, donc on ne peut pas choisir le bon. <BR>
+	Pour une formulation math&eacute;matique, voir la notion de perfect secrecy dans </FONT><EM><FONT SIZE="2" FACE="Arial">Cryptography:
+	theory and practice</FONT></EM><FONT SIZE="2" FACE="Arial"> de Stinson] <BR>
+	<BR>
+	D'un autre cot&eacute;, le masque jetable </FONT><EM><FONT SIZE="2" FACE="Arial">n'est pas s&ucirc;r</FONT></EM><FONT
+	SIZE="2" FACE="Arial"> si une cl&eacute; K est utilis&eacute;e pour plus d'un texte clair: c'est-&agrave;-dire,
+	il existe une attaque non triviale &agrave; plusieurs textes chiffr&eacute;s. Donc pour &ecirc;tre utilis&eacute;
+	correctement la cl&eacute; doit &ecirc;tre jet&eacute;e apr&egrave;s un chiffrement. La cl&eacute; est aussi appel&eacute;e
+	un masque, d'o&ugrave; l'expression masque jetable [NdT: ou cl&eacute; al&eacute;atoire une fois]. <BR>
+	<BR>
+	Ainsi un g&eacute;n&eacute;rateur pseudo al&eacute;atoire sur ordinateur </FONT><EM><FONT SIZE="2" FACE="Arial">n'est
+	pas</FONT></EM><FONT SIZE="2" FACE="Arial"> un vrai masque jetable &agrave; cause de ses propri&eacute;t&eacute;s
+	d&eacute;terministes.</FONT>
+	<H2><A NAME="5"></A><FONT SIZE="4" FACE="Arial">2.5. Qu'est-ce qu'une attaque texte chiffr&eacute; seul ?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Avec la notation d&eacute;finie plus haut, dans une attaque texte chiffr&eacute;
+	seul F est constante. Etant donn&eacute; seulement l'information G(E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">),...,E</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">)) sur n cryptogrammes, l'attaque doit produire l'information H(P</FONT><SUB><FONT SIZE="2"
+	FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">) sur les textes clairs. L'attaque est triviale si elle a une chance de fournir H(P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">) quand on lui donne G(C</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2"
+	FACE="Arial">,...,C</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">) pour C</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,C</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT
+	SIZE="2" FACE="Arial"> al&eacute;atoires. <BR>
+	<BR>
+	Par exemple, soit G(C)=C et soit H(P) le premier bit de P. Nous pouvons facilement monter une attaque (la &quot;devinette&quot;)
+	qui devine simplement que H(P) vaut 1. Cette attaque est triviale car elle n'utilise pas le texte chiffr&eacute;:
+	elle a 50 % de chance de deviner correctement quoi qu'il arrive. D'un autre cot&eacute;, il y a une attaque contre
+	le RSA qui produit 1 bit d'information sur P avec 100 % de succ&egrave;s en utilisant C. Si on lui donne un cryptogramme
+	C al&eacute;atoire, sa chance de succ&egrave;s tombe &agrave; 50%. Donc c'est une attaque non triviale.</FONT>
+	<H2><A NAME="6"></A><FONT SIZE="4" FACE="Arial">2.6. Qu'est-ce qu'une attaque texte clair connu ?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">L'attaque classique &agrave; texte clair connu a F(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">,P</FONT><SUB><FONT SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial">)=P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">, G(C</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">,C</FONT><SUB><FONT SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial">)=(C</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,C</FONT><SUB><FONT SIZE="2" FACE="Arial">2</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">), et H(P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial">) d&eacute;pend seulement de P</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial">. En d'autres termes, &eacute;tant donn&eacute;s
+	deux cryptogrammes C</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial"> et C</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial"> et un libell&eacute; P</FONT><SUB><FONT SIZE="2"
+	FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">, l'attaque &agrave; texte clair connu founit de l'inforrmation
+	sur l'autre libell&eacute; P</FONT><SUB><FONT SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial">.
+	<BR>
+	<BR>
+	Notez que l'attaque &agrave; texte clair connu est souvent d&eacute;finie dans la litt&eacute;rature comme renseignant
+	sur la cl&eacute; mais ceci est injustifi&eacute;: le cryptanalyste ne se soucie de la cl&eacute; que dans la mesure
+	o&ugrave; elle lui permet de d&eacute;crypter d'autres messages.</FONT>
+	<H2><A NAME="7"></A><FONT SIZE="4" FACE="Arial">2.7. Qu'est-ce qu'une attaque texte clair choisi ?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Une attaque &agrave; texte clair choisi est la premi&egrave;re d'une s&eacute;rie
+	d'attaques </FONT><EM><FONT SIZE="2" FACE="Arial">actives</FONT></EM><FONT SIZE="2" FACE="Arial"> de plus en plus
+	difficiles &agrave; mettre en pratique: dans ces attaques le cryptanalyste alimente le chiffrement. Ces attaques
+	n'entrent pas dans le cadre des attaques passives expliqu&eacute;es plus haut. Une attaque &agrave; texte clair
+	choisi permet au cryptanalyste de choisir un libell&eacute; et de regarder le cryptogramme correspondant, et de
+	recommencer jusqu'&agrave; ce qu'il ait trouv&eacute; comment d&eacute;crypter n'importe quel message. Des exemples
+	encore plus absurdes de ces sortes d'attaques sont l'attaque &agrave; cl&eacute; choisie et l'attaque &agrave;
+	syst&egrave;me choisi. <BR>
+	<BR>
+	[NdT: depuis que ce texte a &eacute;t&eacute; &eacute;crit, Bruce Schneier et ses acolytes ont mont&eacute; une
+	attaque &agrave; cl&eacute;s corr&eacute;l&eacute;es assez redoutable contre tout un &eacute;ventail de cryptosyst&egrave;mes.
+	En introduction de leur papier ils expliquent pourquoi cette attaque est beaucoup moins th&eacute;orique qu'il
+	n'y para&icirc;t -- Cf. </FONT><A HREF="javascript:if(confirm('http://www.counterpane.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.counterpane.com/'" tppabs="http://www.counterpane.com/"><FONT SIZE="2" FACE="Arial">http://www.counterpane.com</FONT></A><FONT
+	SIZE="2" FACE="Arial"> ] <BR>
+	<BR>
+	Une forme d'attaque active beaucoup plus importante est l'attaque par corruption de message, o&ugrave; l'attaquant
+	tente de changer le texte chiffr&eacute; pour provoquer un changement utile dans le texte clair. <BR>
+	<BR>
+	Il existe de nombreuses m&eacute;thodes faciles pour tenir en &eacute;chec toutes ces attaques: par exemple, en
+	chiffrant automatiquement tout texte clair P comme T,E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(h(T+R+P),R,P), o&ugrave; T est une cl&eacute; temporelle (num&eacute;ro de s&eacute;quence),
+	R un nombre al&eacute;atoire, et h une fonction de hachage &agrave; sens unique. Ici &quot;virgule&quot; indique
+	la concat&eacute;nation et &quot;plus&quot; le OU exclusif.</FONT>
+	<H2><A NAME="8"></A><FONT SIZE="4" FACE="Arial">2.8. En termes math&eacute;matiques, que peut-on dire d'une attaque
+	par force brute?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Consid&eacute;rez l'attaque &agrave; texte clair connu suivante. Nous avons les
+	libell&eacute;s P</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,P_{n-1}
+	et les cryptogrammes C</FONT><SUB><FONT SIZE="2" FACE="Arial">1</FONT></SUB><FONT SIZE="2" FACE="Arial">,...,C_{n-1}.
+	Nous avons aussi un cryptogramme C</FONT><SUB><FONT SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">.
+	Nous essayons toutes les cl&eacute;s K. Quand nous avons trouv&eacute; une cl&eacute; K telle que E</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P</FONT><SUB><FONT SIZE="2" FACE="Arial">i</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">)=C</FONT><SUB><FONT SIZE="2" FACE="Arial">i</FONT></SUB><FONT SIZE="2" FACE="Arial"> pour
+	tout i &lt; n, nous affichons D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(C</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">n</FONT></SUB><FONT SIZE="2" FACE="Arial">). <BR>
+	<BR>
+	Si n est suffisamment grand pour qu'une seule cl&eacute; marche, alors cette attaque r&eacute;ussira tout le temps
+	sur des entr&eacute;es valides, tandis qu'elle produira une r&eacute;ponse correcte une fois tous les 36 du mois
+	pour des entr&eacute;es al&eacute;atoires. Donc c'est une attaque non triviale. Son seul probl&egrave;me est qu'elle
+	est tr&egrave;s lente s'il y a beaucoup de cl&eacute;s possibles.</FONT>
+	<H2><A NAME="9"></A><FONT SIZE="4" FACE="Arial">2.9. Qu'est-ce qu'une attaque devinette? Qu'est-ce que l'entropie?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Imaginons que quelqu'un utilise le masque jetable --- mais ne choisisse pas les
+	cl&eacute;s uniform&eacute;ment parmi tous les messages de m bits comme il &eacute;tait cens&eacute; le faire dans
+	notre preuve. En fait, disons qu'il pr&eacute;f&egrave;re utiliser des mots anglais comme cl&eacute;s. Alors un
+	cryptanalyste peut essayer tous les mots anglais comme cl&eacute;s. Cette attaque marchera souvent, et elle est
+	beaucoup plus rapide que la recherche brutale sur l'ensemble de l'espace des cl&eacute;s. Nous pouvons mesurer
+	&agrave; quel point une distribution de cl&eacute; est mauvaise en calculant son entropie. Ce nombre E mesure les
+	&quot;vrais bits d'information&quot; de la cl&eacute;: un cryptanalyste trouvera la cl&eacute; en 2^E essais. E
+	est d&eacute;fini comme la somme de -p</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">*log</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">2</FONT></SUB><FONT SIZE="2" FACE="Arial">(p</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">), o&ugrave; p</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">
+	est la probabilit&eacute; de la cl&eacute; K. 
+<HR ALIGN="CENTER">
+</FONT>
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

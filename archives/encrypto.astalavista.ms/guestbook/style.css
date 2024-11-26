@@ -1,0 +1,74 @@
+body, td {
+	color : Black;
+	background-color: White;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-align: left;
+}
+
+td.upper {
+	color : #FFFFFF;
+	background : #23559C;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+.smaller {
+	font-size: 10px;
+}
+
+a {
+	color : #0084BE;
+	text-decoration : underline;
+}
+
+a:hover {
+	color : Red;
+	text-decoration : none;
+}
+
+a.smaller {
+	font-size: 10px;
+	color : #0084BE;
+	text-decoration : underline;
+}
+
+a.smaller:hover {
+	font-size: 10px;
+	color : Red;
+	text-decoration : none;
+}
+
+input {
+	font-size: 11px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color:#000000;
+	background-color:#FFFFFF;
+}
+
+div.centered {
+	text-align: center;
+}
+
+/* EVERYTHING BELOW ADDED IN 1.6 */
+div.centered table.entries {
+   color : Black;
+   font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+   font-size: 11px;
+   BORDER-RIGHT: #23559C 1px solid;
+   BORDER-LEFT: #23559C 1px solid;
+   BORDER-TOP: #23559C 1px solid;
+   BORDER-BOTTOM: #23559C 1px solid;
+   margin: 0px auto 10px auto; /* margin: top right bottom left; */
+}
+
+h3 {
+   color : Black;
+   font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+   font-size: 14px;
+	font-weight: bold; 	
+}
+
+table.gbookMenu {
+	BORDER-TOP: #B8CFE7 1px solid;
+}

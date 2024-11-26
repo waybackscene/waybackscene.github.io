@@ -1,0 +1,92 @@
+Date: Mon, 20 Nov 2000 02:57:39 +0300
+From: "Ivanopulo / [DAMN]" <ivanopulo@usa.net>
+To: editor@guardianunlimited.co.uk
+CC: simon.waldman@guardian.co.uk, david.rowan@guardian.co.uk, simon.rogers@guardian.co.uk
+Subject: Lies in your article
+--------------------------------
+
+Hello
+
+I'm  writing this email because of your recent article "How Russia's
+cyber crooks hack the net"
+http://www.guardian.co.uk/internetnews/story/0,7369,399801,00.html
+by  Amelia  Gentleman. Unfortunately there's no  address for her on
+your contacts page, so I had to address this message to others.
+
+------- * Quote starts * -------
+"It  takes  just  four minutes to steal computer software worth ?300
+from the internet, using code-cracking instructions developed by the
+legendary St Petersburg hacker, Ivanopulo.
+
+No  expertise  is  necessary,  just a relaxed attitude towards cyber
+ethics  and  a website address - which lists 10 idiot-proof steps on
+how to beat the system.
+
+After filling in false credit card details - supplied by the website
+-  and  completing  a simple series of tasks, an icon appears on the
+screen,  declaring: 'Thank you. Payment has been received.' Flash, a
+sophisticated and expensive program devised by the American software
+giant Macromedia, has been installed for free.
+-------- * Quote ends * --------
+
+Okay,  first  of all, some words on who I actually am:
+
+I'm  the  Ivanopulo  mentioned  in  your article, leader of cracking
+group  DAMN [http://www.damn.to] and I've been on the cracking scene
+since  late  '98.  There's  NO  other  person  with this nick on the
+underground  scene.
+Some  of you may have heard (your editor obviously has) of the
+Macromedia vs. Ivanopulo case
+[http://7am.com/cgi-bin/twires.cgi?1000_t9903050.htm].
+
+Now  about  the  facts  you  falsified.  My overall impression after
+reading  your article, is that your editor just needed some facts to
+start with. But as she hasn't found any exact matches (famous hacker
+living  in  St.  Petersburg), she decided to just 'modify' those she
+was able to find. So...
+
+
+I  am  NOT  a  hacker.  Hackers break remote computers/networks etc.
+Crackers deal with software.
+
+I DO NOT live in St. Petersburg. I live in Moscow.
+
+My  website  [http://www.damn.to]  contains NOTHING that can be used
+for  illegally  registering  software  products.  And  of course, it
+doesn't supply anyone with false credit card details.
+
+In  light  of  the above, I consider your article offensive, and I'd
+appreciate it if you:
+
+1. Either prove the facts mentioned in this article, namely:
+
+Provide me with the URL of MY site with "code-cracking" instructions
+developed  by  me,  "10 idiot-proof steps on how to beat the system"
+and  the  place  that  "supplies false credit card details" (as it's
+written in your article, "supplied by the website").
+Prove  that  I  break  networks/perform  server  attacks or that I'm
+involved in any hacking-related activity.
+Prove that I live in St. Petersburg.
+
+2. or
+
+Publish  an official retraction ASAP and place a link to it NEAR the
+link to the original article.
+
+3. or
+
+Do nothing, but keep your legal dept. ready. And I'll pass this case
+to my lawyer in the meantime.
+
+
+P.S The above are not the only falsified facts published by you. For
+example, UCL (United Crackers League) is a _cracking_ group and they
+don't (quote) "get together to orchestrate joint attacks on specific
+websites". But I let them handle this situation on their own...
+
+P.P.S.  As  this  email  is  not  a private one, a copy of it is to be
+posted on www.damn.to.
+
+Good luck,
+ -= Ivanopulo/[DAMN] =-                     mailto:ivanopulo@usa.net
+                                            http://www.damn.to

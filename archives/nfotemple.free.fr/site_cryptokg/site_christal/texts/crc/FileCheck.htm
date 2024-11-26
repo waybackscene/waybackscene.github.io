@@ -1,0 +1,586 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>CRC FileCheck</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/Background.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Background.gif">
+
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD><EM><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Default.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Default.htm'"
+				tppabs="http://www.efg2.com/Lab/Default.htm"><FONT SIZE="6" COLOR="blue" FACE="Arial">efg's</FONT><FONT SIZE="6"
+				COLOR="blue"> </FONT><FONT SIZE="6" COLOR="blue" FACE="Arial">Computer Lab</FONT></A></EM></TD>
+			<TD>&nbsp;</TD>
+			<TD><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/CRC/files/Default.htm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/CRC/files/Default.htm'" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Default.htm"><FONT SIZE="6">Mathematics</FONT></A></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><A HREF="FileCheck.zip" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/FileCheck.zip"><IMG SRC="FileCheck.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/FileCheck.gif"
+				WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" ALT="FileCheck.gif (1195 bytes)" BORDER="0" tppabs="http://www.efg2.com/Lab/Mathematics/FileCheck.gif"></A>
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER">&nbsp;
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP  \n\nThis file was not retrieved by Teleport Pro, because it did not meet the project\'s file type specifications.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP'"
+				tppabs="http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP"><FONT SIZE="6">Cyclic Redundancy Code FileCheck</FONT></A>
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER">&nbsp;
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><FONT SIZE="6">Lab Report</FONT>
+			</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD ALIGN="CENTER" COLSPAN="3">
+				<P ALIGN="CENTER"><STRONG>Compute CRC-32s for Files, a Directory, or a Volume<BR>
+				</STRONG><small>(Also see <A HREF="CRC.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/CRC.htm">CRC Calculator</A>
+				Lab Report for how to compute CRC-16/CRC-32 of a character string)</small>
+			</TD>
+		</TR>
+		<TR>
+			<TD>&nbsp;</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP  \n\nThis file was not retrieved by Teleport Pro, because it did not meet the project\'s file type specifications.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP'"
+				tppabs="http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP"><IMG SRC="ScreenFileCheck.jpg" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/ScreenFileCheck.jpg" WIDTH="600" HEIGHT="478"
+				ALIGN="BOTTOM" ALT="ScreenFileCheck.jpg (59764 bytes)" BORDER="0" tppabs="http://www.efg2.com/Lab/Mathematics/ScreenFileCheck.jpg"></A>
+			</TD>
+			<TD>&nbsp;</TD>
+		</TR>
+		<TR>
+			<TD>&nbsp;</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER">&nbsp;&nbsp;
+			</TD>
+			<TD>&nbsp;</TD>
+		</TR>
+		<TR>
+			<TD>&nbsp;</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><A HREF="javascript:if(confirm('http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP  \n\nThis file was not retrieved by Teleport Pro, because it did not meet the project\'s file type specifications.  \n\nDo you want to open it from the server?'))window.location='http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP'"
+				tppabs="http://www.efg2.com/Lab/Mathematics/FileCheck.ZIP"><IMG SRC="ScreenFileCheckVerify.jpg" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/ScreenFileCheckVerify.jpg" WIDTH="596" HEIGHT="114"
+				ALIGN="BOTTOM" ALT="ScreenFileCheckVerify.jpg (16011 bytes)" BORDER="0" tppabs="http://www.efg2.com/Lab/Mathematics/ScreenFileCheckVerify.jpg"></A>
+			</TD>
+			<TD>&nbsp;</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P><STRONG><FONT SIZE="4">Purpose<BR>
+</FONT></STRONG><FONT SIZE="3">The purpose of this project is to show how to compute CRC-32s for one or more files
+and to form a &quot;metaCRC&quot; based on an ordered sequence of files for a directory or volume.&nbsp; The integrity
+of files processed through a &quot;scan&quot; operation can be checked at any later time in a &quot;verify&quot;
+operation by saving a file containing the observed CRC values.</FONT></P>
+<P><STRONG><FONT SIZE="4">Background<BR>
+</FONT></STRONG><FONT SIZE="3">For QA/QC purposes, knowing that a file, a directory or even a volume is exactly
+the same as another is very useful.&nbsp; After &quot;burning&quot; several CD-Rs I discovered that some of the
+files were not being written reliably.&nbsp; I wanted to find a way to verify whether the CD &quot;burn&quot; had
+exactly the same contents as the original disk copy.&nbsp;</FONT></P>
+<P><FONT SIZE="3">For example, I discovered a CD-R with 646 directories, 13,421 files and 509,314,783 bytes had
+12 bad files!&nbsp; As long as I could identify which files were &quot;bad,&quot; and verify the &quot;bad&quot;
+files could be safely ignored,&nbsp; I could then &quot;accept&quot; the CD as a valid backup copy even with bad
+files.&nbsp;&nbsp; This Lab Report is about a FileCheck utility that can be used to automate this verification
+of CD-Rs or other media.</FONT></P>
+<P><STRONG><FONT SIZE="4">Materials and Equipment</FONT></STRONG></P>
+
+<BLOCKQUOTE>
+	<P><STRONG><FONT SIZE="4">Software Requirements<BR>
+	</FONT></STRONG><FONT SIZE="3">Windows 95/98<BR>
+	Delphi 3/4/5 (to recompile)</FONT></P>
+	<P><STRONG><FONT SIZE="4">Hardware Requirements<BR>
+	</FONT></STRONG>VGA display</P>
+</BLOCKQUOTE>
+
+<P><STRONG><FONT SIZE="4">Procedure</FONT></STRONG></P>
+
+<OL>
+	<LI>Click on the <EM>FileCheck.EXE</EM> icon and view the &quot;Scan&quot; TabSheet.
+	<LI>If necessary, choose unique names for the&nbsp; FileList and Verify output files.
+	<LI>Select the Volume, Directory or File of interest using the DriveComboBox, DirectoryListBox, and/or FileListBox
+	controls.
+	<LI>Press the corresponding <EM>Scan</EM> button and watch any messages in the Log area.
+	<LI>If desired, press the <EM>Print</EM> button in the Log area to document the results of the scan.
+	<LI>Select the &quot;Verify&quot; TabSheet.
+	<LI>Specify a <EM>CRC Verify</EM> file and press the <EM>Verify</EM> button.
+	<LI>Any mismatches will be displayed in the message area
+	<LI>If desired, the &quot;verify&quot; results can be printed by pressing on the <EM>Print</EM> button.
+</OL>
+
+<P><STRONG><FONT SIZE="4">Discussion</FONT></STRONG><BR>
+&quot;Scan&quot; and &quot;Verify&quot; are the two main functions of this program. &nbsp; A volume, directory
+or file can be scanned with resulting data written to a File List &nbsp; (for viewing by a human much like a DOS
+DIR list) and a Verify File.</P>
+<P>An example &quot;Log&quot; for&nbsp; a successful volume scan appears as follows:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD WIDTH="100%">
+<small>
+				<P><FONT FACE="Courier New">Volume e:\<BR>
+				Directories = 696, Files = 9,225, Bytes = 249,435,921, Meta CRC32 = C42592A7<BR>
+				Scan time = 375.8 sec (7 Sep 1999 21:51:21)</FONT></small>
+			</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>A <EM>File List</EM> disk file created during a scan is an expanded version of the information shown by the
+DOS &quot;DIR&quot; command and is intended to be in a&nbsp; human readable.</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD WIDTH="100%">
+				<P ALIGN="CENTER"><STRONG>Sample <EM>FileList</EM> disk file</STRONG>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH="100%">
+<small>
+<small>
+				<P><FONT FACE="Courier New">FileCheck: e:\ 09/07/1999 21:45<BR>
+				Label = EFG-DELL-E VolSer = D7D4B00A<BR>
+				<BR>
+				Date Time Attrib Bytes CRC-32 Filename<BR>
+				---------- -------- ------ ----------- -------- --------<BR>
+				<BR>
+				e:<BR>
+				10/03/1997 15:44:30 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				bc5<BR>
+				08/28/1999 13:34:12 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				bde32sdk<BR>
+				10/03/1997 15:54:20 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				bp<BR>
+				10/11/1997 10:14:06 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				Comm<BR>
+				10/12/1997 22:56:08 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				radiation<BR>
+				07/27/1997 16:35:42 -D-SH- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				RECYCLED<BR>
+				------------ --------<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				00000000 0 files<BR>
+				<BR>
+				e:\bc5<BR>
+				07/26/1997 19:13:46 A----- 122,337 F0B7FB58 BC5RMV.LOG<BR>
+				10/03/1997 15:44:32 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				BGI<BR>
+				10/03/1997 15:44:32 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				BIN<BR>
+				03/25/1997 05:02:00 A-----&nbsp; 32,768 A364DCED cgclean.exe<BR>
+				03/25/1997 05:02:00 A-----&nbsp;&nbsp; 9,057 C835AFF0 CGREADME.TXT<BR>
+				03/25/1997 05:02:00 A-----&nbsp; 49,152 E01A87CD cleanini.exe<BR>
+				10/03/1997 15:45:04 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				DOC<BR>
+				10/03/1997 15:45:18 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				EXAMPLES<BR>
+				10/03/1997 15:48:14 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				EXPERT<BR>
+				10/03/1997 15:48:18 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				HELP<BR>
+				10/03/1997 15:49:02 -D---- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				INCLUDE<BR>
+				<BR>
+				...<BR>
+				<BR>
+				e:\radiation\WIN-BUG<BR>
+				01/11/1992 09:20:10 A-----&nbsp;&nbsp; 9,006 3A88EC5C PEEKPOKE.EXE<BR>
+				01/11/1992 09:20:10 A-----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 91 A01D7133 READTHIS<BR>
+				------------ --------<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				9,097 454BDB4E 2 files<BR>
+				<BR>
+				e:\RECYCLED<BR>
+				09/02/1999 17:55:32 A---H-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 65 74221298 desktop.ini<BR>
+				------------ --------<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				65 4A7D57B9 1 files<BR>
+				<BR>
+				Summary of e:\<BR>
+				Directories = 696<BR>
+				Files = 9,225<BR>
+				Bytes = 249,435,921<BR>
+				Meta CRC-32 = C42592A7 </FONT></small></small>
+			</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>A <EM>Verify </EM>disk file created during a scan is an ASCII text file. &nbsp; This file is intended for processing
+by the &quot;Verify&quot; operation, or other computer programs.&nbsp; (Editing this file may cause the <EM>Verify</EM>
+operation to report erroneous results.)</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD WIDTH="100%">
+				<P ALIGN="CENTER"><STRONG>Sample <EM>Verify</EM> disk file</STRONG>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH="100%">
+<small>
+<small>
+				<P><FONT FACE="Courier New">V &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				Label = EFG-DELL-E VolSer = D7D4B00A<BR>
+				P &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				e:<BR>
+				D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 00000000 e: 0<BR>
+				F&nbsp;&nbsp;&nbsp; 122337 F0B7FB58 e:\bc5\BC5RMV.LOG<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 32768 A364DCED e:\bc5\cgclean.exe<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9057 C835AFF0 e:\bc5\CGREADME.TXT<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 49152 E01A87CD e:\bc5\cleanini.exe<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 21950 B7A958C4 e:\bc5\INSTALL.TXT<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9982 E14F0501 e:\bc5\README.TXT<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 57101 F918A9C9 e:\bc5\regsrvr.exe<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 11014 9333C2EF e:\bc5\uninst.ini<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 49152 96AEC4BF e:\bc5\UNPAQ.EXE<BR>
+				F&nbsp;&nbsp;&nbsp; 114688 F6576E76 e:\bc5\unreg.exe<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 21792 0FD64C87 e:\bc5\unreg.ini<BR>
+				D&nbsp;&nbsp;&nbsp; 498993 12F585E9 e:\bc5 11<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6332 4F4D7A95 e:\bc5\BGI\att.bgi<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 49630 F413139D e:\bc5\BGI\bgidemo.c<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 23016 62949AEE e:\bc5\BGI\bgidemo.ide<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp; 12208 6D728AAF e:\bc5\BGI\bgiobj.exe<BR>
+				<BR>
+				...<BR>
+				<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9006 3A88EC5C e:\radiation\WIN-BUG\PEEKPOKE.EXE<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 91 A01D7133 e:\radiation\WIN-BUG\READTHIS<BR>
+				D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9097 454BDB4E e:\radiation\WIN-BUG 2<BR>
+				F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 65 74221298 e:\RECYCLED\desktop.ini<BR>
+				D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 65 4A7D57B9 e:\RECYCLED 1<BR>
+				S 249435921 C42592A7 9225 696</FONT></small></small>
+			</TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>At a later time, the information stored in the Verify File can be verified to see that all CRCs match the original
+values.&nbsp; A <EM>Print</EM> button allows printing the Scan or Verify operations for documenation purposes.</P>
+<P>A volume &quot;scan&quot; is much like the scan of&nbsp; the root directory of a volume, except that the volume
+label and volume serial number are stored as part of the information about a volume.&nbsp; A volume &quot;scan&quot;
+always implies that all subdirectories should be scanned.&nbsp; The <EM>Subdirs Checkbox </EM>allows one to specify
+whether subdirectories should be scanned in a Directory &quot;scan.&quot;</P>
+<P>If multiple instances of <EM>FileCheck</EM> are run, be sure that unique <EM>File List</EM> and <EM>Verify</EM>
+files are specified.&nbsp; If you blank either of the fields for these files, the corresponding file is not created.</P>
+<P>The <EM>BitBtnScanClick</EM> method is called for a &quot;click&quot; on any of the Scan buttons.&nbsp; The
+<EM>Tag</EM> value of each button is used to determine whether the scan is for the volume in the <EM>TDriveCombobox</EM>,
+the directory in the<EM> TDirectoryListBox</EM>, or the file in the <EM>TFileListBox</EM>.&nbsp; A further helper
+routine, <EM>ScanDirectoryTarget</EM>, is called for processing a volume of directory scan.</P>
+<P>The <EM>BitBtnVerifyFileClick</EM> method is called for the &quot;verify&quot; operation.&nbsp; Many of the
+variables used for scanning are replicated within this routine so that (in theory) a scan and a verify could run
+simultaneously without interfering with each other.</P>
+<P>See the <A HREF="CRC.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/CRC.htm">CRC Calculator</A> Lab Report
+for how to compute the CRC-16/CRC-32 of a character string, including source code for a <EM>CalcFileCRC32</EM>
+procedure from the <EM>CRC32.PAS</EM> unit.</P>
+<P>Two versions of <EM>CalcFileCRC32</EM> are available.&nbsp; The <EM>StreamIO</EM> conditional compilation variable
+allows to select I/O using Streams or with the older <EM>BlockRead</EM> routine.&nbsp; Since I have observed that
+<EM>BlockRead</EM> is still faster than <EM>Stream.LoadFileFrom</EM>, the default is setting is <EM>NoStreamIO</EM>.&nbsp;</P>
+<P>Here are the two possible ways the CRC32 of a file is computed using the CalcCRC32 procedure:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD>
+				<P ALIGN="CENTER"><STRONG><EM>CalcFileCRC32</EM> using a <EM>TMemoryStream</EM><BR>
+				</STRONG><small>(Compile with <EM>StreamIO</EM> set.&nbsp; See <EM>CRC32.PAS</EM> for details.)</small>
+			</TD>
+		</TR>
+		<TR>
+			<TD><FONT FACE="Arial Narrow">// The CRC-32 value calculated here matches the one from the PKZIP program.<BR>
+				// Use MemoryStream to read file in binary mode.<BR>
+				PROCEDURE CalcFileCRC32 (FromName: STRING; VAR CRCvalue: DWORD;<BR>
+				&nbsp;&nbsp;&nbsp; VAR TotalBytes: TInteger8;<BR>
+				&nbsp;&nbsp;&nbsp; VAR error: WORD);<BR>
+				&nbsp; VAR<BR>
+				&nbsp;&nbsp;&nbsp; Stream: TMemoryStream;<BR>
+				BEGIN<BR>
+				&nbsp; error := 0;<BR>
+				&nbsp; CRCValue := $FFFFFFFF;<BR>
+				&nbsp; Stream := TMemoryStream.Create;<BR>
+				&nbsp; TRY<BR>
+				&nbsp;&nbsp;&nbsp; TRY<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream.LoadFromFile(FromName);<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream.Size &gt; 0<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; THEN CalcCRC32 (Stream.Memory, Stream.Size, CRCvalue)<BR>
+				&nbsp;&nbsp;&nbsp; EXCEPT<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ON E: EReadError DO<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error := 1&nbsp;&nbsp; // arbitrarily set this for now<BR>
+				&nbsp;&nbsp;&nbsp; END;<BR>
+				<BR>
+				&nbsp;&nbsp;&nbsp; CRCvalue := NOT CRCvalue;<BR>
+				&nbsp;&nbsp;&nbsp; TotalBytes := Stream.Size<BR>
+				&nbsp; FINALLY<BR>
+				&nbsp;&nbsp;&nbsp; Stream.Free<BR>
+				&nbsp; END<BR>
+				END {CalcFileCRC32};</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>An Error code 1&nbsp; is return from this procedure when an <EM>EReadException</EM> is encountered since the
+Exception Message string did have any additional useful information.&nbsp;&nbsp; (See <EM>IOResult</EM> values
+below with <EM>BlockRead</EM>).</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD>
+				<P ALIGN="CENTER"><STRONG><EM>CalcFileCRC32</EM> using <EM>BlockRead</EM><BR>
+				</STRONG><small>(Compile with <EM>NoStreamIO</EM> set.&nbsp; See <EM>CRC32.PAS</EM> for details.)</small>
+			</TD>
+		</TR>
+		<TR>
+			<TD><FONT FACE="Arial Narrow">// The CRC-32 value calculated here matches the one from the PKZIP program.<BR>
+				// Use BlockRead to read file in binary mode.<BR>
+				PROCEDURE CalcFileCRC32 (FromName: STRING; VAR CRCvalue: DWORD;<BR>
+				&nbsp;&nbsp;&nbsp; VAR TotalBytes: TInteger8;<BR>
+				&nbsp;&nbsp;&nbsp; VAR error: WORD);<BR>
+				&nbsp; CONST<BR>
+				&nbsp;&nbsp;&nbsp; BufferSize = 32768;<BR>
+				<BR>
+				&nbsp; TYPE<BR>
+				&nbsp;&nbsp;&nbsp; BufferIndex =&nbsp; 0..BufferSize-1;<BR>
+				&nbsp;&nbsp;&nbsp; TBuffer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp; ARRAY[BufferIndex] OF BYTE;<BR>
+				&nbsp;&nbsp;&nbsp; pBuffer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&nbsp; ^TBuffer;<BR>
+				<BR>
+				&nbsp; VAR<BR>
+				&nbsp;&nbsp;&nbsp; BytesRead:&nbsp; INTEGER;<BR>
+				&nbsp;&nbsp;&nbsp; FromFile&nbsp;&nbsp; :&nbsp; FILE;<BR>
+				&nbsp;&nbsp;&nbsp; IOBuffer&nbsp;&nbsp;&nbsp; :&nbsp; pBuffer;<BR>
+				BEGIN<BR>
+				&nbsp; New(IOBuffer);<BR>
+				&nbsp; TRY<BR>
+				&nbsp;&nbsp;&nbsp; FileMode := 0; {Turbo default is 2 for R/W; 0 is for R/O}<BR>
+				&nbsp;&nbsp;&nbsp; CRCValue := $FFFFFFFF;<BR>
+				&nbsp;&nbsp;&nbsp; ASSIGN (FromFile,FromName);<BR>
+				&nbsp;&nbsp;&nbsp; {$I-} RESET (FromFile,1); {$I+}<BR>
+				&nbsp;&nbsp;&nbsp; error := IOResult;<BR>
+				&nbsp;&nbsp;&nbsp; IF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error = 0<BR>
+				&nbsp;&nbsp;&nbsp; THEN BEGIN<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TotalBytes := 0;<BR>
+				<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; REPEAT<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$I-}<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BlockRead (FromFile, IOBuffer^, BufferSize, BytesRead);<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$I+}<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error := IOResult;<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (error = 0) AND (BytesRead &gt;
+				0)<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; THEN BEGIN<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CalcCRC32 (IOBuffer, BytesRead, CRCvalue);<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TotalBytes := TotalBytes + BytesRead; // can't use INC with
+				COMP<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UNTIL (BytesRead = 0) OR (error &gt; 0);<BR>
+				<BR>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CLOSE (FromFile)<BR>
+				&nbsp;&nbsp;&nbsp; END;<BR>
+				&nbsp;&nbsp;&nbsp; CRCvalue := NOT CRCvalue<BR>
+				&nbsp; FINALLY<BR>
+				&nbsp;&nbsp;&nbsp; Dispose(IOBuffer)<BR>
+				&nbsp; END<BR>
+				END {CalcFileCRC32};</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>The most likely error values returned by this routine are as follows:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="1">
+		<TR>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><STRONG>Error</STRONG>
+			</TD>
+			<TD ALIGN="CENTER">
+				<P ALIGN="CENTER"><STRONG>Brief Description</STRONG>
+			</TD>
+		</TR>
+		<TR>
+			<TD>30</TD>
+			<TD>ERROR_READ_FAULT occurs when the system cannot read from the specified device.</TD>
+		</TR>
+		<TR>
+			<TD>31</TD>
+			<TD>ERROR_GEN_FAILURE occurs when a device attached to the system is not functioning.</TD>
+		</TR>
+		<TR>
+			<TD>32</TD>
+			<TD>ERROR_SHARING_VIOLATION. &nbsp;The process cannot access the file because it is being used by another process.<BR>
+				This is likely to happen if you try to scan the Windows Swap file, e.g.,<BR>
+				<FONT FACE="Arial Narrow">Error Code 32 reading file c:\WINDOWS\WIN386.SWP</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>Whenver a read error occurs, an error message is displayed in the log and the CRC is assigned a value of $00000000.</P>
+<P>A CRC-32 value can be computed for a each file in a directory. &nbsp;&nbsp; The CRC of an ordered list of files
+in a directory could be directly computed, but maintaining the information about the computation is somewhat a
+pain. &nbsp; So instead of a &quot;true&quot; directory CRC, a &quot;MetaCRC&quot; is computed for a well-ordered
+list of files in a directory.&nbsp; This MetaCRC is simply a CRC of the file CRCs.&nbsp;</P>
+<P>A Directory&nbsp; MetaCRC is a CRC of the file CRCs in a directory, which are processed in alphabetical order.&nbsp;
+Each of the file CRCs is converted to an 8-byte hex string for computing the Directory MetaCRC.&nbsp; (This facilitates
+a similar computation on machines of a different endianess.&nbsp; That is, CRCing the list of file hex CRCs will
+give the same result on either a PC with little endian words, or a UNIX workstation with big endian words.)</P>
+<P>The Volume MetaCRC is a CRC of the Directory MetaCRCs taken in alphabetical order.</P>
+<P>The <EM>FileListLibrary.PAS</EM> unit provides a <EM>ScanDirectory</EM> procedure for a generic way to process
+a hierarchy of directories and files. &nbsp;&nbsp; Two callback routines are parameters to <EM>ScanDirectory</EM>
+to process each file, and to process the beginning and end of a directory.&nbsp; The routines <EM>ProcessDirectory</EM>
+and <EM>ProcessFile</EM> in <EM>ScreenFileCheck.PAS</EM> are the routines used as parameters to <EM>ScanDirectory</EM>.</P>
+<P>To define a well-ordered list of files in a directory, a third parameter is a routine that is used to compare
+file names within a directory.&nbsp; The <EM>OrderByFilename </EM>function in <EM>ScreenFileCheck.PAS</EM> uses
+<EM>StrIComp</EM> to compare filenames in a case insensitive way.</P>
+<P>A global variable in the <EM>FileListLibrary</EM> unit, <EM>ContinueScan</EM>, allows an external routine to
+stop the processing of directories and files (intended to be set by a &quot;Cancel&quot; button).</P>
+<P>The <EM>Dbt_h.PAS</EM> file is a partial translation of DBT.H, which was adapted from&nbsp; &quot;Notification
+of CD-ROM insertion and removal,&quot;&nbsp; <A HREF="javascript:if(confirm('http://www.undu.com/Articles/980221b.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.undu.com/Articles/980221b.htm'" tppabs="http://www.undu.com/Articles/980221b.htm">http://www.undu.com/Articles/980221b.htm</A>.
+&nbsp; The <EM>WmDeviceChange</EM> message is used to detect a change in CD-ROMs so the . &nbsp; (Setting a <EM>Debug</EM>
+compilation conditional enables additional log comments when this messgae is received).</P>
+<P>The <EM>Refresh</EM> button on the <EM>Scan </EM>TabSheet forces an update of the <EM>TDriveComboBox</EM>, which
+may be necessary on some devices that do not generate a <EM>WmDeviceChange</EM> such as ZIP drives.&nbsp;&nbsp;
+Calling the BuildList methods of&nbsp; both the <EM>TDriveComboBox</EM> and the <EM>TDirectoryListBox</EM> updated
+these controls.</P>
+<P>Unfortunately, the <EM>BuildList</EM> methods of both the <EM>TDriveComboBox</EM> and the <EM>TDirectoryListBox</EM>
+are protected methods.&nbsp; Creating new controls derived from these classes is somewhat of a pain just to call
+the protected <EM>BuildList </EM>method. &nbsp; To get around this limitation, derived classes were defined:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD><FONT FACE="Arial Narrow">type<BR>
+				&nbsp; // Trick to call protected method of TDriveCombobox<BR>
+				&nbsp; TMyDriveComboBox = CLASS(TDriveComboBox)<BR>
+				&nbsp; END;<BR>
+				<BR>
+				&nbsp; // Trick to call protected method of TDirectoryListbox<BR>
+				&nbsp; TMyDirectoryListBox = CLASS(TDirectoryListbox)<BR>
+				&nbsp; END;</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>These new derived classes were only used to typecast the original values and call the &quot;protected&quot;
+methods in the <EM>WmDeviceChange</EM> routine and the following:</P>
+
+<DIV ALIGN="CENTER">
+	<CENTER>
+	<P>
+	<TABLE BORDER="0">
+		<TR>
+			<TD><FONT FACE="Arial Narrow">procedure TFormFileList.SpeedButtonRefreshClick(Sender: TObject);<BR>
+				&nbsp; VAR SaveDrive: CHAR;<BR>
+				begin<BR>
+				&nbsp; SaveDrive := DriveComboBox.Drive;<BR>
+				&nbsp; TMyDriveComboBox(DriveComboBox).BuildList;<BR>
+				&nbsp; DriveComboBox.Drive := SaveDrive;<BR>
+				<BR>
+				&nbsp; TMyDirectoryListBox(DirectoryListBox).BuildList;<BR>
+				end;</FONT></TD>
+		</TR>
+	</TABLE>
+
+</CENTER>
+</DIV>
+
+<P>Any change in a file will most likely result in different CRC value. &nbsp; Keeping the number of bytes and
+the CRC value the same is even a more strict requirement.&nbsp; The &quot;verify&quot; operation for each file
+checks that a file's size and CRC-32 is the same.&nbsp; The &quot;verify&quot; operation for a directory is that
+the directory has the same number of files, bytes and MetaCRC values.&nbsp; Likewise, a volume match looks for
+the same number of directories, files, bytes and MetaCRC values.</P>
+<P>A <EM>ScanDetails</EM> Radiobox is partially implemented but is hidden in the current implementation.&nbsp;
+This allows the CRC file to only contain directory information instead of file-by-file details.&nbsp; (The &quot;Scan&quot;
+functionality of this feature works, but the &quot;Verify&quot; functionality doesn't work correctly when &quot;Directories&quot;
+is chosen instead of &quot;Files.&quot;)</P>
+<P>The <EM>Verify</EM> operation reads a <EM>Verify.CRC</EM> file created in the <EM>Scan</EM> phase.&nbsp; The
+number of lines in this file is used as the measure of progress in the progress bar.&nbsp; A <EM>TTokens</EM> class
+is used to parse the tokens in the <EM>Verify.CRC</EM> file.</P>
+<P>So far, the process of simply attempting to read each file on a CD-R has identified the &quot;bad&quot; files
+-- files that cannot be opened and read.&nbsp; CRC mismatches have not yet been observed on the same CD-R over
+time.&nbsp;</P>
+<P>One side effect of the process of verifying every byte on a CD was to identify a virus (using McAfee VirusScan)
+that was stored on several of my CD backups.</P>
+<P><STRONG><FONT SIZE="4">Conclusions<BR>
+</FONT></STRONG>The <EM>FileCheck</EM> utility is a handy utility to verify a copy of a file, directory or even
+a volume (within acceptable probabilities).</P>
+<P>
+<HR ALIGN="CENTER">
+</P>
+<P><STRONG><FONT SIZE="4">Keywords</FONT></STRONG><FONT SIZE="4"><BR>
+</FONT>cyclic redundancy check, CRC-32, Lookup Table, MetaCRC, CalcCRC32, CalcFileCrc32, Stream I/O, TMemoryStream,
+BlockRead, WmDeviceChange message, DBT.H, FindFirst/FindNext/FindClose, TSearchRec, TStringList, Sort, StrIComp,
+Int64, Comp, IntToHex, FormatFloat, FormatDateTime, Format, GetVolumeInformation, Volume Serial Number, Volume
+Label, TTabSheet, TDriveComboBox, TDirectoryListBox, TFileListBox, procedure variables, calling protected methods,
+tokens</P>
+<P><STRONG><FONT SIZE="4">Files </FONT></STRONG><FONT SIZE="2">(only for noncommercial use)</FONT><STRONG><FONT
+SIZE="4"><BR>
+</FONT></STRONG>Delphi 3/4/5 Source Code and EXE (195 KB):&nbsp; <A HREF="FileCheck.zip" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/FileCheck.zip">FileCheck.ZIP</A></P>
+
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

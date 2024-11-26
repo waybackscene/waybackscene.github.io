@@ -1,0 +1,110 @@
+
+<html>
+
+<head>
+
+<link rel="stylesheet" href="javascript/paradox.css" type="text/css">
+<title>paradogs.com online compatibility check</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<script language="Javascript">
+<!--
+luser = navigator.appName;             
+if (luser == "Netscape") 
+{
+alert("Since this document is supposed to provide information for\n\n\tMicrosoft Internet Explorer\n\nusers it was optimized for MSIE 5.x+.\n\nPlease enter with MSIE only. Thanks in advance.");
+location.replace('pdx_news.htm')  
+}
+
+
+var copytoclip=1;
+
+function HighlightAll(theField) {
+var tempval=eval("document."+theField)
+tempval.focus()
+tempval.select()
+if (document.all&&copytoclip==1){
+therange=tempval.createTextRange()
+therange.execCommand("Copy")
+window.status="Contents highlighted and copied to clipboard!"
+setTimeout("window.status=''",1800)
+}
+}
+//-->
+</script>
+
+</head>
+
+<body bgcolor="#000000" text="#F0F0F0">
+
+<table width="540" align="CENTER" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td align="CENTER" bgcolor="#191919"><img src="buttons/but_htip.png" alt="Tips &amp; Tricks" width="142" height="70"></td>
+  </tr>
+  <tr>
+    <td height="10">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="CENTER" class="TNEWS">Use MODplug with Internet Explorer 6</td>
+  </tr>
+  <tr>
+    <td class="BASIC">
+    <table width="500" border="0" cellpadding="0" cellspacing="0" align="CENTER">
+      <tr>
+        <th class="TNEWS" colspan="5">Another step closer to perfection</th>
+      </tr>
+      <tr>
+        <td class="TOPIC"><img src="graphics/blindgif.gif" width="1" height="8"></td>
+        <td class="BASIC2" colspan="3"><img src="graphics/blindgif.gif" width="1" height="8"></td>
+        <td class="TOPIC"><img src="graphics/blindgif.gif" width="1" height="8"></td>
+      </tr>
+      <tr>
+        <td class="TOPIC"><img src="graphics/blindgif.gif" width="1" height="1"></td>
+        <td class="BASIC2"><img src="graphics/blindgif.gif" width="8" height="1"></td>
+        <td class="BASIC2">After upgrading your Internet Explorer to version 6.0 you have probably found out that rather
+        popular plugins such as SIDplug and MODplug refused to work. With a simple trick it's possible to reactivate
+        MODplug. Just open Notepad and include the following script:<br>
+          <form name="modplug">
+            <a class="ART" href="javascript:HighlightAll('modplug.select1')">Select All</a><br>
+              <textarea name="select1" rows="10" cols="55" style="background: #888888; font-family: Arial; font-size: 9pt; color: #000000; width=500px; border-width:1px; border-color:#000000; border-style:dotted; padding:2px;">REGEDIT4
+ 
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/x-mod]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/x-zipped-mod]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/it]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/x-zipped-it]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/xm]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/x-s3m]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/mod]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/669]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;
+[HKEY_CLASSES_ROOT\MIME\Database\Content Type\audio/x-669]
+&quot;CLSID&quot; = &quot;{06DD38D3-D187-11CF-A80D-00C04FD74AD8}&quot;</textarea>
+            </form>
+            Save the file as modplug<b>.reg</b> and run the script. It is going to add the above defined registry
+            settings. After those modifications MODplug works fine again.</td>
+          <td class="BASIC2"><img src="graphics/blindgif.gif" width="8" height="1"></td>
+          <td class="TOPIC"><img src="graphics/blindgif.gif" width="1" height="1"></td>
+        </tr>
+        <tr>
+          <td class="TOPIC"><img src="graphics/blindgif.gif" width="1" height="8"></td>
+          <td class="BASIC2" colspan="3"><img src="graphics/blindgif.gif" width="1" height="8"></td>
+          <td class="TOPIC"><img src="graphics/blindgif.gif" width="1" height="8"></td>
+        </tr>
+        <tr>
+          <th class="TOPIC" colspan="5"><img src="graphics/blindgif.gif" width="1" height="1"></th>
+        </tr>
+        </table>
+      </td>
+    </tr>
+    </table>
+
+  </body>
+
+</html>

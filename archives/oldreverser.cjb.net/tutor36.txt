@@ -1,0 +1,198 @@
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S -- - м   њ     њ
+     А    м  А      м м  м       А мА          А м     м         олм   м А
+  мллВпплллнмВлппплллнолнолллппплВмоВллпплллмАмВлн пм  олллпплллмАВллм олВм
+  лллн АВллнллл Апппп ппп ллл А лллнллл  оллВАВлл А ллнолллн оллВ лллплмлллн
+  ВллппплллнлллнА АВлнлллнллл А лллнлллпппллмоллл А лллолллппВллм лллн плллн
+ АВллнА ллл ВллнА лллнлллАВлл Аолллнлллн млллолллнААВллАВллн олллнлллнА лллм
+ олллнА лллолллнА лллоллВоллл АолллАВллнАолллолллн олллнлллнА лллнлллнА ллВпм
+ олллнА лллолллнА лллоллВоллл Аолллоллл Аолллолллн олллнлллнААВлл ВллнА ллн
+ оллВ АоллВпБллмммлллБллВолллммллБпВлллммллллпллллмВлллпВлБм олп АВллл олп
+  п      пА  п    п    п       п          п         п   А    п      п  п
+  њ      њ    -  -- A C i D B U R N - P R O D U C T i O N S --  -    њ     њ
+                                SRT - CRO
+
+
+				VB Cracking:						
+
+		        Dawai 's VB CD check crackme   
+								 
+		Tutorial by ACiD BuRN [Immortal Descendants]			 
+                             (15 December 1999) 		
+
+
+Infos from the crackme:
+
+--------------------------------------------------------
+     _________/\_____________/\
+     \______    \__________    \
+      /    /    /____/    /    /
+     /   __    /    /     ____/
+   _/    /    /    /    /    /
+   \____/____ \___ \___/____ \
+    :::::::::\/:::\/:::::d!n\/
+   .aDDiCTiON.iN.rEVERSiNG.1999.
+   -----------------------------
+   AiR presents...      12/14/99
+   Dawai's Crackme Nr. 1
+   -----------------------------
+
+   This is a VB CD-check crackme.
+   Patching is allowed, but it
+   would be cooler if you could
+   tell me what CD the crackme 
+   looks for :)
+
+   Dawai
+
+----------------------------------------------------------
+
+As you wish man ;)
+
+
+I)what the heck the crackme looks for ?
+
+tool: Smart check ( i assume you configured it well )
+
+If you run the crack alone you see a box where it is written: Welcome
+If you click on the button to check if it is the good cd you got a lame text: Unregistered
+hmm , ok ...
+
+
+Fire up smart check and open the crackme with it !
+you see: + _click
+Double click on it to see what 's going one there !
+
+we see a list of:
+
+GetdrivetypeA (API used to check the kind of disk return 5 if it is a CD)
+hmm this api is useful in cracking CD check on normal apps too !
+
+
+I saw that on my puter:
+
+GetdrivetypeA(blabla) UINT: 2
+..
+GetdrivetypeA(blabla) UINT: 1
+..
+GetdrivetypeA(blabla) UINT: 3
+..
+GetdrivetypeA(blabla) UINT: 5
+..
+
+It is looking for a CD so click in the one that returns: 5
+Now click on "show all events".
+
+Now start to scroll down with the arrow and check in the right window !
+scroll till you see some interesting text looking like that:
+
+W
+..
+Wi
+..
+Win
+..
+Win9
+..
+Win98
+..
+Win98 S
+..
+Win98 SE
+..
+
+
+Looks like he is checking the CD's label !
+hmmm , let's scroll downs a bit more and we see:
+
+__vbaStrCmp(String:"Win98 SE", String:") returns DWORD: FFFFFFFF
+
+Nice!! so it is really checking what i though !
+
+So dawai , you cd check crackme looks for the CD ROM label name!
+if it is: Win98 SE it is correct !! (windows 98 second edition)
+
+Anyway , that sux i wanna use that crackme without CD in the puter
+hehe!
+
+
+II)How to Patch it:
+
+Patching vb is fairly easy , i will show you how to patch it the wrong way ;p
+So click on: __vbaStrCmp(String:"Win98 SE", String:") returns DWORD: FFFFFFFF
+Check the offset in the rigth window, i see: CRACKME2!0000CB68
+
+Fire up wdasm , and click on the menu goto and take goto code location...
+Add 400000 to the offset and we obtain the place in wdasm ! (400000 = image base)
+400000 + CB68 = 40CB68
+Enter this in the code location field!
+
+You land here :
+
+
+* Reference To: MSVBVM60.__vbaStrCmp, Ord:0000h
+                                  |
+:0040CB68 E89346FFFF              Call 00401200                     <--- you land here !
+:0040CB6D 8BF0                    mov esi, eax
+:0040CB6F 8D4584                  lea eax, dword ptr [ebp-7C]
+:0040CB72 F7DE                    neg esi
+:0040CB74 50                      push eax
+:0040CB75 8D4588                  lea eax, dword ptr [ebp-78]
+:0040CB78 1BF6                    sbb esi, esi
+:0040CB7A 50                      push eax
+:0040CB7B 46                      inc esi
+:0040CB7C 8D458C                  lea eax, dword ptr [ebp-74]
+:0040CB7F F7DE                    neg esi
+:0040CB81 23B534FFFFFF            and esi, dword ptr [ebp+FFFFFF34]
+:0040CB87 50                      push eax
+:0040CB88 6A03                    push 00000003
+
+* Reference To: MSVBVM60.__vbaFreeStrList, Ord:0000h
+                                  |
+:0040CB8A E87746FFFF              Call 00401206
+:0040CB8F 83C410                  add esp, 00000010
+:0040CB92 663BF3                  cmp si, bx
+:0040CB95 751F                    jne 0040CBB6             <-- hmm :) interesting!
+:0040CB97 6A02                    push 00000002
+:0040CB99 5E                      pop esi
+
+
+
+As you can see , we see a nice comparaison and just under a conditional jump
+Change the jne into jmp !
+
+
+:0040CB95 751F                    jne 0040CBB6  
+			
+			to
+
+:0040CB95 EB1F                    jmp 0040CBB6  
+
+
+now do the modification in the file and save !
+Restart the crackme and click on the button and Jezus :o) :
+REGISTERED
+oh my god , that was so easy heheh
+next one ?!
+
+
+III)Ending...
+
+Anyway , i hope your leant something in this litle tutor!
+It is more a note than a tut , just though that it should be interesting for people coz
+i never seen VB cd check (except mine that is hardcore crackme hehe) !
+Some pathing in vb is nice too !!
+
+
+Greets to all my friends and crackers !!
+i am so lazy to list them this time !
+sorry ;-)
+
+Tutorial dedicated to Victoria (you rule baby ;p )
+
+				by ACiD BuRN 
+						"Reversing like a frenchy"
+
+
+
+		Essay Copyrighted to ACiD BuRN (c) and the Immortal Descendants
+

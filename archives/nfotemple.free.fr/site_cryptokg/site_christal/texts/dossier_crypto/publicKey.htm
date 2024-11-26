@@ -1,0 +1,183 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial"><BR>
+Public-Key Cryptography</FONT></B></P>
+
+<UL>
+	<UL>
+		<P><FONT SIZE="2" FACE="Arial">Les syst&egrave;mes &agrave; cl&eacute;s publiques utilisent deux diff&eacute;rentes
+		cl&eacute;s - l'une publique et l'autre priv&eacute;e. Les cl&eacute;s sont math&eacute;matiquement reli&eacute;es,
+		mais il est impossible d'en d&eacute;duire l'une &agrave; partir de l'autre. N'importe qui peut crypter un message
+		&agrave; partir d'une cl&eacute; publique, mais ne pourra pas faire l'op&eacute;ration inverse. Seule la personne
+		ayant la cl&eacute; priv&eacute;e pourra d&eacute;crypter le message.</FONT></P>
+	</UL>
+</UL>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">Communications s&eacute;curis&eacute;es utilisant la Public-Key Cryptography</FONT></B></P>
+
+<UL>
+	<P><FONT SIZE="2" FACE="Arial">En utilisant le principe de la public-key cryptography, Christal peut communiquer
+	en toute s&eacute;curit&eacute; avec falcon en utilisant le protocole suivant:</FONT></P>
+	<UL>
+		<LI><FONT SIZE="2" FACE="Arial">Christal et falcon se mette d'accord sur un algorithme de cl&eacute;s publiques.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">Christal envoie &agrave; falcon sa cl&eacute; publique.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">falcon encrypte son message avec la cl&eacute; publique de Christal, et la lui
+		envoie.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">Christal d&eacute;crypte le message de falcon avec la cl&eacute; priv&eacute;e.</FONT>
+	</UL>
+	<P><FONT SIZE="2" FACE="Arial">En fait, le principe de la crypthographie par cl&eacute; publique est tellement
+	vorace en temps (pas loin de 1000 fois plus lent qu'un message utilisant un autre principe) que ce syst&egrave;me
+	n'est utilis&eacute; bien souvent que pour communiquer une </FONT><B><FONT SIZE="2" FACE="Arial">symmetric keys</FONT></B><FONT
+	SIZE="2" FACE="Arial"> qui est alors utilis&eacute;e pour crypter et d&eacute;crypter les messages comme ceci:</FONT></P>
+</UL>
+
+
+<UL>
+	<UL>
+		<LI><FONT SIZE="2" FACE="Arial">Christal envoie &agrave; falcon sa cl&eacute; publique.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">falcon g&eacute;n&egrave;re une symmetric key al&eacute;atoire (session key), l'encrypte
+		avec la cl&eacute; publique de Christal et la lui renvoie.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">Christal d&eacute;crypte la session key avec sa cl&eacute; priv&eacute;e.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">falcon et Christal peuvent alors &eacute;changer des message en utilisant la session
+		key.</FONT>
+	</UL>
+</UL>
+
+
+<UL>
+	<P><FONT SIZE="2" FACE="Arial">Les syst&egrave;mes qui utilisent &agrave; la fois des symmetric-key et des public-key
+	de cette mani&egrave;re sont appel&eacute;s </FONT><B><FONT SIZE="2" FACE="Arial">hybrides</FONT></B><FONT SIZE="2"
+	FACE="Arial">.</FONT></P>
+</UL>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">Digital Signatures</FONT></B></P>
+
+<UL>
+	<P><FONT SIZE="2" FACE="Arial">Certaine algorithmes &agrave; cl&eacute;s publiques, comme </FONT><B><FONT SIZE="2"
+	FACE="Arial">RSA, </FONT></B><FONT SIZE="2" FACE="Arial">autorisent aussi bien l'utilisation de la cl&eacute; publique
+	que priv&eacute;e pour le cryptage. Si un message est crypt&eacute; avec la cl&eacute; priv&eacute;e de quelqu'un,
+	il peut &ecirc;tre uniquement d&eacute;crypt&eacute; par la cl&eacute; publique correspondant. Le principe permet
+	la cr&eacute;ation de digital signatures:</FONT></P>
+	<UL>
+		<LI><FONT SIZE="2" FACE="Arial">falcon encrypte un document avec sa cl&eacute; priv&eacute;e. Le document crypt&eacute;
+		devient la signature digitale.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">falcon envoie cette signature &agrave; Christal.</FONT>
+		<LI><FONT SIZE="2" FACE="Arial">Christal d&eacute;crypte le document avec la cl&eacute; publique de falcon, v&eacute;rifiant
+		ainsi sa provenance.</FONT>
+	</UL>
+</UL>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">RSA</FONT></B></P>
+
+<UL>
+	<P><B><FONT SIZE="2" FACE="Arial">RSA</FONT></B><FONT SIZE="2" FACE="Arial"> est de loin le plus populaire des
+	algorithmes de cryptage par cl&eacute; publique, aussi bien en cryptage qu'en signature digitale. Il est &eacute;galement
+	le plus facile &agrave; d&eacute;crire et &agrave; impl&eacute;menter. RSA a pris son nom des ses trois inventeurs
+	- Ron Rivest, Adi Shamir et Leonard Adleman.</FONT></P>
+
+	<P><FONT SIZE="2" FACE="Arial">Dans RSA, une cl&eacute; publique est bas&eacute;e sur la cr&eacute;ation de deux
+	grands nombres premiers. Ces deux nombres doivent &ecirc;tre gard&eacute;s secret car ils sont utilis&eacute;s
+	pour g&eacute;n&eacute;rer la cl&eacute; priv&eacute;e. La cr&eacute;ation des deux nombres premiers est appel&eacute;
+	</FONT><B><FONT SIZE="2" FACE="Arial">modulus</FONT></B><FONT SIZE="2" FACE="Arial">. La s&eacute;curit&eacute;
+	de RSA r&eacute;side dans la difficult&eacute; de factoriser de grands nombres.</FONT></P>
+
+	<P><FONT SIZE="2" FACE="Arial">RSA s'impl&eacute;mente avec un modulus de 512-bit. Le modulus par d&eacute;faut
+	est de 1024 bits, et le modulus valide peut aller de 384 bits &agrave; 16,384 bits par incr&eacute;mentation de
+	8 bits.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Chaque ann&eacute;e RSA lance un grand concours, pour justifier de tel modulus,
+	alors que la loi US n'autorise que des cl&eacute;s de 56 bits:</FONT></P>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Verdana">&quot;As usual, this year's </FONT><U><A HREF="javascript:if(confirm('http://www.rsa.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.rsa.com/'" tppabs="http://www.rsa.com/" target="_blank"><FONT
+	SIZE="2" FACE="Verdana">RSA</FONT></A></U><FONT SIZE="2" FACE="Verdana"> contest will pay cash to the first person
+	to crack a message encrypted with a Data Encryption Standard (DES) 56-bit key. But unless the 1999 winner beats
+	a 56-hour record set in July, there's no cash prize. The faster the code is broken, the bigger the prize, up to
+	$10,000.</FONT></P>
+	<P><FONT SIZE="2" FACE="Verdana">&quot;It's a reminder to developers that are using DES that they need to switch,&quot;
+	said Burt Kaliski, chief scientist at RSA Laboratories, RSA's research arm. &quot;It's not something that happened
+	last summer and then goes away. The contest can keep it on the forefront of people's planning.&quot;</FONT></P>
+</BLOCKQUOTE>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">Man-in-the Middle Attack</FONT></B></P>
+
+<UL>
+	<P><FONT SIZE="2" FACE="Arial">Le protocole de communication hybride d&eacute;crit pr&eacute;cedement est vuln&eacute;rable
+	&agrave; une </FONT><B><FONT SIZE="2" FACE="Arial">man-in-the-middle</FONT></B><FONT SIZE="2" FACE="Arial"> attack.
+	Supposons que Pass Partout, un hacker ennemie, non seulement puisse intercepter les messages entre falcon et Christal,
+	mais puisse aussi les modifier, les effacer, les remplacer, ou en inclure de nouveaux...</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Pass Partout peut se faire passer pour falcon quand il communique avec Christal,
+	et pour Christal lors d'&eacute;changes avec falcon:</FONT></P>
+	<LI><FONT SIZE="2" FACE="Arial">Christal envoie &agrave; falcon sa cl&eacute; publique. Pass partout l’intercepte
+	et envoie sa propre cl&eacute; &agrave; falcon.</FONT>
+	<LI><FONT SIZE="2" FACE="Arial">falcon g&eacute;n&egrave;re une session key al&eacute;atoire, l'encrypte avec la
+	cl&eacute; publique de &quot;Christal&quot; (qui est en r&eacute;alit&eacute; celle de Pass Partout) et l'envoie
+	&agrave; Christal.</FONT>
+	<LI><FONT SIZE="2" FACE="Arial">Pass Partout intercepte le message, d&eacute;crypte la session key avec sa cl&eacute;
+	priv&eacute;e, l'encrypte avec la cl&eacute; publique de Christal, et la lui envoie.</FONT>
+	<LI><FONT SIZE="2" FACE="Arial">Christal recoit le message pensant qu'il vient de falcon. Il le d&eacute;crypte
+	avec sa cl&eacute; priv&eacute;e et obtient la session key.</FONT>
+	<LI><FONT SIZE="2" FACE="Arial">Falcon et Christal commencent &agrave; &eacute;changer des messages en utilisant
+	la session key. Pass Partout, qui poss&egrave;de &eacute;galement cette cl&eacute;, peut maintenant lire la totalit&eacute;
+	des messages. C'est mal!</FONT>
+</UL>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Une man-in-the-middle attack fonctionnera parce que Falcon et Christal n'ont aucun
+	moyen de v&eacute;rifier s'ils communiquent bien l'un avec l'autre!</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Un message sign&eacute; avec le nom d'une personne est sa cl&eacute; publique est
+	appel&eacute; un </FONT><B><FONT SIZE="2" FACE="Arial">digital certificate</FONT></B><FONT SIZE="2" FACE="Arial">
+	(ou </FONT><B><FONT SIZE="2" FACE="Arial">digital ID</FONT></B><FONT SIZE="2" FACE="Arial">). Une troisi&egrave;me
+	personne, ind&eacute;pendante et &agrave; qui tous font confiance peut devenir le garant de ce certificat, est
+	appel&eacute;e une </FONT><B><FONT SIZE="2" FACE="Arial">Certification Authority (CA)</FONT></B><FONT SIZE="2"
+	FACE="Arial">.</FONT></P>
+</BLOCKQUOTE>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">Algorythme &agrave; cl&eacute;s puliques: ElGamal</FONT></B></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Voici le d&eacute;but d'un texte de kahel, r&eacute;cup&eacute;r&eacute; dans </FONT><A
+	HREF="javascript:if(confirm('http://www.multimania.com/hccc/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.multimania.com/hccc/'" tppabs="http://www.multimania.com/hccc/" target="_blank"><FONT SIZE="2" FACE="Arial">HCCC6</FONT></A><FONT SIZE="2"
+	FACE="Arial">.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial"><BR>
+	&quot;Le chiffrement d'ElGamal est base sur le probleme du logarythme discret. Pour commencer, on decrit ce probleme
+	dans<BR>
+	le corps fini ZZp, ou p est un nombre premier (figure 5.1).<BR>
+	On rappelle que le groupe ZZp* est cyclique, et que ses generateurs sont appel&eacute;s racines primitives modulo
+	p.<BR>
+	Le probleme du logarythme discret dans ZZp est l'objet de nombreuses etudes. Le probleme est r&eacute;put&eacute;
+	difficile si p<BR>
+	est convenablement choisi/ En fait on ne connait aucun algorythme polynomial pour le r&eacute;soudre.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Pour eviter les attaques connues, p doit avoir au moins 150 chiffres, et p-1 doit
+	avoir au moins un &quot;grand&quot; facteur<BR>
+	premier.&quot;...</FONT></P>
+	<P><A HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/dossier_crypto/elgamal.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/ElGamal/elgamal.htm"><FONT SIZE="2" FACE="Arial">Pour en savoir plus...</FONT></A></P>
+</BLOCKQUOTE>
+
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="4" CELLSPACING="0" WIDTH="13%">
+	<TR>
+		<TD WIDTH="52%" VALIGN="TOP">
+			<P ALIGN="RIGHT"><A HREF="symetric.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/symetric.htm"><IMG SRC="left.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/left.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A>
+		</TD>
+		<TD WIDTH="48%" VALIGN="TOP"><A HREF="hash.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/hash.htm"><IMG SRC="right.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/right.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A></TD>
+	</TR>
+</TABLE>
+
+</CENTER>
+
+</BODY>
+
+</HTML>

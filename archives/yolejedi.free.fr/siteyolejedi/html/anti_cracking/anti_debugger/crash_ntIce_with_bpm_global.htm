@@ -1,0 +1,316 @@
+<html>
+<head>
+<title>Crash Ntice with SEH, RegDbg and bpx</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../../../css/yolejedi.css" type="text/css">
+
+<script language="JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+</head>
+
+<body>
+<table border="0" cellspacing="0" cellpadding="1" align="center" width="80%"> 
+<tr> <td bgcolor="#33CC33"> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%"> 
+<tr> 
+          <td> <p><font color="#339999" size="2" face="Fixedsys">- Mon p&egrave;re 
+              ! J'ai p&ecirc;ch&eacute;....honte &agrave; moi....j'ai p&ecirc;ch&eacute; 
+              mon p&egrave;re...</font><br>
+              - Qu'y a-t-il mon enfant ?<br>
+              <font color="#339999">- Voil&agrave; mon p&egrave;re... j'&eacute;prouve 
+              du plaisir lorsque je reverse...honte &agrave; moi....</font><br>
+              - HEIN ? QUOI ? Tu reverses mon enfant ?<br>
+              <font color="#339999">- Oui mon p&egrave;re...pardon mon p&egrave;re...</font><br>
+              - Et tu &eacute;prouves du plaisir ?<br>
+              <font color="#339999">- Oui mon p&egrave;re...<font size="1" face="Arial, Helvetica, sans-serif">c'est 
+              ce que je viens de te dire... t'es con ou quoi ?</font></font><font size="1" face="Arial, Helvetica, sans-serif"><br>
+              </font>- C'est pas bien ! c'est sale ! c'est caca ! pouuuah ...<br>
+              <font color="#339999">- ....???!!?!.....</font><br>
+              - Bon... tu vas me faire 1 CCA, 2 Shellcodes et 4 anti_debugs... 
+              <font size="1" face="Arial, Helvetica, sans-serif">et une p'tite 
+              g&acirc;terie mon enfant...tu te dois de respecter les traditions 
+              de l'&eacute;glise catholique.</font><br>
+              <font color="#339999">- Hein ? ... A&iuml;e ! mais l&acirc;chez 
+              moi ! mais qu'est-ce que vous faites ? .... A&iuml;e ! Mais lachmmmmmfff...mmfff...moi....mmmmf...mmmfff...</font></p>
+            </td></tr> </table></td></tr> 
+</table><p>&nbsp;</p><table width="85%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#339999"> 
+<tr> <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000" width="100%"> 
+<tr> 
+          <td> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td align="left" valign="middle"> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_lit.gif" width="101" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+                <td nowrap width="100%" valign="middle"> <div align="center"> 
+                    <font size="6" color="#33CC33" face="Fixedsys">Crash Ntice</font><font size="2" color="#33CC33" face="Fixedsys"><br>
+                    avec un bpm global<br>
+                    -=&curren; WinNT/2k/XP only &curren;=--</font><font face="Fixedsys" size="2"><u><br>
+                    <br>
+                    </u>(version 1.00)<br>
+                    par YoLeJedi</font></div></td>
+                <td> <table border="0" cellspacing="0" cellpadding="2" bgcolor="#339999" width="54">
+                    <tr> 
+                      <td><font face="Fixedsys" size="2"><img src="../../../image/calvin_lit_et_trouve.gif" width="101" height="125" align="middle"></font></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="center">&nbsp;</p>
+            <p align="justify"><u><font color="#33CC33" size="5">Etat des lieux:</font></u></p>
+            <p align="justify"><font face="Fixedsys" size="2">Pour une application 
+              tournant en mode utilisateur (Ring3), il est possible de modifier 
+              les registres debug de <font color="#33CC33">son propre context</font> 
+              &agrave; l'aide d'un SEH. Nous trouvons dans les classiques, l'anti-bpm 
+              qui &eacute;crase les registres debug.</font></p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                    <tr>
+                      <td><table border="0" cellspacing="0" cellpadding="0">
+                          <tr valign="top"> 
+                            <td nowrap> <font color="#33CC33">p_SEH:</font></td>
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>xor eax,eax<br>
+                              mov ebx,dword ptr [esp+0Ch]<br>
+                              add dword ptr [ebx+0B8h], (<font color="#33CC33">return</font>-<font color="#33CC33">origin</font>)<br>
+                              mov dword ptr [ebx+4], eax<br>
+                              mov dword ptr [ebx+8], eax<br>
+                              mov dword ptr [ebx+0Ch], eax<br>
+                              mov dword ptr [ebx+10h], eax <br>
+                              mov dword ptr [ebx+18h], 00000000000000000000010101010101b<br>
+                              ret</td>
+                            <td nowrap><br>
+                              &nbsp;; CONTEXT<br>
+                              &nbsp;; regEip <br>
+                              &nbsp;; iDr0<br>
+                              &nbsp;; iDr1<br>
+                              &nbsp;; iDr2<br>
+                              &nbsp;; iDr3<br>
+                              &nbsp;; iDr7=0555h</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap><font color="#33CC33"size="2" face="Fixedsys">start:</font></td>
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>xor eax,eax<br>
+                              push <font color="#33CC33">p_SEH</font><br>
+                              push fs:[eax]<br>
+                              mov fs:[eax],esp<br> </td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap><font color="#33CC33"><font size="2" face="Fixedsys">origin:</font></font></td>
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>div eax</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap><font color="#33CC33"><font size="2" face="Fixedsys">return:</font></font></td>
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap> pop fs:[eax]<br>
+                              add esp,04<br>
+                              :<br>
+                              :<br>
+                              : </td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table> </td>
+              </tr>
+            </table>
+            <p align="justify"><font face="Fixedsys" size="2">Ce petit code active, 
+              en local et sur ex&eacute;cution d'instruction, les 4 registres 
+              Dr0-Dr3 &agrave; l'adresse 0. Ceci a pour cons&eacute;quence d'annuler 
+              les breakpoints plac&eacute;s par un &eacute;ventuel debugger.<br>
+              Mais il y a plus radical...</font></p>
+            <p align="justify"><font size="2" face="Fixedsys">En effet, il est 
+              tr&egrave;s &eacute;tonnant qu'avec cette technique, il soit aussi 
+              possible &agrave; une t&acirc;che utilisateur d'activer des <font color="#33CC33">BreakPoints 
+              en Global</font> directement dans sa m&eacute;moire utilisateur. 
+              En Local, le process peut traiter une &eacute;ventuelle exception 
+              debug (int 1) avec un SEH. Mais en Global, l'exception debug peut 
+              &ecirc;tre d&eacute;clench&eacute;e par le syst&egrave;me (mode 
+              kernel) lorsqu'il a acc&egrave;s directement &agrave; la m&eacute;moire 
+              du process. Et dans ce cas l&agrave;, l'exception debug ne pourra 
+              pas &ecirc;tre envoy&eacute;e &agrave; la t&acirc;che qui a plac&eacute; 
+              le breakpoint Global. Et l&agrave;...&ccedil;a peut faire mal... 
+              ;)</font></p>
+            <p align="justify"><font color="#33CC33" size="5"><u>A l'attaque :</u></font></p>
+            <p align="justify"><font size="2" face="Fixedsys">Lorsque Softice 
+              prend la main, il doit imp&eacute;rativement lire la m&eacute;moire 
+              du process en cours pour pouvoir afficher les datas, le nom du module 
+              et des sections, pour d&eacute;sassembler le code, etc...</font><br>
+              Pour cela, Softice utilise diff&eacute;rentes routines personnelles 
+              qui lui permettent de lire en m&eacute;moire. Ces routines font 
+              parti du code sensible de Softice puisqu'elle peuvent lire n'importe 
+              o&ugrave; et peuvent donc d&eacute;clencher une faute de page (Page 
+              Faults). C'est pourquoi Softice prot&eacute;ge ces routines des 
+              fautes de page.<br>
+              Pour cela, &agrave; son initialisation, Softice hooke l'int 14 (0x0E) 
+              de fa&ccedil;on &agrave; pouvoir filtrer les fautes de page. Pour 
+              faciliter les choses, toutes ces routines sont rang&eacute;es &agrave; 
+              la suite dans le code de Softice pour former une des zones sensibles. 
+              Certaines routines ont aussi la particularit&eacute; d'avoir la 
+              m&ecirc;me syntaxe. Tout ceci permet &agrave; Softice de les prot&eacute;ger 
+              et, &eacute;ventuellement, de rattraper la faute de page en renvoyant 
+              la routine vers une routine de sortie.</p>
+            <p align="justify">Mais Softice ne prot&eacute;ge pas ses routines 
+              des exceptions debug. <font size="2" face="Fixedsys">Nous allons 
+              donc utiliser cette particularit&eacute; pour taquiner Softice :)</font></p>
+            <p align="justify"><font size="2" face="Fixedsys">Regardons un peu 
+              une screenshot de Softice :</font></p>
+            <p align="center"><img src="../../../image/screen_softice_for_bpm_global.gif" width="656" height="272"></p>
+            <p align="justify">Voici une fen&ecirc;tre classique de Softice. Pour 
+              pouvoir afficher toutes les informations sur le module <font color="#33CC33">test.exe</font>, 
+              Softice interroge le syst&egrave;me et le cpu. Mais Softice n'obtient 
+              pas tout. Il va donc directement chercher les informations sp&eacute;cifiques 
+              dans la m&eacute;moire du process. Ces informations sont en <font color="#FFFF00">jaune</font>.</p>
+            <p align="justify">Nous avons <font color="#FFFF00">les datas</font>, 
+              <font color="#FFFF00">le code (opcodes)</font> mais nous pouvons 
+              aussi voir que Softice peut indiquer (par exemple) la cha&icirc;ne 
+              de caract&egrave;res que pointe une adresse. Ici nous avons l'adresse 
+              0x00404000 qui pointe sur la chaine &quot;<font color="#FFFF00">test</font>&quot;. 
+              Nous avons aussi des informations sur le nom des sections affich&eacute;es. 
+              Ici nous avons la section du code qui se nomme &quot;<font color="#FFFF00">YoLeJedi</font>&quot; 
+              et la section des datas qui se nomme &quot;<font color="#FFFF00">.data</font>&quot;, 
+              etc... </p>
+            <p align="justify"><u><font color="#33CC33" size="5">Coup fatal:</font></u> 
+            </p>
+            <p align="justify">L'id&eacute;e est donc de placer un breakpoint 
+              global en lecture sur des informations que Softice est oblig&eacute; 
+              d'aller chercher dans la m&eacute;moire du process. </p>
+            <p align="justify">Par exemple, nous pouvons prot&eacute;ger notre 
+              code en pla&ccedil;ant un breakpoint global directement &agrave; 
+              l'int&eacute;rieur.</p>
+            <p align="left">&ccedil;a pourrait donner &ccedil;a :</p>
+            <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999" align="center">
+              <tr> 
+                <td><table border="0" cellpadding="6" cellspacing="0" bgcolor="#000000">
+                    <tr> 
+                      <td><table border="0" cellspacing="0" cellpadding="0">
+                          <tr valign="top"> 
+                            <td nowrap> <font color="#33CC33">p_SEH:</font></td>
+                            <td nowrap><font color="#FFFF00">&nbsp;; active le 
+                              bpm global dans le code</font></td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap> mov eax,dword ptr [esp+0Ch]<br>
+                              add dword ptr [eax+0B8h], (<font color="#33CC33">return</font>-<font color="#33CC33">origin</font>)<br>
+                              push dword ptr [eax+0B8h]<br>
+                              pop dword ptr [eax+4]<br>
+                              mov dword ptr [eax+18h], 00000000000000110000011100000011b 
+                              <br> <br>
+                              xor eax,eax <br>
+                              ret</td>
+                            <td nowrap> &nbsp;; CONTEXT<br> &nbsp;; regEip=adresse 
+                              retour<br> <br>
+                              &nbsp;; iDr0=adresse retour<br>
+                              &nbsp;; iDr7=30703h<br>
+                              &nbsp;; Active Dr0 (Global et R/W)<br> 
+                              &nbsp;; eax=0 -&gt; Continue </td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap><font color="#33CC33"size="2" face="Fixedsys">start:</font></td>
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>xor eax,eax<br>
+                              push <font color="#33CC33">p_SEH</font><br>
+                              push fs:[eax]<br>
+                              mov fs:[eax],esp<br> </td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap><font color="#33CC33"><font size="2" face="Fixedsys">origin:</font></font></td>
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap>div eax</td>
+                            <td nowrap> &nbsp;; d&eacute;clenche une exception</td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap><font color="#33CC33"><font size="2" face="Fixedsys">return:</font></font></td>
+                            <td colspan="2" nowrap> <font color="#FFFF00">&nbsp;; 
+                              ############## DANGER pour Softice s'il prend la 
+                              main ################</font></td>
+                          </tr>
+                          <tr valign="top"> 
+                            <td nowrap>&nbsp;</td>
+                            <td nowrap><p> pop fs:[eax]<br>
+                                add esp,04<br>
+                                :<br>
+                                :<br>
+                                :</p>
+                              </td>
+                            <td nowrap>&nbsp;</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table>
+            <p align="justify">Cette petite routine prot&egrave;ge la zone de 
+              code autour de <font color="#33CC33">return</font>. Si Softice prend 
+              la main dans cette zone, il devra, pour l'affichage de sa fen&ecirc;tre, 
+              lire le code afin de le d&eacute;sassembler. Mais cela d&eacute;clenchera 
+              une exception debug. Et qui va g&eacute;rer cette exception ? Et 
+              bien c'est notre cher et tendre <font color="#00FFFF">Ecran Bleu 
+              De La Mort</font> ! :)</p>
+            <p align="justify">Vous trouverez &agrave; t&eacute;l&eacute;charger 
+              un autre exemple plus que radical :) Le process prot&egrave;ge toute 
+              sa section code en pla&ccedil;ant un bpm global directement sur 
+              le nom de la section (dans le pe-header donc). Lorsque la protection 
+              est activ&eacute;e, Softice ne peut plus prendre la main dans ce 
+              process sans crasher !!! :) </p>
+            <p align="left">bpm_section_name_crash_ice.zip -&gt; <a href="../../../telecharger/anti_cracking/anti_debugger/bpm_section_name_crash_ice.zip" target="_blank" onFocus="if(this.blur)this.blur()"><img src="../../../image/download.gif" width="64" height="14" border="0" align="absbottom"></a></p>
+            <table width="80%" border="0" cellspacing="0" cellpadding="0" align="center"> 
+<tr> <td bgcolor="#339999"><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" width="1" height="1"></font></td></tr> 
+</table><div align="center">
+              <font face="Fixedsys" size="2">Illustrations : Bill WATTERSON - 
+              &quot;Calvin et Hobbes&quot;</font></div>
+            <p><font face="Fixedsys" size="2">Amusez vous bien... :)</font></p><table border="0" cellspacing="0" cellpadding="1" bgcolor="#33CC33" align="right"> 
+<tr> <td> <table border="0" cellspacing="0" cellpadding="4" bgcolor="#000000"> 
+<tr> 
+                      <td nowrap><font face="Fixedsys" size="2">Le 12/11/2004 
+                        - LaBoRaToiRe - YoLeJedi</font></td>
+                    </tr> 
+</table></td></tr> </table><font face="Fixedsys" size="2"><img src="../../../image/pixel_transp.gif" height="1" width="1"> 
+</font> </tr> </table></td></tr> </table>
+</body>
+</html>

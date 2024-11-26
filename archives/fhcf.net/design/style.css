@@ -1,0 +1,28 @@
+body, td { color: #34759B; font-family: Verdana, Arial; font-size: 12px;
+scrollbar-face-color: #E4F2F8;
+scrollbar-shadow-color: #8CC3E1;
+scrollbar-highlight-color: #8CC3E1;
+scrollbar-3dlight-color: #E4F2F8;
+scrollbar-darkshadow-color: #8CC3E1;
+scrollbar-track-color: #8CC3E1;
+scrollbar-arrow-color: #8CC3E1; }
+.head { color: #34759B; font-family: Verdana, Arial; font-size: 14px; font-weight: bold }
+.a { color: #34759B; font-family: Verdana, Arial; font-size: 10px }
+
+a:link	  { color: #34759B; text-decoration: none }
+a:visited { color: #34759B; text-decoration: none }
+a:active  { color: #34759B; text-decoration: none }
+a:hover	  { color: #34759B; text-decoration: none }
+
+.button { font-family: Verdana; font-size: 12; FONT-WEIGHT: bold; background-color: #E4F2F8; color: #34759B; border: 1px solid #34759B; text-align: center }
+.button2 { font-family: Verdana; font-size: 10; FONT-WEIGHT: bold; background-color: #4AA8DF; color: #FFFFFF; border: 0px solid #660000; text-align: center }
+.eep { 
+color: #34759B; font-family: Verdana, Arial; font-size: 12px;
+scrollbar-face-color: #E4F2F8;
+scrollbar-shadow-color: #8CC3E1;
+scrollbar-highlight-color: #8CC3E1;
+scrollbar-3dlight-color: #E4F2F8;
+scrollbar-darkshadow-color: #8CC3E1;
+scrollbar-track-color: #8CC3E1;
+scrollbar-arrow-color: #8CC3E1;
+font-family: Verdana, Arial; font-size: 12px; font-weight: bold; background-color: #E4F2F8; color: #34759B; border: 1px solid #8CC3E1; }

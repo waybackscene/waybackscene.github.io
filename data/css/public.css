@@ -1,0 +1,125 @@
+         /* IMPORTANT */
+
+         body {
+         font-family : topaz, "Lucida Console", monospace, Monaco; 
+         font-size:12pt; 
+         color:#00aaaa; 
+         height: 100%;
+         margin: 0;
+         padding: 0;
+		 cursor: url(data/cur/amiga.cur), url(../../data/cur/amiga.cur), default;
+         }
+         INPUT
+         {	
+         font-family : topazweb, "Lucida Console", monospace, Monaco; 
+         font-size:12pt;
+         font-weight:normal;
+         color:#aaaaaa;
+         background-color: #000f77; 
+         line-height: 100%;
+         border: 2px solid #aaaaaa;
+         padding: 2px;
+         overflow: visible; 
+         background-image:url(../../data/imgs/header_menu_gradient.png);
+         cursor: url(data/cur/amiga.cur), url(../../data/cur/amiga.cur), default;
+         }
+         @font-face 
+         {
+         font-family:topazweb;
+         src: url(../../data/fonts/topaz1200dmg_web.eot);
+         }
+         @font-face 
+         {
+         font-family: topaz;
+         src: url(../../data/fonts/topaz1200dmg.ttf);
+         }
+         @font-face 
+         {
+         font-family: topazweb;
+         src: url(../../data/fonts/topaz1200dmg_web.ttf);
+         }
+         button 
+         {
+         font-family : topazweb, "Lucida Console", monospace, Monaco; 
+         font-size : 12pt;
+         font-weight : normal;
+         color:#aaaaaa; 
+         background-color: #000f77;
+         line-height : 100%;
+         border : 2px solid #aaaaaa;
+         background-image:url(../../data/imgs/header_menu_gradient.png);
+         }
+         #page-table {
+         height: 100%;
+         width: 100%;
+         border-collapse: collapse;
+         text-align: center;
+         }
+         #page-td {
+         height: 100%;
+         padding: 0;
+         vertical-align: middle;
+         }
+         div#global {
+         width: 1170px;
+         margin: 20px auto;
+         text-align: left;
+         }
+         div.maincontainer
+         {
+         margin-left: auto ;
+         margin-right: auto ;
+         }
+         div.ahkchq
+         {
+		 cursor: url(../../data/cur/amiga.cur), url(../../data/cur/amiga.cur), default;
+         }
+         div.maincontent 
+         {
+         float: left; 
+		 cursor: url(../../data/cur/amiga.cur), url(../../data/cur/amiga.cur), default;
+         }
+         div.wrap
+         {
+         float: left;
+         background: #000a22; 
+         margin-bottom: 7px;	
+         box-shadow: 5px 5px 8px #111154;
+         -webkit-box-shadow: 5px 5px 8px #111154;
+         -moz-box-shadow: 5px 5px 8px #111154;
+         filter: progid:DXImageTransform.Microsoft.dropShadow(color=#111154, offX=3, offY=3, positive=true);
+         }
+         div.headline 
+         {
+         clear: left;
+         width: 1160px ;
+         padding-top: 4px;
+         height: 15px ;
+         background: #aa00aa ;
+         color:#ffffff;
+         border: 2px solid #000000;
+         font-family : topaz, "Lucida Console", monospace, Monaco; 
+         text-align: center ;
+         background-image:url(../../data/imgs/header_menu_gradient.png);
+
+         }
+         div.content_with_blenk
+         {
+         float: left;
+         width: 1160px ;
+         margin-left: 2px;
+         padding-right: 1px;
+         padding-bottom: 1px;
+         padding-top: 1px;
+         background-image:url(../../data/imgs/header_menu_gradient.png);
+         background-repeat:no-repeat;
+         }
+         div.content
+         {
+         float: left;
+         width: 1150px ;
+         padding-left: 4px;
+         padding-right: 4px;
+         padding-bottom: 4px;
+         padding-top: 4px;
+         }

@@ -1,0 +1,173 @@
+
+//*************************************
+//	Désactivez la gestion des exceptions
+//	Patchez le nom de la classe de OLLYDBG
+//*************************************
+
+var x
+var deb
+var addr
+	
+	eob Break			// Continue à partir du Label Break en cas de BP
+	dbh				// Hide Debugger
+	bphws 0041728b, "x"	// HardwareBP sur le JMP 00E01000
+	run				// Lance le programme
+
+Break:
+	bphwc 0041728b		// Supprime le HardwareBP
+	eoe handler			// Gestion de l'exception
+	
+	mov deb, 004179B6			// Début de la table de JMP [IAT]	
+LoopRB:	
+	cmp [deb], 262248B8			// Fin de la table?
+	je FinRB
+		mov x, deb
+		inc deb				// Saute le E9
+		add x, [deb]			// Destination du JMP
+		add x, 6				// + les 5 octets du JMP + MOV
+		mov addr, [x]			// 1er DWORD
+		add x, 5				// addresse du 2eme DWORD
+		add addr, [x]			// Addresse de l'IAT
+		dec deb				// retourne sur le début du JMP
+		mov [deb], #FF25#		// Remplace le JMP DWORD par JMP [DWORD]
+		add deb, 2				// Saute les 2 octets patchés
+		mov [deb], addr			// Sauvegarde l'adresse de l'IAT
+		add deb, 4				// JMP suivant
+		cmp [deb], 801025FF		// JMP [IAT] ?
+		jne LoopRB				// suivant
+		add deb, 6				// sinon on le saute
+		jmp LoopRB				// suivant
+FinRB:	
+	
+	run				// Poursuit l'exécution
+	
+handler:
+	eob Break2			// Gestion du BP
+	bp 00E011BA
+	esto				// Poursuit l'exécution après l'exception
+	
+Break2:	
+	eob Break3			// Gestion du BP
+	bc 00E011BA		// Supprime le BP précédent
+	mov [00E0255F], #6973536869743F2E7A6F62#
+	bp 00E0293F		// Patche "isdebug.dll"
+	run
+	
+Break3:
+	eob Break4			// Gestion du BP
+	bc 00E0293F		// Supprime le BP précédent
+	add eip, 7			// Passe l'anti-dump
+	bp 00E031A0
+	run				// Poursuit l'exécution
+
+Break4:
+	eoe Handler2		// Gestion de la 2ème execption
+	bc 00E031A0		// Début de la résolution des imports
+	fill 00E04423, 01, C3	// Patche CryptNCopy
+	run
+	
+Handler2:
+	eob Break5
+	bp 004116D0
+	esto
+	
+Break5:
+	bc 004116D0
+	sti
+	
+//***************************************
+// Script pour passer les layers de cryptage
+//***************************************
+
+LoopL1:
+	eob Break02
+	mov deb, eip
+	add deb, 214		// Vérifie la signature
+	cmp [deb], E2FF619D	// POPFW, POPAD, JMP EDX
+	je N1
+	add deb, 1
+	cmp [deb], E2FF619D
+	je N1
+	add deb, 5
+	cmp [deb], E2FF619D
+	je N1
+	jmp LoopL2
+N1:
+	add deb, 2
+	bp deb
+	run				// Exécute la boucle de décryptage
+
+
+Break02:
+	bc deb
+	sti	
+
+LoopL2:
+	eob Break01
+	mov deb, eip
+	add deb, 234		// Vérifie la signature
+	cmp [deb], E0FF5861	// POPAD, POP EAX, JMP EAX
+	je N2
+	add deb, 1
+	cmp [deb], E0FF5861
+	jne Fin01
+N2:
+	add deb, 2
+	bp deb
+	run				// Exécute la boucle de décryptage
+Break01:
+	bc deb
+	sti				// F7
+	jmp LoopL1
+	
+	
+Fin01:
+	mov deb, eip
+	add deb, 281
+	cmp [deb], 8B5AD0FF	// Vérifie que l'on est sur cette protection
+	jne Fin02
+		eob Break03	
+		bp deb		// BP sur CALL EAX (OutputDebugString)
+		run
+	
+Break03:
+	eob Break04
+	bc deb
+	mov deb, [esp]		// deb = adresse du paramètre
+	mov [deb], 00000000	// Patche la chaine du BOF
+	bp 00402E0C	
+	run
+	
+Break04:
+	bc 00402E0C
+	sti
+	Jmp LoopL2			// Reprend le décryptage des layers
+	
+Fin02:
+	sub deb, C
+	cmp [deb], 0156FF61	// CALL SetUnhandledExceptionFilter
+	jne Fin03
+		eoe Handler03
+		run
+	
+Handler03:
+	add deb, 36		// Place le curseur sur en 0040F34B
+	mov eip, deb		// sur MOV EAX, 0040323E
+	sti
+	sti
+	jmp LoopL1			// Continue le décryptage des layers
+	
+Fin03:
+	eob Break05
+	bphws 00408A26, "x"	// Fonction de vérification du serial
+	run
+	
+Break05:
+	bphwc 00408A26
+	ret				// Fin du script	
+
+
+
+
+
+

@@ -1,0 +1,95 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>untitled</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P></P>
+
+<P><BR>
+</P>
+<P><B><FONT SIZE="4" COLOR="maroon" FACE="Arial">Symmetric Cryptography</FONT></B></P>
+
+<UL>
+	<P><FONT SIZE="2" FACE="Arial">La Symmetric encryption est le fond de commerce de n'importe quel syst&egrave;me
+	de communication s&eacute;curis&eacute;. Des dizaines d’algorithmes ont &eacute;t&eacute; invent&eacute;s et utilis&eacute;s,
+	aussi bien au niveau hardware que software. Vous trouverez ci dessous les plus communs d'entre eux.</FONT></P>
+</UL>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">Block Ciphers</FONT></B></P>
+
+<UL>
+	<P><FONT SIZE="2" FACE="Arial">les Block ciphers sont des algorithmes op&eacute;rant sur des blocs de 64-bit du
+	plaintext. La proc&eacute;dure d'encryption consiste en g&eacute;n&eacute;ral en une multitude de manipulations
+	complexes autour de ce bloc, rotation &agrave; droite ou &agrave; gauche, XORs, permutations et substitutions entre
+	plaintext et key bits. La d&eacute;cryption est identique &agrave; l'encryption, a ceci pr&ecirc;t qu'elles le
+	sont dans un ordre inverse. certains algorithmes utilisent des cl&eacute;s de taille fix&eacute;e, pour d'autres
+	la taille peut &ecirc;tre variable.</FONT></P>
+	<P><B><U><FONT SIZE="2" FACE="Arial">DES</FONT></U></B></P>
+	<P><B><FONT SIZE="2" FACE="Arial">Data Encryption Standard</FONT></B><FONT SIZE="2" FACE="Arial"> (DES) est un
+	block cipher invent&eacute; il y &agrave; 20 ans par IBM en r&eacute;ponse &agrave; une demande officielle du National
+	Bureau of Standards. Il a &eacute;t&eacute; le standard mondial jusqu'en 1976.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">DES est un algorithme dont la taille de la cl&eacute; est fixe. Il utilise des keys
+	de 56-bit, ou chaque nombre de 56-bit peut &ecirc;tre une cl&eacute;.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">DES a &eacute;t&eacute; remarquablement r&eacute;sistant &agrave; la cryptanalyse,
+	mais la petitesse de la longueur de sa cl&eacute; le rend vuln&eacute;rable &agrave; une brute-force attack o&ugrave;
+	toutes les cl&eacute;s possibles sont essay&eacute;es l'une apr&egrave;s l'autre jusqu'&agrave; trouver la bonne.</FONT></P>
+	<P><B><U><FONT SIZE="2" FACE="Arial">RC2</FONT></U></B></P>
+	<P><FONT SIZE="2" FACE="Arial">RC2 a &eacute;t&eacute; invent&eacute; par Ron Rivest for</FONT><A HREF="javascript:if(confirm('http://www.rsa.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.rsa.com/'" tppabs="http://www.rsa.com/"
+	target="_blank"><FONT SIZE="2" FACE="Arial"> </FONT></A><U><A HREF="javascript:if(confirm('http://www.rsa.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.rsa.com/'" tppabs="http://www.rsa.com/" target="_blank"><FONT SIZE="2"
+	FACE="Arial">RSA Data Security, Inc</FONT></A></U><FONT SIZE="2" FACE="Arial"> les d&eacute;tails de son fonctionnement
+	n'ont pas &eacute;t&eacute; publi&eacute;s.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">RC2 utilise une cl&eacute; cipher de taille variable cod&eacute;e de 40 &agrave;
+	128 bits, incr&eacute;ment&eacute;e 8 bits par 8 bits.</FONT></P>
+	<P><B><U><FONT SIZE="2" FACE="Arial">Triple DES</FONT></U></B></P>
+	<P><FONT SIZE="2" FACE="Arial">L'id&eacute;e, derri&egrave;re Triple DES, etait de proposer la s&eacute;curit&eacute;
+	de DES par une encryption en trois passes utilisant diff&eacute;rentes cl&eacute;s. la taille de ces cl&eacute;s
+	peuvent &ecirc;tre de 56 x 3 = 168 bits, ce qui rend les brute-force attacks virtuellement impossibles.</FONT></P>
+	<P><B><U><FONT SIZE="2" FACE="Arial">Triple DES with 2 Keys</FONT></U></B></P>
+	<P><FONT SIZE="2" FACE="Arial">L'une des variantes de DES, bien qu'utilisant une encryption en trois passes, et
+	de n'utiliser que deux cl&eacute;s: la premi&egrave;re est d'abord utilis&eacute;e, puis la seconde, et de nouveau
+	la premi&egrave;re. La taille r&eacute;elle de la cl&eacute; est alors de 56 x 2 = 112 bits.</FONT></P>
+</UL>
+
+<P><B><FONT COLOR="maroon" FACE="Arial">Stream Ciphers</FONT></B></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Le principe du Stream ciphers est de crypter le plaintext bit par bit (parfois par
+	byte). Les s&eacute;quences de bits du plaintext sont XOR&eacute;e avec le r&eacute;sultat d'un </FONT><B><FONT
+	SIZE="2" FACE="Arial">keystream generator</FONT></B><FONT SIZE="2" FACE="Arial"> qui produit une s&eacute;quence
+	de bits (stream) bas&eacute;e sur une valeur. Cette valeur est la cl&eacute; du stream cipher.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">La proc&eacute;dure du decryption process est identique &agrave; l'encryption: les
+	bits du ciphertext sont XOR&eacute;s avec le m&ecirc;me Keystream.</FONT></P>
+	<P><B><U><FONT SIZE="2" FACE="Arial">RC4</FONT></U></B></P>
+	<P><FONT SIZE="2" FACE="Arial">RC4 a &eacute;t&eacute; d&eacute;velopp&eacute; par Ron Rivest en 1987. C'est un
+	syst&egrave;me &agrave; cl&eacute; de taille variable. Les d&eacute;tails de l'algorithme n'ont pas &eacute;t&eacute;
+	officiellement publi&eacute;s, mais le principe de l'algorithme a &eacute;t&eacute; diffus&eacute; sur Internet,
+	et le livre </FONT><B><FONT SIZE="2" FACE="Arial">Applied Cryptography</FONT></B><FONT SIZE="2" FACE="Arial"> en
+	contient la description d&eacute;taill&eacute;e.</FONT></P>
+	<P><FONT SIZE="2" FACE="Arial">Comme RC2, RC4 utilise une cl&eacute; cipher de taille variable cod&eacute;e de
+	40 &agrave; 128 bits, incr&eacute;ment&eacute;e 8 bits par 8 bits.</FONT></P>
+	<P>
+</BLOCKQUOTE>
+
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="4" CELLSPACING="0" WIDTH="13%">
+	<TR>
+		<TD WIDTH="52%" VALIGN="TOP">
+			<P ALIGN="RIGHT"><A HREF="terminology.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/terminology.htm"><IMG SRC="left.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/left.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A>
+		</TD>
+		<TD WIDTH="48%" VALIGN="TOP"><A HREF="publicKey.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/publicKey.htm"><IMG SRC="right.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/right.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A></TD>
+	</TR>
+</TABLE>
+
+</CENTER>
+<P>
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+/*   font-family: "trebuchet ms", verdana, sans-serif; */
+	font-family: "Courier New";
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+	font-family: "trebuchet ms", verdana, sans-serif;
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+	font-family: "trebuchet ms", verdana, sans-serif;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover	
+  {
+  color: #990000;
+  text-decoration: underline;
+  }
+
+table
+  {
+  width:100%;	
+  }
+
+		
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+em
+	{
+  color: #990000;
+	}		
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>Crackme2 de mimas - Solution par elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+
+<p>
+      <a href="crackme-2.exe">T&eacute;l&eacute;charger la cible (crackme-2.exe)</a>
+</p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie(+)</td><td>Ollydbg</td><td>elooo</td></tr>
+</table>
+
+
+  <h2 id="sommaire">Sommaire</h2>
+<ul>
+	 <li><a href="index.html#intro">Introduction</a></li>
+	 <li><a href="index.html#point1">Choper son serial</a></li>	 
+	 <li><a href="index.html#point2">Coder son keygen</a></li>
+	 <li><a href="index.html#point3">Reverser le crackme en keygen</a></li>	 
+	 <li><a href="index.html#fin">Remerciements</a></li> 	 
+</ul>
+
+  <h2 id="intro">Introduction</h2>
+<p>Ce crackme que propose mimas est destin&eacute; aux d&eacute;butants ; il est simple &agrave; r&eacute;soudre, j'espère juste que ce tutorial sera
+aussi simple &agrave; comprendre.<br />
+Nous allons faire le travail par &eacute;tapes. La dernière partie de ce tutorial est un bonus, elle n'&eacute;tait pas demand&eacute;e. Pour reverser
+le crackme en keygen, j'ai choisi la m&eacute;thode la plus facile... en tout cas &agrave; mes yeux.<br />
+Par contre je pars du principe que le lecteur sait se servir d'Ollydbg, et par cons&eacute;quent je ne d&eacute;taillerai pas les fonctions du debugger qui vont
+permettre de rajouter du code, sauvegarder des modifications dans un nouvel executable, etc.<br />
+Bon, let's go !</p>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point1">Choper son serial</h2>
+	
+<p>Tout d'abord on voit que le nom Netbios de notre machine va être r&eacute;cup&eacute;r&eacute;e par le crackme, comme en t&eacute;moigne le
+screenshot ci-dessous :</p>
+<p style="text-align:center">
+<img src="0.png" alt="Image 1" />
+</p>
+
+<p>Et s'en suit quelques op&eacute;rations sur le nom Netbios ainsi r&eacute;cup&eacute;r&eacute;. <br />
+Je vais bien d&eacute;tailler cette partie car l'algo peut être difficile &agrave; comprendre pour les d&eacute;butants:</p>
+<p style="text-align:center">
+<img src="1.png" alt="Image 1" />
+</p>
+<p><em>esi</em> contient l'adresse m&eacute;moire qui correspond au d&eacute;but du buffer où est stock&eacute; le nom Netbios de la machine.<br />
+<em>edx</em> est mis &agrave; 0 et on met la valeur 8 dans <em>ecx</em>.<br />
+Puis on constate la pr&eacute;sence d'une boucle.<br />
+<em>lods</em> est une abbr&eacute;viation pour "Load String". Cette instruction met le contenu de la m&eacute;moire adresse point&eacute;e par <em>esi</em>
+dans <em>eax</em>. Si le flag DF (Direction Flag : visible dans la fenêtre des registres dans ollydbg) est &agrave; 0, après chaque chargement
+dans eax, esi sera incr&eacute;ment&eacute;. Au contraire, si DF est &agrave; 1, esi sera d&eacute;cr&eacute;ment&eacute;.<br />
+Ici DF &eacute;tait &agrave; 0, donc esi s'incr&eacute;mentera &agrave; chaque fois, autrement dit on avancera dans le buffer qui contient le ComputerName, on ne reculera pas.<br />
+De plus on voit ici que <em>lods</em> manipule des words, donc se seront des words qui seront stock&eacute;s dans eax, ou plus pr&eacute;cis&eacute;ment dans ax (puisque que
+seuls 16 bits seront utilis&eacute;s et n&eacute;cessaires pour cette op&eacute;ration).</p>
+<p>Une fois la nouvelle valeur stock&eacute;e dans eax, on lui ajoute 0C007h.<br />
+Puis on va effectuer une op&eacute;ration de OU Logique entre edx et eax ; edx contiendra la nouvelle valeur. Cette op&eacute;ration de
+OU Logique est op&eacute;r&eacute;e via l'instruction <em>or</em>.<br />
+D&eacute;taillons un peu plus son fonctionnement :</p>
+<blockquote>
+<p>Commençons par prendre deux valeurs hexad&eacute;cimales &agrave; titre d'exemple... au hasard on va dire qu'on a 0CAFEh dans edx et
+31000h dans eax...<br />
+On passe ces 2 valeurs en binaire :<br />
+edx = 0CAFE en hexa = 001100101011111110 en binaire (on rajoute deux 0 &agrave; gauche de la valeur binaire pour qu'on ait la même taille)<br />
+eax = 31000 en hexa = 110001000000000000 en binaire</p>
+</blockquote>
+<p>Le OU Logique (<em>or</em>) suit une table de v&eacute;rit&eacute; qui est la suivante :</p>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr><td align="center" style="border-style:none;">
+<table border="1" summary="Table de v&eacute;rit&eacute; du OR" style="margin-left:auto;margin-right:auto;text-align:center;width:45%;">
+  <colgroup span="3">
+  <col width="15%" />
+  <col width="15%" />
+  <col width="15%" />
+  </colgroup>
+   <tr><th>OR</th><th>0</th><th>1</th></tr>
+   <tr><td>0</td><td>0</td><td>1</td></tr>
+   <tr><td>1</td><td>1</td><td>1</td></tr>
+</table>
+</td>
+</tr>
+</table>
+<blockquote>
+<p>Vous aurez compris que les op&eacute;rations du <em>or</em> s'effectuent sur les bits des valeurs binaires :)<br />
+Grossièrement r&eacute;sum&eacute;, on pourrait dire que si &agrave; un emplacement de bit donn&eacute;, se trouve un 1, que ce soit dans edx ou eax,
+on aura en destination &agrave; ce même emplacement de bit un 1 aussi. Si par contre on a un 0 dans edx ET dans eax &agrave; la même position, 
+on aura un 0 &agrave; cette même position de bit dans la destination.<br />
+Ce qui nous donnera avec l'exemple au-dessus :<br />
+edx = 0CAFE = 001100101011111110<br />
+eax = 31000 = 110001000000000000<br />
+Destination = 111101101011111110 = 3DAFE (qui sera stock&eacute;e dans edx après calcul)<br />
+En esp&eacute;rant que ce soit un peu moins obscure maintenant :p</p>
+</blockquote>
+<p>L'instruction <em>loop</em> permet d'effectuer une boucle jusqu'&agrave; ce que ecx soit &agrave; 0.<br />
+On a vu au-dessus que ecx &eacute;tait mis &agrave; 8, on en d&eacute;duit donc qu'on bouclera 8 fois.</p>
+<p>Bref, la valeur importante &agrave; l'issue se trouvera dans edx (dû au modifications apport&eacute;es par le <em>or</em>), puis
+stock&eacute;e dans un buffer en 00402014 (je lui ai donn&eacute; pour label dans Ollydbg "SerialHexa").<br />
+Passons au screenshot suivant :</p>
+
+<p style="text-align:center">
+<img src="2.png" alt="Image 1" />
+</p>
+<p>La fonction GetDlgItemInt permet de convertir le texte d'un control pr&eacute;cis de la DialogBox en un entier.<br />
+Ici le control en question est l'EditBox où se trouve "Yaaah!!" &agrave; l'ouverture du crackme. C'est aussi l'EditBox qui attend
+de vous le serial que vous allez lui sugg&eacute;rer.<br />
+Bref le plus important ici et surtout ce que je voulais montrer &eacute;tait le paramètre "IsSigned" de la fonction. Ici il est mis &agrave; False,
+ce qui signifie que la serial entr&eacute; sera converti en entier <em>non-sign&eacute;</em>.<br />
+Voyons enfin le bout de code qui va v&eacute;rifier le serial entr&eacute; :</p>
+
+<p style="text-align:center">
+<img src="3.png" alt="Image 1" />
+</p>
+<p><em>ecx</em> est mis &agrave; 0.<br />
+Dans <em>eax</em> on a le serial qu'on a entr&eacute; (on l'a entr&eacute; sous forme de string, c'est &agrave; dire
+en ascii) qui a &eacute;t&eacute; converti en entier non-sign&eacute;.<br />
+On met dans <em>edx</em> le serial qui a &eacute;t&eacute; g&eacute;n&eacute;r&eacute; par l'algo du crackme (algo suivant la r&eacute;cup&eacute;ration du nom Netbios
+de la machine... la fameuse boucle expliqu&eacute;e au-dessus).<br />
+Première chose : on soustrait l'entier qui a &eacute;t&eacute; converti &agrave; partir du serial qu'on a entr&eacute; &agrave; l'entier qui a &eacute;t&eacute; g&eacute;n&eacute;r&eacute;
+par l'algo du crackme.<br />
+On met l'offset du message GoodBoy dans eax.<br />
+<em>sete</em> est une abbr&eacute;viation pour "Set If Equal". En fait il va tester le flag ZF (Zero Flag) : lors de la soustraction
+de edx &agrave; eax, si le r&eacute;sultat est &eacute;gal &agrave; 0, le flag ZF sera mis &agrave; 1, sinon il sera mis &agrave; 0.<br />
+Si le flag ZF est &agrave; 0 (donc que eax - edx = 0), l'instruction <em>sete cl</em> va renvoyer TRUE, autrement dit mettre cl &agrave; 1.<br />
+On met l'offset du message BadBoy dans edx.<br />
+cl est stock&eacute; dans un buffer en 00402018.<br />
+<em>cmovne</em> est l'&eacute;quivalent d'un <em>mov</em> conditionnel : on d&eacute;place edx dans eax, &agrave; condition que le résultat de la soustraction entre edx et eax soit diff&eacute;rent de 0 ("Conditional Mov If Not Equal").<br />
+Ce qui signifie que si le résultat de la soustraction est &eacute;gal &agrave; 0 (= que le serial entr&eacute; converti en entier non-sign&eacute; est &eacute;gal &agrave; l'entier g&eacute;n&eacute;r&eacute; 
+par l'algo), alors ce mov ne se fera pas, et eax conservera comme valeur l'offset du message GoodBoy.<br />
+Si le résultat de la soustraction est diff&eacute;rent de 0, le message BadBoy viendra remplacer le message GoodBoy.<br />
+On voit que pour le paramètre Text de la MessageBox, eax est push&eacute;, c'est donc bien ce mov conditionnel qui va d&eacute;cider de
+l'affichage du message GoodBoy ou BadBoy.<br />
+Bref si on veut notre serial, il suffit de r&eacute;cup&eacute;rer la valeur stock&eacute;e en 00402014 (label SerialHexa) et de la convertir en d&eacute;cimal non sign&eacute; :)</p>
+<p>A noter que le <em>sete cl</em> au milieu de l'algo ne sert &agrave; rien quant à l'affichage du message GoodBoy ou BadBoy.
+Il est seulement là pour le test effectu&eacute; sur le buffer en 00402018 lorsqu'on clique sur le bouton "Leaving" : si 
+notre serial &eacute;tait juste avant de cliquer sur ce bouton, la MessageBox qui s'affiche normalement pour nous demander
+si on veut vraiment quitter ne s'affichera pas.</p>
+ 
+ 
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point2">Coder son keygen</h2>
+	
+<p>Voici la source de mon keygen en asm :</p>	
+<blockquote>
+<pre>
+;======================================================================
+;	Crackme2 de mimas
+;======================================================================
+.486p
+.model flat, stdcall
+option casemap :none
+;======================================================================
+;   Includes
+;======================================================================
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+include \masm32\include\user32.inc
+include \masm32\include\masm32.inc
+
+includelib \masm32\lib\user32.lib
+includelib \masm32\lib\kernel32.lib
+includelib \masm32\lib\masm32.lib
+;======================================================================
+;   Macros
+;======================================================================
+      print MACRO Quoted_Text:VARARG
+        LOCAL Txt
+          .data
+            Txt db Quoted_Text,0
+          .code
+        invoke StdOut,ADDR Txt
+      ENDM
+
+      input MACRO Quoted_Prompt_Text:VARARG
+        LOCAL Txt
+        LOCAL Buffer
+          .data
+            Txt db Quoted_Prompt_Text,0
+            Buffer db 512 dup(0)
+          .code
+        invoke StdOut,ADDR Txt
+        invoke StdIn,ADDR Buffer,LENGTHOF Buffer
+        mov eax, offset Buffer
+      ENDM
+;======================================================================
+;   DATA
+;======================================================================
+.data
+Taille          dd 512
+Serial          db 12 dup (0)	; Serial en decimal non-signe
+TempConv        db 12 dup (0)	; Serial en decimal non-signe mais a l'envers
+;======================================================================
+;   DATA?
+;======================================================================
+.data?
+ComputerName    db 512 dup (?)	; Nom du computer
+;======================================================================
+;   CODE
+;======================================================================
+.code
+start:
+pushad
+
+	print 13,10,"********************************************************"
+	print 13,10,"*                   Crackme2 de mimas                  *"	
+	print 13,10,"*                    Keygen par elooo                  *"
+	print 13,10,"*                      Code en asm                     *"	
+	print 13,10,"********************************************************"
+	print 13,10,13,10
+
+
+
+;-------------------------------------------------------------------		
+; Recupere le nom Netbios de la machine	
+;-------------------------------------------------------------------	
+	invoke GetComputerName, addr ComputerName, addr Taille	
+	.if eax != NULL
+		print "ComputerName = "
+		invoke StdOut, addr ComputerName
+
+
+;-------------------------------------------------------------------		
+; Algo qui permet de recuperer le serial en hexa	
+;-------------------------------------------------------------------
+		xor eax, eax
+		xor edx, edx
+		mov ecx, 8
+		mov esi, offset ComputerName
+@@:		lodsw
+  		add eax, 0C007h
+  		or edx, eax         ; a la sortie du loop, edx = serial en hexa
+  		loopd @B
+
+
+;-------------------------------------------------------------------		
+; Conversion Hexa -> Decimal non-signe	
+;-------------------------------------------------------------------			
+		lea esi, TempConv     ; esi = offset de TempConv
+		inc esi
+		mov eax, edx          ; eax = edx = serial en hexa
+		mov ecx, 0Ah	
+		;-----------------------------------------------------------		
+		; on convertit en decimal non-signe (sera stocke a l'envers)
+		;-----------------------------------------------------------		
+@@:		xor edx, edx
+		div ecx
+		add dl, 30h
+		mov [esi], dl
+		inc esi
+		test eax, eax
+		jnz @B
+		mov edi, offset Serial
+		;-----------------------------------------------------------		
+		; on remet le serial en decimal non-signe dans l'ordre	
+		;-----------------------------------------------------------	
+@@:		dec esi
+		mov al, [esi]
+		mov [edi], al
+		inc edi
+		test al, al
+		jnz @B
+
+;-------------------------------------------------------------------		
+; On affiche notre serial	
+;-------------------------------------------------------------------
+		print 13,10,"Et ton serial tant attendu est : "
+		invoke StdOut, addr Serial
+		print 13,10
+		
+	.else 
+		print "WTF ? Pas moyen de recuperer le nom NETBIOS de ta machine :o ",13, 10	
+	.endif
+	
+	invoke ExitProcess,0		
+popad
+END start
+</pre>
+</blockquote>
+<p>Il est t&eacute;l&eacute;chargeable <a href="http://elooo.fff.free.fr/consult/Crackme2_mimas/Crackme2-mimas_keygen.exe">ici</a>.<br />
+J'aurais très bien pu utiliser la fonction WsprintfA pour la conversion Hexa en Decimal non-sign&eacute;, mais pour la suite
+du travail (la partie reverse du crackme), j'ai pr&eacute;f&eacute;r&eacute; m'en passer.<br />
+En effet j'ai d&eacute;cid&eacute; de ne pas importer d'autres fonctions que celles d&eacute;j&agrave; import&eacute;es dans le crackme de mimas, et comme
+WsprintfA n'existe pas dans son crackme, j'ai d&eacute;cid&eacute; de coder une fonction de conversion dès l'&eacute;laboration du keygen...</p> 
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point3">Reverser le crackme en keygen</h2>
+	
+<p>Avant de commencer &agrave; torturer ce pauvre crackme, il va d&eacute;j&agrave; falloir d&eacute;finir nos besoins :</p>
+<ul class="liste">
+<li>Virer le code de v&eacute;rification du serial</li>
+<li>D&eacute;cider de comment et où on fera afficher notre serial avec le code d&eacute;j&agrave; existant</li>
+</ul>
+<p>On a vu qu'en fonction du r&eacute;sultat du test du serial, le crackme affichait soit le message BadBoy, soit le message GoodBoy
+dans la MessageBox.<br />
+Pour notre reverse, on va pas se casser la tête, on va lui dire de nous afficher le bon serial &agrave; la place.<br />
+Evidemment si on vire l'algo de verif du serial, et qu'on torture un paramètre push&eacute; pour MessageboxA, il ne faudra pas 
+s'attendre ensuite &agrave; ce que le crackme revers&eacute; puisse nous dire si on a juste ou faux en rentrant un serial quelconque dans l'EditBox...</p>
+
+<p>Autre problème : il n'y a aucune fonction de conversion d'hexad&eacute;cimal en d&eacute;cimal non-sign&eacute; dans ce crackme, donc il va
+falloir ajouter du code qui nous fera ça (ou importer une fonction d'api comme wsprintfA mais mimas m'a dit de pas vous
+noyer avec des trucs qui pousseraient trop loin... donc je me bride... j'en parlerai pas plus ici... grrr :P)<br />
+On peut très bien utiliser l'algo de conversion cod&eacute; pour mon keygen ci-dessus, par contre ça signifie qu'on aura besoin de
+deux buffers suppl&eacute;mentaires pour stocker nos donn&eacute;es : un buffer Serial (qui contiendra le Serial final en d&eacute;cimal non-sign&eacute;) et
+un buffer TempConv (buffer temporaire qui contient notre serial en d&eacute;cimal non-sign&eacute; aussi mais &agrave; l'envers).</p>
+<p>On ne peut pas d&eacute;cider de l'emplacement de ces deux buffers n'importe où, d'une part il faut les placer &agrave; un endroit inoccup&eacute; et qui n'est
+jamais utilis&eacute;, et ensuite il faut que l'endroit où on d&eacute;cidera de les placer soit "writable", sinon on aura droit &agrave; une
+belle exception "access violation"..., puisque le crackme va vouloir &eacute;crire dans ces buffers pour stocker les donn&eacute;es.</p>
+
+<p>Si on jette un oeil aux sections du crackme, on voit ça :</p>
+<blockquote>
+<pre>
+
+*****************************************************************
+*                      ShowPE 1.0 by elooo                      *
+*****************************************************************
+
+-----> Log for : f:\_Montaf_\Crackme2_mimas\crackme-2.exe
+_________________________________________________________________
+
+
+_________________________________________________________________
+
+	IMAGE_SECTION_HEADER
+_________________________________________________________________
+
+		SECTION 
+	 0X158       Name                        : .text
+	 0X160 DWORD VirtualSize                 : 0X00000110
+	 0X164 DWORD VirtualAddress              : 0X00001000
+	 0X168 DWORD SizeOfRawData               : 0X00000200
+	 0X16C DWORD PointerToRawData            : 0X00000200
+	 0X170 DWORD PointerToRelocations        : 0X00000000
+	 0X174 DWORD PointerToLinenumbers        : 0X00000000
+	 0X178 WORD  NumberOfRelocations         : 0X0000
+	 0X17A WORD  NumberOfLinenumbers         : 0X0000
+	 0X17C DWORD Characteristics             : 0X60300020
+	-----> Contains executable code
+	-----> Can be executed as code
+	-----> Can be read
+
+		SECTION 
+	 0X180       Name                        : .data
+	 0X188 DWORD VirtualSize                 : 0X00000080
+	 0X18C DWORD VirtualAddress              : 0X00002000
+	 0X190 DWORD SizeOfRawData               : 0X00000200
+	 0X194 DWORD PointerToRawData            : 0X00000400
+	 0X198 DWORD PointerToRelocations        : 0X00000000
+	 0X19C DWORD PointerToLinenumbers        : 0X00000000
+	 0X1A0 WORD  NumberOfRelocations         : 0X0000
+	 0X1A2 WORD  NumberOfLinenumbers         : 0X0000
+	 0X1A4 DWORD Characteristics             : 0XC0300040
+	-----> Contains initialized data
+	-----> Can be read
+	-----> Can be written
+
+		SECTION 
+	 0X1A8       Name                        : .rsrc
+	 0X1B0 DWORD VirtualSize                 : 0X00005E30
+	 0X1B4 DWORD VirtualAddress              : 0X00003000
+	 0X1B8 DWORD SizeOfRawData               : 0X00006000
+	 0X1BC DWORD PointerToRawData            : 0X00000600
+	 0X1C0 DWORD PointerToRelocations        : 0X00000000
+	 0X1C4 DWORD PointerToLinenumbers        : 0X00000000
+	 0X1C8 WORD  NumberOfRelocations         : 0X0000
+	 0X1CA WORD  NumberOfLinenumbers         : 0X0000
+	 0X1CC DWORD Characteristics             : 0X40000040
+	-----> Contains initialized data
+	-----> Can be read
+
+		SECTION 
+	 0X1D0       Name                        : .idata
+	 0X1D8 DWORD VirtualSize                 : 0X0000013C
+	 0X1DC DWORD VirtualAddress              : 0X00009000
+	 0X1E0 DWORD SizeOfRawData               : 0X00000200
+	 0X1E4 DWORD PointerToRawData            : 0X00006600
+	 0X1E8 DWORD PointerToRelocations        : 0X00000000
+	 0X1EC DWORD PointerToLinenumbers        : 0X00000000
+	 0X1F0 WORD  NumberOfRelocations         : 0X0000
+	 0X1F2 WORD  NumberOfLinenumbers         : 0X0000
+	 0X1F4 DWORD Characteristics             : 0X60000020
+	-----> Contains executable code
+	-----> Can be executed as code
+	-----> Can be read
+_________________________________________________________________
+</pre>
+</blockquote> 
+
+<p>La seule section "writable" dans ce crackme est la section .data (cf "Characteristics"), c'est donc dans celle-ci qu'on va trouver un endroit
+pour caser nos deux buffers.<br />
+Dans Ollydbg, on voit que cette section .data commence en 00402000 :</p> 
+
+<p style="text-align:center">
+<img src="5.png" alt="Image 1" />
+</p>
+<p>On va donc s'y rendre dans la fenêtre de dump, et on peut y voir que le d&eacute;but de cette section est d&eacute;j&agrave; utilis&eacute;e (cf la partie
+gris&eacute;e) :</p>
+
+<p style="text-align:center">
+<img src="6.png" alt="Image 1" />
+</p>
+<p>Il va donc falloir poser nos buffers après cette partie que j'ai volontairement gris&eacute;e.<br />
+Ici par exemple :</p>
+
+<p style="text-align:center">
+<img src="7.png" alt="Image 1" />
+</p>
+<p>Passons maintenant aux modifications relatives au code.<br />
+On a dit au-dessus qu'on allait virer le bout de code qui allait v&eacute;rifier le serial entr&eacute;, donc on nop tout :</p>
+
+
+<p style="text-align:center">
+<img src="8.png" alt="Image 1" />
+</p>
+<p>On garde cependant la ligne qui va mettre le serial en hexa dans edx (<em>mov edx, dword ptr [402014]</em>) puisque
+notre algo de conversion Hex2Dec va avoir besoin de ce serial en hexa.<br />
+On push ensuite esi et edi, car l'algo de conversion Hex2Dec va utiliser ces deux registres, mais il faut savoir que sous
+un OS autre que XP, l'utilisation de ces registres (ainsi qu'ebx) sans avoir pris la peine de les sauvegarder au pr&eacute;alable
+risque de faire crasher... car ils sont aussi utilis&eacute;s par le système. XP les sauvegarde tout seul comme un grand.<br />
+Bref on les push sur la pile, afin de pouvoir les restaurer ensuite &agrave; coup de pop, une fois l'algo de conversion Hex2Dec
+ex&eacute;cut&eacute;.<br />
+Evidemment entre les push et les pop, il faut rediriger le code vers l'adresse qui contient le code qu'on va rajouter.<br />
+J'ai tout bêtement d&eacute;cid&eacute; de rajouter ce code &agrave; la suite du code d&eacute;j&agrave; existant puisqu'il y avait de la place. Autrement dit,
+il se trouve en 0040110E, comme en t&eacute;moigne le screenshot ci-dessous :</p>   
+
+<p style="text-align:center">
+<img src="9.png" alt="Image 1" />
+</p>
+<p>Rien de surprenant dans ce code rajout&eacute; : c'est le code de conversion que j'ai utilis&eacute; pour coder mon keygen, ni plus, ni moins.<br />
+Il faut juste ne pas oublier &agrave; la fin de rajouter un jmp pour refaire le branchement, afin que l'execution continue ensuite 
+(<em>jmp 004010B0</em>).<br />
+Une fois cette conversion faite, le serial converti en d&eacute;cimal non-sign&eacute; se trouve dans le buffer Serial.<br />
+La MessageBox affichera le texte point&eacute; par eax, comme on l'a expliqu&eacute; plus haut, donc on met tout bêtement l'offset
+de notre buffer Serial dans eax (<em>mov eax, 00402081</em>).</p>
+<p>Passons maintenant aux modifications "cosm&eacute;tiques"...<br />
+Le crackme revers&eacute; est &agrave; ce stade d&eacute;j&agrave; fonctionnel et affiche bien notre serial dans la MessageBox quand on clique sur
+le bouton "Let's fight!". Mais parce que du coup le combat n'a plus lieu d'être (le petit &eacute;cureuil nous donne le serial
+d'entr&eacute;e de jeu :p), on va renommer ce bouton en "Gimme a nut!"</p>
+<p>Pour faire cette modification, on va devoir acc&eacute;der &agrave; la section ressources (.rsrc) du crackme.<br />
+Ollydbg nous dit qu'elle d&eacute;bute en 00403000 :</p>
+
+<p style="text-align:center">
+<img src="10.png" alt="Image 1" />
+</p>
+<p>Donc on s'y rend via la fenêtre de dump et on y fait une recherche sur "Let's fight!" :</p>
+<p style="text-align:center">
+<img src="11.png" alt="Image 1" />
+</p>
+<p>Une fois la string trouv&eacute;e, Ollydbg nous amène directement &agrave; l'endroit recherch&eacute; :</p>
+<p style="text-align:center">
+<img src="12.png" alt="Image 1" />
+</p>
+<p>Et on est maintenant &agrave; même de remplacer la fameuse string. On sauvegarde et voil&agrave; c'est fini :)</p> 
+<p style="text-align:center">
+<img src="13.png" alt="Image 1" />
+</p> 	
+<p>Le crackme revers&eacute; en keygen est t&eacute;l&eacute;chargeable <a href="crackme-2_reversed_.exe">ici</a>.</p>
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="fin">Remerciements</h2>
+
+<blockquote>
+<p>Qui veut :p</p>
+<p>Cordialement,<br />
+elooo.</p>
+</blockquote>
+
+<p>
+ <a href="index.html#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+</div>
+</body>
+</html>

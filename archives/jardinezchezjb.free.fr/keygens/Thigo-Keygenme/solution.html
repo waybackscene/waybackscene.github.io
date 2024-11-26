@@ -1,0 +1,171 @@
+<html>
+
+<head>
+<title>KeygenMe n°X par Thigo</title>
+<meta name="generator" content="Namo WebEditor v5.0">
+<meta name="author" content="jB">
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="purple" alink="red" background="images/bg.gif">
+<h2 align="center"><font face="Lucida Console"><b>KeygenMe n°X par Thigo<br>Solution par jB</b></font></h2>
+<hr>
+<p align="center">&nbsp;</p>
+<p><font face="Arial"><b>Type de protection:</b> keyfile<br><b>Difficulté:</b> 
+rien de difficile, une petite feinte toutefois<br><b>Outils utilisés:</b><br> 
+&nbsp;&nbsp;&nbsp;- OllyDbg v1.09c<br> &nbsp;&nbsp;&nbsp;- TASM v5.0<br>  </font></p>
+<p><font face="Arial">J'ai trouvé ce keygenme bien intéressant. Il est basé 
+sur des opérations classiques (multiplication et ou exclusif). Mais la structure 
+de la routine est assez tordue pour pouvoir dérouter celui qui s'y attaque un 
+petit moment.</font></p>
+<p><font face="Arial">On lance le keygenme:</font></p>
+<p align="center"><font face="Arial"><img src="images/1.jpg" width="320" height="224" border="0"></font></p>
+<p align="left"><font face="Arial">On a déjà le nom du keyfile: key.dat. C'est 
+déjà un début...<br>On crée donc un faux key.dat, et on le remplit avec n'importe 
+quoi.<br>J'ai mis 'keyfile de jB', mettez la même chose ça permettra d'avoir 
+la même chose que moi pour&nbsp;la suite.</font></p>
+<p align="left"><font face="Arial">Le programme n'est ni packé, ni crypté. On peut donc directement 
+commencer le travail : l'étude du keyfile.</font></p>
+<p align="left"><font face="Arial">On ouvre le keygenme avec OllyDbg, et on 
+regarde rapidement les chaines de caractères qui peuvent être intéressantes:<br>Clic 
+droit --&gt; Search for --&gt; All referenced text strings.<br></font></p>
+<p align="left"><font face="Arial">Dans la liste, on remarque un 'key.dat'.<br>On 
+clique deux fois dessus, pour voir à quel moment du programme il est utilisé. 
+C'est un paramètre de CreateFileA. Voilà qui est intéressant.<br>On pose donc 
+un breakpoint à cet endroit là.</font></p>
+<p align="center"><img src="images/2.jpg" width="757" height="263" border="0"></p>
+<p align="left"><font face="Arial">ReadFile va ensuite lire le fichier, qui 
+fera au maximum 100h=256 octets.<br>Le contenu du fichier sera copié l'adresse 
+ebp-158.</font></p>
+<p align="left"><font face="Arial">On lance le programme avec F9, le breakpoint 
+se fait sans problème et on trace jusqu'à ReadFile.</font></p>
+<p align="left"><font face="Arial">On arrive ensuite ici:</font></p>
+<p align="center"><img src="images/3.jpg" width="621" height="218" border="0"><font face="Arial"><br></font></p>
+<p align="left"><font face="Arial">Ce passage est facile à comprendre: on effectue 
+un ou exclusif sur&nbsp;chaque octet du keyfile avec la taille du keyfile.</font></p>
+<p align="left"><font face="Arial">Puis:<br></font><font face="Courant">keyfile[0]=keyfile[0]^0x54; 
+(54h='T')<br>keyfile[1]=keyfile[1]^0x4d; (4dh='M')<br>keyfile[2]=keyfile[2]^0x47; 
+(47h='G')</font></p>
+<p align="left"><font face="Arial">Enfin, la dernière boucle effectue également 
+un ou exclusif entre les trois premiers octets du keyfile et le reste du fichier, 
+de cette manière (i&gt;=1):<br></font><font face="Courant">keyfile[3i]=keyfile[3i]^keyfile[0];<br>keyfile[3i+1]=keyfile[3i+1]^keyfile[1];<br>keyfile[3i+2]=keyfile[3i+2]^keyfile[2]<br></font></p>
+<p align="left"><font face="Arial">&nbsp;Une fois passé ceci, votre keyfile 
+devrait ressembler à celà:</font></p>
+<p><font face="Courant">0012FBEC &nbsp;32 25 33 59 41 52 5A 08 5A 5A 08 54 7D 
+00 33 00 &nbsp;2%3YARZ ZZ T}.3.<br>0012FBFC &nbsp;00 00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 &nbsp;................</font></p>
+<p><font face="Arial">Voici la suite:</font></p>
+<p align="center"><font face="Arial"><img src="images/4.jpg" width="661" height="200" border="0"></font></p>
+<p><font face="Arial">Apparition d'un nouveau buffer en .405030:<br>Voici le 
+début:</font></p>
+<p><font face="Courant">00405030 &nbsp;1E BF A2 1A F3 0B B7 34 4E 4B 34 C5 0E 
+38 88 4B &nbsp;&nbsp;¿¢ ó ·4NK4Å 8^K<br>00405040 &nbsp;32 C5 06 38 88 0A 35 
+43 C0 61 42 8D 76 4C 45 BF &nbsp;2Å 8^.5CÀaBvLE¿<br>00405050 &nbsp;0B 47 F2 
+0E 48 3A C5 06 38 88 0A 30 52 C0 61 42 &nbsp;&nbsp;Gò H:Å 8^.0RÀaB</font></p>
+<p><font face="Arial">La boucle n'est pas exactement la même que précédemment, 
+mais elle fait exactement la même chose: on applique à chaque octet de ce nouveau 
+buffer un ou exclusif avec les trois premiers octets du keyfile.</font></p>
+<p align="left"><font face="Arial">Voilà ce que ça donne (i&gt;=0):<br></font><font face="Courant">buffer[3i]=buffer[3i]^keyfile[0];<br>buffer[3i+1]=buffer[3i+1]^buffer[1];<br>buffer[3i+2]=buffer[3i+2]^buffer[2]<br></font></p>
+<p align="left"><font face="Arial">Puis les trois premiers octets du buffer 
+sont multipliés entre eux. On doit avoir:<br></font><font face="Courant">buffer[0]*buffer[1]*buffer[2]=2A8BF4h</font></p>
+<p align="left"><font face="Arial">Normalement, si vous avez utilisé le même 
+keyfile que moi vous devriez obtenir ceci:</font></p>
+<p><font face="Courant">00405030 &nbsp;2C 9A 91 28 D6 38 85 11 7D 79 11 F6 3C 
+1D BB 79 &nbsp;,s'(Ö8. }y ö&lt; »y<br>00405040 &nbsp;17 F6 34 1D BB 38 10 70 
+F2 44 71 BF 53 7F 77 9A &nbsp;&nbsp;ö4 »8 pòDq¿Sws<br>00405050 &nbsp;38 75 
+D7 3D 7A 1F F6 34 1D BB 38 15 61 F2 44 71 &nbsp;8u×=z ö4 »8 aòDq<br>00405060 
+&nbsp;BF 53 78 2D 9A 38 75 D7 3D 7F 2F F6 34 1D BB 38 &nbsp;¿Sx-s8u×=/ö4 »8<br>00405070 
+&nbsp;16 5B F2 44 71 BF 53 75 51 9A 38 75 D7 3D 70 32 &nbsp;&nbsp;[òDq¿SuQs8u×=p2<br>00405080 
+&nbsp;F6 34 1D BB 38 1B 00 F2 44 71 BF 53 76 59 9A 38 &nbsp;ö4 »8 .òDq¿SvYs8<br>00405090 
+&nbsp;75 D7 3D 75 16 F6 34 1D BB 38 1C 2E F2 44 71 BF &nbsp;u×=u ö4 »8 .òDq¿<br>004050A0 
+&nbsp;53 73 59 9A 38 75 9B 75 F9 E0 29 F2 44 71 F1 1B &nbsp;SsYs8u>uùà)òDqñ 
+<br>004050B0 &nbsp;F6 3C 1D F7 31 10 FD 88 79 F6 2C 1D F5 33 10 F6 &nbsp;ö&lt; 
+÷1 ı^yö, õ3 ö</font></p>
+<p><font face="Arial">Et donc: </font><font face="Courant">2Ch*9Ah*91h=EFDF8h</font><font face="Arial"> 
+ce qui est loin d'être égal à 2A8BF4h=2788340...<br>Le mieux pour le moment 
+me parait de regarder la suite: on inverse le résultat de la comparaison en 
+cliquant sur le 'Z' dans la fenêtre de flags.<br>On verra plus tard...</font></p>
+<p><font face="Arial">On passe le saut conditionnel. On a évité le &quot;Are 
+u sure it's a good keyfile&quot;, et on arrive ici:</font></p>
+<p align="center"><font face="Arial"><img src="images/5.jpg" width="395" height="181" border="0"></font></p>
+<p align="left"><font face="Arial">ebp-158 est l'adresse où a été copié le keyfile 
+précédemment.<br>Les deux boucles utilisées ne sont pas compliquées, encore 
+une fois:</font></p>
+<p align="left"><font face="Arial">La première copie le keyfile à l'adresse 
+ebp-30, jusqu'à ce qu'un octet du keyfile soit égal à 20h (i.e un espace). Le 
+problème, c'est qu'il n'y a pas d'espace dans le keyfile, depuis qu'il a été 
+crypté. Alors la routine va copier beaucoup trop d'octets, et risque d'arriver 
+dans une zone de mémoire protégée (vous pouvez tester, effectivement ça plante). 
+Alors on va en rajouter un. Je l'ai rajouté ici, vers le milieu en fait:</font></p>
+<p><font face="Courant">0012FBEC &nbsp;32 25 33 59 41 52 5A <b><span style="background-color:red;">20</span></b> 
+5A 5A 08 54 7D 00 33 00 &nbsp;2%3YARZ ZZ T}.3.<br>0012FBFC &nbsp;00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 &nbsp;................</font></p>
+<p><font face="Arial">La seconde boucle&nbsp;copie la deuxième partie du keyfile 
+à l'adresse ebp-58, jusqu'à ce que la fin ce que l'on rencontre un 0h. Là ça 
+ne pose pas de problème. Tout se passe bien.<br></font></p>
+<p><font face="Arial">Vous devriez alors obtenir:</font></p>
+<p><font face="Courant">0012FCEC &nbsp;</font><font face="Courant" color="red">5A 
+5A 08 54 7D</font><font face="Courant"> 00 00 00 00 00 00 00 00 00 00 00 &nbsp;ZZ 
+T}...........<br>0012FCFC &nbsp;00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+00 &nbsp;................<br>0012FD0C &nbsp;00 00 00 00 00 00 00 00 </font><font face="Courant" color="red">32 
+25 33 59 41 52 5A</font><font face="Courant"> 00 &nbsp;........2%3YARZ.</font></p>
+<p><font face="Arial">Et on se trouve maintenant ici:</font></p>
+<p align="center"><font face="Arial"><img src="images/6.jpg" width="626" height="218" border="0"></font></p>
+<p><font face="Arial">VirtualProtect va rendre la zone de mémoire à l'adresse 
+.405030 (esi) exécutable, et le call esi va faire exécuter cette zone.<br>Le 
+problème, c'est que cette zone de mémoire, c'est le buffer décrypté précédemment 
+avec les trois premiers caractères du keyfile.<br>On peut se douter très fortement 
+que ça va pas ressembler à du code qui veuille dire quelque chose...</font></p>
+<p><font face="Arial">Effectivement ça plante.</font></p>
+<p><font face="Arial">Là c'est peut-être ma partie la plus délicate. Disons 
+que c'est facile à comprendre mais il fallait y penser.<br>Puisque c'est censé être une procédure, on peut imaginer 
+qu'elle doit commencer par:</font></p>
+<p><font face="Courant">55 &nbsp;&nbsp;&nbsp;push ebp<br> 8B EC mov ebp, esp</font></p>
+<p><font face="Arial">Pour le moment, les trois premiers octets de la procédure 
+sont 2C, 9A, 91.<br>On sait comment est cryptée le buffer.<br>Pour obtenir le 
+résultat voulu, il faut calculer les trois premiers octets du keyfile crypté:</font></p>
+<p><font face="Courant">keyfile[0]=buffer[0]^0x55h=0x1E^0x55;<br>keyfile[1]=buffer[1]^0x8Bh=0xBF^0x8B;<br>keyfile[2]=buffer[2]^0xECh=0xA2^0xEC;</font></p>
+<p><font face="Arial">Ce qui donne finalement:<br></font><font face="Courant">keyfile[0]=0x4B='K'<br>keyfile[1]=0x34='4'<br>keyfile[1]=0x4E='N'</font></p>
+<p><font face="Arial">Apparemment, on est sur la bonne voie.<br>D'autant plus 
+que</font><font face="Courant"> 55*5B*EC=2A8BF4h</font></p>
+<p><font face="Arial">Les trois premiers caractères du keyfile avaient subi 
+deux ou exclusifs auparavant. On va calculer les trois premiers octets d'origine:<br>La 
+taille du keyfile&nbsp;est 13 octets=0xD.</font></p>
+<p><font face="Arial">On a donc:<br></font><font face="Courant">keyfile[0]='K'^'T'^0xD=0x12<br>keyfile[1]='4'^'M'^0xD=0x74<br>keyfile[2]='N'^'G'^0xD=0x4<br></font></p>
+<p><font face="Arial">On relance le prog avec Olly après avoir modifié les trois 
+premiers octets du keyfile.<br>Le saut conditionnel se fait bien, en .4011EF 
+(le produit des trois chiffres vérifiant bien l'égalité)</font></p>
+<p><font face="Arial">Coup de chance cette fois ci, dans le keyfile modifié 
+il y a bien un octet égal à 0x20. Les deux boucles suivant le saut conditionnel 
+se passent donc sans problème.</font></p>
+<p><font face="Arial">On arrive au call esi, et on rentre à l'intérieur de la 
+routine.<br>Cette fois, ça veut bien dire quelque chose. On trace un peu, pour 
+voir ce qui se passe.<br>En fait, tout le début de la routine sert à créer et 
+décrypter une chaine, pour donner finalement 'Registered to: ' à une nouvelle 
+adresse.</font></p>
+<p align="center"><font face="Arial"><img src="images/7.jpg" width="380" height="227" border="0"></font></p>
+<p align="left"><font face="Arial">On a, à l'endroit où je me situe sur la capture:</font></p>
+<p align="left"><font face="Courant">0012FD14 &nbsp;52 65 67 69 73 74 65 72 
+65 64 20 74 6F 3A 20 00 &nbsp;Registered to: .<br>0012FD24 &nbsp;00 00 00 00 
+00 00 00 00 00 00 00 00 00 00 00 00 &nbsp;................<br>0012FD34 &nbsp;00 
+00 00 00 00 00 00 00 04 00 00 00 0D 00 00 00 &nbsp;........ .......</font></p>
+<p align="left"><font face="Arial">La boucle suivante va tout simplement copier 
+la seconde partie du keyfile à la suite de 'Registered to: '.<br>Cette chaine 
+sera ensuite affichée avec SetDlgItemTextA.</font></p>
+<p align="left"><font face="Arial">On obtient: Registered to: P/# '# ) </font></p>
+<p><font face="Arial">Maintenant, il faut obtenir un keyfile à notre nom.<br>On 
+sait déterminer les 3 premiers caractères du keyfile. Pas besoin de mettre de 
+première partie, on va s'arranger pour avoir directement un 0x20 après ces trois 
+premiers caractères.<br>Enfin, la deuxième partie du keyfile doit afficher notre 
+nom une fois décryptée.<br>On doit donc avoir un keyfile de 6 octets pour mon 
+nom (trois premiers chars, un espace et 'jB').<br>Ce qui donne:</font></p>
+<p><font face="Courant">keyfile[0]='K'^'T'^0x6=0x19<br>keyfile[1]='4'^'M'^0x6=0x7F<br>keyfile[2]='N'^'G'^0x6=0xF<br></font></p>
+<p><font face="Courant">keyfile[3]=' '^'K'^0x6=0x6D<br>keyfile[4]='j'^'4'^0x6=0x58<br>keyfile[5]='B'^'N'^0x6=0xA</font></p>
+<p><font face="Arial">Le keyfile est donc (en hexa): 19 7F 0F 6D 58 0A</font></p>
+<p><font face="Arial">On ouvre le keygenme, et on obtient:</font></p>
+<p align="center"><img src="images/8.jpg" width="320" height="224" border="0"></p>
+<p align="left"><font face="Arial">Et voilà c'est terminé.</font></p>
+<hr>
+<p align="right"><font face="Arial">jB</font></p>
+</body>
+
+</html>

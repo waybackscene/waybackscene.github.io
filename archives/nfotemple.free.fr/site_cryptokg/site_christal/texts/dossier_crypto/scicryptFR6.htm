@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Translator" content="Michel Arboi">
+<link rev=made href="mailto:arboi@bigfoot.com">
+<meta name="Description"
+      content="Traduction française de la FAQ de sci.crypt">
+<meta name="Keywords" content="cryptologie, cryptographie, cryptanalyse,
+      cryptology, cryptography, sci.crypt, FAQ, traduction, français,
+      clé publique, RSA, factorisation, nombre, premier, Diffie,
+      Hellman, fonction à sens unique, clé de session, Rivest, Shamir, 
+      Adleman, défi, distribution de clé, 
+      traduction française">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FAQ de sci.crypt, chapitre 6: Cryptographie &agrave; cl&eacute; publique</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><FONT SIZE="5" FACE="Arial">Cryptographie &agrave; cl&eacute; publique</FONT></H1>
+<P><STRONG><FONT SIZE="2" FACE="Arial">Table des mati&egrave;res</FONT></STRONG>
+
+<UL>
+	<LI><FONT SIZE="2" FACE="Arial">4.1. </FONT><A HREF="scicryptFR6.htm#1"><FONT SIZE="2" FACE="Arial">Qu'est-ce que la cryptographie
+	&agrave; cl&eacute; publique?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.2. </FONT><A HREF="scicryptFR6.htm#2"><FONT SIZE="2" FACE="Arial">Comment la cryptographie &agrave;
+	cl&eacute; publique r&eacute;sout-elle </FONT><EM><FONT SIZE="2" FACE="Arial">&agrave; tous les coups on perd</FONT></EM><FONT
+	SIZE="2" FACE="Arial">?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.3. </FONT><A HREF="scicryptFR6.htm#3"><FONT SIZE="2" FACE="Arial">Quel est le r&ocirc;le de
+	la fonction &agrave; sens unique dans les syst&egrave;mes &agrave; cl&eacute; publique?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.4. </FONT><A HREF="scicryptFR6.htm#4"><FONT SIZE="2" FACE="Arial">Quel est le r&ocirc;le de
+	la &quot;cl&eacute; de session&quot; dans les syst&egrave;mes &agrave; cl&eacute; publique?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.5. </FONT><A HREF="scicryptFR6.htm#5"><FONT SIZE="2" FACE="Arial">Qu'est-ce que le RSA?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.4. </FONT><A HREF="scicryptFR6.htm#6"><FONT SIZE="2" FACE="Arial">Le RSA est-il s&ucirc;r?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.7. </FONT><A HREF="scicryptFR6.htm#7"><FONT SIZE="2" FACE="Arial">Quelle est la diff&eacute;rence
+	entre le RSA et Diffie-Hellman?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.8. </FONT><A HREF="scicryptFR6.htm#8"><FONT SIZE="2" FACE="Arial">Qu'est-ce que l'authentification</FONT></A><FONT
+	SIZE="2" FACE="Arial"> et le probl&egrave;me de distribution de cl&eacute;s?</FONT>
+	<LI><FONT SIZE="2" FACE="Arial">4.9. </FONT><A HREF="scicryptFR6.htm#9"><FONT SIZE="2" FACE="Arial">A quelle vitesse peut-on factoriser
+	des nombres?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.10. </FONT><A HREF="scicryptFR6.htm#10"><FONT SIZE="2" FACE="Arial">Et les autres syst&egrave;mes
+	&agrave; cl&eacute; publique?</FONT></A>
+	<LI><FONT SIZE="2" FACE="Arial">4.11. </FONT><A HREF="scicryptFR6.htm#11"><FONT SIZE="2" FACE="Arial">Qu'est-ce que le d&eacute;fi
+	de factorisation RSA</FONT></A><FONT SIZE="2" FACE="Arial">?</FONT>
+</UL>
+
+
+<BLOCKQUOTE>
+	<H2><A NAME="1"></A><FONT SIZE="4" FACE="Arial">4.1. Qu'est-ce que la cryptographie &agrave; cl&eacute; publique?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Dans un cryptosyst&egrave;me classique, nous avons des fonctions de chiffrement
+	E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> et de d&eacute;chiffrement
+	D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> telles que D</FONT><SUB><FONT
+	SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT
+	SIZE="2" FACE="Arial">(P))=P pour tout texte clair P. Dans un cryptosyst&egrave;me &agrave; cl&eacute; publique,
+	E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> peut facilement &ecirc;tre
+	calcul&eacute;e &agrave; partir d'une &quot;cl&eacute; publique&quot; X qui &agrave; son tour est calcul&eacute;e
+	&agrave; partir de K. X est publi&eacute;e, si bien que n'importe qui peut chiffrer des messages. Si le d&eacute;chiffrement
+	D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> ne peut pas &ecirc;tre facilement
+	calcul&eacute; &agrave; partir de X sans conna&icirc;tre la cl&eacute; priv&eacute;e K, mais facilement en connaissant
+	K, seule la personne qui a g&eacute;n&eacute;r&eacute; K pourra d&eacute;chiffrer les messages. C'est le principe
+	de la cryptographie &agrave; cl&eacute; publique, introduite par Diffie et Hellman en 1974. <BR>
+	<BR>
+	Ce document d&eacute;crit les rudiments de cryptographie &agrave; cl&eacute; publique. Il y a une litt&eacute;rature
+	importante sur les mod&egrave;les de s&eacute;curit&eacute; de la cryptographie &agrave; cl&eacute; publique, sur
+	d'autres applications de la technologie math&eacute;matique qui est derri&egrave;re la cryptographie &agrave; cl&eacute;
+	publique, etc.; consultez les r&eacute;f&eacute;rences &agrave; la fin pour une pr&eacute;sentation plus compl&egrave;te
+	et plus d&eacute;taill&eacute;e.</FONT>
+	<H2><A NAME="2"></A><FONT SIZE="4" FACE="Arial">4.2. Comment la cryptographie &agrave; cl&eacute; publique r&eacute;sout-elle
+	</FONT><EM><FONT SIZE="4" FACE="Arial">&agrave; tous les coups on perd</FONT></EM><FONT SIZE="4" FACE="Arial">?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Dans un cryptosyst&egrave;me classique, si vous voulez que vos amis soient capables
+	de vous envoyer des messages, vous devez &ecirc;tre s&ucirc;r que personne d'autre ne voit la cl&eacute; K. Dans
+	un cryptosyst&egrave;me &agrave; cl&eacute; publique, vous pouvez publier X, et vous n'aurez pas &agrave; vous
+	soucier des espions. La cryptographie &agrave; cl&eacute; publique r&eacute;sout donc un des probl&egrave;mes les
+	plus aga&ccedil;ants: la n&eacute;cessit&eacute; d'&eacute;tablir un canal s&ucirc;r pour &eacute;changer la cl&eacute;.
+	Pour &eacute;tablir un canal s&ucirc;r on utilise la cryptographie, mais la cryptographie &agrave; cl&eacute; priv&eacute;e
+	n&eacute;cessite un canal s&ucirc;r! <BR>
+	En r&eacute;solvant ce dilemme, la cryptographie &agrave; cl&eacute; publique a &eacute;t&eacute; consid&eacute;r&eacute;e
+	par beaucoup comme une </FONT><EM><FONT SIZE="2" FACE="Arial">r&eacute;volution technologique</FONT></EM><FONT
+	SIZE="2" FACE="Arial">, une avanc&eacute;e qui a rendu le chiffrement des communications pratique et omnipr&eacute;sent.</FONT>
+	<H2><A NAME="3"></A><FONT SIZE="4" FACE="Arial">4.3. Quel est le r&ocirc;le de la fonction &agrave; sens unique
+	dans un sch&eacute;ma &agrave; cl&eacute; publique ?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">La cryptographie &agrave; cl&eacute; publique est bas&eacute;e sur une fonction
+	&agrave; sens unique D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> qui a
+	comme caract&eacute;ristique que le calcul est facile dans une direction (le chiffrement E</FONT><SUB><FONT SIZE="2"
+	FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">) et quasiment impossibe dans l'autre (l'attaque qui consiste
+	&agrave; d&eacute;terminer P &agrave; partir de E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2"
+	FACE="Arial">(P) et de la cl&eacute; publique X). De plus, elle a comme propri&eacute;t&eacute; que la fonction
+	inverse (le d&eacute;chiffrement D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">)
+	devient calculable si la cl&eacute; priv&eacute;e K est connue.</FONT>
+	<H2><A NAME="4"></A><FONT SIZE="4" FACE="Arial">4.4. Quel est le r&ocirc;le de la &quot;cl&eacute; de session&quot;
+	dans les sch&eacute;mas &agrave; cl&eacute; publique ?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Dans quasiment tous les syst&egrave;mes &agrave; cl&eacute; publique, les temps
+	de chiffrement et de d&eacute;chiffrement sont tr&egrave;s longs compar&eacute;s aux autres algorithmes par blocs
+	comme le DES pour des tailles de donn&eacute;es comparables. Ainsi dans la plupart des mises en oeuvre des syst&egrave;mes
+	&agrave; cl&eacute; publique, on g&eacute;n&egrave;re une cl&eacute; de session al&eacute;atoire beaucoup plus
+	petite que le(s) message(s); seule cette cl&eacute; temporaire est chiffr&eacute;e avec l'algorithme &agrave; cl&eacute;
+	publique. Le message est ensuite chiffr&eacute; avec un algorithme &agrave; cl&eacute; priv&eacute;e plus rapide
+	&agrave; l'aide de la cl&eacute; de session. Du c&ocirc;t&eacute; du r&eacute;cepteur, la cl&eacute; de session
+	est d&eacute;chiffr&eacute;e avec l'algorithme &agrave; cl&eacute; publique et le &quot;texte clair&quot; r&eacute;cup&eacute;r&eacute;
+	(la cl&eacute;) est utilis&eacute; pour d&eacute;chiffrer le message. <BR>
+	<BR>
+	Cette approche brouille la distinction entre les </FONT><EM><FONT SIZE="2" FACE="Arial">cl&eacute;s</FONT></EM><FONT
+	SIZE="2" FACE="Arial"> et les </FONT><EM><FONT SIZE="2" FACE="Arial">messages</FONT></EM><FONT SIZE="2" FACE="Arial">
+	-- dans ce sch&eacute;ma, le message comprend la cl&eacute;, et la cl&eacute; elle-m&ecirc;me est trait&eacute;e
+	comme un &quot;message&quot; chiffrable. Selon cette approche de double chiffrement, la force cryptographique de
+	l'ensemble d&eacute;pend soit de l'algorithme &agrave; cl&eacute; publique soit de l'algorithme &agrave; cl&eacute;
+	priv&eacute;e.</FONT>
+	<H2><A NAME="5"></A><FONT SIZE="4" FACE="Arial">4.5. Qu'est-ce que le RSA?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">RSA est un cryptosyst&egrave;me &agrave; cl&eacute; publique d&eacute;fini par Rivest,
+	Shamir, et Adleman. Voici un petit exemple.<BR>
+	<BR>
+	Les textes clairs sont les entiers positifs jusqu'&agrave; 2^512. Les cl&eacute;s sont des quadruplets (p,q,e,d)
+	avec p entier premier de 256 bits, q entier premier de 258 bits, et d et e deux grands nombres tels que (d.e -
+	1) soit divisible par (p-1)(q-1) <BR>
+	On d&eacute;finit E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(P) = P^e
+	mod pq, D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial">(C) = C^d mod pq. Tous
+	ces nombres sont calcul&eacute;s facilement avec des algorithmes classiques ou modernes de th&eacute;orie des nombres
+	-- d'anciens algorithmes comme Euclide pour calculer le plus grand diviseur commun ou des m&eacute;thodes r&eacute;cemment
+	explor&eacute;es comme le test de Fermat d&eacute;coulent des m&eacute;thodes pour trouver de grands nombres &quot;probablement&quot;
+	premiers, E</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> est facilement calcul&eacute;
+	&agrave; partir de la paire (pq,e) -- mais, d'apr&egrave;s ce que l'on sait, il n'existe aucune fa&ccedil;on simple
+	de calculer D</FONT><SUB><FONT SIZE="2" FACE="Arial">K</FONT></SUB><FONT SIZE="2" FACE="Arial"> &agrave; partir
+	de (pq,e). Ainsi quiconque conna&icirc;t K peut publier (pq,e). N'importe qui pourra lui envoyer un message secret;
+	lui seul pourra lire les messages.</FONT>
+	<H2><A NAME="6"></A><FONT SIZE="4" FACE="Arial">4.4. Le RSA est-il s&ucirc;r?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Personne ne sait. Une attaque &eacute;vidente contre le RSA est de factoriser pq.
+	Voir ci-dessous les commentaires sur la rapidit&eacute; des meilleurs lagorithmes de factorisation. Malheureusement
+	personne n'a la moindre id&eacute;e sur comment prouver que la factorisation (ou tout autre probl&egrave;me &quot;r&eacute;aliste&quot;)
+	est fondamentalement lente. Il est facile de formaliser ce que nous entendons par &quot;RSA est/n'est pas robuste&quot;;
+	mais, comme Hendrik W. Lenstra Jr. le dit</FONT>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">les d&eacute;finitions exactes semblent n'&ecirc;tre n&eacute;cessaires que lorsque
+		l'on souhaite prouver que des algorithmes ayant certaines propri&eacute;t&eacute;s </FONT><U><FONT SIZE="2" FACE="Arial">n'existent
+		pas</FONT></U><FONT SIZE="2" FACE="Arial">, et il est notoire que de tels r&eacute;sultats manquent en informatique
+		th&eacute;orique.</FONT>
+	</BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">Notez qu'il pourrait exister un &quot;raccourci&quot; qui permettrait de casser
+	le RSA sans factoriser. Donc, la s&eacute;curit&eacute; du syst&egrave;me d&eacute;pend de deux hypoth&egrave;ses
+	critiques: (1) il faut factoriser pour casser le syst&egrave;me, et (2) la factorisation est &quot;difficile&quot;,
+	ou bien &quot;la factorisation est difficile&quot; et &quot;toute m&eacute;thode qui peut casser le syst&egrave;me
+	est aussi co&ucirc;teuse que la factorisation&quot;. <BR>
+	<BR>
+	Dans l'histoire m&ecirc;me des cryptographes professionnels ont fait des erreurs en estimant la difficult&eacute;
+	de divers probl&egrave;mes de calcul et en comptant dessus pour des applications cryptographiques s&ucirc;res.
+	Par exemple, un syst&egrave;me connu sous le nom de Knapsack cipher [NdT: sac &agrave; dos; en fait, il est bas&eacute;
+	sur le probl&egrave;me de la sous-somme] a &eacute;t&eacute; &agrave; la mode dans la litt&eacute;rature pendant
+	des ann&eacute;es jusqu'&agrave; ce qu'on d&eacute;montre qu'il pouvait &ecirc;tre facilement cass&eacute;, et
+	tout ce domaine est pass&eacute; de mode.</FONT>
+	<H2><A NAME="7"></A><FONT SIZE="4" FACE="Arial">4.7. Quelle est la diff&eacute;rence entre le RSA et les sch&eacute;mas
+	de Diffie-Hellman?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Diffie et Hellman ont propos&eacute; un syst&egrave;me qui exige un &eacute;change
+	de cl&eacute;s dynamique pour chaque paire &eacute;metteur - recepteur (et en pratique, habituellement pour chaque
+	session de communication, d'o&ugrave; le terme cl&eacute; de session). <BR>
+	Cette n&eacute;gociation &agrave; double sens est utile pour compliquer un peu plus les attaques, mais introduit
+	une charge suppl&eacute;mentaire dans la communication. Le syst&egrave;me du RSA r&eacute;duit cette charge car
+	on peut avoir des cl&eacute;s statiques, immuables, pour chaque r&eacute;cepteur qui a &eacute;t&eacute; &quot;publi&eacute;&quot;
+	par une &quot;autorit&eacute; de confiance&quot; ou distribu&eacute; via une &quot;toile d'araign&eacute;e de confiance&quot;
+	informelle.</FONT>
+	<H2><A NAME="8"></A><FONT SIZE="4" FACE="Arial">4.8. Qu'est-ce que l'&quot;authentification&quot; et &quot;le probl&egrave;me
+	d'&eacute;change de cl&eacute;s&quot;?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Le probl&egrave;me d'&eacute;change de cl&eacute;s consiste (1) &agrave; s'assurer
+	que les cl&eacute;s sont &eacute;chang&eacute;es de tellle sorte que l'&eacute;metteur et le r&eacute;cepteur puissent
+	chiffrer et d&eacute;chiffrer, et (2) &agrave; faire &ccedil;a de telle fa&ccedil;on qu'un espion ou une personne
+	ext&eacute;rieure ne puisse pas casser le code. L'authentification ajoute le besoin (3) on assure au r&eacute;cepteur
+	qu'un message a &eacute;t&eacute; chiffr&eacute; par une entit&eacute; donn&eacute;e et non par quelqu'un d'autre.
+	<BR>
+	<BR>
+	La mani&egrave;re la plus simple mais la moins pratique pour respecter toutes ces contraintes (&eacute;change de
+	cl&eacute; r&eacute;ussi et authentification valide) est employ&eacute;e par la cryptographie &agrave; cl&eacute;
+	priv&eacute;e: &eacute;changer la cl&eacute; en secret. <BR>
+	Selon ce sch&eacute;ma, le probl&egrave;me de l'authentification est implictement r&eacute;solu. On suppose que
+	seul l'&eacute;metteur aura la cl&eacute; capable de chiffrer les messages sensibles envoy&eacute;s au r&eacute;cepteur.
+	<BR>
+	<BR>
+	Bien que les m&eacute;thodes cryptographiques &agrave; cl&eacute; publique r&eacute;solve un aspect critique de
+	l'&eacute;change de cl&eacute;, pr&eacute;cis&eacute;ment leur r&eacute;sistance &agrave; l'analyse m&ecirc;me
+	si un espion passif &eacute;coute l'&eacute;change, elles ne r&eacute;solvent pas tous les probl&egrave;mes associ&eacute;s
+	&agrave; l'&eacute;change de cl&eacute;s. En particulier, comme ces cl&eacute;s sont consid&eacute;r&eacute;es
+	comme &eacute;tant connues de tout le monde (en particulier avec le RSA) d'autres m&eacute;canismes doivent &ecirc;tre
+	d&eacute;velopp&eacute;s pour certifier l'authenticit&eacute;, car la simple possession de la cl&eacute; (suffisante
+	pour chiffrer des messages intelligibles) ne garantit pas l'identit&eacute; de l'&eacute;metteur. <BR>
+	<BR>
+	Une solution (appel&eacute;e parfois autorit&eacute; de confiance) est de d&eacute;velopper un m&eacute;canisme
+	de distribution de cl&eacute; qui assure que les cl&eacute;s list&eacute;es sont vraiment celles des entit&eacute;s
+	donn&eacute;es. L'autorit&eacute; ne g&eacute;n&egrave;re pas les cl&eacute;s, mais assure par un quelconque m&eacute;canisme
+	que les listes de cl&eacute;s et les identit&eacute;s associ&eacute;es gard&eacute;es et publi&eacute;es par les
+	&eacute;metteurs et les r&eacute;cepteurs sont &quot;correctes&quot;. Une autre m&eacute;thode compte sur les utilisateurs
+	pour distribuer et pister les cl&eacute;s des autres et leur faire confiance de fa&ccedil;on informelle et distribu&eacute;e.
+	Ceci a &eacute;t&eacute; popularis&eacute; par le logiciel PGP qui appelle le mod&egrave;le toile d'araign&eacute;e
+	de confiance. <BR>
+	<BR>
+	Sous RSA, si on souhaite donner une preuve de son identit&eacute; en plus du message chiffr&eacute;, on chiffre
+	simplement &agrave; l'aide de sa cl&eacute; priv&eacute;e une information appel&eacute;e signature. Ceci est inclus
+	dans le message chiffr&eacute; avec la cl&eacute; publique du r&eacute;cepteur. <BR>
+	Le recepteur peut utiliser l'algorithme RSA &quot;&agrave; l'envers&quot; pour v&eacute;rifier que l'information
+	d&eacute;chiffr&eacute;e a un sens, donc que seule l'entit&eacute; donn&eacute;e a pu chiffrer le texte clair &agrave;
+	l'aide de sa cl&eacute; priv&eacute;e. Typiquement la signature chiffr&eacute;e est un &quot;r&eacute;sum&eacute;
+	du message&quot; [NdT: message digest en anglais] qui comprend un r&eacute;sum&eacute; math&eacute;matique du message
+	secret (si la signature &eacute;tait statique sur plusieurs messages, les r&eacute;cepteurs pourraient l'utiliser
+	frauduleusement une fois celle-ci connue). De cette fa&ccedil;on, seul l'&eacute;metteur du message peut th&eacute;oriquement
+	g&eacute;n&eacute;rer une signature valide.</FONT>
+	<H2><A NAME="9"></A><FONT SIZE="4" FACE="Arial">4.9. A quelle vitesse peut-on factoriser?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Ca d&eacute;pend de la taille des nombres, et de leur forme. Des nombres tels que
+	a^n - b avec b &quot;petit&quot; sont plus facilement factoris&eacute;s avec des techniques sp&eacute;cialis&eacute;es
+	et ne sont pas significatifs du probl&egrave;me g&eacute;n&eacute;ral. Donc une avanc&eacute;e sur une forme de
+	nombres particuli&egrave;re peut n'avoir aucune valeur pratique pour d'autres nombres (ceux g&eacute;n&eacute;r&eacute;s
+	pour l'utilisation dans les cryptosyst&egrave;mes sont &quot;filtr&eacute;s&quot; sp&eacute;cialement pour r&eacute;sister
+	&agrave; de telles attaques). L'observation la plus importante &agrave; propos de la factorisation est que tous
+	les algorithmes n&eacute;cessitent un temps exponentiel en fonction de la </FONT><U><FONT SIZE="2" FACE="Arial">taille</FONT></U><FONT
+	SIZE="2" FACE="Arial"> du nombre (mesur&eacute;e en bits, log2(n) o&ugrave; </FONT><EM><FONT SIZE="2" FACE="Arial">n</FONT></EM><FONT
+	SIZE="2" FACE="Arial"> est le nombre). Les algorithmes cryptographiques construits sur la difficult&eacute; de
+	la factorisation d&eacute;pendent g&eacute;n&eacute;ralement de cette propri&eacute;t&eacute;. (la distinction
+	entre les algorithmes &agrave; </FONT><EM><FONT SIZE="2" FACE="Arial">temps exponentiel</FONT></EM><FONT SIZE="2"
+	FACE="Arial"> ou &agrave; </FONT><EM><FONT SIZE="2" FACE="Arial">temps polynomial</FONT></EM><FONT SIZE="2" FACE="Arial">,
+	ou NP et P, est un domaine majeur de la recherche informatique; certains r&eacute;sultats sont intimement li&eacute;s
+	&agrave; la s&eacute;curit&eacute; cryptographique) <BR>
+	<BR>
+	En Octobre 1992 Arjen Lenstra et Dan Bernstein ont factoris&eacute; 2^523 - 1 en nombres premiers, en utilisant
+	environ trois semaines de temps de calcul d'une MasPar (La MasPar est une machine SIMD &agrave; 16384 processeurs;
+	chaque processeur peut additionner environ 200000 entiers par seconde) L'algorithme est appel&eacute; crible du
+	corps des nombres; il est nettement plus rapide pour des nombres sp&eacute;ciaux comme 2^523 - 1 que pour des nombres
+	g&eacute;n&eacute;raux n, mais il prend seulement exp(O(log^{1/3} n log^{2/3} log n)) dans tous les cas. <BR>
+	<BR>
+	Une m&eacute;thode plus vieille et plus populaire pour les petits nombres est le crible polynomial quadratique
+	multiple, qui prend un temps exp(O(log^{1/2} n log^{1/2} log n)) --- plus rapide que l'autre pour les petits nombres
+	mais plus lente pour les grands nombres. Le point d'&eacute;quilibre est quelque part entre 100 et 150 chiffres,
+	selon les r&eacute;alisations. <BR>
+	<BR>
+	La factorisation est un domaine qui bouge vite --- l'&eacute;tat de l'art il y a seulement quelques ann&eacute;es
+	&eacute;tait loin d'&ecirc;tre aussi bon que maintenant. Si aucune nouvelle m&eacute;thode n'est d&eacute;velopp&eacute;e,
+	les cl&eacute;s RSA sur 2048 bits seront toujours s&ucirc;res contre la factorisation, mais personne ne peut pr&eacute;dire
+	le futur (avant que le crible du corps des nombres soit d&eacute;couvert, certains ont conjectur&eacute; que le
+	crible quadratique &eacute;tait asymptotiquement aussi rapide que possible).</FONT>
+	<H2><A NAME="10"></A><FONT SIZE="4" FACE="Arial">4.10. Et les autres syst&egrave;mes &agrave; cl&eacute; publique?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">Nous avons parl&eacute; du RSA parce qu'il est bien connu et facile &agrave; d&eacute;crire.
+	Mais il y a beaucoup d'autres syst&egrave;mes &agrave; cl&eacute; publique, beaucoup sont plus rapides que le RSA
+	ou d&eacute;pendent de probl&egrave;mes que plus de gens croient difficiles. Ceci est juste une br&egrave;ve introduction;
+	si vous voulez r&eacute;ellement apprendre les nombreuses facettes de la cryptographique &agrave; cl&eacute; publique,
+	consultez les livres et articles de journaux cit&eacute;s plus loin</FONT>
+	<H2><A NAME="11"></A><FONT SIZE="4" FACE="Arial">4.11. Qu'est-ce que le d&eacute;fi de factorisation RSA?</FONT></H2>
+	<P><FONT SIZE="2" FACE="Arial">En 1992 environ, RSA Data Securities Inc., propri&eacute;taire des multiples brevets
+	sur le mat&eacute;riel RSA et les techniques cryptographiques en g&eacute;n&eacute;ral, fabricant de divers logiciels
+	et biblioth&egrave;ques de chiffrement a annonc&eacute; le lancement d'un D&eacute;fi de Factorisation pour juger
+	de l'&eacute;tat de l'art en technologie de factorisation. Tous les mois une s&eacute;rie de nombre est publi&eacute;e
+	et des r&eacute;compenses sont offertes au premier qui les casse en facteurs. Des ressources mat&eacute;rielles
+	significatives sont n&eacute;cessaires pour arriver &agrave; battre les autres participants.</FONT>
+</BLOCKQUOTE>
+
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,40 @@
+                          AmiPPF v1.0
+                   - -- ---------------- -- -
+
+TITLE       : AmiPPF v1.0
+PROGRAMMER  : JBI <AmiPPF@yahoo.de>
+PLATFORM    : Amiga
+RELEASE DATE: 11/07/99
+
+                   - -- ---------------- -- -
+
+AmiPPF 1.0
+
+Support:
+    PPF10
+    PPF20
+
+Requirements:
+    MUI (Copyright by Stefan Stuntz)
+    PSX bin file from MakeCD (i don't know if others work too)
+    PPF patch file (PPF10 or PPF20)
+
+ToolTypes:
+    PSX_PATH    where you have your PSX bin files
+    PPF_PATH    where you have your PPF files
+
+Contact:
+    AmiPPF@yahoo.de
+
+The lenght test for the PSX file is disabled due to the
+different formats of CD-R Win and MakeCD.
+
+OK, have fun with the PSX games
+and long lives AMIGA...
+JBI
+
+                   - -- ---------------- -- -
+
+                    http://www.paradogs.com
+
+                   - -- ---------------- -- -

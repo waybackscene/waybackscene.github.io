@@ -1,0 +1,1006 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<meta name="Keywords" Content="IPSec, IPSEC, oem, toolkit, ssh, download, VPN, Virtual Private Network, telecom, internet, security, cryptography, Tatu Ylonen, Secure Shell, communication, communications, Unix, Windows, NT, Solaris, BSD, Sparc, vxworks, router, access, IKE, ike, ISAKMP, ISAKMP/Oakley, tunneling, L2TP, PPTP">
+<link rel="stylesheet" type="text/css" href="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/dossier_crypto/ssh.css" tppabs="http://christalmirror.ifrance.com/common/ssh.css">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>SSH - Tech Corner - Cryptographic Algorithms </TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="black" BGCOLOR="#FFFFCC" LINK="#000066" VLINK="#000066">
+
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="95%">
+	<TR>
+		<TD WIDTH="100%">
+			<P>
+			<H1><B><FONT SIZE="5" COLOR="#804000" FACE="Arial, Helvetica, sans-serif">Cryptographic Algorithms</FONT></B><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"></FONT></H1>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This page lists commonly used cryptographic algorithms and
+			methods and explains the basic underlying concepts. It also tries to give references to implementations and textbooks.
+			Where available, comments are also made about the usefulness or other aspects of the algorithms.</FONT></P>
+			<UL>
+				<LI><A HREF="algorithms.htm#asymmetric"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Public Key Cryptosystems</FONT></A>
+				<LI><A HREF="algorithms.htm#symmetric"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Secret Key Cryptosystems</FONT></A>
+				<LI><A HREF="algorithms.htm#hash"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Cryptographic Hash Functions</FONT></A>
+				<LI><A HREF="algorithms.htm#random"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Random Number Generators</FONT></A>
+			</UL>
+			<P>
+<HR ALIGN="CENTER">
+
+			<H2><A NAME="asymmetric"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> Public Key Cryptosystems</FONT></H2>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Public key cryptosystems were invented in late 1970's, possibly
+			with help from the development of complexity theory of algorithms around that time. It was observed that based
+			on a problem so difficult that it would need thousands of years to solve, and with some luck, a cryptosystem could
+			be developed which would have two keys, the secret and the public. With the public key one could encrypt messages,
+			and decrypt them with the private key. Thus the owner of the private key would be the only one who could decrypt
+			the messages, but anyone knowing the public key could send them in privacy.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Another idea that was observed was that of a key exchange.
+			In a two-party communication it would be useful to generate a common secret key for bulk encryption using a secret
+			key cryptosystem (e.g. some block cipher).</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Indeed, Whitfield Diffie and Martin Hellman used ideas from
+			number theory to construct a key exchange protocol that started the era of public key cryptosystems. Shortly after
+			that Ron Rivest, Adi Shamir and Leonard Adleman developed a cryptosystem that was the first real public key cryptosystem
+			capable of encryption and digital signatures.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Later several public cryptosystems followed using many different
+			underlying ideas (e.g. knapsack problems, different groups on finite fields and lattices). Many of them were soon
+			proven to be insecure. However, the Diffie-Hellman protocol and RSA appear to remained two of the strongest up
+			to now.</FONT></P>
+			<P>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Terminology</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Basic ingredient in any public key cryptosystem is a difficult
+			computational problem. The security of the cryptosystem is based on the fact that the secret key can be computed
+			from the public key only by solving this difficult problem. We will introduce enough terminology that all the basic
+			problems in public key cryptography can be explained.</FONT></P>
+			<UL>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Algorithms</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				An algorithm is an explicit description how a particular computation should be performed (or a problem solved).
+				The efficiency of algorithms can be measured as the number of elementary steps it takes to solve the problem. So
+				if we claim that the algorithm takes time </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">O(n)</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> then we mean that it takes </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> elementary steps, but we do not specify how long one step takes.</FONT>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Computational complexity</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				Let a problem be </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">polynomial</FONT></EM><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif"> time or </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">in</FONT></EM><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">P</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> if it can be solved by an algorithm which takes less than </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">O(n</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">t</FONT></SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> steps,
+				where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">t</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is selected appropriately (i.e. large enough) number and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> variable that measures the size of the problem instance. If a guessed
+				solution to a problem can be verified in polynomial time then the problem is said to </FONT><EM><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">be in</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> (non-deterministic
+				polynomial time). It is </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><EM><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">-hard</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> if there
+				is no other problem in </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif"> that is easier to solve. There is no known polynomial time algorithm for any
+				</FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard
+				problem, and it is believed that such algorithms in fact do not exist.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">In public key cryptography the attacker is interested in
+				solving particular instances of a problem (factoring some given number), rather than providing a general solution
+				(an algorithm to factor any possible number efficiently). This causes some concern for cryptographers, as some
+				instances of a problem that is </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard in general may be easily solvable.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Primes</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				A prime is such an number that is not divisible by any other number than by itself and </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">1</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. Thus the integers
+				</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2,3,5,7,11,...</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				and so on are primes. There are infinitely many primes, and (one of) the </FONT><A HREF="javascript:if(confirm('http://www.mersenne.org/history.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.mersenne.org/history.htm#found'" tppabs="http://www.mersenne.org/history.htm#found"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">biggest prime numbers currently</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				known is </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">(2</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">6,972,593</FONT></SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">)-1</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Factoring</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				Every integer can be represented uniquely as a product of prime numbers. For example, </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">10 = 2 * 5</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> (the
+				notation </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">*</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is common for multiplication in computer science) and it is unique (except for the order of the factors </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> and
+				</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">5</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">).
+				The art of factorization is almost as old as mathematics itself. However, the study of fast algorithms for factoring
+				is only few decades old.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The immediate algorithm tries to divide the input by all
+				small prime numbers iteratively until the remaining number is prime. This is sufficient only for integers that
+				are, say, about </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">16</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> as this already requires trying all primes up to </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">8</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. In public key cryptosystems, using the problem of factoring, numbers
+				are of size </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">300</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> and this would require trying all primes up to </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">150</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> and there are about </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">147</FONT></SUP></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				such prime numbers according to the prime number theorem. This exceeds the number of atoms in the universe, and
+				is unlikely to be enumerated by any effort.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The easy instance of factoring is the case where the given
+				integer has only small prime factors. For example, </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">759375</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> is easy to factor as we can write it as </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">3</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">5</FONT></SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">* 5</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">5</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. In cryptography we want to use only those integers that have only
+				large prime factors. Preferrably we select an integer with two large prime factors, as is done in the RSA cryptosystem.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Currently one of teh best factoring algorithms is the Number
+				field sieve (NFS) that consists of a sieving phase and a matrix step. The sieving phase can be distributed (and
+				has been several times) among a large number of participants, but the matrix step needs to be performed on large
+				supercomputers. The effectiveness of NFS becomes apparent as it can factor any integers around </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">150</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> in a few months time. The NFS algorithm takes subexponential time
+				(which is still not very efficient).</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">There is no known proof that factorization of integers would
+				be </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard
+				nor that it would not be polynomial time solvable. If any </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard would be polynomial time solvable, then also factoring would,
+				but there is very little hope that this would happen. It is plausible under current knowledge that factoring is
+				not polynomial time solvable.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Discrete logarithm</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				Another important class of problems is the problem of finding </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> given only some </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">y</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> such that </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">y
+				= g</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></SUP></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				The problem is easy for integers, but when we are working in a slightly different setting it becomes very hard.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">To obscure the nature of </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> in </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">g</FONT><SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></SUP></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				we divide the infinite set of integers into a finite set of </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">remainder
+				classes</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. Intuitively, we take the string of integers
+				and wrap it on a roll of, say, toilet tissue (which has perimeter of length </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">), looking at it from the side.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The numbers </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">0,
+				m, 2m, 3m, ...</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> all cover the same spot on the roll,
+				and therefore are said to be in the same equivalence class (we also write &quot;</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">0
+				= m = 2m = ... (mod m)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">&quot;). Each equivalence class
+				has a least representative in </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">0 .. m-1</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. So you can write integer </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> as </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">t
+				+ km</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> for any integer </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">t</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">, where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">0
+				&lt;= t &lt; m</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. It is a convention to write </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">n = t (mod m)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				in this case. Here </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is said to be the </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">modulus</FONT></EM><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">It can be shown that you can add, multiply and exponentiate
+				with these classes of integers (modulo some </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">).</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This structure, when </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m
+				= p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> with </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> a prime number, is often called a prime field or a Galois field GF(</FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">).
+				According to the proper mathematical terminology it is a </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">finite
+				field</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> of characteristic </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">, where </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> is
+				the modulus. If </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is not a prime number then the structure is called a (finite) </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">ring</FONT></EM><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. More information about groups, fields and rings can be read from
+				any good elementary text in algebra.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The discrete logarithm problem in a finite field (of characteristic
+				</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is a prime number) is then stated as follows: given two positive non-zero integers </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">a,
+				g</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> (both less than </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">), compute </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> such that </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">a
+				= g</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(mod p)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. We may require that the answer exists. To
+				make this problem cryptographically hard </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> should be a large prime number (about </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">300</FONT></SUP></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				in general, of same magnitude.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This problem is currently considered as hard as factoring.
+				The best method known at this time is the Number field sieve for discrete logarithm (uses similar ideas as NFS
+				for factoring). But for discrete logarithm problem there are also other important methods.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Pollard's rho and lambda algorithms and also Shanks' baby-step-giant-step.
+				These are generic discrete logarithm algorithms (and not just against the above structure). They use the basic
+				group structure and require only squared root of the order of the element </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">g</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> steps to find the discrete logarithm in the general case. There is
+				also the important Pohlig-Hellman algorithm for case where the order of </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">g</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> can be factored into small primes exclusively.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The discrete logarithm problem may appear more complicated
+				than integer factoring, but in many ways they are similar. Many of the ideas that work for factoring can be also
+				applied in the setting of discrete logarithms. There is little hope to find a polynomial time algorithm to discrete
+				logarithm computation (for example, in the finite field of characteristic </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">). In such a case it would be likely that factoring problems also
+				could be efficiently solved.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Many other structures for difficult discrete logarithm problems
+				include elliptic curves and other group structures over finite fields. The generic methods work in all the structures,
+				but the NFS algorithm does not. This has also the effect that there are some key size benefits for using discrete
+				logarithm based public key cryptosystems rather than factoring based.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Knapsacks</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				Given a small set of integers, the knapsack problem consists in determining a subset of these integers such that
+				their sum is equal to a given integer. For example, given </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">(2,
+				3, 5, 7)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">, we can find the solution </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2
+				+ 3 + 5 = 10</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">, and thus solved the knapsack problem,
+				by brute force search.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The general knapsack-problem is provably </FONT><B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard,
+				and thus appears superior to factorization and discrete logarithm for use in public key cryptosystems. Unfortunately,
+				all cryptosystems that have used this underlying idea have been broken - as the used instances of the problem have
+				not been really </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Lattices</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				Now we define a vector basis </FONT><I><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">w</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">i</FONT></SUB></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				= &lt; w</FONT><SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">1</FONT></SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				..., w</FONT><SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">&gt;</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> for </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">i
+				= 1, ..., m</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">, and the lattice that is generated by
+				the basis. That is, elements of the lattice are of the form </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">t</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">1</FONT></SUB><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">w</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">1</FONT></SUB></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				+ t</FONT><SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></SUB><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">w</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></SUB></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				+ ... + t</FONT><SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></SUB><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">w</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></SUB></B></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">t</FONT><SUB><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">i</FONT></SUB></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> are integers.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The problem of finding the shortest vector in a lattice (using
+				the usual Euclidean distance) is a </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard problem (for lattices of sufficiently large dimension).</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">However, the celebrated LLL-algorithm by Lenstra, Lenstra
+				and Lovasz computes an approximate solution in polynomial time. The effectiness of the LLL-algorithm comes from
+				the fact that in many cases approximate solutions are good enough, and that surprisingly often the LLL-algorithm
+				actually gives the shortest vector. Indeed, this algorithm has been often used to break cryptosystems based on
+				lattice problems or knapsacks. It has been applied also to attacks against RSA and DSS.</FONT></P>
+				<P>
+			</UL>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Practical cryptosystems</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The wide interest in public key cryptography has produced
+			several practically important cryptosystems. In the following they are listed in order of the underlying problem.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">As a basic guideline, a public key cryptosystem is build
+			from a difficult problem as follows: take a difficult problem (for example, </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NP</FONT></B><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">-hard) to which you can find an instance that can be solved in polynomial
+			time. To </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">encrypt</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+			a message, convert the message into such an easy instance of the difficult problem, then use the public key to
+			convert the easy problem into a difficult one. The result is then sent to the recipient through an insecure channel.
+			To </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">decrypt</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+			use the private key to convert the difficult problem into the easy one and solve it. All public key systems use
+			this principle, although they differ significantly in the details (like the underlying problem or the structure
+			of public and private key).</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">For good survey on appropriate key lengths see Lenstra and
+			Verheul's </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Selecting Cryptographic Key Sizes</FONT></EM><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> (appeared in </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Public
+			Key Cryptography 2000</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">). They present a complete
+			analysis of key sizes for almost all cryptosystems.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Below, along with each cryptosystem you will find the current
+			recommendations for key sizes where appropriate. These recommendations are not always equal to the Lenstra's and
+			Verheul's.</FONT></P>
+			<P>
+			<H4><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Factorization: RSA, Rabin</FONT></H4>
+			<UL>
+				<LI><A NAME="rsa"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RSA</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (Rivest-Shamir-Adleman) is probably the most commonly used public
+				key algorithm. It can be used both for encryption and for digital signatures. The security of RSA is generally
+				considered equivalent to factoring, although this has not been proved.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RSA computation takes place with integers modulo </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">n = p * q</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				for two large secret primes </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p, q</FONT></I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">. To encrypt a message </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">, it is exponentiated with a small public exponent </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">e</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. For
+				decryption, the recipient of the ciphertext </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">c = m</FONT><SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">e</FONT></SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(mod n)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> computes the multiplicative reverse </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">d = e</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">-1</FONT></SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (mod (p-1)*(q-1))</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(we require that </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">e</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is selected suitably for it to exist) and obtains </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">c</FONT><SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">d</FONT></SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				= m </FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">e * d</FONT></SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				= m (mod n)</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. The private key consists of </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">n, p, q, e, d</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">q</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				can be forgotten); the public key contains only of </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n,
+				e</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. The problem for the attacker is that computing
+				the reverse </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">d</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				of </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">e</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is assumed to be no easier than factorizing </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. More details are available in many sources, such as in the </FONT><A
+				HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#HAC'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#HAC"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Handbook of Applied Cryptography</FONT></A><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The key size (the size of the modulus) should be greater
+				than </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">1024</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bits (i.e. it should be of magnitude </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">10</FONT><SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">300</FONT></SUP></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">)
+				for a reasonable margin of security. Keys of size, say, </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2048</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits should give security for decades.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Dramatic advances in factoring large integers would make
+				RSA vulnerable, but other attacks against specific variants are also known. Good implementations use redundancy
+				(or padding with specific structure) in order to avoid attacks using the multiplicative structure of the ciphertext.
+				RSA is vulnerable to </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#chosen-plaintext'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#chosen-plaintext"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">chosen
+				plaintext attacks</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> and </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#hardware-attack'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#hardware-attack"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">hardware and fault attacks</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				Also important attacks against very small exponents exist, as well as against partially revealed factorization
+				of the modulus.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The proper implementation of the RSA algorithm with redundancy
+				is well explained in the PKCS standards (see rfcs </FONT><A HREF="javascript:if(confirm('http://rfc.fh-koeln.de/rfc/html_gz/rfc2314.cfm.gz  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://rfc.fh-koeln.de/rfc/html_gz/rfc2314.cfm.gz'" tppabs="http://rfc.fh-koeln.de/rfc/html_gz/rfc2314.cfm.gz"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">2314</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				</FONT><A HREF="javascript:if(confirm('http://rfc.fh-koeln.de/rfc/html_gz/rfc2315.cfm.gz  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://rfc.fh-koeln.de/rfc/html_gz/rfc2315.cfm.gz'" tppabs="http://rfc.fh-koeln.de/rfc/html_gz/rfc2315.cfm.gz"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2315</FONT></A><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">, </FONT><A HREF="javascript:if(confirm('http://rfc.fh-koeln.de/rfc/html_gz/rfc2437.cfm.gz  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://rfc.fh-koeln.de/rfc/html_gz/rfc2437.cfm.gz'" tppabs="http://rfc.fh-koeln.de/rfc/html_gz/rfc2437.cfm.gz"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">2437</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">).
+				Those give detailed explanation about how to implement encryption and digital signatures, as well as formats to
+				store the keys. The plain RSA algorithm should not be used in any application. It is recommended that implementations
+				follow the standard as this has also additional benefit of interoperability with most major protocols.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RSA is currently the most important public key algorithm.
+				It is patented in the United States (patent will expire 2000).</FONT></P>
+				<P>
+				<LI><A NAME="rabin"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> The </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Rabin</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> cryptosystem may be seen as a relative of RSA, although it has a
+				quite different decoding process. What makes it interesting is that breaking Rabin is provably equivalent to factoring.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Rabin uses the exponent </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (or any even integer) instead of odd integers like RSA. This has
+				two consequences. First, the Rabin cryptosystem can be proven to be equivalent to factoring; second, the decryption
+				becomes more difficult - at least in some sense. The latter is due to problems in deciding which of the possible
+				outcomes of the decryption process is correct.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">As it is equivalent to factoring the modulus, the size of
+				the modulus is the most important security parameter. Moduli of more than </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">1024</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits are assumed to be secure.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">There are currently no standards for the Rabin algorithm
+				but it is explained in several books. The </FONT><A HREF="javascript:if(confirm('http://www.manta.ieee.org/groups/1363/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.manta.ieee.org/groups/1363/'" tppabs="http://www.manta.ieee.org/groups/1363/"><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">IEEE P1363 project</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				might propose a standard and thus make it more widely used.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The equivalance to factoring means only that being able to
+				decrypt any message encrypted by the Rabin cryptosystem gives out a method for factoring the modulus. Thus it is
+				no guarantee of security in the a strong sense. Of course, it might be possible that the attacker can exploit,
+				for example, some implementation details.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">References</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:</FONT>
+				<P>
+				<UL>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">R. Rivest, A. Shamir, and L. M. Adleman: Cryptographic Communications
+					System and Method. US Patent 4,405,829, 1983.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Alfred J. Menezes, Paul C. van Oorschot and Scott A. Vanstone:
+					</FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Handbook of Applied Cryptography</FONT></A><FONT
+					SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Bruce Schneier: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">Applied Cryptography.</FONT></A>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Jennifer Seberry and Josed Pieprzyk: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT
+					SIZE="2" FACE="Arial, Helvetica, sans-serif">Cryptography: An Introduction to Computer Security.</FONT></A>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Man Young Rhee: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">Cryptography and Secure Data Communications.</FONT></A>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Hans Riesel: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">Prime Numbers and Computer Methods for Factorization.</FONT></A>
+				</UL>
+			</UL>
+			<H4><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Discrete logs: Diffie-Hellman, ElGamal, DSS</FONT></H4>
+			<UL>
+				<LI><A NAME="diffie-hellman"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Diffie-Hellman</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> is a commonly used protocol for key exchange.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">In many cryptographical protocols two parties wish to start
+				communication. However, assume they do not initially possess any common secret and thus cannot use secret key cryptosystems.
+				The key exchange by Diffie-Hellman protocol remedies this situation by allowing the construction of a common secret
+				key over insecure communication channel. It is based on a problem related to discrete logarithms, namely the Diffie-Hellman
+				problem. This problem is considered hard, and it is in some instances as hard as the discrete logarithm problem.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The Diffie-Hellman protocol is generally considered to be
+				secure when an appropriate mathematical group is used. In particular, the generator element used in the exponentiations
+				should have a large period (i.e. order).</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Discrete logarithm algorithms can be used to attack Diffie-Hellman,
+				and with passive attacks that is best what is currently possible - assuming correcly chosen parameters. If Diffie-Hellman
+				is applied with usual arithmetic modulo a prime number, then it suffices to select a large enough prime and taking
+				some care in selecting the generator element. Subtle problems may be caused by bad choices of the generator. Many
+				papers have been written on the problems that may occur, one of the more well-known references is Oorschot and
+				Wiener's </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">On Diffie-Hellman key agreement with short
+				exponents</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> (Eurocrypt'96).</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Attacks against Diffie-Hellman include also the </FONT><A
+				HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#man-in-the-middle'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#man-in-the-middle"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">man-in-the-middle attack</FONT></A><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. This attack requires adaptive intervention, but is in practice very
+				easy if the protocol doesn't use countermeasures such as digital signatures.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Usually Diffie-Hellman is not implemented on hardware, and
+				thus hardware attacks are not an important threat. This may change in future, when mobile communication becomes
+				more widespread.</FONT></P>
+				<P>
+				<LI><A NAME="dss"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DSS</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (Digital Signature Standard). A signature-only mechanism endorsed
+				by the United States Government. The underlying algorithm DSA (Digital Signature Algorithm) is similar than the
+				one used by ElGamal or by the Schnorr signature algorithm. Also it is fairly efficient and does not leave behind
+				other signature algorithms, although RSA necessarily wins when doing verification. Standard defines DSS to use
+				SHA-1 hash function exlusively to compute message digests.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The main problem with DSS is the fixed subgroup size (the
+				order of the generator element), which limits the security to ballpark of only </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">80</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits. </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#hardware-attack'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/intro.cfm#hardware-attack"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Hardware
+				attacks</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> can be a concern to some implementations
+				of DSS. However, it is widely used and accepted as a good algorithm.</FONT></P>
+				<P>
+				<LI><A NAME="elgamal"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> The </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">ElGamal</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> public key cipher. This is the straight-forward extension of Diffie/Hellman's
+				original idea on shared secret generation. Essentially, it generates a shared secret and uses it as a one-time
+				pad to encrypt one block of data. ElGamal is the predecessor of DSS and perfectly usable today, although no widely
+				known standard has been created for it.</FONT>
+				<P>
+				<LI><A NAME="elliptic"></A><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Elliptic curve cryptosystems</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> are just another way of implementing discrete logarithm methods.
+				Elliptic curve in cryptography is basically a set of points that satisfy the equation </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">y</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> = x</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">3</FONT></SUP><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> + ax + b</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				when considered in finite field of characteristic </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> must be larger than </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">3</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">). Slightly different equation is needed for the case with small characteristic
+				</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p = 2</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p = 3</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The points on elliptic curves can be added together and they
+				form a structure called </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">group</FONT></EM><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif"> (infact an </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">abelian
+				group</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">). This is just a way of saying that you can
+				do arithmetic with them as you can do with integers when using just addition and subtraction.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">They have some theoretic benefits but also are also very
+				practical. There is no known subexponential algorithm for computing discrete logarithms of elliptic curves unlike
+				discrete logarithms in (the multiplicative group of) a finite field, in hyperelliptic curves (of large genus) or
+				in many other groups. One practical benefit from the non-existence of fast discrete logarithm computation for elliptic
+				curves is that the key size, as well as the produced digital signatures and encrypted messages are small. Indeed,
+				very simplistical way of computing the security limit for the key size is to take a key size to a secret key cryptosystem
+				in bits and then just multiply it by </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. This gives rough estimate, that is good at the moment for a generic
+				instance of elliptic curves.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Elliptic curves can be implemented very efficiently in hardware
+				and software, and they compete well in speed with cryptosystems such as RSA and DSS. There are several standardization
+				attempts for elliptic curve cryptosystems (for example, ECDSA by ANSI). At the moment elliptic curves are widely
+				known, but not very widely used in practice.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The security of elliptic curve cryptosystems has been rather
+				stable for years, although significant advances have been achieved in attacks against special instances. Nevertheless,
+				these have been conjectured by the leading researchers several years ago and no great surprises have yet emerged.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The algorithm XTR recently introduced by Lenstra and Verheul
+				might become a good competitor for elliptic curves. However, elliptic curves appear to be slightly better in performance,
+				and definitely scale better in the key size.</FONT></P>
+				<P>
+				<LI><A NAME="luc"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">LUC</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> is a public key cryptosystem that uses a special group based on </FONT><EM><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">Lucas sequences</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(related to Fibonacci series) as its basic building block. It can implement all the common discrete logarithm based
+				algorithms, and in a sense LUC is a class of public key algorithms.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">It is possible to view the underlying structure of the algorithm
+				as a certain multiplicative group of a finite field of characteristic </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> with degree </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (written shortly as </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">F</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT></SUP></SUB></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">) - and this can be used to prove that there exists a subexponential
+				algorithm for computing discrete logarithms and thus attacking the LUC algorithm. Thus it might seem that LUC is
+				of little interest, as it is basically just another way of implementing discrete logarithm based algorithm on finite
+				fields. However, LUC uses the specific arithmetic operations derived from Lucas sequences that might be slightly
+				faster (by a constant factor) than what would be a more direct approach.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The different public key algorithms based on LUC arithmetic
+				are called LUCDIF (LUC Diffie-Hellman), LUCELG (LUC ElGamal), and LUCDSA (LUC Digital Signature Algorithm). Several
+				of these are patented.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The fact that values used in LUC algorithm can be represented
+				as pair of values gives some additional advantage against just using integers modulo </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. The computations only involve numbers needing half the bits that
+				would be required in the latter case. As the LUC group operation is easy to compute this makes LUC algorithms competitive
+				with RSA and DSS.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">There appears to be little reason to use LUC cryptosystems,
+				as they offer little benefit over elliptic curves or XTR.</FONT></P>
+				<P>
+				<LI><A NAME="XTR"></A><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">XTR</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is a public key cryptosystem developed by Arjen Lenstra and Eric Verheul. The XTR is similar to LUC in that it
+				uses a specific multiplicative group of a particular finite field (in fact </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">F</FONT><SUB><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">p</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">6</FONT></SUP></SUB></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">) as its underlying group. However, XTR has novel features such as
+				needing only, something like, </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">1/3</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> of the bits for signatures and encrypted messages. This is achieved
+				using a specific trace-representation of the elements of this group, and performing all computations using this
+				representation.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">All discrete logarithm based public key algorithms can be
+				implemented with XTR ideas. So in a way XTR is a generic name for a class of public key algorithms, similarily
+				to LUC.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Perhaps surprisingly, the algorithm is efficient and according
+				to Lenstra and Verheul it might be a good substitute to elliptic curves, DSS and even RSA. It has the advantage
+				over elliptic curves that it is based essentially on the same discrete log problem as, say, DSS, which may help
+				cryptographers and others to accept it faster as a strong algorithm.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">References</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:</FONT>
+				<P>
+				<UL>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Alfred J. Menezes, Paul C. van Oorschot and Scott A. Vanstone:
+					</FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Handbook of Applied Cryptography</FONT></A><FONT
+					SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Alfred J. Menezes: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT
+					SIZE="2" FACE="Arial, Helvetica, sans-serif">Elliptic curve cryptosystems</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">IEEE P1363: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/protocols.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/protocols.cfm'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/protocols.cfm"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">Standard Specifications for Public-Key Cryptography</FONT></A><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Neil Koblitz: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">A Course in Number Theory and Cryptography</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Ian Blake, Gadien Seroussi and Nigel Smart: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT
+					SIZE="2" FACE="Arial, Helvetica, sans-serif">Elliptic Curves in Cryptography</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Bruce Schneier: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">Applied Cryptography.</FONT></A>
+				</UL>
+			</UL>
+			<H4><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Knapsacks</FONT></H4>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">There are only few interesting knapsack public key cryptosystems,
+			none of which are of practical importance.</FONT></P>
+			<UL>
+				<LI><A NAME="rivest-chor"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Rivest-Chor</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> cryptosystem is based on particular variant of the knapsack problem.
+				This is one of the knapsack cryptosystems that has best resisted attacks.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"><!-- More info. --></FONT>
+				<LI><A NAME="merkle-hellman"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Merkle-Hellman</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. This was the first knapsack cryptosystem. It was based on the simple
+				idea of hiding the easy super-increasing knapsack problem by masking. However, it was broken already in 1980.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"><!-- More info. --></FONT>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">References</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:</FONT>
+				<P>
+				<UL>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">M. E. Hellman and R. C. Merkle: Public Key Cryptographic
+					Apparatus and Method. US Patent 4,218,582, 1980.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">B. Chor and R.L. Rivest: A knapsack type public key cryptosystem
+					based on arithmetic in finite field, Crypto '84.</FONT>
+				</UL>
+			</UL>
+			<H4><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Lattices</FONT></H4>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">In recent years large interest has been directed towards
+			lattice based cryptosystems. One of the reasons is that certain classes of lattice problems are NP-hard, and several
+			efficient cryptosystems have been proposed and appear strong.</FONT></P>
+			<UL>
+				<LI><A NAME="NTRU"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NTRU</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> is a cryptosystem proposed in mid-1990's as an efficient public key
+				cipher. It is based on the lattice problem, and has some interesting features.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Some of the initial versions had problems, but the current
+				version has been proposed for some US standards.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"><!-- More info. --></FONT>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">References</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:</FONT>
+				<P>
+				<UL>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">D. Coppersmith. and A. Shamir: Lattice Attacks on NTRU,
+					Eurocrypt '97.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NTRU Cryptosystems Inc. </FONT><A HREF="javascript:if(confirm('http://www.ntru.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.ntru.com/'" tppabs="http://www.ntru.com/"><FONT
+					SIZE="2" FACE="Arial, Helvetica, sans-serif">http://www.ntru.com</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+					<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">IEEE P1363: </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/protocols.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/protocols.cfm'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/protocols.cfm"><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">Standard Specifications for Public-Key Cryptography</FONT></A><FONT SIZE="2"
+					FACE="Arial, Helvetica, sans-serif">.</FONT>
+				</UL>
+			</UL>
+			<P>
+<HR ALIGN="CENTER">
+
+			<H2><A NAME="symmetric"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> Secret Key Cryptosystems (Symmetric
+			Ciphers)</FONT></H2>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Secret key algorithms use a the same key for both encryption
+			and decryption (or the one is easily derivable from the other). This is the more straightforward approach to data
+			encryption, mathematically less problematic, and has been used for many centuries.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The following terminology is often used when symmetric ciphers
+			are examined.</FONT></P>
+			<UL>
+				<LI><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">S-boxes</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:
+				lookup tables that map </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif"> bits to </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits (where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">m</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> often are equal).</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">There are several ways of constructing good S-boxes for ciphers,
+				as well as several ways of measuring them. Some designers use rigorous mathematical approach by using </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">bent functions</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(or related) to create S-boxes which can be proven to be resistant against some particular attacks. Other designers
+				use heuristic approaches, which may lead to S-boxes that are more difficult to handle in mathematical proofs, but
+				can have additional benefits (such as several different implementation options).</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The S-box may even be the only non-linear part of the cipher.
+				This is the case in the block cipher </FONT><A HREF="algorithms.htm#des"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DES</FONT></A><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">, and thus may be regarded as the single most important part of the
+				algorithm. Infact, many consider DES's S-boxes so good that they use them in their own designs (for example, </FONT><A
+				HREF="algorithms.htm#serpent"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Serpent</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">).</FONT></P>
+				<P>
+				<LI><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Feistel networks</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:
+				a Feistel network is a general device of constructing block ciphers from simple functions. The original idea was
+				used in the block cipher Lucifer, invented by Horst Feistel. Later, several variations have been devised.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Simply put, the standard Feistel network takes a function
+				from </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bits to </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bits and produces an invertible function from </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits to </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits. The basic function upon which the structure is based is often
+				called the round function. The essential property of Feistel networks that makes them so useful in cipher design
+				is that the round function need not be invertible, but the resulting function always is.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">If the round function depends on, say, </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">k</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits of a key,
+				then the Feistel cipher requires </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">rk</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits of the key where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">r</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> is the number of rounds used. The security of the Feistel structure
+				is not obvious, but analysis of DES has shown that it is a good way to construct ciphers. It is compulsory that
+				a Feistel cipher has enough rounds, but just adding more rounds does not always guarantee security.</FONT></P>
+				<P>
+				<LI><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The operation of taking the user key and expanding it into
+				</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">rk</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bits for the Feistel rounds is called </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">key scheduling</FONT></EM><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. This is often a non-linear operation, so that finding out any of
+				the </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">rk</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bits of the round keys does not directly provide any information about the actual user key. There are several ciphers
+				that have this basic structure; Lucifer, DES, and Twofish, just to name a few.</FONT>
+				<P>
+				<LI><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Expansion, Permutation</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:
+				these are common tools in mixing bits in a round function. They are linear operations, and thus not sufficient
+				to guarantee security. However, when used with good non-linear S-boxes (as in DES) they are vital for the security
+				because they propagate the non-linearity uniformly over all bits.</FONT>
+				<P>
+				<LI><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">bit slice operations</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(bitwise logic operations XOR, AND, OR, NOT and bit permutations): The idea of bitslice implementations of block
+				ciphers is due to Eli Biham. It is common practice in vector machines to achieve parallel operation. However, Biham
+				applied it on serial machines by using large registers as available in modern computers. The term &quot;bitslice&quot;
+				is due to Matthew Kwan.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Basically all block ciphers can be written in bitslice manner,
+				but operations such as addition and multiplication may become very slow. On the otherhand, permutations are almost
+				free as they just require </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">naming</FONT></EM><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> of the registers again and this can be done one the coding level.
+				Thus, for example, in </FONT><A HREF="algorithms.htm#des"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DES</FONT></A><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> exhaustive key search using bitslice techniques, one can increment
+				the current key in a fraction of the time than is usually needed for key scheduling.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The new AES candidate </FONT><A HREF="algorithms.htm#serpent"><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">Serpent</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> is designed
+				to be implemented using bitslice operations only. This makes it particularly efficient on modern architectures
+				with many registers.</FONT></P>
+				<P>
+			</UL>
+			<P><A NAME="vernam"></A>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The One-Time Pad</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">One-time pad (OTP) is the only cipher that has been proven
+			to be unconditionally secure, i.e. unbreakable in practice. It has also be proven that any unbreakable, unconditionally
+			secure, cipher must in principle be a one-time pad.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The Vernam cipher (invented by G. Vernam in 1917) is a famous
+			instance of an OTP. This cipher is very simple: take a stream of bits that contains the plaintext message, and
+			a secret random bit-stream of the same length as the plaintext which is considered the key. To encrypt the plaintext
+			with the key, sequentially exclusive-or each pair of key bit and plaintext bit to obtain the ciphertext bit. If
+			the key is truly random, it can be proven that the attacker has no means of deciding whether some guessed plaintext
+			is more likely than any other when having only the ciphertext and no knowledge of the plaintext.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The practical problem is that the key does not have small
+			constant length, but the same length as the message, and one part of a key should never be used twice (or the cipher
+			can be broken). So, we just have traded the problem of exchanging secret data for the problem of exchanging secret
+			random keys of the same length. However, this cipher has allegedly been in widespread use since its invention,
+			and even more since the security proof by C. Shannon in 1949. Although admittedly the security of this cipher had
+			been conjectured earlier, it was Shannon who actually found a formal proof for it.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">More information can found, for example, in the book by D.
+			Stinson </FONT><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Cryptography: Theory
+			and Practice</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. <A NAME="des"></A></FONT>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DES</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The Data Encryption Standard (</FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DES</FONT></B><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">) is an algorithm developed in the mid-1970s. It was turned into a
+			standard by the US </FONT><A HREF="javascript:if(confirm('http://www.nist.gov/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.nist.gov/'" tppabs="http://www.nist.gov/"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">National
+			Institute of Standards and Technology (NIST)</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">, and
+			was also adopted by several other governments worldwide. It was and still is widely used, especially in the financial
+			industry.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DES is a block cipher with 64-bit block size. It uses 56-bit
+			keys. This makes it suspectible to exhaustive key search with modern computers and special-purpose hardware. DES
+			is still strong enough to keep most random hackers and individuals out, but it is easily breakable with special
+			hardware by government, criminal organizations, or major corporations. In large volumes, the cost of breaking DES
+			keys is of the order of tens of dollars. DES is getting too weak, and should not be used in new applications.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">A variant of DES, Triple-DES (also </FONT><B><FONT SIZE="2"
+			FACE="Arial, Helvetica, sans-serif">3DES</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">) is based
+			on using DES three times (normally in an encrypt-decrypt-encrypt sequence with three different, unrelated keys).
+			The Triple-DES is arguably much stronger than (single) DES, however, it is rather slow compared to some new block
+			ciphers.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Nevertheless, even though DES seems to be of little interest
+			for applications of today there are many reasons for considering it still important. It was the first block cipher
+			which was widely deployed on the public sector. Thus it played an important role in making strong cryptography
+			available to the public.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Also the design was exceptionally good for a cipher that
+			was meant to be used only a few years. DES proved to be a very strong cipher and it took over a decade for any
+			interesting cryptanalytical attacks against it to develop (not to underestimate the pioneering efforts that lead
+			to this breakthrough). The development of differential cryptanalysis and linear cryptanalysis opened ways to really
+			understand the design of block ciphers.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Although at the time of DES's introduction its design philosophy
+			was held secret, it did not discourage its analysis - to the contrary. Some information has been published about
+			its design, and one of the original designers, Don Coppersmith, has commented that they discovered ideas similar
+			to differential cryptanalysis already while designing DES in 1974. However, it was just matter of time that these
+			fundamental ideas were re-discovered.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Even today, when DES is no longer considered a practical
+			solution, it is often used to describe new cryptanalytical techniques. It is remarkable that even today, there
+			are no cryptanalytical techniques that would completely break DES in a structural way, indeed, the only real weakness
+			known is the short key size (and perhaps the small block size).</FONT></P>
+			<P><A NAME="aes"></A>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">AES</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">In response to the growing feasibility of attacks against
+			</FONT><A HREF="algorithms.htm#des"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">DES</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+			</FONT><A HREF="javascript:if(confirm('http://www.nist.gov/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.nist.gov/'" tppabs="http://www.nist.gov/"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">NIST</FONT></A><FONT SIZE="2"
+			FACE="Arial, Helvetica, sans-serif"> has launched a call for proposals for an official successor that meets 21st
+			century security eeds. This successor will be called the Advanced Encryption Standard (</FONT><B><A HREF="javascript:if(confirm('http://csrc.nist.gov/encryption/aes/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://csrc.nist.gov/encryption/aes/'" tppabs="http://csrc.nist.gov/encryption/aes/"><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">AES</FONT></A></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">),
+			and the decision will be made in the summer of 2001. Five algorithms have made it into the </FONT><A HREF="javascript:if(confirm('http://csrc.nist.gov/encryption/aes/round2/r2algs.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://csrc.nist.gov/encryption/aes/round2/r2algs.htm'" tppabs="http://csrc.nist.gov/encryption/aes/round2/r2algs.htm"><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">second round</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+			from which one or more will be turned into the final standard. We will now have a quick look at each of them and
+			their cryptographic peculiarities. All the ciphers have </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">128</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> bit block size and they support </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">128</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">, </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">192</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> and </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">256</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> bit keys. The rather large key sizes are probably required to give
+			means for construction of efficient hash functions.</FONT></P>
+			<UL>
+				<LI><A NAME="mars"></A><B><A HREF="javascript:if(confirm('http://www.research.ibm.com/security/mars.cfm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.research.ibm.com/security/mars.cfm'" tppabs="http://www.research.ibm.com/security/mars.cfm"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">MARS</FONT></A></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> by Zunic et al. (</FONT><A HREF="javascript:if(confirm('http://www.ibm.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.ibm.com/'" tppabs="http://www.ibm.com/"><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">IBM</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">).</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This is an interesting new design (using a special type of
+				a Feistel network), which depends heavily on the instruction sets available on modern 32-bit processors. This has
+				the benefit that on these target machines it is efficient, but it may lead to implementation difficulties in cheaper
+				architectures like smart cards.</FONT></P>
+				<P>
+				<LI><A NAME="rc6"></A><B><A HREF="javascript:if(confirm('http://www.rsasecurity.com/rsalabs/aes/index.cfm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.rsasecurity.com/rsalabs/aes/index.cfm'" tppabs="http://www.rsasecurity.com/rsalabs/aes/index.cfm"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RC6</FONT></A></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> by Rivest, Robshaw and Yin from </FONT><A HREF="javascript:if(confirm('http://www.rsasecurity.com/rsalabs/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.rsasecurity.com/rsalabs/'" tppabs="http://www.rsasecurity.com/rsalabs/"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">RSA Laboratories</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RC6 follows the ideas of RC5 - implementing many improvements.
+				For example, it attempts to avoid some of the differential attacks agains RC5's data dependent rotations. However,
+				there are some attacks that get quite far, and it is unclear whether RC6 is well enough analysed yet.</FONT></P>
+				<P>
+				<LI><A NAME="rijndael"></A><B><A HREF="javascript:if(confirm('http://csrc.nist.gov/encryption/aes/round2/AESAlgs/Rijndael/Rijndael.pdf  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://csrc.nist.gov/encryption/aes/round2/AESAlgs/Rijndael/Rijndael.pdf'" tppabs="http://csrc.nist.gov/encryption/aes/round2/AESAlgs/Rijndael/Rijndael.pdf"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">Rijndael</FONT></A></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				by Joan Daemen and Vincent Rijmen.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Rijndael follows the tradition of square ciphers (i.e. it
+				is based on ideas similar to the Square cipher). It is very fast - one of the fastest AES candidates on any platform.
+				This seems to be very good, but there have been comments that it has too few rounds.</FONT></P>
+				<P>
+				<LI><A NAME="serpent"></A><B><A HREF="javascript:if(confirm('http://www.cl.cam.ac.uk/~rja14/serpent.cfm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.cl.cam.ac.uk/~rja14/serpent.cfm'" tppabs="http://www.cl.cam.ac.uk/~rja14/serpent.cfm"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Serpent</FONT></A></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> by Anderson, Biham and Knudsen (</FONT><A HREF="javascript:if(confirm('http://www.cl.cam.ac.uk/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.cl.cam.ac.uk/'" tppabs="http://www.cl.cam.ac.uk/"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">Cambridge University</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">).</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Serpent has a conservative but also innovative design. It
+				may be implemented by bitslice (or vector) gate logic throughout. This makes it rather complicated to implement
+				from scratch, and writing it in a non-bitslice way involves an efficiency penalty.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">32</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> rounds lead to the probably highest security margin on all AES candidates,
+				while it is still fast enough for all purposes.</FONT></P>
+				<P>
+				<LI><B><A HREF="javascript:if(confirm('http://www.counterpane.com/twofish.cfm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.counterpane.com/twofish.cfm'" tppabs="http://www.counterpane.com/twofish.cfm"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Twofish</FONT></A></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> Schneier et al. (</FONT><A HREF="javascript:if(confirm('http://www.counterpane.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.counterpane.com/'" tppabs="http://www.counterpane.com/"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">Counterpane</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">)</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Twofish is a new block cipher designed by Counterpane (CEOed
+				by Bruce Schneier). The design is highly delicate, with many alternative was of implementation. It is cryptanalysed
+				in much detail, by the very authoritative &quot;extended Twofish team&quot;. It is basically a Feistel cipher,
+				but utilizes many different ideas.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This cipher has key depended S-boxes like </FONT><B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">Blowfish</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(another cipher by Bruce Schneier).</FONT></P>
+				<P>
+			</UL>
+			<P><A NAME="blowfish"></A>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Blowfish</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Blowfish was designed by Bruce Schneier. It is a block cipher
+			with 64-bit block size and variable length keys (up to 448 bits). It has gained a fair amount of acceptance in
+			a number of applications, including Nautilus and PGPfone.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Blowfish utilizes randomized S-box idea: while doing key
+			scheduling, it generates large pseudo-random look-up tables by doing several encryptions. The tables depend on
+			the user supplied key in a very complex way. This approach has been proven to be highly resistant against many
+			attacks such as diffential and linear cryptanalysis. Unfortunately it also means that it is not the algorithm of
+			choice for environments where large memory space (something like than </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">4096</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> bytes) is not available..</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The only known attacks against Blowfish are based on its
+			weak key classes.</FONT></P>
+			<P><A NAME="idea"></A>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">IDEA</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">IDEA (International Data Encryption Algorithm) is an algorithm
+			developed at ETH Zurich in Switzerland by Xuejia Lai. It uses a 128 bit key, and it is generally considered to
+			be very secure. It has been one of the best public known algorithms for some time (before the AES standard started
+			its second round, see below). It has been around now for several years, and no practical attacks on it have been
+			published despite of numberous attempts to analyze it.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">One of the best attacks uses the impossible differential
+			idea of Biham, Shamir and Biryukov. They can attack only </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">4.5</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> rounds of IDEA and this posess no threat to the total of </FONT><I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">8.5</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+			rounds used in IDEA. Although Lai claimed that IDEA is secure against differential attacks after just the </FONT><I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">4</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> rounds,
+			and this attack already gets (almost) past it.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">IDEA is patented in the United States and in most of the
+			European countries.</FONT></P>
+			<P><A NAME="rc4"></A>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RC4</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RC4 is a cipher designed by Ron Rivest at RSA Data Security,
+			Inc. It used to be a trade secret, until someone posted source code for an algorithm on the usenet, claiming it
+			to be equivalent to RC4. There is very strong evidence that the posted algorithm is indeed equivalent to RC4. The
+			algorithm is very fast. Its security is unknown, but breaking it does not seem trivial either. Because of its speed,
+			it may have uses in certain applications. It accepts keys of arbitrary length.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RC4 is essentially a pseudo random number generator, and
+			the output of the generator is exclusive-ored with the data stream. For this reason, it is very important that
+			the same RC4 key never be used to encrypt two different data streams.</FONT></P>
+			<P>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Modes Of Operation</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Many commonly used ciphers are </FONT><EM><FONT SIZE="2"
+			FACE="Arial, Helvetica, sans-serif">block ciphers</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+			Block ciphers transform a fixed-size block of data (usually 64 bits) it into another fixed-size block (possibly
+			</FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">64</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+			bits wide again) using a function selected by the key. If key, input block and output block have all </FONT><I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits,
+			a block cipher basically defines a one-to-one mapping from </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">-bit integers to permutations of </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">-bit integers.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">If the same block is encrypted twice with the same key, the
+			resulting ciphertext blocks are also the same (this </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">mode</FONT></EM><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif"> of encryption is called </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">electronic
+			code book</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">, or </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">ECB</FONT></B><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">). This information could be useful for an attacker. To cause identical
+			plaintext blocks being encrypt to different ciphertext blocks, two standard modes are commonly used:</FONT></P>
+			<UL>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">CBC</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(cipher block chaining): a ciphertext block is obtained by first XORing the plaintext block with the previous ciphertext
+				block, and encrypting the resulting value. This way leading blocks influence all trailing blocks, which increases
+				the number of plaintext bits one ciphertext bit depends on, but also leads to synchronization problems if one block
+				is lost.</FONT>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">CFB</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(cipher feedback): a </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">k</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">th
+				ciphertext block is obtained by encrypting the </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">(k-1)</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">th ciphertext block and XORing the result onto the plaintext. Interestingly,
+				an CFB feedback loop can also be used as a pseudo-random number generator if one simply feeds one block of true
+				random data with trailing blocks of zeroes into the encryption routine (although the expected period of this PRNG
+				would be only about </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">2</FONT><SUP><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n/2</FONT></SUP></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> where </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> is the block size of the cipher).</FONT>
+				<P>
+			</UL>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Block ciphers have also interesting relationships to other
+			classes of ciphers. For example:</FONT>
+			<UL>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Stream ciphers</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.
+				A stream cipher consists of a state machine that outputs at each state transition one bit of information. This
+				stream of output bits is commonly called the </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">running
+				key</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. The encryption can be implemented by just exclusively-oring
+				the running key to the plaintext message.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The state machine is nothing more than a pseudo-random number
+				generator. For example, we can build one from a block cipher by encrypting repeatedly its own output. Typically,
+				more elaborate constructions are used for stream ciphers to obtain high-speed.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Some of the more well-known stream ciphers are RC4 and SEAL.
+				Several stream ciphers are based on linear-feedback shift registers (LFSR), such as A5/1 used in GSM. These have
+				the benefit of being very fast (several times faster than usual block ciphers).</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">SSSC</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				(self-synchronizing stream ciphers): The class of </FONT><EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">self-synchronizing
+				stream ciphers</FONT></EM><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> has the convenient property that
+				it forgets about bit flips or even dropped bits after a short time (say, a few hundred bits).</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">SSSC's can be constructed using block ciphers in a CFB-related
+				way. Assume that we have already encrypted </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits of the message and know that much of the ciphertext (where </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> denotes
+				the block length of the cipher). Then we produce a new running key (see above) bit by encrypting the </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> ciphertext
+				bits. Take one bit of the output of the cipher to be the new running key bit. Now moving one bit further we can
+				iterate this procedure for the whole length of the message.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">It is easy to see that a one bit error in a ciphertext cannot
+				affect the decrypted plaintext after </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">n</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> bits. This makes the cipher self-synchronizing.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The block cipher used should have sufficiently large block
+				size to avoid substitution attacks, for example.</FONT></P>
+				<P>
+			</UL>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">More information on cipher modes can be found in the </FONT><A
+			HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books'" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/books.cfm#books"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Handbook</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+			by Menezes et al.</FONT></P>
+			<P>
+			<H3><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Before 1970's</FONT></H3>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">In this section some of the famous ciphers of the past are
+			listed, with links to more complete information where possible.</FONT></P>
+			<UL>
+				<P>
+				<LI><A NAME="fish"></A><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Fish</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				was used by Germans in the WWII to encipher high-command communications. It was produced by a stream cipher called
+				Lorentz machine. Fish was the name given to it by British cryptanalysts. It was important because it caused difficulties
+				for British analysts, who finally developed a machine called Colossus, which was arguably the first, or one of
+				the first, digital computer.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The Colossus machine may have been an important factor in
+				the planning and success of the Allied attack on Normandia. Given intelligence produced by Fish cryptanalysis Allied
+				forces knew the positions of pretty much every German division.</FONT></P>
+				<P>
+				<LI><A NAME="enigma"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Enigma</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> was the cipher used by the Germans in World War II. The machine used
+				several rotors and looked like a typing machine. However, first Polish and then later British mathematicians were
+				able to keep up with the development of the machine. Most communication using the basic version of Enigma was deciphered
+				by British analysts at Bletchley Park within few hours of the interception. One of the strongest Enigma's were
+				used in submarine communication, but British analysts managed to break them with great implications to the battle
+				on Atlantic.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">There are several good books about Enigma, and Bletchley
+				Park. Also the work of the major figure of British cryptanalysis, Alan Turing, has been explained in many articles
+				and books. Recently his original notes about cryptanalysis from that time has been released for public.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This cipher, or one variant of it, is used by the unix crypt(1)
+				program. It is unlikely that any variant of Enigma could be considered very secure by todays standards.</FONT></P>
+				<P>
+				<LI><A NAME="vernam"></A><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Vernam cipher</FONT></B><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif"> is described in detail above.</FONT>
+				<P>
+				<LI><A NAME="substitution"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Substitution
+				cipher</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. This is one of the basic pencil-and-paper
+				methods. Make a table by first listing your alphabet in order on the first row, and then making a random permutation
+				of the alphabet on the second row. You can then encrypt any character of the alphabet by first looking it up on
+				the first row, and the writing down the random character on the second row. The key of this method is the permutation
+				of the alphabet on the second row. Decryption works in reverse.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">This method is suspectible to frequency analysis, as long
+				as the alphabet size is small. Modern block ciphers can be seen as a variant of this idea, in the sense that they
+				try hide the message under a very large alphabet that depends on the key. In block cipher case the permutation
+				is generated by the secret key and the key space might not cover all the possible permutations.</FONT></P>
+				<P>
+				<LI><A NAME="vigenere"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Vigenere</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. This cipher uses the clock arithmetic to add together the key and
+				the message. The difference between OTP and Vigenere is that in Vigenere we explictly reuse the short key several
+				times for one message.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Methods for attacking Vigenere ciphers are the Kasiski test,
+				index of coincidence etc. These lead to effective methods which break even very short message (relative to the
+				key size of course).</FONT></P>
+				<P>
+				<LI><A NAME="hill"></A><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Hill cipher</FONT></B><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">. The Hill cipher uses matrices in clock arithmetic, and are highly suspectible
+				to known plaintext attacks.</FONT>
+				<P>
+			</UL>
+			<P>
+<HR ALIGN="CENTER">
+
+			<H2><A NAME="hash"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> Cryptographic Hash Functions</FONT></H2>
+			<UL>
+				<LI><A NAME="sha-1"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">SHA-1</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (Secure Hash Algorithm) (also </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">SHS</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">, Secure Hash Standard): This is a cryptographic hash algorithm published
+				by the United States Government. It produces an 160 bit hash value from an arbitrary length string. Many people
+				consider it quite good.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">The official standard text can be found </FONT><A HREF="javascript:if(confirm('http://www.itl.nist.gov/div897/pubs/fip180-1.htm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.itl.nist.gov/div897/pubs/fip180-1.htm'" tppabs="http://www.itl.nist.gov/div897/pubs/fip180-1.htm"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">here</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Tiger</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is a recent hash algorithm developed by Anderson and Biham. It is available from </FONT><A HREF="javascript:if(confirm('ftp://ftp.funet.fi/pub/crypt/hash/tiger  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='ftp://ftp.funet.fi/pub/crypt/hash/tiger'" tppabs="ftp://ftp.funet.fi/pub/crypt/hash/tiger"><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">ftp.funet.fi:/pub/crypt/hash/tiger</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">.</FONT>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RIPEMD-160</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				is a hash algorithm designed to replace MD4 and MD5 (see below). It produces a digest of </FONT><I><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">20</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> bytes (</FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">160</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bits, hence the name), reportedly runs at </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">40</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> Mb/s on a </FONT><I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">90</FONT></I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> MHz Pentium and has been placed in the public domain by its designers.
+				The RIPEMD-160 homepage is at </FONT><A HREF="javascript:if(confirm('http://www.esat.kuleuven.ac.be/~bosselae/ripemd160.cfm  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.esat.kuleuven.ac.be/~bosselae/ripemd160.cfm'" tppabs="http://www.esat.kuleuven.ac.be/~bosselae/ripemd160.cfm"><FONT SIZE="2"
+				FACE="Arial, Helvetica, sans-serif">http://www.esat.kuleuven.ac.be/~bosselae/ripemd160.cfm</FONT></A>
+				<P>
+				<LI><A NAME="md5"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> </FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">MD5</FONT></B><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif"> (Message Digest Algorithm 5) is a cryptographic hash algorithm developed
+				at </FONT><A HREF="javascript:if(confirm('http://www.rsasecurity.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.rsasecurity.com/'" tppabs="http://www.rsasecurity.com/"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">RSA Laboratories</FONT></A><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">. It can be used to hash an arbitrary length byte string into a </FONT><I><FONT
+				SIZE="2" FACE="Arial, Helvetica, sans-serif">128</FONT></I><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">
+				bit value.</FONT>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">MD5's ancestor, MD4 has been broken, and there are some concerns
+				about the safety of MD5 as well. For instance, &quot;keyed MD5&quot; (typically used for authentication by having
+				a shared secret, and computing an authentication value by hashing first the secret (as a key), and then the data
+				to be hashed) has been reported to be broken. It is also reported that one could build a special-purpose machine
+				costing a few million dollars to find a plaintext matching given hash value in a few weeks.</FONT></P>
+				<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Despite these problems, MD5 is still in wide use and reasonbly
+				safe for non-cryptographic applications of hash-functions.</FONT></P>
+				<P>
+				<LI><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">MD2</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">,
+				</FONT><B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">MD4</FONT></B><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">:
+				These are older hash algorithms from RSA Data Security. They have known flaws (Hans Dobbertin, FSE'96, LNCS 1039),
+				and their use is not recommended.</FONT>
+				<P>
+			</UL>
+			<P>
+<HR ALIGN="CENTER">
+
+			<H2><A NAME="random"></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif"> Random Number Generators</FONT></H2>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Cryptographic systems need cryptographically strong (pseudo)
+			random numbers that cannot be guessed by an attacker. Random numbers are typically used to generate session keys,
+			and their quality is critical for the quality of the resulting systems. The random number generator is easily overlooked,
+			and becomes easily the weakest point of the system.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Some machines may have special purpose hardware noise generators.
+			Noise from the leak current of a diode or transistor, least significant bits of audio inputs, times between interrupts,
+			etc. are all good sources of randomness when processed with a suitable cryptographical hash function. It is a good
+			idea to acquire true environmental noise whenever possible.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">One cryptographical random number generator is Yarrow by
+			</FONT><A HREF="javascript:if(confirm('http://www.counterpane.com/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://www.counterpane.com/'" tppabs="http://www.counterpane.com/"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">Counterpane</FONT></A><FONT
+			SIZE="2" FACE="Arial, Helvetica, sans-serif">. A good page to search for further material on (statical) pseudo-random
+			number generators is the </FONT><A HREF="javascript:if(confirm('http://random.mat.sbg.ac.at/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://random.mat.sbg.ac.at/'" tppabs="http://random.mat.sbg.ac.at/"><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">pLab
+			site</FONT></A><FONT SIZE="2" FACE="Arial, Helvetica, sans-serif">. Any cryptographically good pseudo-random number
+			generator should pass all the basic test for statistical randomness.</FONT></P>
+
+			<P>
+<HR ALIGN="CENTER">
+
+		</TD>
+	</TR>
+</TABLE>
+<SCRIPT LANGUAGE="JavaScript">
+</SCRIPT>
+</CENTER>
+
+</BODY>
+
+</HTML>

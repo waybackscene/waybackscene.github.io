@@ -1,0 +1,199 @@
+
+  ъ      ъ    -  -- A C i D B U R N - P R O D U C T i O N S -- - Ь   ъ     ъ
+     °    Ь  °      Ь Ь  Ь       ° Ь°          ° Ь     Ь         ЮЫЬ   Ь °
+  ЬЫЫІЯЯЫЫЫЭЬІЫЯЯЯЫЫЫЭЮЫЭЮЫЫЫЯЯЯЫІЬЮІЫЫЯЯЫЫЫЬ°ЬІЫЭ ЯЬ  ЮЫЫЫЯЯЫЫЫЬ°ІЫЫЬ ЮЫІЬ
+  ЫЫЫЭ °ІЫЫЭЫЫЫ °ЯЯЯЯ ЯЯЯ ЫЫЫ ° ЫЫЫЭЫЫЫ  ЮЫЫІ°ІЫЫ ° ЫЫЭЮЫЫЫЭ ЮЫЫІ ЫЫЫЯЫЬЫЫЫЭ
+  ІЫЫЯЯЯЫЫЫЭЫЫЫЭ° °ІЫЭЫЫЫЭЫЫЫ ° ЫЫЫЭЫЫЫЯЯЯЫЫЬЮЫЫЫ ° ЫЫЫЮЫЫЫЯЯІЫЫЬ ЫЫЫЭ ЯЫЫЫЭ
+ °ІЫЫЭ° ЫЫЫ ІЫЫЭ° ЫЫЫЭЫЫЫ°ІЫЫ °ЮЫЫЫЭЫЫЫЭ ЬЫЫЫЮЫЫЫЭ°°ІЫЫ°ІЫЫЭ ЮЫЫЫЭЫЫЫЭ° ЫЫЫЬ
+ ЮЫЫЫЭ° ЫЫЫЮЫЫЫЭ° ЫЫЫЮЫЫІЮЫЫЫ °ЮЫЫЫ°ІЫЫЭ°ЮЫЫЫЮЫЫЫЭ ЮЫЫЫЭЫЫЫЭ° ЫЫЫЭЫЫЫЭ° ЫЫІЯЬ
+ ЮЫЫЫЭ° ЫЫЫЮЫЫЫЭ° ЫЫЫЮЫЫІЮЫЫЫ °ЮЫЫЫЮЫЫЫ °ЮЫЫЫЮЫЫЫЭ ЮЫЫЫЭЫЫЫЭ°°ІЫЫ ІЫЫЭ° ЫЫЭ
+ ЮЫЫІ °ЮЫЫІЯ±ЫЫЬЬЬЫЫЫ±ЫЫІЮЫЫЫЬЬЫЫ±ЯІЫЫЫЬЬЫЫЫЫЯЫЫЫЫЬІЫЫЫЯІЫ±Ь ЮЫЯ °ІЫЫЫ ЮЫЯ
+  Я      Я°  Я    Я    Я       Я          Я         Я   °    Я      Я  Я
+  ъ      ъ    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ъ     ъ
+                                SRT - CRO
+
+
+
+        Phrozen Crew Trial Crackme 1: Calculer un serial valide
+								 
+		Cour par ACiD BuRN [Immortal Descendants]			 
+                             (19 Octobre 1999) 						
+
+
+
+
+
+Introduction:
+
+Ce crackme est "expired" (PC trial crackme 2 est sortie il y a deja pas mal de temps!)
+je peus donc ecrire un tutor sur la partie name / serial !
+Je vais vous montrer comment reverser , la partie name / serial seulement car je n'ai
+pas encore looker le reste et que les serials et autres keyfiles ne m'interressent pas...
+Keyfiles !! beurkkk :p
+
+
+Vous avez besoin de:
+
+		- Soft ice 3.2x
+		- Brain (quelque connaissance en maths!)
+		- an hexeditor (le serial n'est pas tapable directement )
+                - calculatrice (calculatrice de windows en mode scientifique ;)
+
+
+
+ok , lancez le crackme de phrozen crew , entrez votre nom: ACiD BuRN , et serial : 1234
+Ctrl+D et vous etes de retour dans soft ice , bpx hmemcpy et on presse F5...
+Pressez le button check et une fois de retour sous soft ice, tracez tant que vous n'arrivez
+pas a quelque chose qui ressemble a ca:
+
+//operations sur le serial:
+
+025F:004020F9  8A18                MOV     BL,[EAX]
+025F:004020FB  C1C308              ROL     EBX,08
+025F:004020FE  03D3                ADD     EDX,EBX
+025F:00402100  40                  INC     EAX
+025F:00402101  803800              CMP     BYTE PTR [EAX],00
+025F:00402104  75F3                JNZ     004020F9
+025F:00402106  8BCA                MOV     ECX,EDX
+025F:00402108  33DB                XOR     EBX,EBX
+025F:0040210A  33D2                XOR     EDX,EDX
+025F:0040210C  B83C2E4000          MOV     EAX,00402E3C
+
+//Operations sur le nom:
+
+025F:00402111  8A18                MOV     BL,[EAX]
+025F:00402113  C1CB08              ROR     EBX,08
+025F:00402116  03D3                ADD     EDX,EBX
+025F:00402118  40                  INC     EAX
+025F:00402119  803800              CMP     BYTE PTR [EAX],00
+025F:0040211C  75F3                JNZ     00402111
+025F:0040211E  C1CA08              ROR     EDX,08
+025F:00402121  663BD1              CMP     DX,CX
+025F:00402124  7520                JNZ     00402146
+
+
+bon je pense que ce code en asm et assez facile et comprendre ce qu'il fait n'est pas
+quelque chose de dure !!
+Pendant que vouz tracez а 402113 voyez: AA5C0993 en EDX
+Tracez un peu pour passer le second ROR EDX,8 (40211E) , et vous verrez: 93AA5C09 en EDX
+
+025F:00402121  663BD1              CMP     DX,CX
+
+cette ligne compare la valeur calculee a partir de votre nom, avec la valeur calculee a partir
+du serial entre!
+
+Maintenant ! comment trouver un bon serial ??
+"piece of cake" heheh
+
+
+laissez moi vous expliquez ce qu'il se passe :
+
+j'ai entrй: 1234 comme serial , donc pendant la boucle sur mon serial il se passe quelque chose
+comme ca:
+
+1er: boucle sur mon serial (1234)
+
+
+		00 00 31 00
+	   +	00 31 32 00
+	   +	31 32 33 00
+	   +	32 33 34 31
+		-----------
+		63 96 CA 31  <> AA5C093 (different donc pas le bon serial) 
+
+
+
+Soit X3, X2, X1, X0, les 4 valeurs ascii du serial entrй (le faux serial)
+cela revient a ca:
+
+
+		00 00 X3 00
+	   +	00 X3 X2 00
+	   +	X3 X2 X1 00
+	   +	X2 X1 X0 X3
+		-----------
+		93 AA 5C 09   <---- la bonne valeur que nous avons vu en memoire
+
+
+
+MATHS MATHS MATHS!! :-)
+
+Par identifications , on obtient:
+
+
+X3 = 09
+X2 = 93 - X3 = 93 - 09 = 8A
+X1 = AA - X3 - X2 = AA - 09 - 8A = 17
+X0 = 5C - X3 - X2 - X1 = 5C - 09 - 8A - 17 = FFFFFFB2 (prenez juste B2)
+
+
+le serial est donc: 09 8A 17 B2
+
+
+Ce sont les valeurs ascii du bon serial pour: ACiD BuRN
+heh , mais ce serial n'est pas tapable au clavier, ces valeurs ne coresspondent a aucune touche
+du clavier ;p
+Comment on tape le code alors ??
+On va se sevir d'un editeur hexadecimal pour recuperer notre code:
+
+bon , faites un nouveau document texte par exemple. tapez 1234 dedans et enregistrez le..
+ouvrez ce fichier avec votre hediteur hexa favoris (j'utilise hex workshop).
+Vous devez voir: 31 32 33 34
+ce sont les valeurs ascii de 1234 (du texte entrez dans le fichier donc)
+Remplacez les par les valeurs que nous venons de calculer:
+
+31 devient 09
+32 devient 8A
+33 devient 17
+34 devient B2
+
+Enregistrez le fichier maintenant!
+
+dans l'editeur hexadecimal vous devez donc voir ceci: 09 8A 17 B2
+
+Tous a l'air bon ;)), ouvez ce fichier avec un editeur de text (notepad) et vous devez voir
+un text bizare qui veut rien dire!! c'est normal car comme je l'ai deja dis , ce serial
+n'est pas tapable directement au clavier...
+apres avoir selectionй ce texte pressez ctrl+c pour copier le texte dans le presse papier!
+Maintenant, allez retournez dans le crackme , a la partie name serial.
+entrez votre nom: ACiD BuRN.Dans la partie serial, copier le texte que vous avez mis 
+temorairement dans le press papier en pressant: ctrl+v le serial ressemble a ca: "	ЉІ"
+le bon serial ne contient pas de "
+
+Name: ACiD BuRN
+serial: 	ЉІ
+
+
+
+vous avez entrй ces infos , pressez le boutton , et vous obtenez le message:
+"Well Done , you have passed The Name / Serial Strainer! Well done! =)"
+
+mouarf , 1 de plus ;p
+
+
+
+The End:
+
+Greetings: 
+group greetings: ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE - CC
+
+Also greetingz to: (no specific order)
+
+R!SC, ^INFeRNo^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , CrackZ , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo ,
+Killer_3K, TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup, 
+zoltan , [yAtes], TarGon , Icecream , Punkguy2 , Sortof, TRDdonjuan,
+Lord Soth, Judged, G-Rom, Quantico, Christal, psike, Leo0n, Elraizer,
++Spath, +Frog's Print, toutim ...
+
+et tous ceux que je connais mais que j'ai oublie les nicks , desole ;p
+
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+
+		
+				http://www.immortaldescendants.com/

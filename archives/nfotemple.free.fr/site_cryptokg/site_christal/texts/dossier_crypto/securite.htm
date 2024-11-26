@@ -1,0 +1,91 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<LINK REL="stylesheet" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/dossier_crypto/cis.css" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/cis.css" TYPE="text/css">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Des chausses-trappes de s&eacute;curit&eacute; en cryptologie</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+
+<DIV CLASS="setwidth">
+	<P>
+	<P><BR>
+	</P>
+	<H2><FONT SIZE="4" COLOR="maroon" FACE="Verdana, Arial, Helvetica, Geneva, sans-serif">S&eacute;curit&eacute; en
+	cryptologie</FONT></H2>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Les articles de p&eacute;riodiques aiment &agrave; d&eacute;crire les produits de
+		cryptologie en termes d'algorithmes et de longueur de cl&eacute;s. Les algorithmes font de bons titres: ils peuvent
+		&ecirc;tre expliqu&eacute;s en quelques mots et ils sont faciles &agrave; comparer les uns aux autres. &quot;Le
+		triple-DES gage de bonne s&eacute;curit&eacute;&quot;. &quot;Des cl&eacute;s de 40 bits sont une s&eacute;curit&eacute;
+		faible.&quot; &quot; Le RSA &agrave; 2048 bits est meilleur que le RSA &agrave; 1024 bits.&quot;</FONT></P>
+		<P><FONT SIZE="2" FACE="Arial">Mais la r&eacute;alit&eacute; n'est pas aussi simple. </FONT><STRONG><FONT SIZE="2"
+		FACE="Arial">Les cl&eacute;s plus longues ne signifient pas toujours plus de s&eacute;curit&eacute;.</FONT></STRONG><FONT
+		SIZE="2" FACE="Arial"> Comparez l'algorithme cryptographique au verrou de votre porte d'entr&eacute;e. La plupart
+		des verrous ont quatre goupilles en m&eacute;tal, qui peuvent prendre chacune dix positions. Une cl&eacute; place
+		les goupilles dans une configuration particuli&egrave;re. Si la cl&eacute; les aligne correctement, le verrou s'ouvre.
+		De sorte qu'il n'y a que 10 000 cl&eacute;s possibles, et qu'un cambrioleur pr&ecirc;t &agrave; essayer les 10
+		000 possibilit&eacute;s est s&ucirc;r d'entrer dans votre maison. Mais un verrou de qualit&eacute; sup&eacute;rieure
+		&agrave; 10 goupilles, qui autorise 10 miliards de cl&eacute;s distinctes, n'am&eacute;liorera probablement pas
+		la s&eacute;curit&eacute; de votre maison. Des cambrioleurs n'essayent pas toutes les cl&eacute;s (une attaque
+		syst&eacute;matique -&quot;brute-force&quot;); la plupart ne sont pas assez intelligents pour crocheter la serrure
+		(une attaque cryptographique contre l'algorithme). Ils fracassent les fen&ecirc;tres ou donnent des coups de pieds
+		dans les portes.</FONT></P>
+		<P><FONT SIZE="2" FACE="Arial">La cryptographie forte est tr&egrave;s puissante quand elle est bien faite, mais
+		ce n'est pas une panac&eacute;e. Se focaliser sur les algorithmes cryptologiques tout en ignorant les autres aspects
+		de la s&eacute;curit&eacute; revient &agrave; d&eacute;fendre votre maison, non pas en dressant une barri&egrave;re
+		autour, mais en plantant un seul immense poteau devant en esp&eacute;rant que votre adversaire va juste s'y heurter.
+		</FONT><STRONG><FONT SIZE="2" FACE="Arial">Les attaquants intelligents se contentent de contourner les algorithmes.</FONT></STRONG></P>
+	</BLOCKQUOTE>
+	<H3><FONT COLOR="maroon" FACE="Verdana, Arial, Helvetica, Geneva, sans-serif">Vuln&eacute;rabilit&eacute;s li&eacute;es
+	aux mots de passe.</FONT></H3>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Beaucoup de syst&egrave;mes sont cass&eacute;s car ils reposent sur des mots de
+		passe d&eacute;cid&eacute; par l'utilisateur qui ne choisira pas des mots de passe forts dont il ne pourra se souvenir.
+		Quelques interfaces d'utilisations font encore empirer le probl&egrave;me: elles limitent les mots de passe &agrave;
+		huit caract&egrave;res, convertissent tout en minuscules, et ainsi de suite. M&ecirc;me les phrases cl&eacute;s
+		peuvent &ecirc;tre faibles: rechercher des phrases de 40 caract&egrave;res est souvent plus facile que de rechercher
+		des cl&eacute;s al&eacute;atoires de 64 bits.</FONT> <FONT SIZE="2" FACE="Arial">C'est sur ce principe que se base
+		la majorit&eacute; des Brute Forcers, utilisant conjointement un dictionnaire, et une recherche alpha-num&eacute;rique.</FONT></P>
+	</BLOCKQUOTE>
+	<H3><FONT COLOR="maroon" FACE="Verdana, Arial, Helvetica, Geneva, sans-serif">Vuln&eacute;rabilit&eacute;s cryptographiques</FONT></H3>
+	<BLOCKQUOTE>
+		<P><FONT SIZE="2" FACE="Arial">Quelques fois, des produits ont m&ecirc;me une mauvaise cryptologie. Certains reposent
+		sur des algorithmes de chiffrement sp&eacute;cifiques &agrave; un shareware; invariablement, ils se r&eacute;v&egrave;lent
+		tr&egrave;s faibles. Maintenir secret un algorithme ne constitue pas un obstacle pour l'analyse, de toute fa&ccedil;on
+		- cela ne prend que quelques jours pour reconstituer par r&eacute;tro-analyse l'algorithme &agrave; partir du code
+		ex&eacute;cutable.</FONT></P>
+	</BLOCKQUOTE>
+</DIV>
+
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial">La possibilit&eacute; de d&eacute;coder un message crypt&eacute; sans en poss&eacute;der
+	la cl&eacute; existe th&eacute;oriquement mais pratiquement, n&eacute;cessiterait la mise en œuvre pendant plusieurs
+	jours d'un mat&eacute;riel on&eacute;reux. Pour &quot;casser&quot; une cl&eacute; de 40 bits, il a fallu 8 jours
+	&agrave; 112 stations de travail et 2 ordinateurs en parall&egrave;le r&eacute;alisant 5.000 Mips (millions d'instructions
+	par seconde), co&ucirc;t de l'op&eacute;ration : 10.000 $. Le syst&egrave;me RSA qui peut encrypter au moyen d'un
+	algorithme al&eacute;atoire de 512 bits est consid&eacute;r&eacute; actuellement comme inviolable.</FONT></P>
+</BLOCKQUOTE>
+
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="4" CELLSPACING="0" WIDTH="13%">
+	<TR>
+		<TD WIDTH="52%" VALIGN="TOP">
+			<P ALIGN="RIGHT"><A HREF="hash.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/hash.htm"><IMG SRC="left.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/left.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A>
+		</TD>
+		<TD WIDTH="48%" VALIGN="TOP"><A HREF="reverse.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/reverse.htm"><IMG SRC="right.jpg" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/right.jpg" WIDTH="48" HEIGHT="49" ALIGN="BOTTOM" BORDER="0"></A></TD>
+	</TR>
+</TABLE>
+
+</CENTER>
+
+</BODY>
+
+</HTML>

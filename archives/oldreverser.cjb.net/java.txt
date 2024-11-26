@@ -1,0 +1,766 @@
+
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S -- - ‹   ˙     ˙
+     ∞    ‹  ∞      ‹ ‹  ‹       ∞ ‹∞          ∞ ‹     ‹         ﬁ€‹   ‹ ∞
+  ‹€€≤ﬂﬂ€€€›‹≤€ﬂﬂﬂ€€€›ﬁ€›ﬁ€€€ﬂﬂﬂ€≤‹ﬁ≤€€ﬂﬂ€€€‹∞‹≤€› ﬂ‹  ﬁ€€€ﬂﬂ€€€‹∞≤€€‹ ﬁ€≤‹
+  €€€› ∞≤€€›€€€ ∞ﬂﬂﬂﬂ ﬂﬂﬂ €€€ ∞ €€€›€€€  ﬁ€€≤∞≤€€ ∞ €€›ﬁ€€€› ﬁ€€≤ €€€ﬂ€‹€€€›
+  ≤€€ﬂﬂﬂ€€€›€€€›∞ ∞≤€›€€€›€€€ ∞ €€€›€€€ﬂﬂﬂ€€‹ﬁ€€€ ∞ €€€ﬁ€€€ﬂﬂ≤€€‹ €€€› ﬂ€€€›
+ ∞≤€€›∞ €€€ ≤€€›∞ €€€›€€€∞≤€€ ∞ﬁ€€€›€€€› ‹€€€ﬁ€€€›∞∞≤€€∞≤€€› ﬁ€€€›€€€›∞ €€€‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€∞≤€€›∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞ €€€›€€€›∞ €€≤ﬂ‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€ﬁ€€€ ∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞∞≤€€ ≤€€›∞ €€›
+ ﬁ€€≤ ∞ﬁ€€≤ﬂ±€€‹‹‹€€€±€€≤ﬁ€€€‹‹€€±ﬂ≤€€€‹‹€€€€ﬂ€€€€‹≤€€€ﬂ≤€±‹ ﬁ€ﬂ ∞≤€€€ ﬁ€ﬂ
+  ﬂ      ﬂ∞  ﬂ    ﬂ    ﬂ       ﬂ          ﬂ         ﬂ   ∞    ﬂ      ﬂ  ﬂ
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ˙     ˙
+                                SRT - CRO
+
+
+
+        JAVA REVERSE ENGINEERING: How to defeat java !
+								 
+		Tutorial by ACiD BuRN [Immortal Descendants]			 
+                             (October 23th, 1999) 			
+
+
+
+
+
+Intro:
+
+ok , it is really easy to reverse java apps , when u got a decompiler !!
+i will show u how easy can be java reversing , but there is harder things , like
+name / serial apps.I never seen anyone yet , but there is somes already done !
+
+Tools needed:
+		- JAD (java decompiler)
+		- nothing more :)	
+
+
+URLS:           http://www.lawrencegoetz.com/   (the java target app)
+                http://acidburn2000.cjb.net/    (the java decompiler soon on my site)
+
+
+In this tutor we will crack 3 Things : Goetz's Banner V 2.0 , Goetz's Marquee 1.1,
+and ManKind java crackme !
+
+
+ok , lets start
+
+unzip the Goetz's Banner V 2.0 archive in one directory.You must see some files , and if 
+you run the sample file , (exemple.html) you see the banner effect due of this nice
+java thingy , but A BIG UNREGISTERED SHIT is shown !! hehe Doh :p
+so, Java files are '.class' , so just click on the gbanner.class file , and move it on
+Jad.exe to decompile it!!
+But it is better to make a Bat file becoz , the decompiled file might be in the Windows
+directory!
+anyway , if you can find it , just do a search on your hard disk on gbanner.jad
+Ok, now you have this file , open it with notepad , and you see this:
+
+
+--------------------------------------gbanner.JAD------------------------------------------
+
+// Decompiled by Jad v1.5.7. Copyright 1997-99 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/SiliconValley/Bridge/8617/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   gbanner.java
+
+import java.applet.Applet;
+import java.applet.AppletContext;
+import java.awt.*;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Vector;
+
+public class gbanner extends Applet
+    implements Runnable
+{
+
+    public boolean mouseEnter(Event event, int i, int j)
+    {
+        if(info[place] != null && displaying)
+            getAppletContext().showStatus(info[place]);
+        mouseInside = true;
+        return true;
+    }
+
+    public void stop()
+    {
+        running = false;
+        if(animate != null)
+        {
+            animate.stop();
+            animate = null;
+        }
+    }
+
+    public gbanner()
+    {
+        m_background = "white";
+        test_it = "";
+        drawn = true;
+        zoom = true;
+        pausable = true;
+        m_target = "_self";
+    }
+
+    public boolean mouseExit(Event event, int i, int j)
+    {
+        mouseInside = false;
+        getAppletContext().showStatus("");
+        return true;
+    }
+
+    public void paint(Graphics g)
+    {
+        if(drawable)
+        {
+            g.drawImage(offImage, 0, 0, this);
+            place = loadImage;
+        }
+        drawn = true;
+    }
+
+    public String[][] getParameterInfo()
+    {
+        String as[][] = {
+            {
+                "image", "String", "lineN where N is the line number"
+            }, {
+                "background", "String", "Background color"
+            }, {
+                "URL", "String", "URLN where N is the URL for the image N."
+            }, {
+                "target", "String", "Target of URL"
+            }, {
+                "info", "String", "infoN where N is the infomation for the image N."
+            }, {
+                "pause", "String", "pauseN where N is the pause time for the image N."
+            }, {
+                "zoom", "String", "Zoom the images or not."
+            }, {
+                "shuffle", "String", "Shuffle the images or not."
+            }, {
+                "pauseable", "String", "Pause the applet when the mouse is in it."
+            }, {
+                "one", "String", "Display only one image. Good for use with shuffle to display one random image."
+            }
+        };
+        return as;
+    }
+
+    public void destroy()
+    {
+        running = false;
+        if(animate != null)
+        {
+            animate.stop();
+            animate = null;
+        }
+    }
+
+    public int[] shuffle()
+    {
+        Vector vector = new Vector();
+        int ai[] = new int[amount];
+        for(int j = 0; j < amount; j++)
+            vector.addElement(new Integer(j));
+
+        for(int k = 0; k < amount; k++)
+        {
+            int i = (int)(Math.random() * (double)(amount - k));
+            Integer integer = (Integer)vector.elementAt(i);
+            ai[k] = integer.intValue();
+            vector.removeElementAt(i);
+        }
+
+        return ai;
+    }
+
+    public void update(Graphics g)
+    {
+        paint(g);
+    }
+
+    public void start()
+    {
+        place = 0;
+        if(offImage == null)
+        {
+            offImage = createImage(d.width, d.height);
+            offGraphics = offImage.getGraphics();
+        }
+        try
+        {
+            myInfo = new URL(getDocumentBase(), "gboption.ini");
+        }
+        catch(MalformedURLException _ex)
+        {
+            good = false;
+        }
+        if(myInfo != null)
+            try
+            {
+                input = myInfo.openStream();
+                dataInput = new DataInputStream(input);
+                test_it = dataInput.readLine();
+                dataInput.close();
+            }
+            catch(IOException _ex) { }
+        if(test_it.equals("InFeb"))
+            good = true;
+        running = true;
+        if(animate == null)
+        {
+            animate = new Thread(this);
+            animate.start();
+        }
+    }
+
+    public String getAppletInfo()
+    {
+        return "Title: Goetz's Banner\r\n" + "Author: Lawrence Goetz\r\n" + "E-mail: goetz@lawrencegoetz.com\r\n" + "Web: http://www.lawrencegoetz.com/\r\n" + "Copyright Lawrence Goetz 1998";
+    }
+
+    public boolean mouseDown(Event event, int i, int j)
+    {
+        if(locations[place] != null && displaying)
+            getAppletContext().showDocument(locations[place], m_target);
+        return true;
+    }
+
+    public void run()
+    {
+        int i = 20;
+        int ai[] = null;
+        if(shuffle)
+            ai = shuffle();
+        int j1 = 0;
+        if(!shuffle)
+            loadImage = j1;
+        setMyColor(offGraphics, "blue");
+        offGraphics.fillRect(0, 5, 110, 20);
+        setMyColor(offGraphics, "yellow");
+        offGraphics.drawString("Loading Image", 5, 20);
+        drawable = true;
+        repaint();
+        try
+        {
+            Thread.sleep(100L);
+        }
+        catch(InterruptedException _ex) { }
+        Thread.yield();
+        images = new Image[amount];
+        while(running) 
+        {
+            while(!drawn) 
+                try
+                {
+                    Thread.sleep(10L);
+                }
+                catch(InterruptedException _ex) { }
+
+            if(shuffle)
+                loadImage = ai[j1];
+            if(!shuffle)
+                loadImage = j1;
+            images[loadImage] = getImage(getDocumentBase(), getParameter("image" + Integer.toString(loadImage + 1)));
+            MediaTracker mediatracker = new MediaTracker(this);
+            mediatracker.addImage(images[loadImage], 0);
+            try
+            {
+                mediatracker.waitForID(0);
+            }
+            catch(InterruptedException _ex) { }
+            drawn = false;
+            drawable = false;
+            if(!zoom)
+                i = 1;
+            image_w = images[loadImage].getWidth(this);
+            image_h = images[loadImage].getHeight(this);
+            int j = image_w / i;
+            int k = image_h / i;
+            int l = d.width / 2 - j / 2;
+            int i1 = d.height / 2 - k / 2;
+            setMyColor(offGraphics, m_background);
+            offGraphics.fillRect(0, 0, d.width, d.height);
+            if(i != 1)
+                offGraphics.drawImage(images[loadImage], l, i1, j, k, this);
+            else
+            if(i == 1)
+                offGraphics.drawImage(images[loadImage], l, i1, this);
+            if(!good)
+            {
+                setMyColor(offGraphics, "blue");
+                offGraphics.fillRect(0, 5, 200, 100);
+                setMyColor(offGraphics, "yellow");
+                offGraphics.drawString("UNREGISTERED VERSION!!!", 5, 25);
+                offGraphics.drawString("Please Register this applet.", 5, 50);
+                offGraphics.drawString("Registration is only $5.", 5, 80);
+            }
+            drawable = true;
+            try
+            {
+                Thread.sleep(50L);
+            }
+            catch(InterruptedException _ex) { }
+            if(i > 1)
+                i -= 2;
+            if(i <= 0)
+                i = 1;
+            else
+            if(i == 1)
+                i = 20;
+            repaint();
+            displaying = true;
+            if(i == 20)
+            {
+                if(pause[loadImage] > 0)
+                    try
+                    {
+                        Thread.sleep(pause[loadImage] * 1000);
+                    }
+                    catch(InterruptedException _ex) { }
+                while(pausable && mouseInside) 
+                    try
+                    {
+                        Thread.sleep(100L);
+                    }
+                    catch(InterruptedException _ex) { }
+
+                while(one && running) 
+                {
+                    drawable = true;
+                    repaint();
+                    try
+                    {
+                        Thread.sleep(100L);
+                    }
+                    catch(InterruptedException _ex) { }
+                }
+
+                if(++j1 == images.length)
+                {
+                    j1 = 0;
+                    if(shuffle)
+                        ai = shuffle();
+                }
+            }
+            Thread.yield();
+        }
+
+    }
+
+    public void init()
+    {
+        int i = 1;
+        String s4 = "image" + Integer.toString(i);
+        for(String s = getParameter(s4); s != null; s = getParameter(s4))
+        {
+            amount++;
+            i++;
+            s4 = "image" + Integer.toString(i);
+        }
+
+        locations = new URL[amount];
+        for(int j = 0; j < amount; j++)
+        {
+            String s1 = getParameter("URL" + Integer.toString(j + 1));
+            if(s1 != null)
+            {
+                try
+                {
+                    locations[j] = new URL(getDocumentBase(), s1);
+                }
+                catch(MalformedURLException _ex) { }
+            }
+            else
+            {
+                String s2 = getParameter("URL");
+                try
+                {
+                    locations[j] = new URL(getDocumentBase(), s2);
+                }
+                catch(MalformedURLException _ex) { }
+            }
+        }
+
+        String s3 = getParameter("target");
+        if(s3 != null && !s3.equals(""))
+            m_target = s3;
+        info = new String[amount];
+        for(int k = 0; k < amount; k++)
+        {
+            info[k] = getParameter("info" + Integer.toString(k + 1));
+            if(info[k] == null)
+                info[k] = getParameter("info");
+        }
+
+        pause = new int[amount];
+        for(int l = 0; l < amount; l++)
+        {
+            String s6 = getParameter("pause" + Integer.toString(l + 1));
+            if(s6 != null && !s6.equals(""))
+            {
+                pause[l] = Integer.parseInt(s6);
+            }
+            else
+            {
+                String s7 = getParameter("pause");
+                if(s7 != null && !s7.equals(""))
+                    pause[l] = Integer.parseInt(s7);
+            }
+        }
+
+        String s5 = getParameter("background");
+        if(s5 != null)
+            m_background = s5;
+        s3 = getParameter("zoom");
+        if(s3 != null && s3.equalsIgnoreCase("false"))
+            zoom = false;
+        s3 = getParameter("pauseable");
+        if(s3 != null && s3.equalsIgnoreCase("false"))
+            pausable = false;
+        s3 = getParameter("shuffle");
+        if(s3 != null && s3.equalsIgnoreCase("true"))
+            shuffle = true;
+        s3 = getParameter("one");
+        if(s3 != null && s3.equalsIgnoreCase("true"))
+            one = true;
+        d = size();
+        place = 0;
+        offImage = createImage(d.width, d.height);
+        offGraphics = offImage.getGraphics();
+        resize(d.width, d.height);
+    }
+
+    public void setMyColor(Graphics g, String s)
+    {
+        if(s.equals("white"))
+        {
+            g.setColor(Color.white);
+            return;
+        }
+        if(s.equals("black"))
+        {
+            g.setColor(Color.black);
+            return;
+        }
+        if(s.equals("light gray"))
+        {
+            g.setColor(Color.lightGray);
+            return;
+        }
+        if(s.equals("gray"))
+        {
+            g.setColor(Color.gray);
+            return;
+        }
+        if(s.equals("dark gray"))
+        {
+            g.setColor(Color.darkGray);
+            return;
+        }
+        if(s.equals("red"))
+        {
+            g.setColor(Color.red);
+            return;
+        }
+        if(s.equals("pink"))
+        {
+            g.setColor(Color.pink);
+            return;
+        }
+        if(s.equals("orange"))
+        {
+            g.setColor(Color.orange);
+            return;
+        }
+        if(s.equals("yellow"))
+        {
+            g.setColor(Color.yellow);
+            return;
+        }
+        if(s.equals("green"))
+        {
+            g.setColor(Color.green);
+            return;
+        }
+        if(s.equals("magenta"))
+        {
+            g.setColor(Color.magenta);
+            return;
+        }
+        if(s.equals("cyan"))
+        {
+            g.setColor(Color.cyan);
+            return;
+        }
+        if(s.equals("blue"))
+            g.setColor(Color.blue);
+    }
+
+    private String m_background;
+    private final String PARAM_imageN = "image";
+    private final String PARAM_background = "background";
+    private final String PARAM_URLN = "URL";
+    private final String PARAM_infoN = "info";
+    private final String PARAM_pauseN = "pause";
+    private final String PARAM_zoom = "zoom";
+    private final String PARAM_shuffle = "shuffle";
+    private final String PARAM_target = "target";
+    private final String PARAM_pausable = "pauseable";
+    private final String PARAM_one = "one";
+    private Dimension d;
+    private boolean running;
+    private Image images[];
+    private int place;
+    private Image offImage;
+    private Graphics offGraphics;
+    private boolean good;
+    private URL locations[];
+    private URL myInfo;
+    private String test_it;
+    private final String option = "InFeb";
+    private InputStream input;
+    private DataInputStream dataInput;
+    private Thread animate;
+    private boolean drawable;
+    private boolean drawn;
+    private MediaTracker imageTracker;
+    private int image_w;
+    private int image_h;
+    private String info[];
+    private int pause[];
+    private int amount;
+    private boolean zoom;
+    private boolean shuffle;
+    private boolean pausable;
+    private String m_target;
+    private int loadImage;
+    private boolean displaying;
+    private boolean mouseInside;
+    private boolean one;
+}
+
+-------------------------------------------End of jad file---------------------------------
+
+ok big huh ?
+so , for the next files , i will just show the importent part !!
+btw , if you read the Text file goind with this java protected shit , you have seen
+this is keyfile protected *grin*
+So , we are looking for a file check , so look this:
+
+
+      try
+      {
+          myInfo = new URL(getDocumentBase(), "gboption.ini");  <--- interesting! keyfile name
+      }
+      catch(MalformedURLException _ex)
+      {
+          good = false;
+      }
+      if(myInfo != null)
+          try
+          {
+              input = myInfo.openStream();
+              dataInput = new DataInputStream(input);
+              test_it = dataInput.readLine();
+              dataInput.close();
+          }
+          catch(IOException _ex) { }
+      if(test_it.equals("InFeb"))        <--- hmm , looks like it test the text in the file
+          good = true;			 <--- if text = InFeb then GOOD , else piss off cracker
+      running = true;
+      if(animate == null)
+
+
+
+heheh , wow , it sux!! just create a file called gboption.ini and writte 'InFeb' in it
+without the quotes (').Save the file and run the exemple.html file!
+WOW , no more unregistered fucking lame text :)
+easy , isn't it ?
+
+
+Part2: Goetz's Marquee V 1.1
+
+
+Still same things , Keyfile based apps in java!
+Decompile the class file , and open the gmarquee.jad one with a text editor like notepad!
+
+ok , i show you the most important part this time , it is exaclty same shit..
+
+
+-------------------------------------cut from gmarquee.jad--------------------------------  public void start()
+    {
+        if(offImage == null)
+        {
+            offImage = createImage(d.width, d.height);
+            offGraphics = offImage.getGraphics();
+        }
+        if(f == null)
+        {
+            f = new Font("Helvetica", 0, m_font);
+            fm = offGraphics.getFontMetrics(f);
+        }
+        try
+        {
+            myInfo = new URL(getDocumentBase(), "gmoption.ini");     <---- hehe :p
+        }
+        catch(MalformedURLException _ex)
+        {
+            good = false;
+        }
+        if(myInfo != null)
+            try
+            {
+                input = myInfo.openStream();
+                dataInput = new DataInputStream(input);
+                test_it = dataInput.readLine();
+                dataInput.close();
+            }
+            catch(IOException _ex) { }
+        if(test_it.equals("Eggplant"))  <--- if cracker put Eggplant jmp goodboy else jmp badboy
+            good = true;
+        if(!good)
+            try
+            {
+                reg = new register(300, 200, "Please Register Goetz's Marquee", "http://www.lawrencegoetz.com/programs/nettools.htm", this);
+            }
+            catch(Exception _ex)
+            {
+                System.err.println("You are missing the file register.class");
+                return;
+            }
+        if(animate == null)
+
+
+
+-----------------------------End of quotes from Gmarquee.jad------------------------------------
+
+
+
+Again, just create a file called gmoption.ini and writte 'Eggplant' in it without the 
+quotes (').Save the file and run the exemple.html file!
+It is now registered , and you can enjoy this nice java thingy :p
+
+Ok , now enough of this keyfile shits , lets look a crackme coded by Mandkind in java
+in the text , there is no html to test the serial or something , but it is not needed heh!
+As always, decompile the .class , and open the jad output file with notepad !!
+and we can see:
+
+
+
+---------------------------------Start of CrackMe.jad-------------------------------------------
+
+
+   public CrackMe()
+    {
+    }
+
+    public static void main(String args[])
+    {
+        if(args.length != 1)
+        {
+            System.out.println("Usage: java CrackMe Registration Code");
+            System.exit(0);
+        }
+        System.out.println("");
+        System.out.println("");
+        System.out.println("Welcome to ManKind's Java CrackMe 0.1");
+        System.out.println("=====================================");
+        System.out.println("This is an Alpha Test of ManKind's Java CrackMe, please do send your comments, suggestions, opinions, feedbacks and support words to me!");
+        System.out.println("");
+        System.out.println("");
+        int i = Integer.valueOf(args[0]).intValue();
+        if(i == 0x7f42b)
+            System.out.println("Congratulations, you succeeded in cracking this!");
+        if(i != 0x7f42b)
+            System.out.println("Sorry, invalid registration code. Please try again!");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("This program is Copyright \251 1999 ManKind");
+        System.out.println("Service for Mankind");
+        System.out.println("mankind001@bigfoot.com");
+        System.exit(0);
+    }
+}
+
+
+---------------------------------End of CrackMe.jad-------------------------------------------
+
+
+hehe , it looks nice !
+we can see:
+
+"      int i = Integer.valueOf(args[0]).intValue();
+        if(i == 0x7f42b)
+            System.out.println("Congratulations, you succeeded in cracking this!");
+        if(i != 0x7f42b)
+            System.out.println("Sorry, invalid registration code. Please try again!");
+        System.out.println("");      "
+
+
+
+
+in Visual basic , it looks like this:
+
+
+IF serial= $7f42b then
+msgbox "Congratulations, you succeeded in cracking this!"
+Else
+msgbox "Sorry, invalid registration code. Please try again!"
+End if
+
+the "0x7f42b" is hexadecimal , but we want the good serial , so convert the serial in decimal
+with the Windows calculator or using soft ice!
+Ctrl+d
+? 7b42b
+
+You will see: 521259
+
+
+easy isn't it ??
+hehe , well i don't have any other java apps or crackme in hands :-( so this tut is
+finish ...
+
+I really hope java cracking is clear for you now!
+It is something really easy the most of the time !!
+Al of this , coz of the decompiler though!!
+
+
+
+
+Ending:
+
+i hope you have understood all this essay , and if you got any comments , or 
+questions , just mail me to : ACiD_BuRN@nema.com or acid2600@hotmail.com
+you can find all of my tuts at :
+Web page URL: http://acidburn2000.cjb.net
+
+
+Greetings: 
+group greetings : ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , CrackZ , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo ,
+Killer_3K, TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup, 
+zoltan , [yAtes], TarGon , Icecream , Punkguy2 , Sortof, TRDdonjuan,
+Lord Soth, Judged, G-Rom, Quantico...
+
+
+eheh , i bet i forget some peoples :-/ , sorry !!!
+
+
+
+Copyright (c) ACiD BuRN and the Immortal Descendants.
+
+			
+				http://www.immortaldescendants.com/
+
+
+

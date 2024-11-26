@@ -1,0 +1,79 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>FileLocker Reversing</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<P>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of File Locker</FONT></H1>
+<H1 ALIGN="CENTER"><FONT COLOR="blue">by</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P>Hi Joe I have an other Xmas present for you! (File Locker, see below) Happy Newyear day Caz A 2 minutes crack...</P>
+<PRE>                       
+      +++++                  +++          +       +
+     +            +++       +   +   +++   ++     ++         ++++ 
+by  +            +   +       +       +    + +   + +   +++   +   +
+    +          +++++++++      +      +    +  +++  +    +    +   +
+     +         +       +       +     +    +   +   +    +    ++++   
+      +++++   +         +   +   +   +++   +   +   +    +    +  +
+                             +++                      +++   +   +
+</PRE>
+<P>Victim: File Locker v1.11 by Microsort CA [flocker.exe : 212992 bytes] Get it at: <A HREF="javascript:if(confirm('http://microsort.hypermart.net/  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?'))window.location='http://microsort.hypermart.net/'" tppabs="http://microsort.hypermart.net/">Microsort
+CA</A></P>
+<P>Tools:</P>
+<PRE>       -a system-level debugger -&gt; Winice by Nu-mega 
+       -a disassembler          -&gt; W32dasm by URSoftware
+       -an hexadecimal editor   -&gt; HexWorkshop by BreakPoint Software
+</PRE>
+<P>NEVER decrypt original password, for God sake! If you do it, a casual cracker will just have to locate the COMPARE
+sequence in code to find out what correct pwd is. Even worse, you used a *standard* VB function to compare correct
+pwd to pwd entered. How lazy!</P>
+<P>
+<H2 ALIGN="CENTER">Crack steps:</H2>
+<H2></H2>
+<P>1. Disassemble flocker.exe. Look at the beginning of listing (IMPORTED FUNCTIONS section). Huumm... This program
+importes functions from a Visual Basic module: MSVBVM50.dll. MSVBVM50.dll module is located in your c:\windows\system\
+directory. Some of those functions may raise our interest, so we'll need to be able to monitor them. To do that,
+we modify Winice configuration file (winice.dat) so it will load VB functions at startup: add following line to
+EXP list:
+
+<UL>
+	EXP=c:\windows\system\msvbvm50.dll
+</UL>
+
+<P>Ok, now we can start Winice, it'll work fine. Before doing it, encrypt a file with pwd: 666666.</P>
+<P>2. A VB function is specifically designed to compare strings: __vbastrcmp, so we'll survey it, just in case...
+{;-) Inside Flocker, start decryption process with pwd: 7777777 but just before double-clicking on file you want
+to decrypt, enter Winice and set a break-point on this function: __vbastrcmp. Leave Winice and double-click...</P>
+<P>3. ...BINGO! Winice pops up at the beginning of __vbastrcmp function. Press F11 to execute and return from function.
+Here's what we see (type &quot;code on&quot; to display hexadecimal values):</P>
+<PRE>137:42BA0A  8B 8D 30 FE FF FF  mov ecx , [ebp - 1D0] &lt;- good password
+137:42BA10  51                 push ecx 
+137:42BA11  8B 95 2C FE FF FF  mov edx , [ebp - 1D2] &lt;- what we entered
+137:42BA17  52                 push edx 
+137:42BA18  FF 15 14 23 43 00  call [msvbvm50!__vbastrcmp] 
+</PRE>
+<P>Flocker puts good pwd and what we entered on stack, then it calls Compare function. If strings are the same:
+OK, file is decrypted; otherwise we get an error message.</P>
+<P>4. Let's patch program, so it lets you decrypt file even if you enter a wrong pwd! To do so, we substitute &quot;push
+eDx&quot; (52) by &quot;push eCx&quot; (51), so Compare function will compare good pwd to itself {:-)</P>
+<P>Open flocker.exe in your hexadecimal editor.
+
+<UL>
+	<PRE>Search       : 51 8B 95 2C FE FF FF 52  
+replace with : 51 8B 95 2C FE FF FF 51  </PRE>
+</UL>
+
+<P>5. We're done!</P>
+<P>If you need more info, contact me at: <A HREF="mailto:casimir2@club-internet.fr">Casimir</A></P>
+
+<P>Converted to hypertext by Joe Peschel December 27, 1998.
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>LaBoRaToiRe - YoLeJedi</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Author" content="YoLeJedi">
+<meta name="keywords" content="anti-cracking, assembleur, assembler, asm, cpu, intel, microprocesseur, pentium, x86, 80x86, 286, 386, YoLeJedi, masm, idt, gdt, ldt, ring 0, privil&egrave;ge 0, ring 3, privil&egrave;ge 3, code, sources, softice, ntice, debugger, trace, laboratoire, anti-softice, anti-ice, crash softice, Reverse Engineering">
+<meta name="description" content="Reverse Engineering, Anti-Cracking et travaux en assembleur">
+<meta name="copyright" content="YoLeJedi">
+<meta name="robots" content="all">
+<link rel="stylesheet" href="../css/yolejedi.css" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+<!--
+
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+</script>
+</head>
+<body background="../image/fond.gif">
+<table width="85%" border="0" align="center" cellpadding="1" cellspacing="0">
+  <tr> 
+    <td> <div align="center"><font face="Fixedsys" size="2"><br>
+        </font> 
+        <table border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
+          <tr> 
+            <td><div align="center"><font face="Fixedsys" size="7" color="#33CC33">LaBoRaToiRe</font></div></td>
+          </tr>
+        </table>
+        <font face="Fixedsys" size="2"><br>
+        </font> 
+        <table border="0" cellspacing="0" cellpadding="1" bgcolor="#339999">
+          <tr> 
+            <td><table border="0" cellspacing="0" cellpadding="8" bgcolor="#000000">
+                <tr> 
+                  <td nowrap> <p> <font color="#FFFFFF" face="Fixedsys" size="2">LaBoRaToiRe</font> 
+                      <font color="#339999" face="Fixedsys" size="2"> <br>
+                      &nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;+-<a href="news.htm" target="_blank" onFocus="if(this.blur)this.blur()">News</a><br>
+                      &nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;+-Liens <br>
+                      &nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;+-<a href="mailto:yolejedi@free.fr" target="_blank" onFocus="if(this.blur)this.blur()">Contact</a><br>
+                      &nbsp;&nbsp;&nbsp;| <br>
+                      &nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Anti-Cracking</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Detect_Debugger</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="anti_cracking/detect_debugger/rf_detect_softice.htm" target="_blank" onFocus="if(this.blur)this.blur()">Bit_RF_of_EFlag</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-int_1_Descriptor<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Anti_Debugger</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="anti_cracking/anti_debugger/anti_debug_lisez_moi.htm" target="_blank" onFocus="if(this.blur)this.blur()">Read_Me</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="anti_cracking/anti_debugger/1_anti_bpx.htm" target="_blank" onFocus="if(this.blur)this.blur()">Anti_bpx</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">G_</font><font color="#FFFFFF">W_</font><font color="#FFFFFF">BUSH_</font><font color="#FFFFFF">Method</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="anti_cracking/anti_debugger/crash_ntIce_with_pe_header.htm" target="_blank" onFocus="if(this.blur)this.blur()">Crash_NtIce_with_PE_Header</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="anti_cracking/anti_debugger/crash_ntIce_with_bpm_global.htm" target="_blank" onFocus="if(this.blur)this.blur()">Crash_NtIce_with_Bpm_Global</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-Crash_DriverStudio_with_int0x2D<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-Crash_NtIce_with_SEH_and_regEip<br>
+                      &nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Window$</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Search_window$_version</font><br>
+                      &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="window$/search_version/recherche_version_lisez_moi.htm" target="_blank" onFocus="if(this.blur)this.blur()">Read_Me</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Win9x 
+                      &lt;-&gt; WinNT/2k/XP</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;+-<a href="window$/search_version/detecte_noyau_krnl32_emplacement.htm" target="_blank" onFocus="if(this.blur)this.blur()">Kernel32_location</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;+-<a href="window$/search_version/detecte_noyau_int3.htm" target="_blank" onFocus="if(this.blur)this.blur()">SEH_and_int_3</a><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;+-bit_Ti_of_RegDS<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Win9x 
+                      &lt;-&gt; Win2k &lt;-&gt; WinXP</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-RegDS_and_int0x2c<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">Ring3_to_Ring0</font><br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="window$/ring3_to_ring0.htm" target="_blank" onFocus="if(this.blur)this.blur()">JediLand.dll</a><br>
+                      &nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">CPU</font><br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<font color="#FFFFFF">x86</font><br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+-<a href="cpu/x86/debugging.htm" target="_blank" onFocus="if(this.blur)this.blur()">Debugging</a><br>
+                      </font></p></td>
+                </tr>
+              </table></td>
+          </tr>
+        </table>
+      </div></td>
+  </tr>
+</table>
+</body>
+</html>

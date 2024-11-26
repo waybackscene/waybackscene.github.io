@@ -1,0 +1,172 @@
+*
+{outline: none;}
+
+body
+{margin: 0;
+padding: 0;
+
+/* ************************* HEADER **************************** */
+background: #000 url("gfx/Header.png") no-repeat top center;}
+/* ************************ HEADER END ************************* */
+
+/* ************************* DISPLAY *************************** */
+#display_panel_main
+{background: url("gfx/DisplayTop.png") no-repeat;
+width: 1043px;
+height: 142px;
+margin: 291px auto 0;}
+
+#display_panel_stretch
+{background: url("gfx/DisplayStretch.png") repeat-y;
+width: 1043px;
+height: auto;
+min-height: 534px;
+margin: 0 auto -20px;}
+
+#display_panel_bottom
+{background: url("gfx/DisplayBottom-copyright.png") no-repeat;
+width: 1043px;
+height: 78px;
+margin: 0 auto;}
+/* ************************ DISPLAY END ************************ */
+
+/* ************************** BUTTONS ************************** */
+#navbar_panel
+{width: 868px;
+margin: 0 auto;
+padding-top: 34px;}
+
+ul#navbar
+{width: 780px;
+list-style: none;}
+
+ul#navbar li
+{display: inline;}
+
+ul#navbar li a
+{float: left;
+width: 130px;
+height: 33px; 
+background: url("gfx/Buttons.png") no-repeat;
+text-indent: -9999px;}
+
+ul#navbar li a.news
+{background-position: 0px 0px;}
+
+ul#navbar li a.news:hover
+{background-position: 0px -33px;}
+
+ul#navbar li a.download
+{background-position: -130px 0px;}
+
+ul#navbar li a.download:hover
+{background-position: -130px -33px;}
+
+ul#navbar li a.request
+{background-position: -260px 0px;}
+
+ul#navbar li a.request:hover
+{background-position: -260px -33px;}
+
+ul#navbar li a.forum
+{background-position: -390px 0px;}
+
+ul#navbar li a.forum:hover
+{background-position: -390px -33px;}
+
+ul#navbar li a.contacts
+{background-position: -520px 0px;}
+
+ul#navbar li a.contacts:hover
+{background-position: -520px -33px;}
+
+ul#navbar li a.about
+{background-position: -650px 0px;}
+
+ul#navbar li a.about:hover
+{background-position: -650px -33px;}
+/* ************************* BUTTONS END *********************** */
+
+/* ************************ PAGE CONTENT *********************** */
+#img_content
+{width: 937px;
+height: 25px;
+background: url("gfx/ImgContent.png") no-repeat;
+margin: 0 auto;}
+
+body#home_page #img_content
+{background-position: 0px 0px;
+width: 130px;}
+
+body#download_page #img_content
+{background-position: -130px 0px;
+width: 248px;}
+
+body#request_page #img_content
+{background-position: -378px 0px;
+width: 188px;}
+
+body#contacts_page #img_content
+{background-position: -566px 0px;
+width: 225px;}
+
+body#about_page #img_content
+{background-position: -791px 0px;
+width: 146px;}
+
+#page_content
+{color: #bfb5b3;
+font-family: "Times New Roman";}
+
+#page_content .center
+{text-align: center;}
+
+#page_content a
+{text-decoration: none;
+color: #c46703;}
+
+#page_content a:hover
+{color: #ff8400;}
+
+#page_content .left_right_padding
+{padding-left: 80px;
+padding-right: 80px;}
+
+#page_content .heading_left_padding
+{padding-left: 160px;
+color: #ff8400;}
+
+body#download_page #page_content ul
+{list-style: none;
+padding-left: 226px;}
+
+body#download_page #page_content ul li
+{display: inline;
+font-weight: bold;}
+
+body#request_page #page_content p
+{text-align: justify;}
+
+body#request_page #page_content dl dt
+{color: #ff8400;
+text-decoration: underline;}
+
+body#contacts_page #page_content dl
+{padding-left: 420px;}
+
+body#about_page #page_content p
+{font-family: "Courier New";
+text-align: center;}
+/* *********************** PAGE CONTENT END ******************** */
+
+/* ************************ BROKEN GLASS *********************** */
+#broken_glass
+{position:relative;}
+
+#broken_glass img
+{width: 148px;
+height: 144px;
+position: absolute;
+right: 29px;
+top: -92px;}
+/* ********************** BROKEN GLASS END ********************* */

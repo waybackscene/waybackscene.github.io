@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+/*   font-family: "trebuchet ms", verdana, sans-serif; */
+	font-family: "Courier New";
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+	font-family: "trebuchet ms", verdana, sans-serif;
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+	font-family: "trebuchet ms", verdana, sans-serif;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover	
+  {
+  color: #990000;
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+	
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>SMCrackMe de Kharneth - Solution d'elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+<p><a href="SMCrackMe.exe">Télécharger la cible</a></p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie avanc&eacute;</td><td>Ollydbg</td><td>elooo</td></tr>
+</table>
+
+
+  <h2 id="sommaire">Sommaire</h2>
+<ul>
+	 <li><a href="index.htm#intro">Introduction</a></li>
+	 <li><a href="index.htm#point0">Etude du code</a></li>	 
+	 <li><a href="index.htm#point1">Source du keygen en asm</a></li>
+	 <li><a href="index.htm#fin">Remerciements</a></li> 	 
+</ul>
+
+  <h2 id="intro">Introduction</h2>
+<p>Pour ce crackme (qui est en fait un keygenme, l'unique but étant de coder un keygen), Kharneth s'est particulièrement
+éclaté avec le junk code).<br />
+Si vous avez pris la peine de le tracer un peu, vous avez pu voir à quoi ça ressemblait dans le debugger :</p>
+<ul class="liste">
+<li>Des émulations de jump avec des "push adresse", suivi de "ret" plus loin</li>
+<li>De l'obfuscation de code</li>
+<li>Des appels au api émulés</li>
+<li>Du code qui saute partout sans rien faire, juste pour destabiliser</li>
+</ul>
+<p>Si on recolle le code après l'avoir rendu lisible, et en le posant en séquentiel, voyez ce que ça donne, via les
+screenshots successifs.</p>
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point0">Etude du code</h2>
+<p style="text-align:center">
+<img src="1.PNG" alt="Image 1" />
+</p>
+<p>Du junk code qui sert à rien mis à part à nous faire sauter tout partout :)<br/>
+Ca m'a fait penser à mon WTF_CrackMe quand je suis tombée là-dessus ;)</p>
+<p style="text-align:center">
+<img src="2.PNG" alt="Image 2" />
+</p>
+<p>On récupère l'adresse vers le jmp GetDlgItemTextA dans l'IAT, puis on lui soustrait 0xB1600B5.</p>
+<p style="text-align:center">
+<img src="3.PNG" alt="Image 3" />
+<br/>
+<img src="4.PNG" alt="Image 4" />
+<br/>
+<img src="5.PNG" alt="Image 5" />
+<br/>
+<img src="6.PNG" alt="Image 6" />
+<br/>
+<img src="7.PNG" alt="Image 7" />
+</p>
+<p>Du junk code toujours,et on rétablit la pile.</p>
+<p style="text-align:center">
+<img src="8.PNG" alt="Image 8" />
+<br/>
+<img src="9.PNG" alt="Image 9" />
+<br/>
+<img src="10.PNG" alt="Image 10" />
+</p>
+<p>Ci-dessus par exemple,on voit particulièrement bien l'émulation de jump, via des pushs suivis de ret.</p>
+<p style="text-align:center">
+<img src="11.PNG" alt="Image 11" />
+<br/>
+<img src="12.PNG" alt="Image 12" />
+</p>
+<p>On voit le passage d'arguments pour GetDlgItemTextA:</p>
+<ul class="liste">
+<li> 0x3E9 pour l'handle de la DialogBox</li>
+<li> 0x00401073 pour l'ID du control (editbox)</li>
+<li> [00403051] pour l'offset du buffer qui contiendra la string entrée dans l'editbox (ci-dessous)</li>
+<li> 0x00401089 pour la taille maxi de la string récupérée (ci-dessous)</li>
+</ul>
+<p style="text-align:center">
+<img src="13.PNG" alt="Image 13" />
+<br/>
+<img src="14.PNG" alt="Image 14" />
+</p>
+<p>Ici on calcule la valeur d'eax (en lui rajoutant 0xB1600B5 qui avait été soustrait auparavant), afin de récupérer 
+la bonne valeur qui nous fera sauter vers GetDlgItemTextA.</p>
+<p style="text-align:center">
+<img src="15.PNG" alt="Image 15" />
+</p>
+<p>On teste si au moins un caractère a été entré dans l'editbox. Si c'est le cas, on stocke le nombre de caractères de
+la string dans [00403055].</p>
+<p style="text-align:center">
+<img src="16.PNG" alt="Image 16" />
+<br/>
+<img src="17.PNG" alt="Image 17" />
+</p>
+<p>Junk code toujours, et on rétablit la pile.</p>
+<p style="text-align:center">
+<img src="18.PNG" alt="Image 18" />
+<br/>
+<img src="19.PNG" alt="Image 19" />
+<br/>
+<img src="20.PNG" alt="Image 20" />
+</p>
+<p>Ci-dessus on retrouve encore les jump émulés.</p>
+<p style="text-align:center">
+<img src="21.PNG" alt="Image 21" />
+</p>
+<p>Même principe que pour GetDlgItemTextA : on récupère l'adresse vers le jmp CharUpperA dans l'IAT et on lui soustrait
+une valeur.</p>
+<p style="text-align:center">
+<img src="22.PNG" alt="Image 22" />
+<br/>
+<img src="23.PNG" alt="Image 23" />
+</p>
+<p>On passe les paramètres pour CharUpperA sur la pile puis on l'appelle.<br/>
+En fait, il met le nom entré en majuscules.</p> 
+<p style="text-align:center">
+<img src="24.PNG" alt="Image 24" />
+<br/>
+<img src="25.PNG" alt="Image 25" />
+</p>
+<p>On récupère le nom NETBIOS de la machine depuis laquelle est lancé le keygenme, via GetComputername.</p> 
+<p>Puis vient l'algo de génération du serial avec les screenshots ci-dessous. Je pense que je n'ai pas besoin
+de commenter plus. L'algo n'est pas compliqué à comprendre.</p>
+<p style="text-align:center">
+<img src="26.PNG" alt="Image 26" />
+<br/>
+<img src="27.PNG" alt="Image 27" />
+<br/>
+<img src="28.PNG" alt="Image 28" />
+<br/>
+<img src="29.PNG" alt="Image 29" />
+<br/>
+<img src="30.PNG" alt="Image 30" />
+<br/>
+<img src="31.PNG" alt="Image 31" />
+<br/>
+<img src="32.PNG" alt="Image 32" />
+<br/>
+<img src="33.PNG" alt="Image 33" />
+<br/>
+<img src="34.PNG" alt="Image 34" />
+<br/>
+<img src="35.PNG" alt="Image 35" />
+<br/>
+<img src="36.PNG" alt="Image 36" />
+<br/>
+<img src="37.PNG" alt="Image 37" />
+<br/>
+<img src="38.PNG" alt="Image 38" />
+<br/>
+<img src="39.PNG" alt="Image 39" />
+</p>
+<p>Je n'ai pas regardé la suite, mais on peut supposer qu'il va récupérer ensuite le serial entré et le comparer au
+serial qui a été généré grace à l'algo précédent.<br/>
+On a largement assez d'info là pour coder notre keygen :)</p>
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+  <h2 id="point1">Source du keygen en asm</h2>
+	
+<p>Donc voici la source en asm (masm) de mon keygen pour le keygenme de Kharneth.<br/>
+C'est pas du grand art, juste du code "à la elooo"...</p>	
+<blockquote>
+<pre>
+;======================================================================
+;	SMCrackMe_keygen
+;	elooo
+;======================================================================
+.486p
+.model flat, stdcall
+option casemap :none
+;======================================================================
+;   Includes
+;======================================================================
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+include \masm32\include\user32.inc
+include \masm32\include\masm32.inc
+
+includelib \masm32\lib\user32.lib
+includelib \masm32\lib\kernel32.lib
+includelib \masm32\lib\masm32.lib
+;======================================================================
+;   Macros
+;======================================================================
+      print MACRO Quoted_Text:VARARG
+        LOCAL Txt
+          .data
+            Txt db Quoted_Text,0
+          .code
+            invoke StdOut,ADDR Txt
+      ENDM
+
+      input MACRO Quoted_Prompt_Text:VARARG
+        LOCAL Txt
+        LOCAL Buffer
+          .data
+            Txt db Quoted_Prompt_Text,0
+            Buffer db 512 dup(0)
+          .code
+            invoke StdOut,ADDR Txt
+            invoke StdIn,ADDR Buffer,LENGTHOF Buffer
+            mov eax, offset Buffer
+      ENDM
+;======================================================================
+;   DATA
+;======================================================================
+.data
+Taille          dd 512
+Taille2         dd 512
+;======================================================================
+;   DATA?
+;======================================================================
+.data?
+ComputerName    db 512 dup (?)  ; buffer du nom du computer
+offsetNom       dword ?         ; offset du buffer du nom entre
+;======================================================================
+;   CODE
+;======================================================================
+.code
+start:
+pushad
+
+	print 13,10,"********************************************************"
+	print 13,10,"*                 SMCrackMe de Kharneth                *"	
+	print 13,10,"*                    Keygen par elooo                  *"
+	print 13,10,"*                      Code en asm                     *"	
+	print 13,10,"********************************************************"
+	print 13,10,13,10
+	
+	invoke GetComputerName, addr ComputerName, addr Taille	
+	.if eax != NULL
+		print "ComputerName = "
+		invoke StdOut, addr ComputerName
+		xor eax, eax
+		mov ecx, 1Ah
+		mov esi, offset ComputerName
+		mov edi, esi 
+		
+@@:		lodsb
+		or al, al
+		je fincomputername
+		cdq
+		div ecx
+		mov al, dl
+		stosb
+		jmp @B
+		
+fincomputername:		
+		input 13,10,"Entre un nom : "
+		mov offsetNom, eax
+		invoke CharUpperBuff, offsetNom, Taille2
+		mov esi, offsetNom
+		mov edi, esi
+		xor eax, eax
+		xor ebx, ebx		
+		mov ecx, 1Ah
+
+boucle2:		
+		lodsb
+		cmp al, 0Dh
+		jne goboucle2
+		test ebx, ebx
+		jz fincomputername
+		jmp finnom		
+goboucle2:
+		cmp al, 41h
+		jl badChar
+		cmp al, 5Ah
+		jg badChar
+		sub al, 41h
+		cdq
+		div ecx
+		cmp byte ptr [ComputerName+ebx], 0
+		jne @F
+		xor ebx, ebx
+@@:		add dl, byte ptr [ComputerName+ebx]		
+		inc ebx
+		add dl, 41h
+		mov al, dl
+		cmp al, 5Ah
+		jle @F
+		sub al, 5Ah
+		add al, 40h
+@@:		stosb
+		jmp boucle2
+		
+badChar:
+		print 13,10,0
+		print "Je ne gere que les noms a caracteres alphabetiques coco :("
+		jmp fincomputername	
+		
+finnom:
+		print 13,10,"Et ton serial tant attendu est : "
+		invoke StdOut, offsetNom
+		
+	.else 
+		print "WTF ? Pas moyen de recuperer le nom NETBIOS de ta machine :o ",13, 10	
+	.endif
+	
+	invoke ExitProcess,0		
+popad
+END start
+</pre>
+</blockquote>	
+<p>Le keygen est téléchargeable <a href="SMCrackMe_keygen.exe">ici</a>.</p> 
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+
+<blockquote>
+<p>Cordialement,<br />
+elooo.</p>
+</blockquote>
+
+<p>
+ <a href="index.htm#sommaire">
+ <img style="border:0"
+ src="haut.gif" 
+ alt="Retour au sommaire" />
+ </a>
+</p>
+
+</div>
+</body>
+</html>

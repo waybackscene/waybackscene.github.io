@@ -1,0 +1,751 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0095)http://sunsite.bcc.bilkent.edu.tr/pub/tex/ctan/archive-tools/checksum/v1-04/ibmpcdos/checksum.c -->
+<HTML><HEAD>
+<META content="text/html; charset=windows-1252" http-equiv=Content-Type>
+<META content="MSHTML 5.00.2614.3500" name=GENERATOR></HEAD>
+<BODY><XMP>#define OK 0
+#define usage_error 1
+#define cannot_open_read_file 2
+#define cannot_open_write_file 4
+#define error_reading_input_file 8
+#define cannot_open_temporary_file 16
+#define VERIFY 0
+#define COMPUTING 1
+#define SIZE 16
+/*3:*/
+#line 138 "checksum.w"
+
+/*11:*/
+#line 297 "checksum.w"
+
+typedef unsigned int CheckSum;
+
+/*:11*/
+#line 139 "checksum.w"
+
+/*4:*/
+#line 154 "checksum.w"
+
+#include <stdio.h>
+#include <ctype.h>
+#if defined(__STDC__) && !defined(__GNUC__)
+#include <stddef.h>
+#include <stdlib.h>
+#else
+#ifndef SEEK_SET
+#define   SEEK_SET        0
+#endif
+#endif
+#include<string.h>
+
+#ifndef EXIT_SUCCESS
+#define EXIT_SUCCESS 0
+#endif
+
+#ifndef EXIT_FAILURE
+#define EXIT_FAILURE 1
+#endif
+
+#if defined(__STDC__)||defined(__GNUC__)||defined(__TURBOC__)||defined(MSDOS)
+#define ARGS(plist) plist
+#else
+#define ARGS(plist) ()
+#endif
+
+CheckSum add_a_byte_to_checksum ARGS((unsigned int new_byte,CheckSum
+oldCheckSum));
+int critical ARGS((char*s));
+int main ARGS((int argc,char**argv));
+CheckSum merge_three_checksums ARGS((CheckSum s,CheckSum t,CheckSum u));
+CheckSum MultiplyTwoPolys ARGS((CheckSum u,CheckSum v));
+unsigned long int word_count ARGS((char*s));
+
+/*:4*/
+#line 140 "checksum.w"
+
+/*5:*/
+#line 200 "checksum.w"
+
+int status= OK;
+char*prog_name;
+
+
+/*:5*//*14:*/
+#line 376 "checksum.w"
+
+int loc_chksum,loc_first_quote_mark,loc_second_quote_mark;
+/*:14*//*56:*/
+#line 931 "checksum.w"
+
+static CheckSum crc_table[]= 
+{
+0x0000,0x8005,0x800f,0x000a,0x801b,0x001e,0x0014,0x8011,
+0x8033,0x0036,0x003c,0x8039,0x0028,0x802d,0x8027,0x0022,
+0x8063,0x0066,0x006c,0x8069,0x0078,0x807d,0x8077,0x0072,
+0x0050,0x8055,0x805f,0x005a,0x804b,0x004e,0x0044,0x8041,
+0x80c3,0x00c6,0x00cc,0x80c9,0x00d8,0x80dd,0x80d7,0x00d2,
+0x00f0,0x80f5,0x80ff,0x00fa,0x80eb,0x00ee,0x00e4,0x80e1,
+0x00a0,0x80a5,0x80af,0x00aa,0x80bb,0x00be,0x00b4,0x80b1,
+0x8093,0x0096,0x009c,0x8099,0x0088,0x808d,0x8087,0x0082,
+0x8183,0x0186,0x018c,0x8189,0x0198,0x819d,0x8197,0x0192,
+0x01b0,0x81b5,0x81bf,0x01ba,0x81ab,0x01ae,0x01a4,0x81a1,
+0x01e0,0x81e5,0x81ef,0x01ea,0x81fb,0x01fe,0x01f4,0x81f1,
+0x81d3,0x01d6,0x01dc,0x81d9,0x01c8,0x81cd,0x81c7,0x01c2,
+0x0140,0x8145,0x814f,0x014a,0x815b,0x015e,0x0154,0x8151,
+0x8173,0x0176,0x017c,0x8179,0x0168,0x816d,0x8167,0x0162,
+0x8123,0x0126,0x012c,0x8129,0x0138,0x813d,0x8137,0x0132,
+0x0110,0x8115,0x811f,0x011a,0x810b,0x010e,0x0104,0x8101,
+0x8303,0x0306,0x030c,0x8309,0x0318,0x831d,0x8317,0x0312,
+0x0330,0x8335,0x833f,0x033a,0x832b,0x032e,0x0324,0x8321,
+0x0360,0x8365,0x836f,0x036a,0x837b,0x037e,0x0374,0x8371,
+0x8353,0x0356,0x035c,0x8359,0x0348,0x834d,0x8347,0x0342,
+0x03c0,0x83c5,0x83cf,0x03ca,0x83db,0x03de,0x03d4,0x83d1,
+0x83f3,0x03f6,0x03fc,0x83f9,0x03e8,0x83ed,0x83e7,0x03e2,
+0x83a3,0x03a6,0x03ac,0x83a9,0x03b8,0x83bd,0x83b7,0x03b2,
+0x0390,0x8395,0x839f,0x039a,0x838b,0x038e,0x0384,0x8381,
+0x0280,0x8285,0x828f,0x028a,0x829b,0x029e,0x0294,0x8291,
+0x82b3,0x02b6,0x02bc,0x82b9,0x02a8,0x82ad,0x82a7,0x02a2,
+0x82e3,0x02e6,0x02ec,0x82e9,0x02f8,0x82fd,0x82f7,0x02f2,
+0x02d0,0x82d5,0x82df,0x02da,0x82cb,0x02ce,0x02c4,0x82c1,
+0x8243,0x0246,0x024c,0x8249,0x0258,0x825d,0x8257,0x0252,
+0x0270,0x8275,0x827f,0x027a,0x826b,0x026e,0x0264,0x8261,
+0x0220,0x8225,0x822f,0x022a,0x823b,0x023e,0x0234,0x8231,
+0x8213,0x0216,0x021c,0x8219,0x0208,0x820d,0x8207,0x0202,
+};
+
+
+
+/*:56*/
+#line 141 "checksum.w"
+
+/*15:*/
+#line 379 "checksum.w"
+
+
+int critical(s)
+char*s;
+{
+/*16:*/
+#line 404 "checksum.w"
+
+int i= 0;
+int j= 0;
+char*chksm= "checksum";
+int k= 0;
+int jj;
+
+
+
+/*:16*/
+#line 384 "checksum.w"
+
+/*17:*/
+#line 430 "checksum.w"
+
+while((i!=1)&&(s[j]!=0))
+
+switch(i)
+
+{
+
+case 0:if(isalpha(s[j])){i= 2;jj= j;}else j++;break;
+case 2:if(s[j]==chksm[k])
+{k++;j++;if(k==8)i= 3;}
+else i= 1;
+break;
+case 3:if(isalpha(s[j]))i= 1;else j++;break;}
+
+
+if(i!=3)return(0);
+loc_chksum= jj;
+/*:17*//*18:*/
+#line 453 "checksum.w"
+
+j= jj+8;i= 0;
+while(s[j]!=0)
+{
+if(s[j]!='"'){j++;continue;}
+if((s[j-1]==' ')&&(s[j-2]=='=')&&(s[j-3]==' '))
+{loc_first_quote_mark= j;i= 1;break;}
+else j++;}
+if(i==0)return(1);
+/*:18*//*19:*/
+#line 465 "checksum.w"
+
+j++;i= 0;
+while(s[j]!=0)
+{
+
+if(s[j]=='"'){i= 1;loc_second_quote_mark= j;break;}
+j++;}
+if(i==0)return(2);else return(3);
+
+
+/*:19*/
+#line 385 "checksum.w"
+
+}
+/*:15*//*27:*/
+#line 531 "checksum.w"
+
+
+unsigned long int word_count(s)
+char*s;
+{int i;
+int in_word= 0;
+int word_cnt= 0;
+char c;
+for(i= 0;(s[i]!=0)&&(s[i]!='\n');i++)
+{c= s[i];
+if(c>' '&&c<0177){
+if(!in_word){word_cnt++;in_word++;}
+continue;
+}
+if(c!=' '&&c!='\t')continue;
+in_word= 0;
+}
+return((unsigned long int)word_cnt);
+}
+
+/*:27*//*57:*/
+#line 975 "checksum.w"
+
+
+CheckSum add_a_byte_to_checksum(new_byte,oldCheckSum)
+unsigned int new_byte;
+CheckSum oldCheckSum;
+{
+CheckSum u;
+u= (CheckSum)new_byte;
+oldCheckSum= oldCheckSum&0xffff;
+u= ((oldCheckSum<<8)&0xffff)^u;
+u= u^crc_table[(oldCheckSum>>8)&0xff];
+return(u);
+}
+/*:57*//*60:*/
+#line 1030 "checksum.w"
+
+CheckSum MultiplyTwoPolys(u,v)
+CheckSum u,v;
+{
+CheckSum r= 0;
+int u_array[SIZE];
+int v_array[SIZE];
+int w_array[SIZE+SIZE];
+int i,j;
+CheckSum s[4];
+for(i= 0;i<SIZE;i++)
+{u_array[i]= u%2;u= u/2;
+v_array[i]= v%2;v= v/2;}
+for(i= 0;i<(SIZE+SIZE);i++)
+w_array[i]= 0;
+for(i= 0;i<SIZE;i++)
+for(j= 0;j<SIZE;j++)
+w_array[i+j]+= (u_array[i]*v_array[j]);
+for(i= 0;i<SIZE+SIZE;i++)
+w_array[i]= w_array[i]%2;
+/*:60*//*61:*/
+#line 1053 "checksum.w"
+
+for(i= 0;i<4;i++)
+{s[i]= 0;
+for(j= 0;j<8;j++)
+s[i]= (s[i]*2)+w_array[(8*i)+(7-j)];}
+
+/*:61*//*62:*/
+#line 1063 "checksum.w"
+
+for(i= 3;i>1;i--)
+{s[i-1]= s[i-1]^((crc_table[s[i]]>>8)&0xff);
+s[i-2]= s[i-2]^((crc_table[s[i]])&0xff);}
+r= (s[1]<<8)^s[0];
+return(r);
+}
+
+
+/*:62*//*63:*/
+#line 1077 "checksum.w"
+
+
+CheckSum merge_three_checksums(s,t,u)
+CheckSum s,t,u;
+{
+CheckSum w;
+w= t^u;
+w= MultiplyTwoPolys(w,s);
+return(w^t);
+}
+
+/*:63*/
+#line 142 "checksum.w"
+
+/*6:*/
+#line 205 "checksum.w"
+
+int
+main(argc,argv)
+int argc;
+char**argv;
+{
+/*7:*/
+#line 232 "checksum.w"
+
+int mode= COMPUTING;
+/*:7*//*12:*/
+#line 308 "checksum.w"
+
+unsigned long int lc= 0;
+unsigned long int wc= 0;
+unsigned long int cc= 0;
+int current_line_is_critical;
+
+int found_critical_line= 0;
+
+CheckSum chksum= 0,auxchksum= 0,auxchksum2= 1;
+long int loc_critical_line;
+
+
+int answer_from_critical= 0;
+char current_line[257];
+char critical_line[257];
+
+
+/*:12*//*22:*/
+#line 496 "checksum.w"
+
+int i;
+/*:22*//*34:*/
+#line 637 "checksum.w"
+
+char*temp_buf;
+char temp_buf2[17];
+
+/*:34*//*37:*/
+#line 666 "checksum.w"
+
+char*quote_pattern= " = \"";
+/*:37*//*41:*/
+#line 699 "checksum.w"
+
+char*Zstring= "ZZZZZ ";
+char*one_space= " ";
+char*quote= "\"";
+/*:41*//*44:*/
+#line 722 "checksum.w"
+
+int loc_in_line;
+char*dummy_field_pattern= "B C\"";
+/*:44*//*46:*/
+#line 746 "checksum.w"
+
+int char_field_length= 0;
+int old_char_field_length;
+unsigned long int cc_guess;
+/*:46*//*50:*/
+#line 787 "checksum.w"
+
+unsigned long int stored_wc= 0;
+unsigned long int stored_cc= 0;
+unsigned long int stored_lc= 0;
+CheckSum stored_chksum;
+int verify_successful= 1;
+#if vms
+char*format= "%d %ld %ld %ld";
+
+
+#else
+char*format= "%u %lu %lu %lu";
+#endif
+char*position_in_line;
+/*:50*//*65:*/
+#line 1097 "checksum.w"
+
+FILE*input_file,*output_file,*temp_file;
+
+int input_from_pipe= 0;
+/*:65*/
+#line 211 "checksum.w"
+
+prog_name= argv[0];
+/*8:*/
+#line 238 "checksum.w"
+
+if(argc>3){/*71:*/
+#line 1143 "checksum.w"
+
+{status+= usage_error;
+fprintf(stderr,"%s: Command line has incorrect format.\n",prog_name);
+fprintf(stderr,"%%  checksum  inputfile outputfile\n");
+fprintf(stderr,"     is the format for installing a checksum in a \
+file.\n");
+fprintf(stderr,"%% checksum -v inputfile\n");
+fprintf(stderr," is the format for verifying an installed \
+checksum.\n");
+exit(EXIT_FAILURE);}
+/*:71*/
+#line 239 "checksum.w"
+}
+else if((argc>=2)&&!(strcmp(argv[1],"-v")))
+{mode= VERIFY;argc-= 2;argv+= 2;}
+else{argc--;argv++;}
+
+
+
+/*:8*/
+#line 213 "checksum.w"
+
+/*66:*/
+#line 1105 "checksum.w"
+
+if(argc==0){/*68:*/
+#line 1125 "checksum.w"
+
+
+input_from_pipe= 1;
+if(mode==COMPUTING)
+{if((temp_file= tmpfile())==NULL){/*73:*/
+#line 1160 "checksum.w"
+
+{status+= cannot_open_temporary_file;
+fprintf(stderr,"%s: cannot open temporary file.\n",prog_name);
+exit(EXIT_FAILURE);}
+/*:73*/
+#line 1130 "checksum.w"
+}}
+input_file= stdin;
+/*:68*/
+#line 1106 "checksum.w"
+}
+else
+if(!(strcmp(argv[0],"-"))){argc--;argv++;{/*68:*/
+#line 1125 "checksum.w"
+
+
+input_from_pipe= 1;
+if(mode==COMPUTING)
+{if((temp_file= tmpfile())==NULL){/*73:*/
+#line 1160 "checksum.w"
+
+{status+= cannot_open_temporary_file;
+fprintf(stderr,"%s: cannot open temporary file.\n",prog_name);
+exit(EXIT_FAILURE);}
+/*:73*/
+#line 1130 "checksum.w"
+}}
+input_file= stdin;
+/*:68*/
+#line 1109 "checksum.w"
+}}
+else
+{
+if((input_file= fopen(argv[0],"r"))==NULL){/*72:*/
+#line 1154 "checksum.w"
+
+{status+= cannot_open_read_file;
+fprintf(stderr,"%s: cannot open input file %s\n",prog_name,*argv);
+exit(EXIT_FAILURE);
+}
+/*:72*/
+#line 1113 "checksum.w"
+}
+else{argc--;argv++;}}
+/*:66*//*67:*/
+#line 1117 "checksum.w"
+
+if((argc==0)||!(strcmp(argv[0],"-")))output_file= stdout;
+else{if((output_file= fopen(argv[0],"w"))==NULL)/*74:*/
+#line 1165 "checksum.w"
+
+{status+= cannot_open_write_file;
+fprintf(stderr,"%s: cannot open output file %s\n",prog_name,*argv);
+exit(EXIT_FAILURE);
+}
+/*:74*/
+#line 1120 "checksum.w"
+}
+/*:67*/
+#line 214 "checksum.w"
+
+/*13:*/
+#line 340 "checksum.w"
+
+
+while(fgets(current_line,257,input_file)!=NULL)
+{
+current_line_is_critical= 0;
+if(found_critical_line==0)/*20:*/
+#line 478 "checksum.w"
+
+if(answer_from_critical= critical(current_line))
+current_line_is_critical= 
+found_critical_line= 1;
+
+/*:20*/
+#line 346 "checksum.w"
+
+if(current_line_is_critical){/*21:*/
+#line 487 "checksum.w"
+
+{strcpy(critical_line,current_line);
+if((mode==COMPUTING)&&!input_from_pipe)
+
+else if(mode==VERIFY)
+
+}
+
+/*:21*/
+#line 347 "checksum.w"
+}
+/*25:*/
+#line 511 "checksum.w"
+
+if(mode==COMPUTING)
+{if(!found_critical_line)
+fputs(current_line,output_file);
+else if((input_from_pipe)&&!(current_line_is_critical))
+fputs(current_line,temp_file);}
+/*:25*/
+#line 348 "checksum.w"
+
+/*26:*/
+#line 522 "checksum.w"
+
+if(!(current_line_is_critical)||(mode==VERIFY))
+{
+lc++;
+cc+= strlen(current_line);
+wc+= word_count(current_line);
+}
+/*:26*/
+#line 349 "checksum.w"
+
+/*28:*/
+#line 570 "checksum.w"
+
+if(mode==VERIFY||!found_critical_line)
+else
+if(!current_line_is_critical){/*30:*/
+#line 582 "checksum.w"
+
+for(i= 0;current_line[i]!=0;i++)
+{auxchksum= add_a_byte_to_checksum((unsigned int)current_line[i],auxchksum);
+auxchksum2= add_a_byte_to_checksum((unsigned
+int)current_line[i],auxchksum2);
+}
+
+/*:30*/
+#line 574 "checksum.w"
+}
+
+/*:28*/
+#line 350 "checksum.w"
+
+}
+if(!feof(input_file))/*75:*/
+#line 1171 "checksum.w"
+
+{status+= error_reading_input_file;
+fprintf(stderr,"%s: Error encountered while reading input file.\n",
+prog_name);exit(EXIT_FAILURE);}
+/*:75*/
+#line 352 "checksum.w"
+
+
+/*:13*/
+#line 215 "checksum.w"
+
+/*32:*/
+#line 612 "checksum.w"
+
+if(mode==COMPUTING){/*33:*/
+#line 616 "checksum.w"
+
+/*35:*/
+#line 652 "checksum.w"
+
+temp_buf= current_line;
+switch(answer_from_critical){
+/*:35*//*36:*/
+#line 658 "checksum.w"
+
+case 0:{/*76:*/
+#line 1176 "checksum.w"
+
+{status+= usage_error;
+fprintf(stderr,"The input file did not have the correct format.\n");
+fprintf(stderr,"It should contain a line which has the word \
+\"checksum\"\n");
+fprintf(stderr,"and no other alphabetic characters.\n");
+exit(EXIT_FAILURE);}
+/*:76*/
+#line 659 "checksum.w"
+}
+break;
+/*:36*//*38:*/
+#line 669 "checksum.w"
+
+case 1:strcpy(temp_buf,critical_line+(loc_chksum+8));
+critical_line[loc_chksum+8]= 0;
+strcat(critical_line,quote_pattern);
+loc_first_quote_mark= loc_chksum+11;
+break;
+/*:38*//*39:*/
+#line 678 "checksum.w"
+
+case 2:strcpy(temp_buf,critical_line+(loc_first_quote_mark
++1));
+critical_line[loc_first_quote_mark+1]= 0;
+break;
+/*:39*//*40:*/
+#line 690 "checksum.w"
+
+case 3:strcpy(temp_buf,critical_line+(loc_second_quote_mark
++1));
+critical_line[loc_first_quote_mark+1]= 0;
+break;}
+/*:40*/
+#line 617 "checksum.w"
+
+/*42:*/
+#line 704 "checksum.w"
+
+strcat(critical_line,Zstring);
+/*:42*/
+#line 618 "checksum.w"
+
+/*43:*/
+#line 709 "checksum.w"
+
+lc++;
+sprintf(temp_buf2,"%lu",lc);
+strcat(critical_line,temp_buf2);
+strcat(critical_line,one_space);
+/*:43*/
+#line 619 "checksum.w"
+
+/*45:*/
+#line 727 "checksum.w"
+
+loc_in_line= strlen(critical_line);
+strcat(critical_line,dummy_field_pattern);
+strcat(critical_line,temp_buf);
+wc+= word_count(critical_line);
+critical_line[loc_in_line]= 0;
+sprintf(temp_buf2,"%lu",wc);
+strcat(critical_line,temp_buf2);
+strcat(critical_line,one_space);
+
+/*:45*/
+#line 620 "checksum.w"
+
+/*47:*/
+#line 751 "checksum.w"
+
+cc+= strlen(temp_buf)+strlen(critical_line);
+do
+{cc_guess= cc+char_field_length+1;
+sprintf(temp_buf2,"%lu",cc_guess);
+old_char_field_length= char_field_length;
+char_field_length= strlen(temp_buf2);}
+while(old_char_field_length!=char_field_length);
+strcat(critical_line,temp_buf2);
+strcat(critical_line,quote);
+strcat(critical_line,temp_buf);
+/*:47*/
+#line 621 "checksum.w"
+
+/*48:*/
+#line 765 "checksum.w"
+
+for(i= 0;critical_line[i]!=0;i++)
+chksum= add_a_byte_to_checksum((unsigned
+int)critical_line[i],chksum);
+chksum= merge_three_checksums(chksum,auxchksum,auxchksum2);
+sprintf(temp_buf2,"%05u",chksum);
+strncpy(critical_line+(loc_first_quote_mark+1),temp_buf2,5);
+/*:48*/
+#line 622 "checksum.w"
+
+/*49:*/
+#line 773 "checksum.w"
+
+fputs(critical_line,output_file);
+
+/*:49*/
+#line 623 "checksum.w"
+
+/*:33*/
+#line 613 "checksum.w"
+}
+else{/*51:*/
+#line 803 "checksum.w"
+
+if(!found_critical_line)
+{printf("The input file did not have the correct format.\n");
+exit(EXIT_FAILURE);}
+position_in_line= critical_line+loc_first_quote_mark+1;
+if(4!=sscanf(position_in_line,format,&stored_chksum,&stored_lc,
+&stored_wc,&stored_cc))
+{printf("The input file did not have the correct format.\n");
+exit(EXIT_FAILURE);}
+verify_successful= (chksum==stored_chksum&&wc==stored_wc&&
+lc==stored_lc&&cc==stored_cc);
+if(verify_successful)
+printf("The checksum verification of the input file was successful.\n");
+else
+printf("The checksum verification of the input file did not succeed.\n");
+/*:51*/
+#line 614 "checksum.w"
+}
+/*:32*/
+#line 216 "checksum.w"
+
+if(mode==COMPUTING){/*31:*/
+#line 596 "checksum.w"
+
+if(!input_from_pipe)
+fseek(input_file,loc_critical_line,SEEK_SET);
+else
+{
+rewind(temp_file);
+fclose(input_file);
+input_file= temp_file;
+}
+while(fgets(current_line,257,input_file)!=NULL)
+fputs(current_line,output_file);
+if(!feof(input_file))
+/*75:*/
+#line 1171 "checksum.w"
+
+{status+= error_reading_input_file;
+fprintf(stderr,"%s: Error encountered while reading input file.\n",
+prog_name);exit(EXIT_FAILURE);}
+/*:75*/
+#line 608 "checksum.w"
+
+
+/*:31*/
+#line 217 "checksum.w"
+}
+/*69:*/
+#line 1133 "checksum.w"
+
+fclose(input_file);if(mode==COMPUTING)fclose(output_file);
+
+/*:69*/
+#line 218 "checksum.w"
+
+if(status!=0)
+exit(EXIT_FAILURE);
+else
+exit(verify_successful?EXIT_SUCCESS:EXIT_FAILURE);
+return(0);
+}
+
+/*:6*/
+#line 143 "checksum.w"
+
+
+
+/*:3*/
+</XMP></BODY></HTML>

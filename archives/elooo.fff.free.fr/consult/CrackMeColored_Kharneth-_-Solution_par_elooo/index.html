@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+
+
+<head>
+    <title>elooo vs mimicracra...</title>
+
+<style type="text/css">
+/* AUTEUR: elooo */
+/* DATE DE CREATION: 29/11/03 */
+/* styles communs tout browser */
+
+
+
+body
+  {
+  font-family: "trebuchet ms", verdana, sans-serif;
+  font-size: 14px;
+  background-color: #FFCC77;
+  color: black;
+  }
+
+.texte
+  {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  
+  background-color: #FFDD99;
+  }
+
+  
+p 
+  {
+  text-align: justify;
+  padding-left: 30px;
+  padding-right: 30px;
+  }
+
+h1 
+  {
+  background-color: #990000;
+  color: #99CC66;
+  border: 2px solid #FFFF66;
+  padding-left: 20px;
+
+  }
+
+h2
+  {
+  background-color: #FFCC77;
+  color: #339900;
+  padding-left: 8px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #FFFF66; 
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #FFFF66;
+  }
+
+h3
+  {
+  color: #990000;
+  text-decoration: underline;
+  padding-left: 30px; 
+  }
+
+a:link 
+  {
+  color: #006600;
+  font-weight: bolder;
+  text-decoration: underline
+  }
+
+a:visited 
+  {
+  color: #FF7700;
+  text-decoration: none;
+  }
+
+a:hover
+  {
+  color: #003663;
+  background-color: #CCCC66; 
+  text-decoration: underline;
+  }
+
+
+
+table
+  {
+  width:100%;
+  border-style: hidden; 
+  }
+
+th
+  {
+  background-color: #CCCC66;
+  border-style: solid;
+  border-color: white;
+  }
+
+tr
+  {
+   border-style: dashed; 
+   border-color: white;
+  }
+
+td
+  {
+  border-style: dashed;
+  font-size: 14px;
+  text-align: center;
+  border-color:white;
+  }
+
+hr
+  {
+  border-style:dotted;
+  border-color:#FFFF66;
+  }
+
+.liste
+  {
+  color: #990000;
+  font-weight: bolder;
+  list-style-position:inside;
+  list-style-type:circle;
+  } 
+
+blockquote
+  {
+  background-color: #FFFF66;
+  }
+
+code
+  {
+	font-weight:bolder;
+	}
+	
+</style>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="texte">
+
+  <h1>ColoredCrackMe_color de Kharneth - Solution par elooo</h1>
+
+<p>
+      <a href="http://validator.w3.org/check/referer">
+       <img style="border:0;height:31px;width:88px;"
+       src="http://www.w3.org/Icons/valid-xhtml11"
+       alt="Valid XHTML 1.1!" />
+       </a>
+
+       <a href="http://jigsaw.w3.org/css-validator/">
+       <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+       </a>
+</p>
+
+<table border="1" summary="Tableau de pr&eacute;sentation">
+<colgroup  span="3" width="33%" />
+   <tr><th>Niveau</th><th>Outils</th><th>Auteur</th></tr>
+   <tr><td>Newbie avanc&eacute;</td><td>Ollydbg 1.9d - StudPE</td><td>elooo</td></tr>
+</table>
+
+  <h2>Familiarisation avec le crackme</h2>
+<p>Tout d'abord, si on ouvre ce crackme dans StudPE, on constate qu'il est pack&eacute; avec UPX.</p>
+
+<p style="text-align:center">
+<img src="1.PNG" alt="Image 1" />
+</p>
+
+<p>L'unpacking manuel d'UPX est particuli&egrave;rement simple, cependant je n'expliquerai pas la d&eacute;marche dans ce tutorial.</p>
+<p>Telechargez une version d'upx et effectuez en ligne de commande un <code>upx -d nom_du_fichier</code> 
+dans une console dos ou pour les moins dou&eacute;s, procurez-vous une GUI pour UPX facilement 
+trouvable sur google (Il faut savoir qu'UPX n'est pas un packer vou&eacute; &agrave; prot&eacute;ger 
+son executable du debugage &agrave; la base, mais plut&ocirc;t un compresseur d'exe).</p>
+
+<p>Une fois le crackme d&eacute;compress&eacute;, interessons-nous de plus pr&egrave;s &agrave; ce crackme.<br />
+Si on l'execute, on tombe sur une fen&ecirc;tre similaire &agrave; celle-ci :</p>
+<p style="text-align:center">
+<img src="2.PNG" alt="Image 2" />
+</p>
+<p>On constate qu'on nous demande de g&eacute;n&eacute;rer une s&eacute;rie de 6 couleurs s&eacute;lectionnables par clics avec la souris
+sur le nuancier. Chaque couleur symbolise une lettre comprise entre A et S.</p>
+
+  <h2>Etude de la routine</h2>
+
+<p>Ouvrons cette fois le crackme d&eacute;compress&eacute; dans Ollydbg, et allons voir en premier lieu si Les Data String Reference peuvent nous 
+orienter vers une partie interessante du code.<br />
+On peut voir par exemple :</p>
+
+<p style="text-align:center">
+<img src="3.PNG" alt="Image 3" />
+</p>
+
+<p>Donc on double-clique sur <code>Good Guy !</code>. On remonte un peu et on voit un jnz 
+en 00450937 qui jump vers badboy si la comparaison juste au-dessus n'est pas v&eacute;rifi&eacute;e. 
+Si on remonte encore un peu, on voit une longue boucle, qui semble &agrave; premi&egrave;re vue 
+correspondre &agrave; une routine de v&eacute;rification du pass.<br />
+Essayons de commenter un peu cette partie du code :</p>
+
+<p style="text-align:center">
+<img src="4.PNG" alt="Image 4" />
+</p>
+
+<p>En 0045091D, on voit qu'on peut r&eacute;cup&eacute;rer facilement les valeurs attendues pour 
+le pass. A chaque passage dans la boucle, une nouvelle valeur attendue est stock&eacute; dans ebp 
+et est compar&eacute;e &agrave; notre fake valeur contenue dans eax.<br />
+On va donc poser un bp en 0045091D, puis avec F9 faire breaker 6 fois, tout en prenant soin 
+de relever les valeurs stock&eacute;es dans ebp.</p>
+<blockquote>
+<pre>On obtient :
+                 1ere lettre -> 001969FD
+                 2eme lettre -> 00A579AE
+                 3eme lettre -> 00FFFFA7
+                 4eme lettre -> 00E4AB1C
+                 5eme lettre -> 00B893E1
+                 6eme lettre -> 00F2C52A
+</pre>
+</blockquote>
+
+
+<p>Ok, maintenant voyons voir &agrave; quelle valeur correspond chacune des lettres de
+A &agrave; S. La m&eacute;thode est similaire, sauf que cette fois on r&eacute;cup&egrave;re 
+ce qui est stock&eacute; dans eax et ceci en fonction de la position de la lettre dans le fake serial rentr&eacute;.<br />
+Afin d'avoir toutes les possibilit&eacute;s on testera avec ces fake pass :</p>
+<ul class="liste">
+<li>ABCDEF</li>
+<li>GHIJKL</li>
+<li>MNOPQR</li>
+<li>SABCDE</li>
+<li>FGHIJK</li>
+<li>LMNOPQ</li>
+<li>RSABCD</li>
+<li>EFGHIJ</li>
+<li>KLMNOP</li>
+<li>QRSABC</li>
+<li>DEFGHI</li>
+<li>JKLMNO</li>
+<li>PQRSAB</li>
+<li>CDEFGH</li>
+<li>IJKLMN</li>
+<li>OPQRSA</li>
+<li>BCDEFG</li>
+<li>HIJKLM</li>
+<li>NOPQRS</li>
+</ul>
+
+
+<p>
+On est ensuite en mesure de constituer un tableau afin d'y voir plus clair.
+</p>
+
+ <table border="1" summary="Tableau des lettres contenues dans le pass" style="width:100%">
+  <colgroup span="7">
+  <col width="10%" />
+  <col width="15%" />
+  <col width="15%" />
+	<col width="15%" />
+	<col width="15%" />
+	<col width="15%" />
+	<col width="15%" />
+  </colgroup>
+  <tr>
+	<th>Lettres</th>
+	<th>Position 1</th>
+	<th>Position 2</th>
+	<th>Position 3</th>
+	<th>Position 4</th>
+	<th>Position 5</th>
+	<th>Position 6</th>
+	</tr>
+  
+<tr>
+<td>A</td>
+<td style="font-weight:bolder">001969FD</td>    
+<td>00F0D6EB</td>   
+<td>00FFFA68</td>   
+<td>006E91E9</td>    
+<td style="font-weight:bolder">00B893E1</td>   
+<td>002E2261</td>
+</tr>
+
+<tr>
+<td>B</td>
+<td>000165CF</td>     
+<td>00A579A5</td>    
+<td>00FCE546</td>   
+<td>00272196</td>     
+<td>0026163D</td>   
+<td>003E2E6D</td>
+</tr>
+
+<tr>
+<td>C</td>
+<td>00043AFF</td>   
+<td style="font-weight:bolder">00A579AE</td>    
+<td>00F6C52A</td>   
+<td>006B2D3D</td>   
+<td>004F2D4C</td>  
+<td>004E3E7A</td>
+</tr>
+
+<tr>
+<td>D</td>
+<td>000025FE</td>    
+<td>00A57AAC</td>     
+<td>00E4AB1C</td>   
+<td>00BF6429</td>     
+<td>00994E36</td>    
+<td>00654F92</td> 
+</tr>
+
+<tr>
+<td>E</td>
+<td>00B0D0A5</td>     
+<td>000025FE</td>    
+<td>00A57AAC</td>   
+<td style="font-weight:bolder">00E4AB1C</td>    
+<td>00BF6429</td>    
+<td>00994E36</td>  
+</tr>
+
+<tr>
+<td>F</td>
+<td>00C47210</td>    
+<td>00B0D0A5</td>    
+<td>000025FE</td>   
+<td>00A57AAC</td>   
+<td>00E4AB1C</td> 
+<td>00BF6429</td> 
+</tr>
+
+<tr>
+<td>G</td>
+<td>0004009A</td>    
+<td>00C47210</td>    
+<td>00B0D0A5</td>  
+<td>000025FE</td>    
+<td>00A57AAC</td>   
+<td>00E4AB1C</td> 
+</tr>
+
+<tr>
+<td>H</td>
+<td>00000174</td>    
+<td>00B56F12</td>    
+<td>00B3D4AE</td>  
+<td>00206FFF</td>    
+<td>00956FA5</td>   
+<td>00FDE13A</td> 
+</tr>
+
+<tr>
+<td>I</td>
+<td>0006014B</td>    
+<td>00BB7C1B</td>    
+<td>00A4C193</td>   
+<td>004099FA</td>	   
+<td>008B639F</td>   
+<td>00FDFF5F</td>
+</tr>
+
+<tr>
+<td>J</td>
+<td>0001004A</td>    
+<td>00EBB039</td>    
+<td>007F9661</td>   
+<td>003E9CFB</td>	   
+<td>007D5B8A</td>  
+<td>00FBFF74</td>
+</tr>
+
+<tr>
+<td>K</td>
+<td>00030259</td>
+<td>00F9BB41</td>    
+<td>007F9863</td>    
+<td>004FB0FC</td>   
+<td>007D5A93</td>  
+<td>00FFFF68</td>
+</tr>
+
+<tr>
+<td>L</td>
+<td>00030172</td>   
+<td>00E19B35</td>    
+<td>0098B384</td>    
+<td>0061CAFF</td>  
+<td>007E5C9E</td>  
+<td>00FAEB48</td>
+</tr>
+
+<tr>
+<td>M</td>
+<td>00000098</td>    
+<td>00925D1E</td>    
+<td>00AECFA5</td>  
+<td>0079E9FF</td>   
+<td>009E71AF</td>  
+<td style="font-weight:bolder">00F2C52A</td>
+</tr>
+
+<tr>
+<td>N</td>
+<td>00925D1E</td>    
+<td>00AECFA5</td>    
+<td>0079E9FF</td>   
+<td>009E71AF</td>   
+<td>00F2C52A</td>  
+<td>0082A9F2</td>
+</tr>
+
+<tr>
+<td>0</td>
+<td>00AECFA5</td>    
+<td>0079E9FF</td>    
+<td>009E71AF</td>   
+<td>00F2C52A</td>   
+<td>0082A9F2</td>  
+<td>00EFCABD</td>
+</tr>
+
+<tr>
+<td>P</td>
+<td>0079E9FF</td>    
+<td>009E71AF</td>    
+<td>00F2C52A</td>   
+<td>0082A9F2</td>   
+<td>00EFCABD</td> 
+<td>00DCCEF0</td>
+</tr>
+
+<tr>
+<td>Q</td>
+<td>006DDAFD</td>    
+<td>00AF88B4</td>    
+<td>00FFFE6E</td>  
+<td>00B1EAFB</td>  
+<td>00A87471</td>   
+<td>006B52A2</td>
+</tr>
+
+<tr>
+<td>R</td>
+<td>0045A0FF</td>    
+<td>00CCA7C6</td>    
+<td style="font-weight:bolder">00FFFFA7</td>   
+<td>00CCFFFF</td>  
+<td>007E5363</td>   
+<td>00402D73</td>
+</tr>
+
+<tr>
+<td>S</td>
+<td style="font-weight:bolder">001969FD</td>    
+<td>00F0D6EB</td>    
+<td>00FFFA68</td>   
+<td>006E91E9</td>   
+<td style="font-weight:bolder">00B893E1</td>   
+<td>002E2261</td>
+</tr>
+
+</table>
+
+
+  <h2>R&eacute;solution du crackme</h2>
+
+<p>On met en &eacute;vidence dans le tableau les valeurs attendues aux bons emplacements (repr&eacute;sent&eacute;es en gras ci-dessus). 
+Il devient maintenant tr&egrave;s facile d'&eacute;noncer les diff&eacute;rentes solutions possibles :</p>
+
+<blockquote>
+<pre>
+      SCRESM
+ou    SCREAM
+ou    ACRESM
+ou    ACREAM 
+</pre>
+</blockquote>
+
+<p>Je ne me suis pas cass&eacute;e la t&ecirc;te pour ce tutorial. J'esp&egrave;re simplement
+avoir &eacute;t&eacute; suffisamment explicite pour que vous ayez pu me suivre.</p>
+
+</div>
+</body>
+</html>

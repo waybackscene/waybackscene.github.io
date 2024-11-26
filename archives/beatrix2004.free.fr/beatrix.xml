@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<rss version="2.0">
+    <channel>
+        <title>BeatriX news</title>
+        <description>last news</description>
+        <lastBuildDate>Mon, 12 jul 2010 19:06:00 +0100</lastBuildDate>
+        <link>http://beatrix2004.free.fr</link>
+        <item>
+            <title>BeaEngine 4.0 rev 134 : cheetah version.</title>
+            <description>
+                    1. bugfixes on argsize of some fpu instructions (thanks to Helle)
+                    2. A new version of BeaEngine is born : BeaEngine Cheetah. With that one, you can't display disassembly anymore but you speed up the disassembly (more than 2 times faster than BeaEngine full version) (thanks to Baboon)
+            </description>
+            <pubDate>Mon, 12 jul 2010 19:06:00 +0100</pubDate>
+            <link>http://www.beaengine.org</link>
+        </item>		
+        <item>
+            <title>BeaEngine 4.0 : new functionnalities.</title>
+            <description>
+				1. [new] : BeaEngine is now a cross-platform library and it can be compiled by all well-known compilers (thanks to Igor Gutnik)
+				2. [new] : New intel AES instruction set has been added (6 instructions : aesdec, aesenc, aesimc, aesdeclast, aesenclast, aeskeygen-assist)
+				3. [new] : New intel CLMUL instruction has been added (pclmulqdq)
+				4. [new] : source code is now conform to ISO C.
+				5. [new] : new website is hosting the project : http://www.beaengine.org
+				6. [new] : BeaEngine is now thread-safe. Disasm function is re-entrant.(thanks to Nam Nguyen)
+				7. [new] : BeaEngine is able to disassemble 16 bits targets - useful feature to analyze DOS .com files.
+
+				other news
+
+				1. [new] : example of a driver using BeaEngine with fasm (thanks to ouadji)
+				2. [new] : BeaEngine source code has been modified to make it easier to use with Delphi. (thanks to vince)
+				3. [new] : xlat becomes xlatb [thanks to Ange Albertini]
+				4. [new] : Header + examples for PureBasic coders (thanks to Helle and Mike Yurgalavage)
+
+				bug fixes
+
+				1. [bug fix] : xor instruction had bad instruction type (thanks to Tim)
+				2. [bug fix] : typos in the online documentation (thanks to andrewl)
+				3. [bug fix] : iret did not make the difference between iretd , iretw and iretq. [thanks to Ange Albertini]
+				4.[bug fix] : bad operandsize for "in" instruction [thanks to Ange Albertini]
+				5.[bug fix] : bad operand type for "pinsrw" instruction [thanks to Ange Albertini]
+				6.[bug fix] : bad operand type for "movupd" instruction [thanks to Ange Albertini]
+				7.[bug fix] : bad instruction size for Group7 instructions family [thanks to Ange Albertini]
+				8.[bug fix] : bad interpretation of "invlgpa" instruction [thanks to Ange Albertini]
+				9. [bug fix] : monitor and mwait not identified properly [thanks to Ange Albertini]
+				10. [bug fix] :Troubles with operandsize when it was used as a mandatory prefix.[thanks to Ange Albertini]
+				11. [bug fix] : In driver examples, IAT was not located in the right section. [Thanks to locoDelAssembly (fasm)]
+				12. [bug fix] : negative immediat where not displayed to be immediatly usable by assemblers. (thanks to 29a metal)
+
+            </description>
+            <pubDate>Thu, 6 may 2010 22:54:00 +0100</pubDate>
+            <link>http://www.beaengine.org</link>
+        </item>		
+        <item>
+            <title>BeaEngine 3.1.0 : bugfixes and new functionnalities.</title>
+            <description>
+                    1. SS override by DS register in the case where BaseRegister is rbp was not properly decoded (sessiondiy)
+                    2. add new mnemonics for AAM and AAD instructions in the case where the immediat is different from 0x0A. (not included in official documentations) (GUAN)
+                    3. Beaengine Header is extended ! two fields have been added : BranchTaken and BranchNotTaken to inform about Branch Hint prefixes. (Tim).
+                    4. Complete package for Delphi users
+
+            </description>
+            <pubDate>Wed, 4 nov 2009 11:20:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+        <item>
+            <title>BeaEngine 3.0.6 : fix a wrong interpretation of cs and ds registers thanks to sessiondiy</title>
+            <description>segment registers cs and ds were not correctly interpreted.</description>
+            <pubDate>Fri, 16 oct 2009 09:23:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+        <item>
+            <title>BeaEngine 3.0.5 : add undocumented bswap reg16 instruction thanks to 29a metal</title>
+            <description>Officially, 'bswap reg16' has an undefined behavior and for that reason, was not recognized by BeaEngine.</description>
+            <pubDate>Sun, 3 oct 2009 09:23:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+        <item>
+            <title>BeaEngine 3.0.4 : add fpu instruction thanks to Rafal Cyran</title>
+            <description>fucomip instruction was not recognized.</description>
+            <pubDate>Sun, 2 Aug 2009 15:05:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+
+        <item>
+            <title>LDE64-x86 version 1.2 under LGPL3 license</title>
+            <description>I have decided to make this LDE open-source. This version is now under LGPL3 license. You can use it without any restriction (even in commercial products). The source code of this LDE must stay always free even if you modify it to make it more suitable to a particular purpose.</description>
+            <pubDate>Thu, 30 Apr 2009 19:02:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#ldex6411</link>
+        </item>
+
+        <item>
+            <title>BeaEngine 3.0.3 : bugfixes by bax and andrewl</title>
+            <description>Argument1.ArgSize and BranchType fields were wrong on 5 instructions.</description>
+            <pubDate>Fri, 20 Mar 2009 14:51:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+
+        <item>
+            <title>FullDisasm 2.3 : improvement by What : int 3 hidden from disassembly</title>
+            <description>int 3 set by user are now removed from the disassemble code. thanks to 'What' for the suggestion</description>
+            <pubDate>Fri, 6 Mar 2009 18:57:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fulldisasm17</link>
+        </item>
+
+        <item>
+            <title>FullDisasm 2.1 : bugfix by Osiris and Computer_Angel</title>
+            <description>there was a bug about SSE4 supported technology (occurs only on processors supporting SSE4).</description>
+            <pubDate>Tue, 24 Feb 2009 11:19:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fulldisasm17</link>
+        </item>
+
+        <item>
+            <title>BeaEngine 3.0.1 : bugfix by KumaT</title>
+            <description>there was a bug on Argument2.AccessMode on x64 architectures if REX prefix was in use.</description>
+            <pubDate>Mon, 23 Feb 2009 22:16:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+
+        <item>
+            <title>LDE64-x64 version 1.6 : bugfix by Zool@nder</title>
+            <description>There was a bug in the pop ds instruction.</description>
+            <pubDate>Mon, 23 Feb 2009 22:16:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#lde64x64</link>
+        </item>
+        <item>
+            <title>LDE64-x86 version 1.2 : bugfix by Zool@nder</title>
+            <description>There was a bug in the pop ds instruction.</description>
+            <pubDate>Mon, 23 Feb 2009 22:16:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#ldex6411</link>
+        </item>
+
+        <item>
+            <title>BeaEngine 3.0 : disassembler library for x86 and x64 architectures</title>
+            <description>With this version, you can make data-flow analysis and control-flow analysis.</description>
+            <pubDate>Fri, 13 Feb 2009 10:55:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fretdisassembly</link>
+        </item>
+        <item>
+            <title>FullDisasm 2.0 : Decodes aliases and allows GNU Assembler syntax</title>
+            <description>With this version, you can disassemble code with the GNU Assembler syntax. This new version is able to decode undocumented instructions called aliases (used in malicious codes) by Christian Ludloff.</description>
+            <pubDate>Wed, 11 Feb 2009 17:53:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#fulldisasm17</link>
+        </item>
+        <item>
+            <title>LDE64-x64 version 1.5 : BugFix</title>
+            <description>There was a bug in the Prefix REP.</description>
+            <pubDate>Wed, 14 Jan 2009 17:09:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#lde64x64</link>
+        </item>
+        <item>
+            <title>LDE64-x64 : My Length disassembler engine</title>
+            <description>routine to evaluate length instruction</description>
+            <pubDate>Tue, 11 Nov 2008 13:22:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/tools.html#lde64x64</link>
+        </item>
+        <item>
+            <title>addTLS.exe : How to add TLS functions</title>
+            <description>minitool to add TLS callback functions</description>
+            <pubDate>Tue, 11 Nov 2008 13:22:00 +0100</pubDate>
+            <link>http://beatrix2004.free.fr/minitools.html#addtls</link>
+        </item>
+    </channel>
+</rss>

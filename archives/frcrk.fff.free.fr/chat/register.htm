@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html dir="LTR">
+<head>
+<title>phpMyChat</title>
+<link rel="stylesheet" href="chat/config/style.css.php3?Charset=iso-8859-1&amp;medium=10&amp;FontName=" type="text/css">
+<script type="text/javascript" language="javascript">
+<!--
+// Insert login and password in fields of the starter page form
+function LoginToIndex()
+{
+};
+
+// Put focus to the username field of the form at the starter page
+function get_focus()
+{
+	window.focus();
+	document.forms['RegParams'].elements['U'].focus();
+}
+// -->
+</script>
+</head>
+
+<body onload="if (window.focus) get_focus();">
+<center>
+<br>
+<form action="register.php3" method="POST" autocomplete="OFF" name="RegParams">
+<p></p>
+<input type="hidden" name="FORM_SEND" value="1">
+<input type="hidden" name="L" value="english">
+<table border="0" cellpadding="3" class="table">
+<tr>
+	<td align="CENTER">
+		<table border="0">
+		<tr>
+			<th colspan="2" class="tabtitle">User registration</th>
+		</tr>
+		<tr>
+			<th colspan="2">Fields with a <span class="error">*</span> must be completed.</th>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td align="RIGHT" valign="TOP" nowrap>Pseudo :</td>
+			<td valign="TOP">
+				<input type="text" name="U" size="11" maxlength="10" value="">
+				<span class="error">*</span>			</td>
+		</tr>
+					<tr>
+				<td align="RIGHT" valign="TOP" nowrap>Mot de passe :</td>
+				<td valign="TOP">
+					<input type="password" name="PASSWORD" size="11" maxlength="16" value="">
+					<span class="error">*</span>				</td>
+			</tr>
+					<tr>
+			<td align="RIGHT" valign="TOP" nowrap>Prénom :</td>
+			<td valign="TOP">
+				<input type="text" name="FIRSTNAME" size="11" maxlength="64" value="">
+				<span class="error">*</span>			</td>
+		</tr>
+		<tr>
+			<td align="RIGHT" valign="TOP" nowrap>Nom :</td>
+			<td valign="TOP">
+				<input type="text" name="LASTNAME" size="11" maxlength="64" value="">
+				<span class="error">*</span>			</td>
+		</tr>
+		<tr>
+			<td align="RIGHT" valign="TOP" nowrap>sexe :</td>
+			<td valign="TOP">
+				<input type="radio" name="GENDER" value="1">&nbsp;homme<br>
+				<input type="radio" name="GENDER" value="2">&nbsp;Femme			</td>
+		</tr>
+		<tr>
+			<td align="RIGHT" valign="TOP" nowrap>spoken languages :</td>
+			<td valign="TOP">
+				<input type="text" name="COUNTRY" size="11" maxlength="64" value="">
+			</td>
+		</tr>
+		<tr>
+			<td align="RIGHT" valign="TOP" nowrap>WEB :</td>
+			<td valign="TOP">
+				<input type="text" name="WEBSITE" size="11" maxlength="64" value="">
+			</td>
+		</tr>
+		<tr>
+			<td align="RIGHT" valign="TOP" nowrap>votre e-mail :</td>
+			<td valign="TOP">
+				<input type="text" name="EMAIL" size="11" maxlength="64" value="">
+				<span class="error">*</span>			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="checkbox" name="SHOWEMAIL" value="1">
+				&nbsp;show e-mail in public information			</td>
+		</tr>
+		</table>
+		<p>
+					<input type="submit" name="submit_type" value="S'enregistrer">
+					<input type="submit" name="submit_type" value="Fermer" onclick="LoginToIndex(); self.close(); return false;">
+	</td>
+</tr>
+</table>
+</form>
+</center>
+</body>
+
+</html>

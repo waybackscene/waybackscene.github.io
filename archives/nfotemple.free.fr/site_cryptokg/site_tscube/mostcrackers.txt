@@ -1,0 +1,53 @@
+Most crackers...
+-----------------
+
+# think they are coders just because they do crackmes
+
+# think they are good in ASM just because they make offset patchers and keygens in ASM
+
+# think they're "reversers" just because they know how to change a few bytes to crack a prog
+
+# think it's funny to spend hours making keygens
+
+# think process patchers are for lamers
+
+# think VB is shit because it's hard to admit that anyone can make a prog using this langage
+
+# think VC++ and C++ Builder is shit because they can't understand what OOP is
+
+# think they know C++ just because they use 'cout' in their progs
+
+# think Delphi is great because if it didn't exist, 90% of the "coders" would vanish
+
+# think it's fair to spend 4 hours cracking a prog and then say the protection is lame
+
+# think they are pretting good at making GUI using win32asm just because they use a template
+
+# think everyone will want to read their last "replace jne with jmp" tut
+
+# think 'inc eax,dec eax' is better that 'nop,nop' because most progs "count" the 'nop'
+
+So, a typical cracker :
+# is a coder
+# is good in ASM
+# spends his time making keygens
+# don't use process patchers
+# thinks VB, VC++ and C++ Builder is shit
+# knows C++
+# codes in Delphi
+# thinks most protections are lame
+# makes win32asm GUI progs
+# writes very interesting tuts
+# uses "inc eax,dec eax" instead of "nop,nop"
+
+... by the way, are u a cracker ;) ?
+
+    ________     _______     _______
+   /__   __/\   /  ____/\   /  ____/\
+   \_/  /\_\/  /  /\___\/  /  /\___\/
+    /  / /    /  /_/_     /  / / 
+   /  / /    /____  /\   /  / /
+  /  / /     \___/ / /  /  / /
+ /  / /     ____/ / /  /  /_/_
+/  / /     /_____/ /  /______/\
+\__\/      \_____\/   \______\/

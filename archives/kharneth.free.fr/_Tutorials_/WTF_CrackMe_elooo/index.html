@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!--	#13 		08/10/2004					 	 //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>WTFCrackMe By elooo</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#600000;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+pre { width:680px;background:white;color:black;border-style:double;border-width:3px;border-color:#600000; }
+
+'img {  border-width:2;border-style:inset;border-color:#FFFFFF; }
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+
+<table style="color:#FFFFFF;" align="center" width="680px" cellspacing="8" cellpadding="6" border="0">
+
+<tr><th colspan="3" style="font-size:30;color:#900000;">WTF_CrackMe By elooo<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="3">&nbsp;</th></tr>
+<tr><th width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td>&nbsp;- PeID<br>&nbsp;- OllyDbg<br>&nbsp;- Google<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant / avancé en Cracking<br>ayant de bonnes connaissances en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/WTF_CrackMe.exe">WTF_CrackMe.exe</a></td></tr>
+
+<tr><th colspan="3">&nbsp;</th></tr>
+
+<tr><td nowrap><b>I - Présentations</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nous sommes en présence d'une jolie jeune fille, nommée <i>WTF CrackMe</i>, qui nous invite à prendre du plaisir avec elle. Ne pouvant résister aux brunes ténébreuses, je m'exécute immédiatement !<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mais attention à ne pas trop brusquer la Demoiselle! D'abord, elle indique qu'il serait plus intéressant de lui fournir un couple nom / serial d'au moins 3 caractères chacun. Et surtout un couple incorrect fait violemment fuire cette Beauté! Nous devons donc procéder avec délicatesse.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une première approche en la présence de PeID ne permet pas de la dévoiler, il semble qu'elle préfère un tête à tête plus intime. Je décide donc de lui présenter mon HolyBed, plus approprié à ce genre de rencontre.
+</p>
+</td></tr>
+
+<tr><td nowrap><b>II - Passage à l'acte</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Etant parvenu à la déshabiller, il reste encore à lui faire dévoiler tous ces charmes. Je commence donc par chercher la zone érogène 111 (WM_COMMAND), celle-ci étant découpée en plusieurs parties, je finis par retenir celle qui nous permet une meilleure communication (ID 199).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lorsqu'une zone intéressante est repérée, toujours penser à bien la noter et inscrire tous les labels possibles.
+</p><center><img src="Captures/Olly01.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A partir de là, il ne reste qu'une seule possibilité que je vais donc suivre en 0040142A.
+</p><center><img src="Captures/Olly02.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Intéressée mais prudente, ma douce invitée préfère vérifier que mes intentions envers elle ne sont point hostiles, avant de me permettre de poursuivre plus intensément notre relation. Il faut savoir qu'il existe une technique qui permet d'interpréter correctement ses signaux (Analysis-->During next analysis, treat selection as).
+</p><center><img src="Captures/Olly03.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une fois rassurée, elle modifie le nom que je lui ai donné en ajoutant d'abord 1E aux 5eme, 9eme et 13eme caractères. Puis Xor chaque caractère avec 13 valeurs, ce qui me permet de supposer que le nom doit faire 13 caractères.
+</p><center><img src="Captures/Olly04.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je continue là où elle me demande d'aller (en 004018D1) et découvre qu'elle va enfin se décontracter et m'autoriser de nouvelles possibilitées en sortant un Kris finement aiguisé.
+</p><center><img src="Captures/Olly04b.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C'est alors qu'elle grave profondément dans sa chair, mon nom crypté (en 004018B5).
+</p><center><img src="Captures/Olly05.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elle effectue de nouveaux des calculs, mais sur chaque WORD du Serial cette fois. 6E69 (peut être une proposition...) est ajouté puis 0063 est retranché. Malheureusement, je suis surpris de constater qu'elle doute encore de la douceur de mes caresses et me tend subitement un piège. Mais je suis déterminer à aller jusqu'au bout et j'accéderai à toutes ses requêtes. Je ralentis donc le rythme qu'elle semble trouver trop soutenu.
+</p><center><img src="Captures/Olly06.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finalement, le serial est crypté avec 13 nouvelles valeurs. on peut donc supposé que le serial contient également 13 caractères. 
+</p><center><img src="Captures/Olly07.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elle mutile de nouveau son corps en inscrivant le serial à la suite de mon nom avant de répandre un liquide noir sur ses plaies. Les lettres gravées se transforment alors, mais le résultat ne semble pas lui convenir, et je ne peux qu'assister impuissant à sa fuite dans un hurlement de fureur. Il parait évident que je ne suis pas celui qu'elle espérait.
+</p>
+</td></tr>
+
+<tr><td nowrap><b>III - Création de l'illusion</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3"><p align="justify">
+Calculs sur le nom:
+<pre>
+Nom:     1  2  3  4  5  6  7  8  9  10 11 12 13
++                    1E          1E          1E
+Xor:     2C 35 E0 87 83 A9 23 04 02 01 73 37 87
+
+= 1ere partie du code de la MsgBox
+</pre>
+Calculs sur le serial:
+<pre>
+Serial:     1  2  3  4  5  6  7  8  9  10 11 12 13
++           6E 69 6E 69 6E 69 6E 69 6E 69 6E 69
+-              63    63    63    63    63 
+Xor         91 47 A3 26 80 4B 0F 23 3B 5B DB CE 21
+
+= 2eme partie du code de la MsgBox
+</pre>
+Code classique d'une MsgBox:
+<pre>
+6A 10 68 D3 32 40 00 68 7F 32 40 00 6A 00 E8 08 05 00 00
+
+&lt;Bad Guy&gt;6A 10         PUSH 10                            ; /Style = MB_OK|MB_ICONHAND
+00401433 68 D3324000   PUSH 004032D3                      ; |Title = "Hey Guy..."
+00401438 68 7F324000   PUSH 0040327F                      ; |Text = "It will be more..."
+0040143D 6A 00         PUSH 0                             ; |hOwner = NULL
+0040143F E8 08050000   CALL &lt;JMP.&amp;user32.MessageBoxA&gt;     ; \MessageBoxA
+</pre>
+Déjà le code d'une MsgBox classique fait 19 octets au lieu des 26 (2x13) supposés.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On peut supposer aussi que les 2 x 8 octets xor les 2 clés (Key03 et Key04) correspondent au titre et au texte de la MsgBox (voir la dernière capture):
+<pre>
+&lt;Key03&gt;     26 25 A3 9C - 65 B4 77 1E 
+Xor 8 1ers octets du code
+= Titre de la MsgBox
+
+&lt;Key04&gt;     03 12 37 69 - 3E 5D B7 20 
+Xor 8 autres octets du code
+= Texte de la MsgBox
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nous avons donc plusieurs indices pour retrouver le code de la MsgBox. il s'agit maintenant de faire des tests et de vérifier si le titre et le texte veulent dire quelque chose.<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La première MsgBox utilise le style MB_ICONHAND pour afficher l'icône de danger. On suppose donc que ici, l'icône d'information sera utilisé. Ce qui donne les opcodes 6A 40 pour <b>Push MB_ICONINFORMATION</b>. On vérifie avec XOR 25 26 que ça pourrait vouloir dire quelque chose et effectivement on obtient 4C 65 qui correspond à "<b>Le</b>".<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ca s'annonce pas trop mal. On suppose donc que la suite serait un truc du style "<b>Le pass...</b>". On prend donc les codes de " pass" (20 70 61 73 73) et on Xor avec Key03.
+<pre>
+     L  e     p  a  s  s
+     4C 65 20 70 61 73 73 
+Xor  26 25 A3 9C 65 B4 77
+=    6A 40 83 EC 04 C7 04
+
+Code:
+     6A 40               PUSH 40
+     83EC 04             SUB ESP, 4
+     C704XX XXXXXXXX     MOV DWORD PTR [...],...		 
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit que le 2eme Push est émulé de manière simple. Ce Push correspond à l'adresse du titre, c'est à dire Key03 soit 0040324D. Les instructions manquantes sont donc [ESP], 0040324D soit les opcodes 24 4D 32 40 00.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En appliquant les calculs inverses du nom, on trouve justement le nom: "<b>Fuckin' 1337</b>". Mais il manque le dernier caractère. Après avoir tester différents opcode, on ne trouve rien qui puisse correspondre. Donc on va réfléchir sur d'autres façons d'émuler un push. On peut par exemple essayer:
+<pre>
+004018C1  B8 56324000  MOV EAX, OFFSET &lt;Key04&gt; 
+004018C6  50           PUSH EAX 
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le B8 nous donne un "<b>!</b>" qui correspond bien. Donc on va essayer avec les opcodes suivants pour faire les calculs sur le serial.
+<pre>
+     56 32 40 00 50
+Xor  91 47 A3 26 80
++    00 63 00 63 00
+-    6E 69 6E 69 6E
+=    59 6F 75 20 62
+     Y  o  u     b
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour la suite, on sait que les 5 derniers opcodes seront E8 7D 00 00 00 car ils correspondent à CALL &lt;JMP.&amp;user32.MessageBoxA&gt;. On effectue donc les calculs inverses pour retrouver le serial et on obtient: "<b>You b___ e me!</b>".<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il nous manque donc le Push 0 juste avant l'appel à la MsgBox. Et nous avons 3 octets pour ça. Après une brève réflexion, on trouve Xor eax, eax Push eax. Mais le serial ainsi obtenu ne veut rien dire. Donc on va tester les différents registres jusqu'à trouver le bon qui est EDX.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nous trouvons finalement le code suivant:
+<pre>
+&lt;PolyCode&gt;        \6A 40               PUSH 40
+004018B7        .  83EC 04             SUB ESP, 4
+004018BA        .  C70424 4D324000     MOV DWORD PTR [ESP], OFFSET &lt;Key03&gt;
+004018C1           B8 56324000         MOV EAX, OFFSET &lt;Key04&gt;            
+004018C6        .  50                  PUSH EAX                               
+004018C7        .  33D2                XOR EDX, EDX                          
+004018C9        .  52                  PUSH EDX                                 
+004018CA        .  E8 7D000000         CALL &lt;JMP.&amp;user32.MessageBoxA&gt;        
+</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ce qui correspond au couple Nom / Serial:
+<center><b>Fuckin' 1337!<br>You broke me!</b></center><br />
+<br />
+</p>
+</td></tr>
+
+<tr><td nowrap><b>IV - Retrouvailles</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Je peux maintenant me présenter en toute confiance devant la Belle ténébreuse qui reste tout aussi suspicieuse. Mais cette fois, ses plaies se referment, et elle peut ainsi, enfin, s'offrir pleinement à moi.
+</p><center><img src="Captures/WTF.png" alt=""></center>
+<center><img src="Captures/MsgBox.png" alt=""></center>
+
+</td></tr>
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+
+<tr><th colspan="3" style="font-family:Times;font-weight:normal;"><br><i>
+
+Father, yes son, I want to kill you<br>
+Mother...I want to...fuck you
+
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="3"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="3"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

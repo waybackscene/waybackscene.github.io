@@ -1,0 +1,1410 @@
+
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S -- - ‹   ˙     ˙
+     ∞    ‹  ∞      ‹ ‹  ‹       ∞ ‹∞          ∞ ‹     ‹         ﬁ€‹   ‹ ∞
+  ‹€€≤ﬂﬂ€€€›‹≤€ﬂﬂﬂ€€€›ﬁ€›ﬁ€€€ﬂﬂﬂ€≤‹ﬁ≤€€ﬂﬂ€€€‹∞‹≤€› ﬂ‹  ﬁ€€€ﬂﬂ€€€‹∞≤€€‹ ﬁ€≤‹
+  €€€› ∞≤€€›€€€ ∞ﬂﬂﬂﬂ ﬂﬂﬂ €€€ ∞ €€€›€€€  ﬁ€€≤∞≤€€ ∞ €€›ﬁ€€€› ﬁ€€≤ €€€ﬂ€‹€€€›
+  ≤€€ﬂﬂﬂ€€€›€€€›∞ ∞≤€›€€€›€€€ ∞ €€€›€€€ﬂﬂﬂ€€‹ﬁ€€€ ∞ €€€ﬁ€€€ﬂﬂ≤€€‹ €€€› ﬂ€€€›
+ ∞≤€€›∞ €€€ ≤€€›∞ €€€›€€€∞≤€€ ∞ﬁ€€€›€€€› ‹€€€ﬁ€€€›∞∞≤€€∞≤€€› ﬁ€€€›€€€›∞ €€€‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€∞≤€€›∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞ €€€›€€€›∞ €€≤ﬂ‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€ﬁ€€€ ∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞∞≤€€ ≤€€›∞ €€›
+ ﬁ€€≤ ∞ﬁ€€≤ﬂ±€€‹‹‹€€€±€€≤ﬁ€€€‹‹€€±ﬂ≤€€€‹‹€€€€ﬂ€€€€‹≤€€€ﬂ≤€±‹ ﬁ€ﬂ ∞≤€€€ ﬁ€ﬂ
+  ﬂ      ﬂ∞  ﬂ    ﬂ    ﬂ       ﬂ          ﬂ         ﬂ   ∞    ﬂ      ﬂ  ﬂ
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ˙     ˙
+                                SRT - CRO
+
+
+
+		  How to Reverse Engineer Devil's Sword IV 
+
+	Cours ecris par ACiD BuRN [ ECLiPSE / Immortal Descendants ]
+
+
+
+
+
+Protections: -  Fichier PackÈ
+             -  Serial Only
+
+
+Logiciels nÈcessaire:
+
+	    - Soft Ice 3.X ou 4.x
+
+            - Procdump 1.6 ( pour dumper l'executable)
+              ou tout autre programme permettant de dumper...
+              (je me sers pas de procdump pour decrypter et de plus 
+	      il n'y arrive pas	:-ﬁ ...)
+
+	    - WDasm8.9 (marchera qu'une fois l'executable decrypte)
+	      on purait se servir de IDA 4 Pro mais trop compliquÈ
+	      pour les 90 % des lecteurs ici presant je pense...
+
+	    - Un editeur Hexa Decimal (Hexworkshop est mon favoris)
+
+	    - QDump pour dumper la chaine cryptÈe
+
+
+Sommaire:
+
+0)Introduction
+I)Decryptage du Fichier PackÈ (l'executable est cryptÈ)
+II)Reverse Engineer l'algo de cryptage du CODE d'enregistrement
+III)Comment mieux securiser se programme (partie pour le programmeur) source code a l'appui
+IV)Conclusion et Greetings
+
+Introduction:
+
+
+Devil's Sword est un client pour aller chater sur caramail...
+Il a ete programmÈ en Borland C++ d'apres l'auteur.
+Je dois dire que ce programme est tres bien fait, c'est un freeware avec
+plein d'options..
+La raison pour laquelle je l'ai ÈtudiÈ est qu'il y avait une protection ;)
+De plus , TOUT les petits cracker sur caramail , ont echouÈ sur cette protection
+alors qu'il ne m'a falut que 5 bonne minutes pour la casser!
+L'auteur a l'air de pas trop s'y connaitre en protection, c'est pourquoi
+j'ecrit ce texte afin de l'aider a proteger ces applications!
+
+
+
+1)Decryptage du Fichier PackÈ (l'executable est cryptÈ)
+
+
+Je ne patch plus les programmes que je crack depuis longtemps
+quand il y a moyen de l'enregistrer par un code ou un keyfile...
+J'ecris sois un keygen, sois je trouve le code qui est unique.
+C'est le cas ici ! le code pour l'enregistrement ne change jamais!
+C'est toujours le meme... Mais il n'est pas en clair dans le programme
+il est cryptÈ...
+Tout d'abord, je vais vous montrer comment decrypter l'executable
+afin d'avoir un listing propre, mais surtout pour pouvoir ajouter
+des fonctions a Devil Sword!
+Reverse Engineering rules :)
+Ajouter des fonctions ? exactement , on peut par exemple ajouter un menu
+avec une options de flood de phrase.. sans meme avoir accÈs aux sources!
+Mais ce n'est pas le sujet de ce cour.. peut etre une autre fois :)
+
+
+Let's Rip this fucker:
+
+
+Bon, pour pouvoir decrypter des executables , vous devez avoir une connaissance
+du format des fichiers de Windows!
+Le Format est le: PE (portable executable)
+si vous ne connaissez pas ( ce qui est plus que certain ;) allez lire
+la partie Unpacking de mon cours Millenium 2000 (celui de 115 pages) a
+l'addresse suivante:
+
+www.AcidBurn2k.cjb.net
+
+
+Voici un petit recapitulatif sur le PE pris sur mon cours de 115 pages:
+
+#################################################################
+
+Manual Unpacking (Decrypter des fichiers a la main)
+
+#################################################################
+
+
+Qu'est-ce que le manual unpacking ??
+Vous avez s˚rement remarquÈ que certaine fois quand on dÈsassemble un fichier,
+on ne trouve plus de String Data References !!!
+Car c'est que le fichier est cryptÈ ou compressÈ !!
+Merde alors.... Ben il existe des unpackers me direz vous, mais c'est pas
+marrant quand Áa fait tout tout seul !! :-o
+Donc, je vais tenter de vous expliquer comment, et avec quoi dÈcrypter les fichiers...
+Tout d'abord qq infos sur le format PE !!
+
+SchÈma pour vous donner une idÈe de la bestiole ;) :
+(from PE.txt)
+
+    +-------------------+
+    | DOS-stub          |
+    +-------------------+
+    | file-header       |
+    +-------------------+
+    | optional header   |
+    |- - - - - - - - - -|
+    |                   |
+    | data directories  |
+    |                   |
+    +-------------------+
+    |                   |
+    | section headers   |
+    |                   |
+    +-------------------+
+    |                   |
+    | section 1         |
+    |                   |
+    +-------------------+
+    |                   |
+    | section 2         |
+    |                   |
+    +-------------------+
+    |                   |
+    | ...               |
+    |                   |
+    +-------------------+
+    |                   |
+    | section n         |
+    |                   |
+    +-------------------+
+
+
+Je vais pas m'attarder trop sur le format lui-mÍme, mais je vais vous donner quelques
+infos sur les sections et autres caractÈristiques !!
+Vous avez s˚rement remarquÈ que dans ProcDump (unpacker), il y a un PE editor (Èditeur
+de PE) trËs trËs utile, vous le verrez plus tard...
+Que se passe-t-il si on Èdite un fichier ??
+On peut rÈcupÈrer l'entry point, l'image base, les caractÈristiques des sections ...
+
+A propos des caractÈristiques:
+
+0x20...... : Cela Veut dire executable
+0x40...... : Cela Veut dire Readable (lisable)
+0x80...... : Cela Veut dire Writeable (Ècriture possible)
+
+exemple 0x60.. -> exÈcutable + lisable 
+
+0x......20 : Cela Veut dire contains Code
+0x......40 : Cela Veut dire Initialized data
+0x......80 : Cela Veut dire Unitialized data
+
+
+########################################################################
+
+			Fin du rappel sur le PE
+
+########################################################################
+
+
+Bon , on va pouvoir commencer ce cours allors!
+Mais je vous recommand de lire des documentations sur le PE
+si vous etes interresses par ce format!
+
+
+Dans cette partie , je vais vous redonnez les bases du unpacking..
+Je ne vous montrerais que comment on retrouve les String Data References
+dans l'app donc pas de table d'import, car ce tut a pour but de mettre
+‡ l'aise avec l'unpacking !! (pour des imports table: lisez le tut sur CDilla)
+Vous pourrez donc patcher le programme comme si il Ètait normal :)
+
+
+
+/////////////////////////////
+/PremiËre partie: le loader!/
+/////////////////////////////
+
+
+
+Vous devrez utiliser le loader de Soft ice pour dÈcompacter, donc exÈcutez-le!
+(loader32.exe)
+
+et choisissez l'exe que vous voulez!
+Pour nous, ce sera : DevilSword.exe.
+Souvent , les programmes crypte ne s'arrete pas sur l'entry Point donc voici
+comment reglez le probleme.
+
+
+##############################################################################
+
+NOTE: Cette partie n'est *PAS* necessaire sur Devil's Sword car les 
+caracteristiques de l'executable sont deja tres bien et le programme
+s'arrete comme il faut!
+Mais on est la pour apprendre donc voila...
+Si vous ne voulez pas savoir , passez directement a la deuxieme partie ok ?!
+
+##############################################################################
+
+Ok, exÈcutez-le fichier avec le loader mais le problËme c'est que cette
+application ne veut pas s'interrompre... :(
+Hehe, no problem!, exÈcutez ProcDump et utilisez un Èditeur PE!
+Editez la section du Code de l'exÈcutable.
+(PE editor: choisissez le fichier, sections, CODE et bouton droit "EDIT SECTION")
+
+
+Ok, vous voyez dans section caracteristic : C0000040 ( ou n'importe quoi d'autre)
+
+Ok, changez-le en : E0000020
+
+Pour des questions ‡ propos de ce geste, lisez les infos plus haut sur les
+caractÈristiques des sections !!
+
+Maintenant, exÈcutez le Loader de SI et Áa marche! :))
+Super, Áa a marchÈ hehe
+
+
+////////////////////////////////////////////////////////////////////////////
+/DeuxiËme partie: Tracer et dumper le fichier de la mÈmoire vers le disque!/
+////////////////////////////////////////////////////////////////////////////
+
+
+
+Ok, donc vous avez tout juste arrÍtÈ l'exÈcution dans SI, vous voyez naturellement
+les INVALID mais Áa ne pose pas de problËme. Tracez avec F10 et vous
+arrivez ici:
+
+
+0177:00588005  6877A16100          PUSH      0061A177     
+0177:0058800A  6800000000          PUSH      00000000
+0177:0058800F  E863210900          CALL      0061A177
+0177:00588014  E927ABF4FF          JMP       004D2B40
+0177:00588019  40                  INC       EAX
+0177:0058801A  2823                SUB       [EBX],AH
+0177:0058801C  29504B              SUB       [EAX+4B],EDX
+0177:0058801F  4C                  DEC       ESP
+0177:00588020  49                  DEC       ECX
+0177:00588021  54                  PUSH      ESP
+0177:00588022  45                  INC       EBP
+0177:00588023  3332                XOR       ESI,[EDX]
+0177:00588025  20436F              AND       [EBX+6F],AL
+0177:00588028  7079                JO        005880A3
+0177:0058802A  7269                JB        00588095
+0177:0058802C  676874203139        PUSH      39312074
+0177:00588032  3938                CMP       [EAX],EDI
+0177:00588034  20504B              AND       [EAX+4B],DL
+0177:00588037  57                  PUSH      EDI
+0177:00588038  41                  INC       ECX
+
+........
+
+
+Quelques Explications:
+
+0177:00588005  6877A16100          PUSH      0061A177
+
+Cette ligne pousse l'adresse 61a177 sur la pile..
+Pour voir le contenu de cette adresse on tape: d 61A177
+Si on regarde dans DATA , on voit que des "?????".
+Ca veut dire que le programme n'a pas encore decrypter cette zone...
+
+0177:0058800F  E863210900          CALL      0061A177
+
+Cette ligne appelle la routine en 61a177.
+Si on entre dans ce call, on voit tout la partie du decryptage de l'executable
+mais en memoire seulement...
+
+
+0177:00588014  E927ABF4FF          JMP       004D2B40
+
+Alors la , c'est le plus important! c'est le saut vers le VRAI l'entry point!!
+C'est quoi l'entry point ?! c'est la ou debute le programme decrypter en 
+memoire! :)
+
+####################################################################################
+
+Note: si vous tapez: d 61A177 une fois que vous etes sur le JMP ( sans l'executer)
+vous verrez que l'addresse ne contient plus les "????" mais bien des chiffres
+ce qui prouve bien que le decryptage est terminÈ !
+
+####################################################################################
+
+Recapitulons:
+
+Le programme se decrypte en memoire et ensuite saute a l'entry point
+pour s'executer comme si il n'etait pas crypter...
+Nous , on veut decrypter le fichier executable alors ce qu'on va faire
+c'est executer une boucle infinie en memoire juste avant le saut
+vers l'entry point et dumper (faire une image de l'exe en memoire) sur
+le disque dure...
+Ensuite on aura plus qu'a changer l'entry point par l'addresse du jump
+qu'il faut noter quelque part et ensuite c finis :)
+Facile non ? :-ﬁ
+Ok , c'est plus simple a dire qu'a faire vous allez penser ! Meuh non!
+
+Voila comment faire:
+
+Relancer le loader sur le fichier de devil et il va s'arreter ..
+On se retrouve donc sous soft ice et on voit "INVALIDE" partout...
+Bon, alors on appuie une fois sur F10 et on voit le code 
+assembleur que j'ai mis plus haut:
+
+
+0177:00588005  6877A16100          PUSH      0061A177     
+0177:0058800A  6800000000          PUSH      00000000
+0177:0058800F  E863210900          CALL      0061A177
+0177:00588014  E927ABF4FF          JMP       004D2B40
+0177:00588019  40                  INC       EAX
+
+.....
+
+
+On trace avec F10 jusqu'a que l'on soit sur la ligne du
+JMP       004D2B40..
+Si on appuie une fois de plus sur F10 , on saute sur le debut du
+programme decrypter , et nous on veut pas ca , mais plutot
+faire une boucle infinie en memoire afin de dumper l'executable!
+Donc, vous tracez jusqu'au JMP.
+
+Maintenant, tapez : 
+
+A       {enter}  <== pour assembler le code
+
+JMP EIP {enter}  <== c'est pour faire une boucle infinie sans avoir ‡ dumper n'importe quoi
+
+{escape}
+
+F5
+
+
+Maintenant le programme est en train de faire une boucle infinie en mÈmoire
+et on peut le dumper!!!
+Ok, exÈcutez ProcDump et vous voyez dans la liste les t‚ches en cours.
+Clickez sur celle contenant DevilSword.exe. Maintenant bouton droit et choisissez
+FULL DUMP. Savez le nouveau EXE avec le nom que vous voulez.
+ex: DevilDumped.exe .
+
+
+Maintenant, cliquez avec le bouton droit comme tout ‡ l'heure mais
+choisissez KILL TASK au lieu de FULL DUMP sinon le programme
+continuerait sa boucle infinie!
+
+/////////////////////////////////////////////////////////
+/TroisiËme partie: Fixer le point d'entrÈe du programme!/
+/////////////////////////////////////////////////////////
+
+
+Ok, regardez le nouvel EXE que l'on vient de dumper et vous voyez
+que sa taille est plus grande que celle du fichier cryptÈ... bien! :)
+Mais attendez! Si vous l'exÈcutez le prog va crasher comme un salop! :(
+l'executable faisait 600 ko, il fait actuellement 2 Mega et quelques!
+WOW , la difference de taille hehe ;)
+
+
+Ok... vous vous souvenez, vous avez notÈ le OEP (Original Entry Point) sur
+un papier, l'addresse ou sautait le JMP :
+
+
+0177:00588005  6877A16100          PUSH      0061A177     
+0177:0058800A  6800000000          PUSH      00000000
+0177:0058800F  E863210900          CALL      0061A177
+0177:00588014  E927ABF4FF          JMP       004D2B40   <-- lui :)
+
+la valeur est donc 4D2B40.
+
+
+
+Dans ce cas, c'Ètait 4D2B40. Ok, exÈcutez ProcDump PE Editor et changez
+le point d'entrÈe en 0x000D2B40. (OEP - the image base : 4D2B40-400000=D2B40)
+Avant le point d'entree etait : 0x00188000...
+(n'oubliez pas que ces valeurs sont en Hexadecimal, alors avec la calculette de
+windows , mettre vous en mode Scientifique et Base 16 Hexa decimal)
+
+
+Maintenant, fermez ProcDump, et le programme compactÈ/cryptÈ
+Lancez le fichier decryptÈ que vous venez de "reparer" et CA MARCHE!!
+Heuresement d'ailleurs et c'est normal :)
+DÈsassemblez-le !! Et oui on voit les String Data References !!! Cool
+on peut donc patcher et tout et tout :)
+
+Voila comment faire qd on tombe sur un executable cryptÈ , mais ce n'est pas toujours aussi
+simple , c'est pourquoi , je vous invite a lire mes autres cours sur les fichiers
+PackÈs , qui se trouvent sur mon site , dans la partie Unpacking du Millenium Tutorial...
+C'est en francais alors n'hesitez pas ;)
+
+Voila , maintenant , vous pouvez patcher des choses dans Devil, et meme cracker
+l'enregistrement...Mais vous ne trouvez pas la reference au message d'erreur car le 
+programmeur l'a surement cryptÈ...
+Ca suffit a decourager les petits crackers en herbe que l'on trouve sur caramail..
+Tout comme le cryptage des executables...
+
+
+Mouarf, moi je m'en tape, je me sert de Soft ice !
+Donc si vous voulez etudiez la partie Serial d'enregistrement lisez la suite :)
+C'est du cryptage , mais pas la meme chose ! 
+Mais l'algo est trop faible pour nous donner du fil a retordre quand on connait l'assembleur...
+
+
+#####################################################################
+#####################################################################
+##								   ##
+## II)Reverse Engineer l'algo de cryptage du CODE d'enregistrement ##
+##								   ##
+#####################################################################
+#####################################################################
+
+
+Pour cette tache , il faut tracer l'algo et le renverser ;)
+Vous allez comprendre ehehe...
+
+Donc lancez le programme Devil et tappez un numero de serie a la con 
+style: 12345
+Pressez CTRL+D pour allez dans soft ice et mettez les breakpoints
+sur les API windows utilisÈs dans le cracking de serial:
+
+BPX GetWindowTextA
+BPX GetDlgItemTexta
+
+Mais ici , un BPX me semble plus utile: BPX Hmemcpy
+donc mettez juste un break point sur Hmemcpy...
+Pressez OK et la vous atterissez sous soft ice a nouveau et vous n'etes
+pas dans l'executable mais dans les DLL..
+Regardez en bas de la fenetre de Soft ice , vous verrez Kernel ou USER...
+Pressez F12 jusqu'a que DEVILSWORD apparaisse ;)
+Vous etes desormais dans l'exe alors commencez a tracer avec F10 et vous verrez ceci:
+
+
+
+0177:004CFC85  E86AFFF4FF          CALL      0041FBF4
+0177:004CFC8A  8B9528FEFFFF        MOV       EDX,[EBP-01D8]   <-- on arrive ici et EDX = location du pass qu'on a entrÈ
+0177:004CFC90  8D8D2CFEFFFF        LEA       ECX,[EBP-01D4]
+0177:004CFC96  8BC3                MOV       EAX,EBX
+0177:004CFC98  E85F040000          CALL      004D00FC
+0177:004CFC9D  8B852CFEFFFF        MOV       EAX,[EBP-01D4]
+0177:004CFCA3  BA04004D00          MOV       EDX,004D0004
+0177:004CFCA8  E80342F3FF          CALL      00403EB0
+0177:004CFCAD  0F8505030000        JNZ       004CFFB8         <-- si le code est incorrect jump to mechant cracker
+0177:004CFCB3  8D45FC              LEA       EAX,[EBP-04]
+0177:004CFCB6  BA50004D00          MOV       EDX,004D0050
+0177:004CFCBB  E8FC3EF3FF          CALL      00403BBC
+0177:004CFCC0  8D45FC              LEA       EAX,[EBP-04]
+0177:004CFCC3  BA8C004D00          MOV       EDX,004D008C
+0177:004CFCC8  E8DB40F3FF          CALL      00403DA8
+0177:004CFCCD  8B45FC              MOV       EAX,[EBP-04]
+0177:004CFCD0  E807DDF6FF          CALL      0043D9DC
+0177:004CFCD5  8D9528FEFFFF        LEA       EDX,[EBP-01D8]
+0177:004CFCDB  A1FC504D00          MOV       EAX,[004D50FC]
+0177:004CFCE0  8B00                MOV       EAX,[EAX]
+0177:004CFCE2  8B80DC010000        MOV       EAX,[EAX+000001DC]
+0177:004CFCE8  E807FFF4FF          CALL      0041FBF4
+
+.............
+
+Note:
+
+0177:004CFC8A  8B9528FEFFFF        MOV       EDX,[EBP-01D8]
+
+Si on passe cette ligne et que l'on tape: D edx on voit dans DATA le code "12345".
+
+
+Donc voila ce que l'on voit...
+J'espere que vous comprenez l'assembleur ;)
+Mais bon ce code est clair comme de l'eau de roche et ressemble beaucoup a du code
+compilÈ en Delphi... Borland aussi..
+Sur ce , si on trace un petit peu on tombe sur la partie de cryptage:
+
+
+0177:004D0118  688B014D00          PUSH      004D018B
+0177:004D011D  64FF30              PUSH      DWORD PTR FS:[EAX]
+0177:004D0120  648920              MOV       FS:[EAX],ESP
+0177:004D0123  8D45F8              LEA       EAX,[EBP-08]
+0177:004D0126  E8F939F3FF          CALL      00403B24
+0177:004D012B  8B45FC              MOV       EAX,[EBP-04]		
+0177:004D012E  E86D3CF3FF          CALL      00403DA0
+0177:004D0133  8BF0                MOV       ESI,EAX			; ESI = EAX = longeur du code que l'on a entrÈ
+0177:004D0135  85F6                TEST      ESI,ESI
+0177:004D0137  7E2D                JLE       004D0166
+0177:004D0139  BB01000000          MOV       EBX,00000001		; Initialise EBX a 1 (index de boucle)
+0177:004D013E  8D45F4              LEA       EAX,[EBP-0C]
+0177:004D0141  8B55FC              MOV       EDX,[EBP-04]               ; EDX = mot de passe entrÈ
+0177:004D0144  0FB6541AFF          MOVZX     EDX,BYTE PTR [EBX+EDX-01]  ; il prends la valeur ascii du 
+									; caractere en position EBX (1 au debut)
+
+0177:004D0149  03D3                ADD       EDX,EBX			; Additionne la valeur ascii avec la position
+									; du caractere
+		
+0177:004D014B  7105                JNO       004D0152			; si pas d'overflow saute a 4D0152
+0177:004D014D  E8C22DF3FF          CALL      00402F14			; sinon appelle de 402F14
+0177:004D0152  E8713BF3FF          CALL      00403CC8
+0177:004D0157  8B55F4              MOV       EDX,[EBP-0C]
+0177:004D015A  8D45F8              LEA       EAX,[EBP-08]
+0177:004D015D  E8463CF3FF          CALL      00403DA8
+0177:004D0162  43                  INC       EBX			; Incremente EBX (index de boucle)
+0177:004D0163  4E                  DEC       ESI			; decremente ESI (longeur du code TapÈ)
+0177:004D0164  75D8                JNZ       004D013E			; si c'est pas egale ‡ 0 on continue la boucle
+0177:004D0166  8BC7                MOV       EAX,EDI
+0177:004D0168  8B55F8              MOV       EDX,[EBP-08]
+0177:004D016B  E84C3AF3FF          CALL      00403BBC
+0177:004D0170  33C0                XOR       EAX,EAX
+0177:004D0172  5A                  POP       EDX
+0177:004D0173  59                  POP       ECX
+0177:004D0174  59                  POP       ECX
+0177:004D0175  648910              MOV       FS:[EAX],EDX
+0177:004D0178  6892014D00          PUSH      004D0192
+0177:004D017D  8D45F4              LEA       EAX,[EBP-0C]
+0177:004D0180  BA03000000          MOV       EDX,00000003
+0177:004D0185  E8BE39F3FF          CALL      00403B48
+0177:004D018A  C3                  RET
+
+
+
+Pour ce qui ne comprene pas bien l'assembleur, cette boucle prends la valeur ascii du caractere
+a la position de la boucle et l'additione avec cette position.
+Cela donne cela pour "12345" :
+
+longeur du code tapÈ : 5   (12345 fait 5 chiffres)
+
+postion du caractere: 1
+valeur ascii = 31h
+addition de cette valeur avec la position = 31h + 1h = 32h
+32h est la valeur ascii en hexadecimal de "2"...
+Le code devient "22345"
+
+On a pas encore fait tout les caracteres , alors on continue:
+
+
+postion du caractere: 2
+valeur ascii = 32h
+addition de cette valeur avec la position = 32h + 2h = 34h
+34h est la valeur ascii en hexadecimal de "4"...
+Le code devient "24345"
+
+
+
+On a pas encore fait tout les caracteres , alors on continue:
+
+
+postion du caractere: 3
+valeur ascii = 33h
+addition de cette valeur avec la position = 33h + 3h = 36h
+36h est la valeur ascii en hexadecimal de "6"...
+Le code devient "24645"
+
+
+
+On a pas encore fait tout les caracteres , alors on continue:
+
+
+postion du caractere: 4
+valeur ascii = 34h
+addition de cette valeur avec la position = 34h + 4h = 38h
+38h est la valeur ascii en hexadecimal de "8"...
+Le code devient "24685"
+
+
+
+
+Dernier caractere:
+
+
+postion du caractere: 5
+valeur ascii = 35h
+addition de cette valeur avec la position = 35h + 5h = 3Ah
+3Ah est la valeur ascii en hexadecimal de ":"...
+Le code devient "2468:"
+
+
+notre code entrÈ "12345" devient donc "2468:"
+
+
+Pour vous aidez a comprendre encore plus, voici un programme qui execute la meme chose
+mais ecris en Visual Basic , car c'est un langage simple et connu !  :
+
+
+////////////////////////////////////////////////
+
+On Error Resume Next
+code = Text1.Text
+For i = 1 To Len(code)
+
+temp = Asc(Mid(code, i, 1))
+temp = temp + i
+temp2 = temp2 & Chr(temp)
+Next i
+
+
+Text2.Text = temp2
+'// text2.text = Code cryptÈ
+
+////////////////////////////////////////////////
+
+
+Code = le code entrÈ dans text1.text
+et text2.text = le resultat du cryptage...
+Ce programme execute exactement la meme chose que Devil sword pour crypter sauf que Devil gere l'overflow
+alors que mo, prog non , c pour ca que j'ai mis "On error resume next" qui veut dire , que si il y a une
+erreur , il continue le programme , sans afficher de message d'erreur et terminer l'application.
+
+
+Revenons a la protection elle meme :)
+
+
+0177:004CFCA8  E80342F3FF          CALL      00403EB0
+0177:004CFCAD  0F8505030000        JNZ       004CFFB8         <-- si le code est incorrect jump to mechant cracker
+0177:004CFCB3  8D45FC              LEA       EAX,[EBP-04]
+0177:004CFCB6  BA50004D00          MOV       EDX,004D0050
+0177:004CFCBB  E8FC3EF3FF          CALL      00403BBC
+
+
+Apres le cryptage, le code compare notre Code CryptÈ avec une constante ( cryptÈe elle aussi).
+Si les deux chaines sont identiques , alors on a entrÈ le BON Code et le programme est enregistrÈ
+sinon on a le message d'erreur..
+
+Bon la , on a 4 solutions :
+
+
+- solution de lamer: on patch le saut conditionel et le test au demarage.
+
+
+- solution BruteForce: On modifie le programme en son propre brute Forcer pour qu'il essai tout les CODES
+                       possibles.Efficaces , mais trop trop long et pas intelligent vu la pauvretÈ de 
+			l'algo..
+
+- Solution decrypage1 : On modifie le programme pour qu'il decrypte la constante cryptÈ en inversant l'algo
+		 	en memoire directement...
+
+
+- solution decryptage2: On programme un decrypteur qui fait tout le boulot :-)
+
+
+
+On va s'occuper que des deux dernieres solutions car elles sont plus reflechis et ce sont les plus
+rapides ( et aussi les moins lames...)
+
+
+###########################################################################
+
+			   Solution Decryptage 1:
+
+###########################################################################
+
+On prend le code assembleur et on le modifie. C'est a dire que l'on va reprogrammez l'algo. 
+Mais tout d'abord , comment renverser l'algo ? simple....
+
+On entre le code "12345" et on obtient "2468:"
+pour cela il additionne la valeur ascii du caractere a sa position!
+Donc pour decrypter on a juste a prendre la valeur ascii du caractere crypte et soustraire sa position
+pour retrouver le CODE decrypter ;)
+Comme tout a l'heure voila l'exemple complet du decryptage cette fois ci:
+
+
+
+longeur du code tapÈ : 5   (2468: fait 5 caracteres)
+
+postion du caractere: 1
+valeur ascii = 32h
+soustraction de la position a la valeur ascii = 32h - 1h = 31h
+31h est la valeur ascii en hexadecimal de "1"...
+Le code devient "1468:"
+
+On a pas encore fait tout les caracteres , alors on continue:
+
+
+
+
+postion du caractere: 2
+valeur ascii = 34h
+soustraction de la position a la valeur ascii = 34h - 2h = 32h
+32h est la valeur ascii en hexadecimal de "2"...
+Le code devient "1268:"
+
+On a pas encore fait tout les caracteres , alors on continue:
+
+
+
+postion du caractere: 3
+valeur ascii = 36h
+soustraction de la position a la valeur ascii = 36h - 3h = 33h
+33h est la valeur ascii en hexadecimal de "3"...
+Le code devient "1238:"
+
+On a pas encore fait tout les caracteres , alors on continue:
+
+
+
+
+postion du caractere: 4
+valeur ascii = 38h
+soustraction de la position a la valeur ascii = 38h - 4h = 34h
+34h est la valeur ascii en hexadecimal de "4"...
+Le code devient "1234:"
+
+
+Dernier caractere:
+
+
+postion du caractere: 5
+valeur ascii = 3Ah
+addition de cette valeur avec la position = 3Ah - 5h = 35h
+35h est la valeur ascii en hexadecimal de "5"...
+Le code devient "12345"
+
+
+notre code cryptÈ "2468:" devient donc notre code entrÈ non cryptÈ "12345"
+
+
+Voila un exemple qui montre comment marche l'algo.
+Pour savoir a quoi ressemble la chaine cryptÈ , il faut entrer dans le call juste apres
+qui est precede par un jnz:
+
+
+
+0177:004CFCA3  BA04004D00          MOV       EDX,004D0004
+0177:004CFCA8  E80342F3FF          CALL      00403EB0         <-- On entre dans ce call la pour la comparaison
+0177:004CFCAD  0F8505030000        JNZ       004CFFB8         <-- si le code est incorrect jump to mechant cracker
+0177:004CFCB3  8D45FC              LEA       EAX,[EBP-04]
+
+
+dans le call on voit ceci:
+
+
+0177:00403EB0  53                  PUSH      EBX
+0177:00403EB1  56                  PUSH      ESI
+0177:00403EB2  57                  PUSH      EDI
+0177:00403EB3  89C6                MOV       ESI,EAX
+0177:00403EB5  89D7                MOV       EDI,EDX
+0177:00403EB7  39D0                CMP       EAX,EDX     <-- EAX = code entrÈ cryptÈ et EDX = chaine cryptÈ constante
+0177:00403EB9  0F848F000000        JZ        00403F4E	 <-- Si c'est egale alors le CODE est valide sinon CODE erronÈ!
+0177:00403EBF  85F6                TEST      ESI,ESI
+0177:00403EC1  7468                JZ        00403F2B
+0177:00403EC3  85FF                TEST      EDI,EDI
+
+
+EAX contient notre code tapÈ mais cryptÈ
+EDX contient: 4D0004
+si on fait: d 4D0004 pour afficher le contenu de l'addresse et donc voir la chaine cryptÈe constante, on
+voit ceci:
+
+Mc#fÔzp{n*oq-QtÇÖs|Çà6Ñ?zÄÅëäÑ@BòíEññëóûKïõóúëòõ°ïó¢ú•û®Ø\Ñ∞Ä∂Ü
+
+Voila la constante CryptÈe !
+Elle est donc a l'addresse 4D0004... et elle fait 65 caracteres
+
+J'avais donnÈ le source code en assembleur du cryptage, voila ce qu'il devient
+pour faire son role de decrypteur:
+
+
+0177:004D0133  MOV       ESI,41h			; ESI = longeur du code a decryptÈ = 65 en decimal
+0177:004D0135  TEST      ESI,ESI			; et 41 en hexa decimal (longeur de la constante)
+0177:004D0137  JLE       004D0166
+0177:004D0139  MOV       EBX,00000001			; Initialise EBX a 1 (index de boucle)
+0177:004D013E  LEA       EAX,[EBP-0C]
+0177:004D0141  MOV       EDX, 4D0004                	; EDX = adresse de la constante
+0177:004D0144  MOVZX     EDX,BYTE PTR [EBX+EDX-01] 	; il prends la valeur ascii du 
+									; caractere en position EBX (1 au debut)
+
+0177:004D0149  SUB       EDX,EBX			; soustrait la position du caractere a la 
+									; valeur ascii
+		
+0177:004D014B  JNO       004D0152			; si pas d'overflow saute a 4D0152
+0177:004D014D  CALL      00402F14			; sinon appelle de 402F14
+0177:004D0152  CALL      00403CC8
+0177:004D0157  MOV       EDX,[EBP-0C]
+0177:004D015A  LEA       EAX,[EBP-08]
+0177:004D015D  CALL      00403DA8
+0177:004D0162  INC       EBX				; Incremente EBX (index de boucle)
+0177:004D0163  DEC       ESI				; decremente ESI (longeur du code TapÈ)
+0177:004D0164  JNZ       004D013E			; si c'est pas egale ‡ 0 on continue la boucle
+
+
+Pour modifier les instuctions en assembleur sous soft ice , il faut taper A et "enter".
+
+
+Voila ce que devient le code en assembleur pour decrypter ;)
+On a modifiÈ :
+
+- l'addresse de la chaine a s'occuper en l'addresse de la constante
+- le nombre de caractere de la constante a la place de la longeur du code entrÈ
+- on soustrait a la place d'additioner
+- voila ca suffit non ? :-)
+
+
+Ensuite on trace jusqu'au call de comparaison et a la ligne de CMP EAX, EDX
+EAX contient le CODE valide a entrer pour Enregistrer Devil sword.
+EDX contient toujours la chaine cryptÈ constante...
+
+Vous notez le Code qui est une phrase et vous fermez Devil pour le relancer!
+On veut une version non patchÈ! en memoire on touvait le code suivant:
+
+La bÍtise de Certains m'affuble ‡ un point inimaginablement GrAvE
+
+C'est donc le code a entrer ! :-)
+Facile non ? :^)
+
+
+
+###########################################################################
+
+			   Solution Decryptage 2:
+
+###########################################################################
+
+
+
+La il s'agit de programmer son propre decrypteur ;)
+C'est simple il suffit de programmer ce que fait l'algo de cryptage mais a l'envers
+comme expliquer un peu plus haut!
+On a juste besoin de la chaine CryptÈe qui est constante!
+Mais comme vous avez surement remarque la chaine est constituÈ de carectere non tapable au clavier.
+Comment la recuperer alors ?
+2 solutions!
+
+- on dumpe la location memoire de la chaine (le plus rapide)
+- on recupere les valeurs ascii en hexa decimal et on les reecris avec un editeur hexadecimal dans
+  un fichier texte pour faire du copier coller ensuite :)
+
+
+je vais juste parler de la premiere solution, c'est a dire dumper la location memoire.
+
+On va se servir de Qdump pour cette tache !
+Voila comment il marche:
+
+QDump.exe <Name of window> <address> <length> <filename>
+
+
+Name of window c'est ce qu'il y a ecris dans le caption de la fenetre.
+Address c'est l'addresse ou va commencer le dumpe.
+Length c'est la longeur en hexadecimal de byte a dumper.
+Filename c'est le fichier qui contiendra le resultat
+
+
+Donc ici sa donnera:
+
+QDump.exe "Devil's Sword" 4D0004 200 c:\code1.txt
+
+
+cela donne ca comme resultat:
+
+Mc#fÔzp{n*oq-QtÇÖs|Çà6Ñ?zÄÅëäÑ@BòíEññëóûKïõóúëòõ°ïó¢ú•û®Ø\Ñ∞Ä∂Ü   ˇˇˇˇ1   RedÈmarrer Devil's Sword pour que les nouvelles
+   ˇˇˇˇ   fonctionnalitÈs soit activÈes ! ˇˇˇˇ   DevilSword.ini  ˇˇˇˇ/   FaÓtes un peu attention ‡ ce que vous entrez... 
+
+
+on a pas besoin de tout ca , mais en decryptant on se rend compte que la veritable constante cryptÈe est:
+Mc#fÔzp{n*oq-QtÇÖs|Çà6Ñ?zÄÅëäÑ@BòíEññëóûKïõóúëòõ°ïó¢ú•û®Ø\Ñ∞Ä∂Ü
+
+
+Voila , on a plus qu'a programmer le decrypteur!
+Encore une fois ,voici le source code en Visual basic car c'est un langage simple est facilement portable..
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+codecrypted = "Mc#fÔzp{n*oq-QtÇÖs|Çà6Ñ?zÄÅëäÑ@BòíEññëóûKïõóúëòõ°ïó¢ú•û®Ø\Ñ∞Ä∂Ü"
+
+For i = 1 To Len(codecrypted)
+temp = Asc(Mid(codecrypted, i, 1))
+temp = temp - i
+If temp < 0 Then temp = 224   ' pour ne pas planter du a l'overflow.
+
+temp2 = temp2 & Chr(temp)
+Next i
+
+Text4.Text = temp2   ' affiche le Code decrypter dans text4.text
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+ici on voit que j'ai mis une condition pour eviter que le programme ne crash...
+En fait, si la position du caractere est plus grande que la valeur ascii alors le
+programme ne poura pas afficher la valeur ascii resultant de la soustraction.
+Les valeurs ascii sont toujours postives.
+Pour eviter le probleme , j'ai mis que si la valeur est inferieur ‡ 0 alors
+il affiche le caractere ascii "‡".
+j'aurais tres bien pu coder ce qu'il faut pour eviter ce probleme, mais ce n'est
+pas vraiment necessaire...
+
+
+Qd on lance ce programme apres avoir collÈ le code si dessus dans une application VB
+contenant un text4.text et un bouton sous lequel on met ce code, on obtient le resultat
+suivant:
+
+
+La bÍtise de Certains m'affuble ‡ un point inimaginablement GrAvE
+
+
+Wow ;) c'est notre code hehe..
+bon voila , comment il fallait faire pour cracker ce code.
+TRES TRES simple en fait, c'est plus long a ecrire qu'a faire.
+
+Remarque:
+
+Il est tres facile de changer le code par son propre code ;)
+En effet, si vous avez une phrase de meme longeur (pour simplifier la chose)
+vous la crypter grace a mon programme en VB et vous prenez les valeurs ascii en hexadecimal
+et les rentrez a la place des ancienes valeur ascii de la constante cryptÈe avec un editeur
+hexadecimal et vous sauvegardez le fichier...
+Ensuite si vous le lancez et que vous entrez le code non cryptÈ il vous dira que c'est le
+bon code :-)
+Vous pouvez donc modifier ce programme comme bon vous semble et ensuite le recrypter avec
+un packer de meilleur qualitÈ que celui utilisÈ par l'auteur pour recuperer la taille
+de 600 ko du depart !
+Car 2 mega ca fait lourd non ? :)
+Bon maintenant , je vais donner quelques conseils aux programmer de ce super client
+qui me plait beaucoup...
+
+
+#######################################################################
+#######################################################################
+##								     ##
+## III)Comment mieux securiser se programme et source code a l'appui ##
+##								     ##
+#######################################################################
+#######################################################################
+
+
+Bon voila la partie qui interressera surement le plus le programmeur de super client...
+Comment securiser efficacement son programme pour eviter que les crackers un peu plus
+experimente que ceux de caramail le crack...
+
+(note: aucune protection n'est infaible, ca depends souvent du temps que l'on passe
+dessus sois pour la programmer , sois pour la deplomber...)
+
+Elle sera surement inneficace contre des crackers qui ont des heures de vol dans le cracking ;)
+Mais calmera surement des tonnes de ptit crackers...
+Je l'essairais juste pour le fun mais etant donnÈ mon experience dans la matiere ya de grande chance
+pour que je parvienne a cracker la nouvelle protection sans trop de problemes (c'est pas de la
+vantardise mais juste pour ne pas donner de fausse iddÈes aux programmeurs...)
+
+C'est partie :
+
+
+
+
+######################################################
+
+1 - Il faut choisir un meilleur Crypteur d'executable.
+
+######################################################
+
+
+
+
+
+En effet , comme vous avez surement pu le constater le decryptage de l'executable
+est un jeu d'enfant...
+Il faut utiliser un packer qui donne du fil a retordre au cracker , qui ne soit
+pas decryptable par procdump et qui donne quelques taches a faire sur le PE.
+c'est a dire realigner les sections , ajuster l'import table...
+Je conseil meme de crypter plusieurs fois l'executable et meme d'utiliser 2 packers 
+differents...
+De renommer le nom des sections en autre choses pour ne pas donner d'indices sur le packer.
+ET de virer la signature du packer.
+Quand on edite en hexa decimal on voit souvent:
+
+UPX X.XX ou ASPACK....
+
+C'est la signature du packer , ici on voit bien que les packers utilises sont UPX ou bien ASPACK...
+Une idÈe serait de changer la signateur en un autre packer connu pour embrouiller...
+
+UPX et ASPACK 2000 sont trop simples a unpacker..
+Quoi que ascpack2000 posent pas mal de problemes aux newbies cracker, il peut etre util car il compresse beaucoup..
+L'utilisation d'une des dernieres versions d'armadillo peut etre utiles aussi...
+J'ai pas regarder les dernieres versions , mais les premieres etaient tres interressantes ‡ decrypter..
+Et largement suffisent pour casser les petits reversers...
+
+PEshield, PEcrypt sont pas trop mal aussi.. PElocknt est un des packers que je n'ai jamais reussi a unpacker..
+Le code est completement chelou ;-)
+voila l'auteur n'a plus qu'a s'amuser :)
+un petit coup de Pelocknt peut s'averer tres efficace :)
+
+
+
+
+####################################################
+
+2 - Il faut utiliser des protections anti Soft ice..
+
+####################################################
+
+
+
+
+Comment ?!
+Il faut programmer une ou plusieurs detections de soft ice afin d'empecher l'utilisation du programme
+en presence du debuggeur...
+Il faut saovoir qu'il existe des programmes qui permettent de rendre soft ice indetectable mais 
+il y a toujours moyen de le detecter ;-)
+
+Tout d'abord voici 2 methodes tres rÈpendus qui seront efficace contre les crackers wannabes ;)
+
+
+*************
+*************
+* Melt ice: *
+*************
+*************
+
+
+
+La mÈthode utilisÈe pour dÈtecter Soft-ice est la suivante:
+il utilise l'API createfilea "afin de dÈtecter le VXD" !
+DÈsolÈ, je ne sais pas trop comment expliquer:
+il peut dÈtecter Soft-ice avec: SICE, SIWVID pour win9x et NTICE pour winNT
+
+
+BOOL IsSoftIce95Loaded()
+{
+   HANDLE hFile;  
+   hFile = CreateFile( "\\\\.\\SICE", GENERIC_READ | GENERIC_WRITE,
+                      FILE_SHARE_READ | FILE_SHARE_WRITE,
+                      NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   if( hFile != INVALID_HANDLE_VALUE )
+   {
+      CloseHandle(hFile);
+      return TRUE;
+   }
+   return FALSE;
+}
+
+
+
+Sachant que borland c++ ressemble a delphi voici 1 exemple en Delphi de comment programmer ca:
+
+
+**************************************************************************************************************************
+procedure DetectICE;
+var ACiD:Thandle;
+    s,s2:string;
+
+begin
+
+     s:='\' + '\' + '.' + '\' + 'S' + 'I' + 'C' + 'E';
+     s2:='\\.\SICE';
+     if s <> s2 then begin ShowMessage('il est interdit de patcher'); ExitProcess(0); end ;
+     ACiD:=CreateFileA(PChar(s2),GENERIC_READ or GENERIC_WRITE,FILE_SHARE_READ
+         or FILE_SHARE_WRITE,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+     if ACiD <> INVALID_HANDLE_VALUE then begin ShowMessage('Veuillez dechargez le debuggeur svp!'); ExitProcess(0); end ;
+
+     s:='\' + '\' + '.' + '\' + 'N' + 'T' + 'I' + 'C' + 'E';
+     s2:='\\.\NTICE';
+     if s <> s2 then begin ShowMessage('il est interdit de patcher'); ExitProcess(0); end ;
+     ACiD:=CreateFileA(PChar(s2),GENERIC_READ or GENERIC_WRITE,FILE_SHARE_READ
+         or FILE_SHARE_WRITE,nil,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+     if( ACiD <> INVALID_HANDLE_VALUE ) then begin ShowMessage('Veuillez dechargez le debuggeur svp!'); ExitProcess(0); end;
+
+end;
+
+**************************************************************************************************************************
+
+
+Donc , ici j'ai rajoutÈ un control sur le string '\\.SICE' qui permet de controler si un petit malin
+n'a pas modifier avec un editeur hexa decimal cette partie et donc ca annulerais la detection...
+Si quelqu'un patch, le programme envoi un message et se ferme automatiquement...
+
+On peut aussi bien planter la machine apres un certain nombre d'essai en ecrivant une valeur dans la base
+de registre...
+A chaque fois que le debuggeur est chargÈ, il controle le nombre, et si il est deja a son maximum, on appel
+une sous routine qui plante le PC , sinon on incremente la valeur et on quite..
+Pour planter le PC on peut utiliser le bug : "C:\con\con" c'est a dire que l'on execute ce fichier la...
+
+En visual basic:   shell "c:\con\con\",vbHide
+
+Sinon quelques ligne en ASM permettent un BSOD (blue screen of death) ou meme le freeze complet de la machine.
+
+
+**************************
+**************************
+* dÈtection par INT 68h: *
+**************************
+**************************
+
+
+    mov     ah,43h
+    int     68h
+    cmp     ax,0F386h
+    jz      Soft_ice_est_la_:P
+
+
+Voil‡ ‡ quoi ressemble le monstre ;P
+
+
+Un petit exemple de programmation en Delphi :
+
+*****************************************************************************************
+
+procedure INT68;
+label Ure_Good_Guy;
+label I_Got_You;
+
+Begin
+
+asm
+mov  ah,43h
+int  68h
+cmp  ax,0f386h
+jz   I_Got_You
+jmp  Ure_Good_Guy
+
+end;
+
+I_Got_You:
+showmessage('Soft-ice est chargÈ!!');
+
+Ure_Good_Guy:
+// Gentil lol pas de Soft-ice (ou je me suis fait cracker *g*)
+
+end;
+
+end.
+
+******************************************************************************************
+
+
+Biensur dans ces deux exemples , j'ai mis un texte comme quoi soft ice est chargÈ, mais c'est pour montrÈ
+‡ l'auteur ou se passÈ le code qui suit la detection de soft ice...
+Il est plus que recommandÈ de ne rien mettre comme message car le message facilite le travail du cracker.
+A la rigeur un message mais CryptÈ, mais qui n'appel pas les API MessageBoxa car sinon le cryptage n'est d'aucune
+utilitÈ lol :)
+
+
+Maintenant voici une idÈe de detection de soft ice:
+
+Tout le monde (enfin presque .....) connait la commande MsDos "MEM".
+elle permet d'afficher des informations sur la memoire.
+on met /C pour voir toute les infos donc si je tape "MEM /C" a l'heure actuelle on voit:
+
+------------------------------------------------------------------------------
+
+Modules utilisant la mÈmoire sous 1 Mo:
+
+  Nom            Total           Conventionnel      MÈmoire haute
+  --------  ----------------   ----------------   ----------------
+  MSDOS       20 320   (20K)     20 320   (20K)          0    (0K)
+  GSCDROM     26 016   (25K)     26 016   (25K)          0    (0K)
+  CDROM       21 648   (21K)     21 648   (21K)          0    (0K)
+  DISPLAY     18 064   (18K)     18 064   (18K)          0    (0K)
+  HIMEM        1 120    (1K)      1 120    (1K)          0    (0K)
+  DBLBUFF      2 976    (3K)      2 976    (3K)          0    (0K)
+  IFSHLP       2 864    (3K)      2 864    (3K)          0    (0K)
+  win          3 936    (4K)      3 936    (4K)          0    (0K)
+  KEYB         6 944    (7K)      6 944    (7K)          0    (0K)
+  WINICE      13 520   (13K)     13 520   (13K)          0    (0K)
+  vmm32        5 504    (5K)      5 504    (5K)          0    (0K)
+  COMMAND      7 536    (7K)      7 536    (7K)          0    (0K)
+  --------        80    (0K)         80    (0K)          0    (0K)
+  LIBRE      524 592  (512K)    524 592  (512K)          0    (0K)
+
+RÈsumÈ mÈmoire :
+
+  Type de mÈmoire     Totale        UtilisÈe       Libre
+  ----------------  -----------   -----------   -----------
+  Conventionnelle       651 264       126 672       524 592
+  SupÈrieure                  0             0             0
+  RÈservÈe                    0             0             0
+  Ètendue (XMS)      65 994 752     2 002 944    63 991 808
+  ----------------  -----------   -----------   -----------
+  MÈmoire totale     66 646 016     2 129 616    64 516 400
+
+  Total infÈrieur       651 264       126 672       524 592
+
+  Totale PaginÈe (EMS)                        64 700 416    (62M)
+  MÈmoire libre paginÈe (EMS)                 16 777 216    (16M)
+  Taille maximale du programme exÈcutable        524 576   (512K)
+  Taille max. de la mÈmoire supÈrieure libre           0     (0K)
+  MS-DOS rÈside en mÈmoire haute (HMA).
+
+
+------------------------------------------------------------------------------
+
+
+
+Okie, donc la dans la liste des noms on voit bien le petit: WINICE.
+Cela veut bien dire que soft ice est chargÈ en memoire non ?:)
+
+
+La maneuvre pour detecter soft ice c'est d'executer MEM mais d'envoyer le resultat dans un ficher..
+Comme tout les utilisateurs de DOS le savent , on peut faire ca de la maniere suivante:
+fichier.exe ou com >fichier.txt
+
+Donc ici cela donne par exemple:  MEM /C>c:\windows\system\detect.txt
+
+Donc , cette commande ecrira le resultat de la commande "MEM /C" dans le fichier "detect.txt" lui meme placÈ
+dans le repertoire windows\system (c'est quand meme moin flague que la racine du disque dur non ? )
+si la commande vous donne un erreur 2 ou 4 il faut crÈer un fichier bat et ensuite l'executer..
+Bon ca c'est tres simple...
+
+Ensuite vous avez plus qu'a effectuer une recherche dans le fichier "detect.txt" et cherchez le mot "WINICE" dedans..
+Si le mot est presant alors soft ice est chargÈe!!! on ferme le programme.
+Sinon soft ice est pas la , donc on lance notre application...
+
+Vous avez plus qu'a automatiser ces taches et vous avez une detection de soft ice qui n'est pas encore reconnu a ce jour ;)
+
+
+####################################################
+
+3) Utiliser un algo beaucoup plus puissant!
+
+####################################################
+
+
+Bon comme vous l'avez vu , l'algo de ce programme est vraiment faible...
+Ce qui peut etre interressant c'est d'ecrire un algorithme qui sois ireversable...
+Comme le DES, MD5...
+Je m'explique, pour cracker l'algo je l'ai tout simplement renverser c'est a dire que a la place
+des additons , j'ai mis des soustractions...
+Il faut utiliser des operateurs qui ne sois pas renversable, ou sinon une suite d'operateur qui fasse que
+l'on ne puisse pas retrouver la chaine non cryptÈe de depart a partir du resultat obtenu (resultat cryptÈe).
+Le programme pour verifiez si le code est bon n'a qu'a crypter ce que l'on entre et comparer avec la constante
+cryptÈe dans le programme.Si les deux sont identiques le CODE est bon sinon perdu...
+Ce qui est chiant c'est que celon l'algo different CODE entrÈ peuvent avoir le meme resultat cryptÈ donc
+on doit rajouter des controles sur la longueur du CODE , la somme des valeurs ascii..
+
+Ca sert a quoi me direz vous ?
+Ben tout simplement que la seule facon de casser ce code est de coder un brute forcer pour essayer toute les possibilites
+jusqu'a trouver le bon CODE...
+C'est Tres long !!
+Deja, il faut reprogrammer le crypteur dans un language rapide : Assembleur ou c++ ( l'asm est bcp plus rapide que le C++)
+et de mettre une fonction qui essai tout les chiffres , caracteres ...
+On n'a plus qu'a laisser tourner lol :=)
+Bon , si c'est mal implementer on peut cracker ca plus rapidement..
+
+je rappel que les XOR sont renversables:
+
+X xor X = 0
+A xor B = C
+A xor C = B
+B xor C = A
+
+
+L'utilisatisation des puissances et des modulos est tres interressants dans ce type de cryptage ...
+
+Sinon , on peut faire un algo qui calcul un CODE en fonction de la chaine entrÈe et verifie si le Code
+est bon en comparant le CODE obtenu par le calcul avec la CODE du bon mot de passe...
+Cette fois si, ce n'est pas vraiment du cryptage mais juste des calculs...
+Je vous conseil de faire un algo long est penible pour le cracker...
+Plus il y a d'operations dans l'algo et plus le temps qu'il faudra pour deplomber le protection est long.
+J'ai ecris une protection en Delphi qui a ce jour n'est toujours pas cracker..
+
+ACiD BuRN's Challenge.
+
+L'algo est tres complique , fait plus d'une centaine de ligne en Delphi donc enormement plus en Assembleur..
+Meme avec les sources , je suis incapable de le cracker :-p
+hehe, donc voila tout est dis.
+Voici a quoi ressemble mon algo : (je met juste 2 lignes de l'algo , il en contient 100 du meme style lol)
+
+------------------------------------------------------------------------------------------
+
+b:=b+c*a*345 xor (3423483+(a*242564 mod c));
+key6:=copy(inttostr(abs(strtoint(key6) xor z2 shl strtoint(key2))),length(key6)-4,3);
+..............
+
+------------------------------------------------------------------------------------------
+
+C'est pas une seule addition donc :) hehehe...
+
+Sinon , l'auteur peut obter pour un code qui depend du nom de la personne..
+La aussi il faut faire gaffe a l'algo.
+Deja faire un code qui depends du numero du disque dur est une bonne idÈe hehe.
+Faire que le programme vous donne une valeur calculÈ en fonction du disque dur du mec.
+Celui qui desire s'enregistrer donne ce numero, et son nom ( ou pseudo).
+La avec un programme a part , vous generez le code valide pour ces informations et les renvoyes au mec!
+Il ne poura pas donner son code a ses amis car le numero depend du disque dur hehe ;)
+L'algo ne doit en aucun cas faire moins de 10 lignes , a part si c'est une sorte de cryptage compliquÈ..
+
+Pour exemple , la derniere protection que j'ai ecrite en C++ avec assembleur inline fait 1400 lignes d'assembleur...
+Avec des Matrices....
+Il ne faut pas avoir peur de coder :)
+Il faut aussi eviter que le code valide soit comparer directement avec le code entrÈ par la personne car c'est
+trop facile a cracker ca :-p
+Un peu de maths et de cryptage devrait arranger l'affaire :)
+
+
+####################################################
+
+		13 conseils en vrac
+
+####################################################
+
+
+
+
+1) Ne jamais utiliser de fichiers avec des noms qui veulent tout dire comme : CodeEnregistrement.txt ou meme des
+   procedures avec des noms comme : BonCodeOuMauvaisCodeVerif
+
+2) Attendre un peu avant de dire a l'utilisateur qu'une violation de son programme a ÈtÈ faite...
+
+3) Utiliser des checksums ou CRC dans les executables et Dll... ( ou tout autre fichiers sensibles)
+
+4) Faire des pauses d'une ou deux secondes apres que le code est ÈtÈ entrÈ pour eviter le brute forcing directement
+   par le programme lui meme ( modifiÈ par le cracker)
+
+5) Enregistrez les numeros de serie dans des places non communes ( pas dans le fichier INI , ou dans la base de registre)
+
+6) Enregisrez les numeros de serie a plusieurs endroit different.
+
+8) Controlez les numeros de serie a different endroit du programme et aleatoirement dans un des endroits ou il est placÈ.
+
+9) Utilisez des anti debuggeurs , sans avertir l'utilisateur que vous avez detectÈ quelque chose et fermez tout au bout
+   de quelques secondes apres le chargement.. (c'est contre les petits crackers ca.)
+
+10) Utilisez des chaines de caracteres qui ne servent a rien mais avec des noms qui sont allechant:
+
+    "le numero de serie incorrecte"
+    "Merci de votre soutiens"
+    "Vous etes desormais EnregistrÈ"
+
+    Placez ce genre de phrases dans une variable de type string et n'y touchez plus , ces phrases seront visibles au cracker
+    si il desassemble l'executable et se croira en presence de choses importantes alors que se ne sont que des Leures! lol
+
+11) Flooder le cracker avec des fausses procedures de cryptage qui sont des leures..
+
+12) faites references a des fichiers manquant qui ne servent a rien : Licence.key.
+    Faites des operations sur ce fichier , mais qui n'amenent a rien dans l'enregistrement de l'application
+    le cracker se croira en presence d'un keyfile.
+
+13) Crypter vos executables avec un bon packer pour eviter le simple patching mais cela n'empeche pas le 
+    Loader patcher...
+    Evitez les vielles versions de Aspack , UPX ( toutes versions) , Petite , PEcrypt ..
+
+Je pourais vous donnez des centaines de conseils mais ceux la sont assez importants et eviteront que vous vous
+fassiez cracker par pal mal de crackers debutant ou pas assez "bons"..
+
+
+Voila ce cours arrive a sa fin et j'espere que vous l'avez appreciÈ autant que moi ...
+
+
+
+IV)Conclusion:
+
+
+Ce cour a ÈtÈ ecris en partie pour faire de la prevention au niveau protection et montrer
+comme il est simple de deproteger la plus part des programmes..
+
+
+Signed, 
+
+
+						ACiD BuRN [ECLiPSE / Immortal Descendants]
+
+
+
+PS: Putain !! le cour fait plus de 1480 lignes lol!! je suis DINGUE :-)
+
+
+
+Sites WEB:
+
+le mien : http://www.AcidBurn2K.cjb.net
+celui d'un de mes groupes: http://www.ImmortalDescendants.org 
+
+
+Mon mail: Acid2600@hotmail.com
+
+
+
+
+Greetings to: REMOVED :)
+
+
+Greetings to all my friends on IRC: #Cracking4newbies (English friends) , #ECLIPSE99 ...
+
+Wait guys 'til i got a goddamn Free connections and i'm gonna idle like before :)
+
+
+
+
+	
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S -- - ‹   ˙     ˙
+     ∞    ‹  ∞      ‹ ‹  ‹       ∞ ‹∞          ∞ ‹     ‹         ﬁ€‹   ‹ ∞
+  ‹€€≤ﬂﬂ€€€›‹≤€ﬂﬂﬂ€€€›ﬁ€›ﬁ€€€ﬂﬂﬂ€≤‹ﬁ≤€€ﬂﬂ€€€‹∞‹≤€› ﬂ‹  ﬁ€€€ﬂﬂ€€€‹∞≤€€‹ ﬁ€≤‹
+  €€€› ∞≤€€›€€€ ∞ﬂﬂﬂﬂ ﬂﬂﬂ €€€ ∞ €€€›€€€  ﬁ€€≤∞≤€€ ∞ €€›ﬁ€€€› ﬁ€€≤ €€€ﬂ€‹€€€›
+  ≤€€ﬂﬂﬂ€€€›€€€›∞ ∞≤€›€€€›€€€ ∞ €€€›€€€ﬂﬂﬂ€€‹ﬁ€€€ ∞ €€€ﬁ€€€ﬂﬂ≤€€‹ €€€› ﬂ€€€›
+ ∞≤€€›∞ €€€ ≤€€›∞ €€€›€€€∞≤€€ ∞ﬁ€€€›€€€› ‹€€€ﬁ€€€›∞∞≤€€∞≤€€› ﬁ€€€›€€€›∞ €€€‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€∞≤€€›∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞ €€€›€€€›∞ €€≤ﬂ‹
+ ﬁ€€€›∞ €€€ﬁ€€€›∞ €€€ﬁ€€≤ﬁ€€€ ∞ﬁ€€€ﬁ€€€ ∞ﬁ€€€ﬁ€€€› ﬁ€€€›€€€›∞∞≤€€ ≤€€›∞ €€›
+ ﬁ€€≤ ∞ﬁ€€≤ﬂ±€€‹‹‹€€€±€€≤ﬁ€€€‹‹€€±ﬂ≤€€€‹‹€€€€ﬂ€€€€‹≤€€€ﬂ≤€±‹ ﬁ€ﬂ ∞≤€€€ ﬁ€ﬂ
+  ﬂ      ﬂ∞  ﬂ    ﬂ    ﬂ       ﬂ          ﬂ         ﬂ   ∞    ﬂ      ﬂ  ﬂ
+  ˙      ˙    -  -- A C i D B U R N - P R O D U C T i O N S --  -    ˙     ˙
+                                SRT - CRO			
+
+
+Copyright Pissed Away.  all rights reVERSED (c) ACiD BuRN 2000
+
+
+
+				www.ACIDBURN2K.CJB.net
+
+				Mail: acid2600@hotmail.com

@@ -1,0 +1,882 @@
+
+<html>
+	<body>
+	
+		<style> 
+		body
+  	{
+  	font-family: "trebuchet ms", verdana, sans-serif;
+  	font-size: 12px;
+  	background-color: #FFCC77;
+  	}		
+		
+		
+		TABLE.column,pre {
+			color: #990000;
+			font-family: "trebuchet ms", verdana, sans-serif;
+			font-size: 12px;
+		}
+		
+		h2 {
+		  background-color: #990000;
+  		color: #99CC66;
+  		border: 2px solid #FFFF66;
+  		padding-left: 20px;
+			}
+			
+			
+			h3
+  		{
+  		 background-color: #FFDD99;
+  		 color: #339900;
+  		 padding-left: 8px;
+  		 border-top-style: solid;
+  		 border-top-width: 2px;
+  		 border-top-color: #FFFF66; 
+  		 border-bottom-style: solid;
+  		 border-bottom-width: 1px;
+  		 border-bottom-color: #FFFF66;
+  		 }	
+			 
+			 hr
+ 			  {
+  			border-style:dotted;
+  			border-color:#FFFF66;
+  			}		
+				pre
+				{
+				  background-color: #FFDD99;
+				}	 		
+		</style>
+		
+		<h2>Listing asm comment&eacute; de DEFI1</h2>
+		
+		<table class=column BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+			<tr>
+				<td>00401000</td>
+				<td>]/$  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; /pModule = NULL</td>
+			</tr>
+			<tr>
+				<td>00401002</td>
+				<td> |.  E8 AB010000</td>
+				<td> CALL [JMP.&kernel32.GetModuleHandleA]</td>
+				<td>; \GetModuleHandleA  (*1*)</td>
+			</tr>
+			<tr>
+				<td>00401007</td>
+				<td> |.  A3 50304000</td>
+				<td colspan=2> MOV DWORD PTR DS:[403050],EAX</td>
+			</tr>
+			<tr>
+				<td>0040100C</td>
+				<td> |.  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; /lParam = NULL</td>
+			</tr>
+			<tr>
+				<td>0040100E</td>
+				<td> |.  68 29104000</td>
+				<td> PUSH elooo1.00401029</td>
+				<td>; |DlgProc = elooo1.00401029</td>
+			</tr>
+			<tr>
+				<td>00401013</td>
+				<td> |.  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; |hOwner = NULL</td>
+			</tr>
+			<tr>
+				<td>00401015</td>
+				<td> |.  6A 65</td>
+				<td> PUSH 65</td>
+				<td>; |pTemplate = 65</td>
+			</tr>
+			<tr>
+				<td>00401017</td>
+				<td> |.  FF35 50304000</td>
+				<td> PUSH DWORD PTR DS:[403050]</td>
+				<td>; |hInst = 00400000</td>
+			</tr>
+			<tr>
+				<td>0040101D</td>
+				<td> |.  E8 60010000</td>
+				<td> CALL [JMP.&user32.DialogBoxParamA]</td>
+				<td>; \DialogBoxParamA  (*2*)</td>
+			</tr>
+			<tr>
+				<td>00401022</td>
+				<td> |.  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; /ExitCode = 0</td>
+			</tr>
+			<tr>
+				<td>00401024</td>
+				<td> \.  E8 83010000</td>
+				<td> CALL [JMP.&kernel32.ExitProcess]</td>
+				<td>; \ExitProcess  (*3*)</td>
+			</tr>
+			<tr>
+				<td>00401029</td>
+				<td> /.  55</td>
+				<td colspan=2> PUSH EBP</td>
+			</tr>
+			<tr>
+				<td>0040102A</td>
+				<td> |.  8BEC</td>
+				<td colspan=2> MOV EBP,ESP</td>
+			</tr>
+			<tr>
+				<td>0040102C</td>
+				<td> |.  8B45 0C</td>
+				<td colspan=2> MOV EAX,DWORD PTR SS:[EBP+C]</td>
+			</tr>
+			<tr>
+				<td>0040102F</td>
+				<td> |.  83F8 10</td>
+				<td colspan=2> CMP EAX,10</td>
+			</tr>
+			<tr>
+				<td>00401032</td>
+				<td> |.  75 0F</td>
+				<td colspan=2> JNZ SHORT elooo1.00401043</td>
+			</tr>
+			<tr>
+				<td>00401034</td>
+				<td> |.  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; /Result = 0</td>
+			</tr>
+			<tr>
+				<td>00401036</td>
+				<td> |.  FF75 08</td>
+				<td> PUSH DWORD PTR SS:[EBP+8]</td>
+				<td>; |hWnd</td>
+			</tr>
+			<tr>
+				<td>00401039</td>
+				<td> |.  E8 4A010000</td>
+				<td> CALL [JMP.&user32.EndDialog]</td>
+				<td>; \EndDialog  (*4*)</td>
+			</tr>
+			<tr>
+				<td>0040103E</td>
+				<td> |.  E9 C3000000</td>
+				<td colspan=2> JMP elooo1.00401106</td>
+			</tr>
+			<tr>
+				<td>00401043</td>
+				<td> |]  3D 01020000</td>
+				<td colspan=2> CMP EAX,201</td>
+			</tr>
+			<tr>
+				<td>00401048</td>
+				<td> |.  75 18</td>
+				<td colspan=2> JNZ SHORT elooo1.00401062</td>
+			</tr>
+			<tr>
+				<td>0040104A</td>
+				<td> |.  8B45 14</td>
+				<td colspan=2> MOV EAX,DWORD PTR SS:[EBP+14]</td>
+			</tr>
+			<tr>
+				<td>0040104D</td>
+				<td> |.  50</td>
+				<td> PUSH EAX</td>
+				<td>; /lParam</td>
+			</tr>
+			<tr>
+				<td>0040104E</td>
+				<td> |.  6A 02</td>
+				<td> PUSH 2</td>
+				<td>; |wParam = 2</td>
+			</tr>
+			<tr>
+				<td>00401050</td>
+				<td> |.  68 A1000000</td>
+				<td> PUSH 0A1</td>
+				<td>; |Message = WM_NCLBUTTONDOWN</td>
+			</tr>
+			<tr>
+				<td>00401055</td>
+				<td> |.  FF75 08</td>
+				<td> PUSH DWORD PTR SS:[EBP+8]</td>
+				<td>; |hWnd</td>
+			</tr>
+			<tr>
+				<td>00401058</td>
+				<td> |.  E8 43010000</td>
+				<td> CALL [JMP.&user32.PostMessageA]</td>
+				<td>; \PostMessageA  (*5*)</td>
+			</tr>
+			<tr>
+				<td>0040105D</td>
+				<td> |.  E9 A4000000</td>
+				<td colspan=2> JMP elooo1.00401106</td>
+			</tr>
+			<tr>
+				<td>00401062</td>
+				<td> |]  3D 10010000</td>
+				<td colspan=2> CMP EAX,110</td>
+			</tr>
+			<tr>
+				<td>00401067</td>
+				<td> |.  75 21</td>
+				<td colspan=2> JNZ SHORT elooo1.0040108A</td>
+			</tr>
+			<tr>
+				<td>00401069</td>
+				<td> |.  33C0</td>
+				<td colspan=2> XOR EAX,EAX</td>
+			</tr>
+			<tr>
+				<td>0040106B</td>
+				<td> |.  6A 66</td>
+				<td> PUSH 66</td>
+				<td>; /RsrcName = 102.</td>
+			</tr>
+			<tr>
+				<td>0040106D</td>
+				<td> |.  FF35 50304000</td>
+				<td> PUSH DWORD PTR DS:[403050]</td>
+				<td>; |hInst = 00400000</td>
+			</tr>
+			<tr>
+				<td>00401073</td>
+				<td> |.  E8 1C010000</td>
+				<td> CALL [JMP.&user32.LoadIconA]</td>
+				<td>; \LoadIconA (*6*)</td>
+			</tr>
+			<tr>
+				<td>00401078</td>
+				<td> |.  50</td>
+				<td> PUSH EAX</td>
+				<td>; /lParam</td>
+			</tr>
+			<tr>
+				<td>00401079</td>
+				<td> |.  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; |wParam = 0</td>
+			</tr>
+			<tr>
+				<td>0040107B</td>
+				<td> |.  68 80000000</td>
+				<td> PUSH 80</td>
+				<td>; |Message = WM_SETICON</td>
+			</tr>
+			<tr>
+				<td>00401080</td>
+				<td> |.  FF75 08</td>
+				<td> PUSH DWORD PTR SS:[EBP+8]</td>
+				<td>; |hWnd</td>
+			</tr>
+			<tr>
+				<td>00401083</td>
+				<td> |.  E8 1E010000</td>
+				<td> CALL [JMP.&user32.SendMessageA]</td>
+				<td>; \SendMessageA  (*7*)</td>
+			</tr>
+			<tr>
+				<td>00401088</td>
+				<td> |.  EB 7C</td>
+				<td colspan=2> JMP SHORT elooo1.00401106</td>
+			</tr>
+			<tr>
+				<td>0040108A</td>
+				<td> |]  3D 11010000</td>
+				<td colspan=2> CMP EAX,111</td>
+			</tr>
+			<tr>
+				<td>0040108F</td>
+				<td> |.  75 6C</td>
+				<td colspan=2> JNZ SHORT elooo1.004010FD</td>
+			</tr>
+			<tr>
+				<td>00401091</td>
+				<td> |.  8B45 10</td>
+				<td colspan=2> MOV EAX,DWORD PTR SS:[EBP+10]</td>
+			</tr>
+			<tr>
+				<td>00401094</td>
+				<td> |.  8B55 10</td>
+				<td colspan=2> MOV EDX,DWORD PTR SS:[EBP+10]</td>
+			</tr>
+			<tr>
+				<td>00401097</td>
+				<td> |.  C1EA 10</td>
+				<td colspan=2> SHR EDX,10</td>
+			</tr>
+			<tr>
+				<td>0040109A</td>
+				<td> |.  66:3D E903</td>
+				<td colspan=2> CMP AX,3E9</td>
+			</tr>
+			<tr>
+				<td>0040109E</td>
+				<td> |.  75 4C</td>
+				<td colspan=2> JNZ SHORT elooo1.004010EC</td>
+			</tr>
+			<tr>
+				<td>004010A0</td>
+				<td> |.  68 49304000</td>
+				<td> PUSH elooo1.00403049</td>
+				<td>; /String2 = "Grmbl"</td>
+			</tr>
+			<tr>
+				<td>004010A5</td>
+				<td> |.  68 58304000</td>
+				<td> PUSH elooo1.00403058</td>
+				<td>; |String1 = elooo1.00403058</td>
+			</tr>
+			<tr>
+				<td>004010AA</td>
+				<td> |.  E8 09010000</td>
+				<td> CALL [JMP.&kernel32.lstrcpyA]</td>
+				<td>; \lstrcpyA  (*8*)</td>
+			</tr>
+			<tr>
+				<td>004010AF</td>
+				<td> |.  6A 2D</td>
+				<td> PUSH 2D</td>
+				<td>; /Count = 2D (45.)</td>
+			</tr>
+			<tr>
+				<td>004010B1</td>
+				<td> |.  68 00304000</td>
+				<td> PUSH elooo1.00403000</td>
+				<td>; |Buffer = elooo1.00403000</td>
+			</tr>
+			<tr>
+				<td>004010B6</td>
+				<td> |.  68 EB030000</td>
+				<td> PUSH 3EB</td>
+				<td>; |ControlID = 3EB (1003.)</td>
+			</tr>
+			<tr>
+				<td>004010BB</td>
+				<td> |.  FF75 08</td>
+				<td> PUSH DWORD PTR SS:[EBP+8]</td>
+				<td>; |hWnd</td>
+			</tr>
+			<tr>
+				<td>004010BE</td>
+				<td> |.  E8 CB000000</td>
+				<td> CALL [JMP.&user32.GetDlgItemTextA]</td>
+				<td>; \GetDlgItemTextA  (*9*)</td>
+			</tr>
+			<tr>
+				<td>004010C3</td>
+				<td> |.  E8 47000000</td>
+				<td> CALL elooo1.0040110F</td>
+				<td>;  ********** CALL DE VERIF DU SERIAL **********</td>
+			</tr>
+			<tr>
+				<td>004010C8</td>
+				<td> |.  6A 00</td>
+				<td> PUSH 0</td>
+				<td>; /Style = MB_OK|MB_APPLMODAL</td>
+			</tr>
+			<tr>
+				<td>004010CA</td>
+				<td> |.  68 37304000</td>
+				<td> PUSH elooo1.00403037</td>
+				<td>; |Title = "Hehe"</td>
+			</tr>
+			<tr>
+				<td>004010CF</td>
+				<td> |.  68 58304000</td>
+				<td> PUSH elooo1.00403058</td>
+				<td>; |Text = "Grmbl"</td>
+			</tr>
+			<tr>
+				<td>004010D4</td>
+				<td> |.  FF75 08</td>
+				<td> PUSH DWORD PTR SS:[EBP+8]</td>
+				<td>; |hOwner</td>
+			</tr>
+			<tr>
+				<td>004010D7</td>
+				<td> |.  E8 BE000000</td>
+				<td> CALL [JMP.&user32.MessageBoxA]</td>
+				<td>; \MessageBoxA  (*10*)</td>
+			</tr>
+			<tr>
+				<td>004010DC</td>
+				<td> |.  33C0</td>
+				<td colspan=2> XOR EAX,EAX</td>
+			</tr>
+			<tr>
+				<td>004010DE</td>
+				<td> |.  BF 00304000</td>
+				<td> MOV EDI,elooo1.00403000</td>
+				<td>;  ASCII "12345"</td>
+			</tr>
+			<tr>
+				<td>004010E3</td>
+				<td> |.  B9 32000000</td>
+				<td colspan=2> MOV ECX,32</td>
+			</tr>
+			<tr>
+				<td>004010E8</td>
+				<td> |.  F3:AA</td>
+				<td> REP STOS BYTE PTR ES:[EDI]		     </td>
+				<td>; Vide le buffer qui contient le serial</td>
+			</tr>
+			<tr>
+				<td>004010EA</td>
+				<td> |.  EB 1A</td>
+				<td colspan=2> JMP SHORT elooo1.00401106</td>
+			</tr>
+			<tr>
+				<td>004010EC</td>
+				<td> |]  66:3D EA03</td>
+				<td colspan=2> CMP AX,3EA</td>
+			</tr>
+			<tr>
+				<td>004010F0</td>
+				<td> |.  75 14</td>
+				<td colspan=2> JNZ SHORT elooo1.00401106</td>
+			</tr>
+			<tr>
+				<td>004010F2</td>
+				<td> |.  50</td>
+				<td> PUSH EAX</td>
+				<td>; /Result</td>
+			</tr>
+			<tr>
+				<td>004010F3</td>
+				<td> |.  FF75 08</td>
+				<td> PUSH DWORD PTR SS:[EBP+8]</td>
+				<td>; |hWnd</td>
+			</tr>
+			<tr>
+				<td>004010F6</td>
+				<td> |.  E8 8D000000</td>
+				<td> CALL [JMP.&user32.EndDialog]</td>
+				<td>; \EndDialog</td>
+			</tr>
+			<tr>
+				<td>004010FB</td>
+				<td> |.  EB 09</td>
+				<td colspan=2> JMP SHORT elooo1.00401106</td>
+			</tr>
+			<tr>
+				<td>004010FD</td>
+				<td> |]  B8 00000000</td>
+				<td colspan=2> MOV EAX,0</td>
+			</tr>
+			<tr>
+				<td>00401102</td>
+				<td> |.  C9</td>
+				<td colspan=2> LEAVE</td>
+			</tr>
+			<tr>
+				<td>00401103</td>
+				<td> |.  C2 1000</td>
+				<td colspan=2> RETN 10</td>
+			</tr>
+			<tr>
+				<td>00401106</td>
+				<td> |]  B8 01000000</td>
+				<td colspan=2> MOV EAX,1</td>
+			</tr>
+			<tr>
+				<td>0040110B</td>
+				<td> |.  C9</td>
+				<td colspan=2> LEAVE</td>
+			</tr>
+			<tr>
+				<td>0040110C</td>
+				<td> \.  C2 1000</td>
+				<td colspan=2> RETN 10</td>
+			</tr>
+			<tr>
+				<td>0040110F</td>
+				<td> /$  60</td>
+				<td> PUSHAD</td>
+				<td>;  ***** DEBUT DU CALL DE VERIF ***** (registres sauves sur la pile)</td>
+			</tr>
+			<tr>
+				<td>00401110</td>
+				<td> |.  68 00304000</td>
+				<td> PUSH elooo1.00403000</td>
+				<td>;  parametre du call qui va suivre (ce paramètre = serial entre)</td>
+			</tr>
+			<tr>
+				<td>00401115</td>
+				<td> |.  E8 32000000</td>
+				<td> CALL elooo1.0040114C</td>
+				<td>;  convertit le serial entre en hexa (valeur retournee dans eax)</td>
+			</tr>
+			<tr>
+				<td>0040111A</td>
+				<td> |.  B9 07000000</td>
+				<td> MOV ECX,7</td>
+				<td>;  ecx = 7</td>
+			</tr>
+			<tr>
+				<td>0040111F</td>
+				<td> |.  99</td>
+				<td> CDQ</td>
+				<td>;  [edx:eax] = eax (eax etendu a 64 bits et edx = 0 - sign(eax))</td>
+			</tr>
+			<tr>
+				<td>00401120</td>
+				<td> |.  F7F9</td>
+				<td> IDIV ECX</td>
+				<td>;  eax = eax / ecx (division signee ; eax = resultat et edx = modulo)</td>
+			</tr>
+			<tr>
+				<td>00401122</td>
+				<td> |.  83E9 03</td>
+				<td> SUB ECX,3</td>
+				<td>;  ecx = ecx - 3</td>
+			</tr>
+			<tr>
+				<td>00401125</td>
+				<td>     99</td>
+				<td colspan=2> CDQ</td>
+			</tr>
+			<tr>
+				<td>00401126</td>
+				<td> |.  F7E9</td>
+				<td> IMUL ECX</td>
+				<td>;  eax = eax * ecx (multiplication signee)</td>
+			</tr>
+			<tr>
+				<td>00401128</td>
+				<td> |.  05 37130000</td>
+				<td> ADD EAX,1337</td>
+				<td>;  eax = eax + 1337h</td>
+			</tr>
+			<tr>
+				<td>0040112D</td>
+				<td> |.  83E8 09</td>
+				<td> SUB EAX,9</td>
+				<td>;  eax = eax - 9</td>
+			</tr>
+			<tr>
+				<td>00401130</td>
+				<td> |.  3B05 32304000</td>
+				<td> CMP EAX,DWORD PTR DS:[403032]</td>
+				<td>;  eax = DS:[403032] ? (DS:[403032] = 0BADCAFEh)</td>
+			</tr>
+			<tr>
+				<td>00401136</td>
+				<td> |.  75 0F</td>
+				<td> JNZ SHORT elooo1.00401147</td>
+				<td>;  if (eax != 0BADCAFEh) on jmp a popad</td>
+			</tr>
+			<tr>
+				<td>00401138</td>
+				<td> |.  68 3C304000</td>
+				<td> PUSH elooo1.0040303C</td>
+				<td>; /String2 = "C'est good !"</td>
+			</tr>
+			<tr>
+				<td>0040113D</td>
+				<td> |.  68 58304000</td>
+				<td> PUSH elooo1.00403058</td>
+				<td>; |String1 = elooo1.00403058</td>
+			</tr>
+			<tr>
+				<td>00401142</td>
+				<td> |.  E8 71000000</td>
+				<td> CALL [JMP.&kernel32.lstrcpyA]</td>
+				<td>; \lstrcpyA</td>
+			</tr>
+			<tr>
+				<td>00401147</td>
+				<td> |]  61</td>
+				<td> POPAD</td>
+				<td>;  ***** FIN DU CALL DE VERIF ***** (registres recuperes de la pile)</td>
+			</tr>
+			<tr>
+				<td>00401148</td>
+				<td> \.  C3</td>
+				<td> RETN</td>
+				<td>;  Retour a l'instruction qui suit l'appel au call (004010C8)</td>
+			</tr>
+			<tr>
+				<td>00401149</td>
+				<td>     CC</td>
+				<td colspan=2> INT3</td>
+			</tr>
+			<tr>
+				<td>0040114A</td>
+				<td>     CC</td>
+				<td colspan=2> INT3</td>
+			</tr>
+			<tr>
+				<td>0040114B</td>
+				<td>     CC</td>
+				<td colspan=2> INT3</td>
+			</tr>
+			<tr>
+				<td>0040114C</td>
+				<td> /$  55</td>
+				<td> PUSH EBP</td>
+				<td>;  Debut de la fonction de convertion en hexa</td>
+			</tr>
+			<tr>
+				<td>0040114D</td>
+				<td> |.  8BEC</td>
+				<td colspan=2> MOV EBP,ESP</td>
+			</tr>
+			<tr>
+				<td>0040114F</td>
+				<td> |.  56</td>
+				<td colspan=2> PUSH ESI</td>
+			</tr>
+			<tr>
+				<td>00401150</td>
+				<td> |.  57</td>
+				<td colspan=2> PUSH EDI</td>
+			</tr>
+			<tr>
+				<td>00401151</td>
+				<td> |.  33C0</td>
+				<td> XOR EAX,EAX</td>
+				<td>;  eax = 0</td>
+			</tr>
+			<tr>
+				<td>00401153</td>
+				<td> |.  8B75 08</td>
+				<td> MOV ESI,DWORD PTR SS:[EBP+8]</td>
+				<td>;  esi = offset du buffer qui contient le serial entre</td>
+			</tr>
+			<tr>
+				<td>00401156</td>
+				<td> |.  33C9</td>
+				<td> XOR ECX,ECX</td>
+				<td>;  ecx = 0</td>
+			</tr>
+			<tr>
+				<td>00401158</td>
+				<td> |.  33D2</td>
+				<td> XOR EDX,EDX</td>
+				<td>;  edx = 0</td>
+			</tr>
+			<tr>
+				<td>0040115A</td>
+				<td> |.  8A06</td>
+				<td> MOV AL,BYTE PTR DS:[ESI]</td>
+				<td>;  prend chaque caractere du serial rentre 1 a 1</td>
+			</tr>
+			<tr>
+				<td>0040115C</td>
+				<td> |.  46</td>
+				<td> INC ESI</td>
+				<td>;  esi++ (caractere suivant)</td>
+			</tr>
+			<tr>
+				<td>0040115D</td>
+				<td> |.  3C 02</td>
+				<td> CMP AL,2</td>
+				<td>;  hexa(caractere) = 2 ?</td>
+			</tr>
+			<tr>
+				<td>0040115F</td>
+				<td> |.  75 12</td>
+				<td> JNZ SHORT elooo1.00401173</td>
+				<td>;  if (hexa(caractere= != 2)) alors jmp 00401173</td>
+			</tr>
+			<tr>
+				<td>00401161</td>
+				<td> |.  8A06</td>
+				<td colspan=2> MOV AL,BYTE PTR DS:[ESI]</td>
+			</tr>
+			<tr>
+				<td>00401163</td>
+				<td> |.  F7D2</td>
+				<td colspan=2> NOT EDX</td>
+			</tr>
+			<tr>
+				<td>00401165</td>
+				<td> |.  46</td>
+				<td colspan=2> INC ESI</td>
+			</tr>
+			<tr>
+				<td>00401166</td>
+				<td> |.  EB 0B</td>
+				<td colspan=2> JMP SHORT elooo1.00401173</td>
+			</tr>
+			<tr>
+				<td>00401168</td>
+				<td> |]  2C 30</td>
+				<td> /SUB AL,30</td>
+				<td>;  (hexa(caractere) stocke dans al) - 30h</td>
+			</tr>
+			<tr>
+				<td>0040116A</td>
+				<td> |.  8D0C89</td>
+				<td> |LEA ECX,DWORD PTR DS:[ECX+ECX*4]</td>
+				<td>;  /</td>
+			</tr>
+			<tr>
+				<td>0040116D</td>
+				<td> |.  8D0C48</td>
+				<td> |LEA ECX,DWORD PTR DS:[EAX+ECX*2]</td>
+				<td>;  \ convertit en hexa</td>
+			</tr>
+			<tr>
+				<td>00401170</td>
+				<td> |.  8A06</td>
+				<td> |MOV AL,BYTE PTR DS:[ESI]</td>
+				<td>;  al = hexa(caractere suivant)</td>
+			</tr>
+			<tr>
+				<td>00401172</td>
+				<td> |.  46</td>
+				<td> |INC ESI</td>
+				<td>;  esi++</td>
+			</tr>
+			<tr>
+				<td>00401173</td>
+				<td> |]  0AC0</td>
+				<td colspan=2>  OR AL,AL</td>
+			</tr>
+			<tr>
+				<td>00401175</td>
+				<td> |.^ 75 F1</td>
+				<td> \JNZ SHORT elooo1.00401168</td>
+				<td>;  s'il reste encor des caractere du serial on jmp en 00401166</td>
+			</tr>
+			<tr>
+				<td>00401177</td>
+				<td> |.  8D0411</td>
+				<td> LEA EAX,DWORD PTR DS:[ECX+EDX]</td>
+				<td>;  met l'offset du buffer "resultat" dans eax</td>
+			</tr>
+			<tr>
+				<td>0040117A</td>
+				<td> |.  33C2</td>
+				<td colspan=2> XOR EAX,EDX</td>
+			</tr>
+			<tr>
+				<td>0040117C</td>
+				<td> |.  5F</td>
+				<td colspan=2> POP EDI</td>
+			</tr>
+			<tr>
+				<td>0040117D</td>
+				<td> |.  5E</td>
+				<td colspan=2> POP ESI</td>
+			</tr>
+			<tr>
+				<td>0040117E</td>
+				<td> |.  C9</td>
+				<td colspan=2> LEAVE</td>
+			</tr>
+			<tr>
+				<td>0040117F</td>
+				<td> \.  C2 0400</td>
+				<td> RETN 4</td>
+				<td>;  on quitte la fonction et revient a notre routine</td>
+			</tr>
+			<tr>
+				<td>00401182</td>
+				<td>  $- FF25 20204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.DialogBoxPara]</td>
+				<td>;  user32.DialogBoxParamA</td>
+			</tr>
+			<tr>
+				<td>00401188</td>
+				<td>  $- FF25 1C204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.EndDialog]]</td>
+				<td>;  user32.EndDialog</td>
+			</tr>
+			<tr>
+				<td>0040118E</td>
+				<td>  $- FF25 14204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.GetDlgItemTex]</td>
+				<td>;  user32.GetDlgItemTextA</td>
+			</tr>
+			<tr>
+				<td>00401194</td>
+				<td>  $- FF25 28204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.LoadIconA]]</td>
+				<td>;  user32.LoadIconA</td>
+			</tr>
+			<tr>
+				<td>0040119A</td>
+				<td>  $- FF25 10204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.MessageBoxA]]</td>
+				<td>;  user32.MessageBoxA</td>
+			</tr>
+			<tr>
+				<td>004011A0</td>
+				<td>  $- FF25 24204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.PostMessageA]]</td>
+				<td>;  user32.PostMessageA</td>
+			</tr>
+			<tr>
+				<td>004011A6</td>
+				<td>  $- FF25 18204000</td>
+				<td> JMP DWORD PTR DS:[[&user32.SendMessageA]]</td>
+				<td>;  user32.SendMessageA</td>
+			</tr>
+			<tr>
+				<td>004011AC</td>
+				<td>  .- FF25 04204000</td>
+				<td> JMP DWORD PTR DS:[[&kernel32.ExitProcess]</td>
+				<td>;  kernel32.ExitProcess</td>
+			</tr>
+			<tr>
+				<td>004011B2</td>
+				<td>  $- FF25 00204000</td>
+				<td> JMP DWORD PTR DS:[[&kernel32.GetModuleHa]</td>
+				<td>;  kernel32.GetModuleHandleA</td>
+			</tr>
+			<tr>
+				<td>004011B8</td>
+				<td>  $- FF25 08204000</td>
+				<td> JMP DWORD PTR DS:[[&kernel32.lstrcpyA]]</td>
+				<td>;  kernel32.lstrcpyA</td>
+			</tr>
+			<tr>
+				<td>004011BE</td>
+				<td>     00</td>
+				<td colspan=2> DB 00</td>
+			</tr>
+
+		</table>
+		<hr />
+		<h3>Precisions :</h3>
+		<pre>
+		
+(*1*) GetModuleHandleA 
+-->> Renvoie l'handle du crackme
+
+(*2*) DialogBoxParamA
+-->> Crée une modal dialog box, et bloquera l'application tant qu'elle n'aura pas été détruite.
+
+(*3*) ExitProcess
+-->> On quitte le crackme
+
+(*4*) EndDialog
+-->> Fermeture de la boite de dialogue
+
+(*5*) PostMessageA  
+-->> Envoi d'un message (notifications, traitements asynchrones)
+
+(*6*) LoadIconA
+-->> Charge la ressource icône spécifiée depuis un fichier exécutable (.EXE) associé avec une instance d'application
+
+(*7*) SendMessageA
+-->> Envoi d'un message (sans passer par la file d'attente)
+
+(*8*) lstrcpyA
+-->> Copie le contenu d'un buffer dans un autre buffer (ici le buffer qui correspond à la string à afficher dans la messagebox)
+
+(*9*) GetDlgItemTextA
+-->> Récupère le contenu du buffer
+
+(*10*) MessageBoxA
+-->> Affiche une boite de dialogue prédéfinie contenant le texte spécifié
+
+</pre>		
+	</body>
+</html>

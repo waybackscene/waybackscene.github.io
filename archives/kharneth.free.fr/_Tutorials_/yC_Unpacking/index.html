@@ -1,0 +1,125 @@
+
+<!-- #07        17/02/04             //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>yC_Unpacking</title>
+<style type="text/css">
+<!--
+td { border-width:1px;border-style:solid;border-color:#FFFFFF;font-size:12px; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">Yoda's Crypter 1.2 Unpacking<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- OllyDbg 1.09d + plugins<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsDebugPresent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OllyDump<br>&nbsp;- LordPE<br>&nbsp;- Calculatrice<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant avancé en Cracking<br>ayant de bonnes connaissances en programmation</td><td width="33%" align="center">&nbsp;<a href="http://kharneth.free.fr/_Tutorials_/yC_Unpacking/Cible/yC_Full_HW.exe">yC_Full_HW</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<!-- Start //-->
+
+<tr><td width="20%"><b>1 - Introduction</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C'est la première fois que je m'attaque à l'étude d'un crypteur d'exécutable donc il se peut que des erreurs se soient glissées dans ce texte. Si tel est le cas, n'hésitez pas à me le signaler.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour étudier ce packer, j'ai crypté un simple Hello World en C, histoire que le programme soit très léger. J'ai également activé toutes les options disponibles après une première étude sans aucune option. Cela ne change rien puisque le code du loader est le même quelques soient les options sélectionnées, celles-ci étant testées à l'exécution.   
+</p><center><img src="Captures/yC.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On remarque d'abord que le programme est passé de 5Ko à 8Ko. Un coup d'oeil dans un PE Editor nous permet de voir qu'une section (yC) a été ajouté à la fin des autres. L'Entry Point se trouvant dans celle-ci (5060), elle contient surement le Loader.
+</p><center><img src="Captures/PE.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On va donc regarder ça de plus près avec OllyDbg.
+</td></tr>
+
+<tr><td width="20%"><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td colspan="4"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D'abord, OllyDbg nous prévient que l'Entry Point se trouve en dehors du code et que le programme est surement crypté ou compressé.
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Première chose frappante, on voit que le code est bourré de CCA! On remarque aussi que cela ne perturbe pas plus que ça OllyDbg! :o) Si ce n'est pas le cas, il faut cocher <i>Extend code section to include extractor</i> dans les options SFX, puis recharger le programme. On note également que tout le code est crypté à part cette boucle qui va se charger de décrypter une première partie du Loader. On va donc laisser cette boucle s'exécuter.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On place un Hardware Breackpoint (avec un bp normal <i>F2</i> l'opcode CC aurait été décrypté à la place de 46) sur l'instruction juste après le <b>LOOPD</b> en 004050AE puis <i>F9</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour afficher un code compréhensible, on va forcer OllyDbg à l'analyser en faisant <i>Ctrl-A</i>. Le code maintenant décrypté, on peut enlever le Hardware BreakPoint car on en a plus besoin et qu'ils sont limités à 4.
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+</p><center><img src="Captures/Olly03.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On arrive sur un <b>CALL</b> qui va calculer le CheckSum du Loader. La routine additionne simplement les octets à partir de l'Entry Point jusqu'en 0040568A. Puis la valeur est sauvegardée. 
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, le Loader controle si l'option <i>Exit if SoftIce is loaded</i> a été cochée. Si oui, la "méthode BCHK" (<i>pour plus de précisions, <a href="http://assembly.ifrance.com/assembly/tutor/blindread.htm"> lire le tut de Christal sur BlindRead</i></a>) est employée sinon on saute à la suite. Pour la contourner, il suffit de forcer le saut pour faire croire que l'option n'a pas été sélectionnée en remplaçant le <b>JE</b> en 004050DE par un <b>JMP</b>. Mais là on s'en fout, on a pas SoftIce! :op<br>
+</p><center><img src="Captures/Olly05.png" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le programme récupère les adresses de <i>LoadLibraryA</i> et <i>GetProcAddress</i> en remontant jusqu'à l'IAT à partir de l'entête PE. Ces adresses ayant été inscrites par le Loader de Windows au chargement du programme. Ces 2 fonctions lui permettent de récupérer les adresses de plusieurs API qui seront utilisées plus tard.
+</p><center><img src="Captures/Olly06.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le Loader vérifie maintenant la sélection de l'option <i>Anti Process Dumping</i>. Si c'est le cas, il récupère l'adresse du PEB, puis remonte jusqu'à l'adresse de ImageSize pour remplacer sa valeur (7000) par 1000! (<i>pour plus de précisions, <a href="http://assembly.ifrance.com/assembly/tutor/peshield2.htm"> lire le tut de Pulsar &amp; Christal sur PEShield 2</i></a> ainsi que <i><a href="http://www.chez.com/mvm/RW32GS.txt">REAL Win32 GENERIC SHELLCODE</a> par ThreaT &amp; Crazylord qui décrit entre autre la structure du PEB</i>). Comme précédemment, il suffit de remplacer le <b>JE</b> par un <b>JMP</b> pour sauter cette protection.
+</p><center><img src="Captures/Olly07.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Après avoir récupéré la valeur de <i>SizeOfHeaders</i>, le Loader modifie les droits d'accès en écriture sur l'entête PE grace à l'API VirtualProtect. 
+</p><center><img src="Captures/Olly08.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, le programme controle si l'on a coché l'option <i>Exit in the case of a bad CRC</i>. En fait, il va simplement ouvrir le fichier et calculer le CheckSum à l'aide de la même routine que vue au début. Il sauvegarde le résultat puis saute vers la suite du programme.
+</p><center><img src="Captures/Olly09.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Après avoir libéré la mémoire précédemment allouée pour calculer le CheckSum du fichier, le Loader décrypte les sections de l'exe, puis continue l'exécution en 00405416.
+</p><center><img src="Captures/Olly10.gif" alt=""></center>
+<center><img src="Captures/Olly11.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rien de spécial sur cette partie. Les noms des sections sont récupérés à partir de l'entête PE, puis les sections sont décryptées si leur nom ne commence pas par <i>rsrc, .rsr, relo, .rel, yC ou .eda</i>. La boucle s'effectue tant qu'il y a des sections.  
+</p><center><img src="Captures/Olly12.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voilà une partie intéressante où l'on voit l'OEP en clair! Son RVA a été enregistré lors du cryptage de l'exe. Il est maintenant crypté puis sauvegardé ainsi que la fonction qui le décryptera avant de sauter.
+</p><center><img src="Captures/Olly13.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le Loader récupère le CheckSum du fichier calculé un peu plus tôt puis, s'il a effectivement été calculé, le compare avec le CheckSum correct. S'ils sont différents, le programme quitte. Il n'y a pas de raison pour qu'ils soient différents puisque l'on n'a rien modifié dans le fichier.
+</p><center><img src="Captures/Olly14.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lors du cryptage de l'exe, le Crypter a sauvegardé puis détruit l'<i>ImageImportDescriptor</i>. Le Loader va donc récupérer cette structure, compter le nombre de pointeur présent dans l'IAT d'origine du programme, pour finalement allouer une zone mémoire en fonction du nombre d'API trouvé. 
+</p><center><img src="Captures/Olly15.gif" alt=""></center><p align="justify">
+</p><center><img src="Captures/Olly16.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour chaque DLL, le Loader décrypte le nom de celle-ci puis récupère son adresse grâce à <i>LoadLibraryA()</i>. Ensuite, il vérifie que l'option <i>Delete Import Information</i> est sélectionnée pour effacer le nom de la DLL dans l'Import Table originale. Pour éviter ça, il suffit encore une fois de remplacer le <b>JE</b> par un <b>JMP</b>.
+</p><center><img src="Captures/Olly17.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une fois l'adresse de la DLL récupérée, le Loader décrypte le nom de chaque API rattachée puis récupère son adresse grâce à la fonction <i>GetProcAddress()</i>. Comme pour la DLL, si l'option <i>Delete Import Information</i> est sélectionnée, le nom de l'API est effacé. Sauf si on remplace le <b>JE</b> par un <b>JMP</b>.
+</p><center><img src="Captures/Olly18.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant que l'adresse de l'API est connue, le Loader l'enregistre dans l'IAT d'origine. Puis il teste si l'option <i>API Redirection</i> est sélectionnée. Si oui, il remplace dans l'IAT l'adresse de l'API par l'adresse d'un JMP API. On empèche toujours ça en remplaçant le <b>JE</b> par un <b>JMP</b>. La boucle s'effectue tant qu'il y a des API ou des DLL à décrypter.
+</p><center><img src="Captures/Olly20.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, le Loader vérifie que l'option <i>Erase PE Header</i> a été activée puis récupère le <i>SizeOfHeaders</i> et remplace chaque octet, à partir de l'<i>ImageBase</i>, par des 0. En rempaçant le <b>JE</b> par un <b>JMP</b>, on garde le PE Header intacte. 
+</p><center><img src="Captures/Olly21.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le CheckSum du Loader est de nouveau calculé, puis comparé avec celui calculé au début. S'ils différent, le programme quitte. Une fois encore, en remplaçant le <b>JE</b> par un <b>JMP</b>, le problème est réglé.
+</p><center><img src="Captures/Olly22.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une boucle décrypte la seconde partie du Loader.
+</p><center><img src="Captures/Olly23.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Le Loader récupère l'adresse de l'API <i>IsDebuggerPresent()</i> puis l'exécute. Un petit coup du plugin "IsDebugPresent" et on peut passer à la suite.
+</p><center><img src="Captures/Olly24.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici une nouvelle routine de détection de SoftIce qui ne nous concerne toujours pas puisque l'on a toujours pas SoftIce!
+</p><center><img src="Captures/Olly25.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On enchaine avec 2 boucles qui vont effacer le Loader en remplaçant chaque octet par 0. Ne laissant que cette routine ainsi que la fonction de décryptage de l'OEP.
+</p><center><img src="Captures/Olly26.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Et finalement, ces dernières instructions créent le SEH avant de générer une exception puisque le programme veut accéder à l'adresse 0. (Pour plus d'info sur les SEH, lire <i><a href="http://www.jorgon.freeserve.co.uk/ExceptFrame.htm">Win32 Exception handling for assembler programmers</a> de Jeremy Gordon</i>). 
+</p><center><img src="Captures/Olly27.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici l'Except Handler chargé de gérer l'exception. Il décrypte l'OEP puis remplace l'adresse qui a provoqué l'erreur (00405769) par l'OEP. Ainsi le programme continuera son exécution à partir de l'instruction suivant l'OEP.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant, pour créer le dump, on trace tranquillement avec <i>F8</i> jusqu'en 00405769 pour générer l'erreur, puis <i>Shift F8</i> pour continuer jusqu'au <i>CALL ntdll.ZwContinue</i> qui nous envoie en 004011D5 où l'on peut enfin créer notre Dump. On va simplement utiliser OllyDump en sélectionnant <i>Rebuild Import Method2</i> et sans oublier de modifier l'OEP par 004011D4. Et c'est tout! :o)<br> 
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voilà, le dump fonctionne parfaitement sous Windows 98, 2000 et XP. Par contre, lorsqu'on l'ouvre sous OllyDbg, il nous affiche l'erreur "<i>Unable to open or read executable file 'path/dump.exe' </i>" mais il l'ouvre quand même apparemment normalement!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lorsqu'OllyDump a créé le fichier, il a rajouté une section <i>NewIID</i> qui contient uniquement les <i>Import_Image_Descriptor</i>. Il suffit de copier ces structures au début de l'<i>Import Table</i> original (ici à l'Offset 3000) et de modifier l'adresse de l'<i>Import Table</i> en 3000 pour que tout rentre dans l'ordre.
+</p></td></tr>
+
+<!-- End //-->
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+The snake is long, seven miles<br>
+Ride the snake...he's old, and his skin is cold
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

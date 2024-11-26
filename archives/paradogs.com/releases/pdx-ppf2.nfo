@@ -1,0 +1,117 @@
+PPF 2.0 (Playstation Patch File) Full Distribution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+About PPF2.0
+~~~~~~~~~~~~
+
+PPF2.0 is a further development of PPF used for
+distributing Playstation patches. Due the fact
+i dont want to confuse people with thousand different
+versions of PPF i want to say THAT PPF2.0 WILL BE THE 
+FINAL VERSION - NO NEW ENCODING METHODS WILL FOLLOW.
+Upgrade to PPF2.0 or die. So why PPF2.0? Check out the
+Updates and new features as follows:
+
+- Image Filesize checking:
+  If you do a PPF-File out of a (e.g. CDRWin) binfile
+  the PPF2.0 Patch will store it's original filesize.
+  This is used for identification when you want to apply
+  the patch later.
+  
+- Image Idetification:
+  A binary block of 1024 bytes in total will be stored
+  in a PPF2.0 file. This block is taken out of the
+  original (e.g. CDRWin) binfile. Together with the
+  filesize checking its a 100% secure way to find out
+  if the binfile the user gives as input later while
+  applying is REALLY THE SAME ONE AS THE ONE THE PPF
+  patch was made of! So no more coasters or non-working
+  Games! (In case you know how to burn with CDRWin, haha)
+  
+- Additional File_Id.diz support:
+  You, as creator of a PPF2.0 patch, have the possibility
+  to add a File_id.diz to a PPF2.0 file which will be
+  shown while patching the image with e.g. ApplyPPF 2.0
+  This can be used of course for the File_id.diz of the
+  release or for additional patch information besides of
+  the description-field.
+  
+
+Contens of the distribution:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Dosdistribution:
+--------------------
+
+The Dosdistribution includes the following files:
+
+1. ApplyPPF.exe (v 2.0)
+- With ApplyPPF.exe v2.0 you are able to apply
+  'old' PPF1.0 and PPF2.0 files to a CDRWin
+  binfile (or anything this patch is made for
+  of course). Read the ApplyPPF.txt for a detailed
+  doc!
+
+2. MakePPF.exe (v 2.0)
+- With MakePPF.exe v2.0 you are able to create your
+  own PPF2.0 (and only PPF2.0) patch files. If you
+  dont know how to patch a Playstation game etc.. or
+  if you still think PPF is some kind of AUTOCRACKER
+  or AUTOVIDEOMODE-CHANGER, don't touch MakePPF.exe
+  coz it is NOT! (And stop writing stupid emails!)
+  MakePPF.exe is for the professionals in the PSX-Scene
+  and noone else. Read MakePPF.txt for further info.
+  
+3. PPFDiz.exe
+- With PPFDiz.exe you are able to add your own file_id.diz
+  to a PPF2.0 patch you have created. Use it, because
+  what is a scene release without file_id.diz?:)
+  
+The Developerdistribution
+-------------------------
+
+The developerdistribution contains a file called 'PPF2.txt'
+This textfile describes the new PPF2.0 format. This is mainly
+done for people who want to create tools for the new PPF2.0
+patching format. As you can see i did not provide my source
+codes this time because as i stated above PPF2.0 IS FINAL
+to avoid confusion!
+
+I just want to mention that the encoding method algorythm
+HAS NOT CHANGED. So for this reason just get the devstuff
+from www.ppfresource.cjb.net written in C. But take care
+because the HEADER changed alot and take care of the
+new file_id.diz function, too!!! All information about the
+new PPF2.0 HEADER can be obtained from the file 'PPF2.txt'
+
+The Windowsdistibution
+-----------------------
+
+In the Windowsdistribution you will find the updated tool
+'PPF-O-MATIC v2.0'. With this tool you are able to apply
+PPF1.0 AND PPF2.0 patches! Its simply ONE tool which contains
+the the command ApplyPPF.exe in a comfortable Win9x GUI.
+This tool will be also distributed seperately!
+
+Last notes and information
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PPF (Playstation Patch File) was developed by Icarus/Paradox.
+I just want to say that i DID NOT develop PPF for the reason
+that EVERYONE SHOULD FOLLOW MY STANDARD and i can feel cool!
+It was done to HELP bringing some kind of standard to the
+scene like on SNES days with IPS - Thanks Elitendo and all
+the others;)
+And many thanks to all the coders out there who developed all
+this nice PPF-Applier Win9x tools! (PSX-Dupe and Zweifeld, e.g.).
+I really think that PPF was a success and helped to bring some
+standard into the PSX-scene. With all this nice PPF2.0 features
+i think its even more better now, so to all the people out there:
+Use PPF2.0 and be happy.. To all .exe-patch creators out there:
+thanks for confusin' the Playstation community with thousands of 
+different patching types! WE DON'T WANT THIS ANYMORE!
+
+Regards, fun and a peaceful competition
+
+Yours, Icarus.
+

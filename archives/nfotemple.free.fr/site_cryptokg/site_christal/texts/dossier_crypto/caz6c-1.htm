@@ -1,0 +1,799 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!doctype html public "-//W3C//DTD HTML 3.2 //EN">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Cracking of Gregory Braun's Crypto v3.5</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of Gregory Braun's Crypto v3.5</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">by</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">Part C</FONT></P>
+<P>
+<H2 ALIGN="CENTER"><FONT COLOR="blue"></FONT></H2>
+<H2 ALIGN="CENTER"><BR>
+PART C. 'C' SOURCE FOR CRACKE</H2>
+<P ALIGN="CENTER">This source code was modified,in January by Casimir, to crack version 2.6 as well as 3.5.
+
+<BLOCKQUOTE>
+	<PRE><FONT SIZE="2">#include &lt;stdio.h&gt;
+#include &lt;io.h&gt;
+#include &lt;time.h&gt;
+#include &lt;malloc.h&gt;
+#include &lt;conio.h&gt;
+#include &lt;math.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;dos.h&gt;
+#include &lt;alloc.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys\stat.h&gt;
+
+// char_min and char_max are Unsigned Long
+const int hash1_nb=112; //number of element in Hash table 1
+static unsigned long Hash_1[hash1_nb]={
+			     0x23,0x73,0x65,0x72,  0x42,0x26,0x6E,0x7A,
+			     0x7C,0x6D,0x66,0x4D,  0x31,0x2F,0x35,0x28,
+			     0x21,0x73,0x64,0x24,  0x4D,0x71,0x2E,0x7B,
+			     0x73,0x5D,0x2B,0x73,  0x46,0x6A,0x74,0x4B,
+			     0x70,0x7A,0x53,0x64,  0x74,0x7A,0x6F,0x58,
+			     0x71,0x6D,0x62,0x5E,  0x41,0x6C,0x40,0x64,
+			     0x76,0x3A,0x73,0x3F,  0x78,0x2F,0x00,0x00,
+			     0x7C,0x62,0x21,0x70,  0x7A,0x2A,0x6C,0x73,
+			     0x3B,0x72,0x6E,0x7C,  0x6C,0x66,0x24,0x76,
+			     0x69,0x5E,0x41,0x78,  0x70,0x65,0x29,0x72,
+			     0x78,0x35,0x61,0x69,  0x63,0x26,0x39,0x2F,
+			     0x32,0x6D,0x35,0x6C,  0x73,0x69,0x34,0x40,
+			     0x30,0x64,0x6D,0x5A,  0x77,0x39,0x34,0x63,
+			     0x6D,0x71,0x70,0x66,  0x68,0x77,0x00,0x00};
+
+const int hash2_nb=56; //number of element in Hash table 2
+static unsigned long Hash_2[hash2_nb]={
+			     0x7C,0x62,0x21,0x70,  0x7A,0x2A,0x6C,0x73,
+			     0x3B,0x72,0x6E,0x7C,  0x6C,0x66,0x24,0x76,
+			     0x69,0x5E,0x41,0x78,  0x70,0x65,0x29,0x72,
+			     0x78,0x35,0x61,0x69,  0x63,0x26,0x39,0x2F,
+			     0x32,0x6D,0x35,0x6C,  0x73,0x69,0x34,0x40,
+			     0x30,0x64,0x6D,0x5A,  0x77,0x39,0x34,0x63,
+			     0x6D,0x71,0x70,0x66,  0x68,0x77,0x00,0x00};
+
+
+/****************************  PROTOTYPES  *****************************/
+void Hi_folks(void);
+int Get_target(void);
+void Fill_header(int,char **,int);
+int Get_release(int);
+unsigned long Calc_key0(int,unsigned long *,unsigned long **);
+void Calc_coef(int,int,unsigned long ***,unsigned long **,int ***,int **,
+	       int **);
+void Calc_pwd_bound(int,int,unsigned long,unsigned long,unsigned long *,
+		    unsigned long **,unsigned long **);
+int Check_key1(unsigned long,unsigned long);
+void Calc_key0_bound(unsigned long,unsigned long,unsigned long *,
+		     unsigned long *);
+void Check_parity(unsigned long,int,int,int *,int *,int **,int **);
+void Check_inter(int,int,int *,int **,unsigned long,unsigned long,
+		 unsigned long *,unsigned long *,int **);
+void Check_inter4(int,int,int *,int **,int *,unsigned long,
+		  unsigned long,unsigned long *,unsigned long *);
+int Next_pwd(int,unsigned long,unsigned long,int,int,int *,
+	     unsigned long **,unsigned long **);
+int Adj_parity(int,int,int,int,unsigned long,unsigned long **);
+void Adj_char(int,unsigned long,unsigned long,unsigned long,unsigned long,
+	      unsigned long,unsigned long *,unsigned long *,int);
+void Wait_key();
+void Print_pwd(int,unsigned long *);
+unsigned long Get_key_chk(int);
+
+/******************************   MAIN   *******************************/
+main()
+{
+int pwd_len_min=1;
+int pwd_len_max=56;
+unsigned long char_min,char_max;
+unsigned long char_min_no_ext=0x20; // SPACE
+unsigned long char_max_no_ext=0x7E; // ~
+unsigned long char_min_ext=0xFFFFFFE7;
+unsigned long char_max_ext=0xFFFFFFF6;
+unsigned long char_min_adj,char_max_adj;
+unsigned long const_or  = 0x06A30DE8;
+unsigned long const_mul = 0x000343FD;
+unsigned long const_add = 0x00269EC3;
+unsigned long mask = 0x7FFF0000;
+unsigned long key0,key1,key_chk;
+unsigned long key_a,key_b,key_c,key_d,key_e,key_f,key_g,key_tmp; //temp vars
+unsigned long key_right,last_key1,step,delta_key;
+int done_half,done_all,use_mask,too_high,failed,pwd_found,char_ext;
+int const_or_odd,key1_odd,nb_zone_ok,i,len;
+float combi;
+int fn;       //encrypted file'handle
+int ver;  //26 or 35
+
+unsigned long **Coef;
+unsigned long *Coef_sum;
+int **Odd;
+int *Odd_nb;
+int *Last_odd;
+int *Parity_ok;
+int *Zone_ok;
+int *Intersection;
+unsigned long *Pwd;
+unsigned long *Bound_min;
+unsigned long *Bound_max;
+unsigned long key0_min,key0_max;
+
+Pwd=(unsigned long *)malloc(sizeof(unsigned long)*pwd_len_max);
+Parity_ok=(int *)malloc(sizeof(int)*(pwd_len_max+1));
+Zone_ok=(int *)malloc(sizeof(int)*(pwd_len_max+1));
+Intersection=(int *)malloc(sizeof(int)*(pwd_len_max+1));
+
+//for Crypto v3.5, 3 steps:
+//step 1 : read key_chk from cipher's header
+//step 2 : find 1 or more key1 compatible with key_chk
+//step 3 : find a Password and a key0 compatible with each key1 found
+
+//for Crypto v2.6, 2 steps only (as key_chk = key1):
+//step 1 : read key_chk = key1 from cipher's header
+//step 2 : find a  Password and a key0 compatible with key1
+
+Hi_folks();
+fn=Get_target();
+ver=Get_release(fn);
+key_chk=Get_key_chk(fn);
+//solve for key_chk
+Calc_coef(pwd_len_min,pwd_len_max,&amp;Coef,&amp;Coef_sum,&amp;Odd,&amp;Odd_nb,&amp;Last_odd);
+//One loop for non-extended characters, one loop for extended characters
+for(char_ext=0;char_ext&lt;=1;char_ext++)
+{
+if(!char_ext) {char_min=char_min_no_ext; char_max=char_max_no_ext;}
+else {char_min=char_min_ext; char_max=char_max_ext;}
+Calc_pwd_bound(pwd_len_min,pwd_len_max,char_min,char_max,Coef_sum,
+	       &amp;Bound_min,&amp;Bound_max);
+
+const_or_odd=(const_or&amp;0x00000001); //0:even    1:odd
+step=((0xFFFFFFFF/(0x00010000+const_mul))+1);
+key_right=(key_chk*0x00010000); //with key_chk=12345678 : key_right=56780000
+done_half = 0;
+done_all  = 0;
+use_mask  = 0;
+if(ver==26) {key1=key_chk;}
+else
+{key1=((key_right+0x00007FFF-const_add+(use_mask*0x80000000))/(0x00010000+const_mul));}
+do
+ {
+ too_high = 0;
+ key_tmp=((0x00010000+const_mul)*key1+const_add-(use_mask*0x80000000));
+ //check if key1 OK
+ if(((key_tmp &gt;= key_right) &amp;&amp; (key_tmp &lt;= (key_right+0x0000FFFF))) || (ver==26))
+  {
+  key_a = (const_mul * key1 + const_add);
+  //check masking
+  if((((key_a &lt;  0x80000000) &amp;&amp; (use_mask == 0)) ||
+     ((key_a &gt;= 0x80000000) &amp;&amp; (use_mask == 1))) || (ver==26))
+   {
+   key_b = key_a &amp; mask;
+   key_c = key_b / 0x10000;
+   key_d = key_a * const_mul + const_add;
+   key_e = key_d &amp; mask;
+   key_f = key_c + key_e;
+   key_g = key_f + key1;
+   if((key_g == key_chk) || (ver==26))
+    {
+    for(i=0;i&lt;=pwd_len_max;i++) {Zone_ok[i]=1;}
+    if((Check_key1(key1,const_or)) || (ver==26))
+     {//solve for key1
+     key1_odd=(key1&amp;0x00000001); //0:even    1:odd
+     Calc_key0_bound(const_or,key1,&amp;key0_min,&amp;key0_max);
+     nb_zone_ok=pwd_len_max-pwd_len_min+1;
+     if(!const_or_odd)
+      {
+      Check_parity(key1,pwd_len_min,pwd_len_max,Odd_nb,&amp;nb_zone_ok,&amp;Zone_ok,
+		   &amp;Parity_ok);
+      }
+     if(nb_zone_ok)
+      {
+      Check_inter(pwd_len_min,pwd_len_max,&amp;nb_zone_ok,&amp;Zone_ok,
+		  key0_min,key0_max,Bound_min,Bound_max,&amp;Intersection);
+      }
+     if(nb_zone_ok)
+      {
+      Check_inter4(pwd_len_min,pwd_len_max,&amp;nb_zone_ok,&amp;Zone_ok,Intersection,
+		   key1,const_or,Bound_min,Bound_max);
+      }
+     if(nb_zone_ok)
+      {
+      pwd_found=0;
+      failed=0;
+      for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+       {//search pwd in each valid zone
+       if(Zone_ok[len])
+	{//start iterations
+	Adj_char(Intersection[len],Coef_sum[len],key0_min,key0_max,
+		 char_min,char_max,&amp;char_min_adj,&amp;char_max_adj,char_ext);
+	pwd_found=0;
+	failed=0;
+	combi=0;
+	for(i=0;i&lt;len;i++) {Pwd[i]=char_min_adj;}
+	do
+	 {
+	 combi++;
+	 key0=Calc_key0(len,Pwd,Coef);
+	 if((key0 | const_or) == key1) {pwd_found=1;}
+	 else
+	  {
+	  if(!Next_pwd(len,char_min_adj,char_max_adj,const_or_odd,key1_odd,
+		       Last_odd,Coef,&amp;Pwd))
+	   {
+	   failed=1;
+	   }
+	  }
+	 } while((!pwd_found) &amp;&amp; (!failed));
+	}//stop iterations
+       if(pwd_found)
+	{
+	Print_pwd(len,Pwd);
+	Wait_key();
+	//break;
+	exit(0);
+	}
+       }//each len
+      if(!pwd_found) {printf(&quot;\n%08lX : [%02d] : PWD NOT FOUND)&quot;,key1,len,combi);}
+      }
+     }//each key1 found
+    }
+   }
+  }
+ //go on searching
+ if(key_tmp &gt; (key_right+0x0000FFFF))
+  {
+  delta_key=(key_tmp-key_right);
+  too_high=1;
+  }
+ else
+  {
+  delta_key = ((key_right+0x0000FFFF)-key_tmp);
+  }
+ //check delta
+ if(delta_key &gt;= (0x00010000+const_mul))
+  {
+  if(too_high) {key1--; }
+  else {key1++; }
+  }
+ else
+  {
+  last_key1=key1;
+  key1+=step;
+  if(key1 &lt;= last_key1)
+   {
+   if(done_half) {done_all = 1;}
+   else
+    {
+    done_half = 1;
+    use_mask = 1;
+    key1=(((key_right+0x00007FFF)-const_add+(use_mask*0x80000000))/(0x00010000+const_mul));
+    }
+   }
+  }
+ } while(!done_all); //stop when no more key1 to try
+}//2 loops
+exit(0);
+}
+
+/***********************************************************************/
+/**************************   FUNCTIONS   ******************************/
+/***********************************************************************/
+
+/***********************************************************************/
+/* If Intersection is of type 1 2 3 we increase char_min and/or        */
+/* decrease char_max so we search only in the useful zone              */
+/*                             |------ key0 ------|                    */
+/* before adjust:     |-------- search zone --------|                  */
+/*  after adjust:              |-- search  zone --|                    */
+void Adj_char(int intersection,unsigned long coef_sum,
+	      unsigned long key0_min, unsigned long key0_max,
+	      unsigned long char_min,unsigned long char_max,
+	      unsigned long *char_min_adj,unsigned long *char_max_adj,
+	      int char_ext)
+{
+unsigned long min,max;
+
+if((intersection==0) || (intersection==4) || (char_ext))
+   {
+   *char_min_adj=char_min;
+   *char_max_adj=char_max;
+   return;
+   }
+
+//intersection 1 2 3
+min=floor(key0_min/coef_sum);
+if(min&lt;char_min) {min=char_min;}
+max=ceil(key0_max/coef_sum);
+if(max&gt;char_max) {max=char_max;}
+
+if(intersection==1)
+   {*char_min_adj=min;      *char_max_adj=max;      return;}
+if(intersection==2)
+   {*char_min_adj=min;      *char_max_adj=char_max; return;}
+if(intersection==3)
+   {*char_min_adj=char_min; *char_max_adj=max;      return;}
+
+}
+
+/***********************************************************************/
+/* If key0 must be odd, then we must multiplicate at least 1 odd       */
+/* coeficient by 1 odd character.                                      */
+/* If the character which is multiplied by the odd coeficient is even, */
+/* then we add 1 to the character, if possible                         */
+/* e.g:             coeficient     EVEN ODD EVEN EVEN EVEN             */
+/* before adjust:    character       20  20   20   20   20             */
+/*  after adjust:    character       20  21   20   20   20             */
+/* return 0 if can't adjust parity, otherwise return 1                 */
+int Adj_parity(int const_or_odd,int key0_odd,int key1_odd,int last_odd,
+	       unsigned long char_max,unsigned long **Pwd)
+{
+if(const_or_odd) {return(1);}                 //no need to adjust parity
+if(key0_odd == key1_odd) {return(1);}         //no need to adjust parity
+if((*Pwd)[last_odd] == char_max) {return(0);} //can not adjust parity
+else {(*Pwd)[last_odd]++; return(1);}         //parity adjusted
+}
+
+/***********************************************************************/
+/* Password is made of n characters, for each character Pwd[i] we have:*/
+/*                    char_min &lt;= Pwd[i] &lt;= char_max                   */
+/* Every possible password is tried, until good password is found.     */
+/* This function calculates a new password to try.                     */
+/* e.g.: password's lenght=5, char_min=0x41 (&quot;A&quot;), char_max=0x5A (&quot;Z&quot;) */
+/*           41 41 41 41 41   &lt;--- first password to try               */
+/*           41 41 41 41 42                                            */
+/*            .  .  .  .  .                                            */
+/*           41 41 41 42 41                                            */
+/*            .  .  .  .  .                                            */
+/*           5A 5A 5A 5A 5A   &lt;--- last password to try 	       */
+/* Return 1 if there is a new password to try                          */
+/* Return 0 if no more password to try                                 */
+int Next_pwd(int len,unsigned long char_min,unsigned long char_max,
+	     int const_or_odd,int key1_odd,int *Last_odd,
+	     unsigned long **Coef,unsigned long **Pwd)
+{
+int i,found,failed;
+int key0_odd;
+unsigned long key0;
+
+i=(len-1);
+found=0;
+failed=0;
+do
+   {
+   (*Pwd)[i]++;
+   if( ((*Pwd)[i]&lt;=char_max) &amp;&amp; ((*Pwd)[i]!=0))
+      {
+      key0=Calc_key0(len,*Pwd,Coef);
+      key0_odd=(key0&amp;0x00000001); //0:even    1:odd
+      if(Adj_parity(const_or_odd,key0_odd,key1_odd,Last_odd[len],char_max,Pwd))
+	 {
+	 found=1;
+	 }
+      else
+	 {
+	 if(i) {(*Pwd)[i]=char_min; i--;}
+	 else {failed=1;}
+	 }
+      }
+   else
+      {
+      if(i) {(*Pwd)[i]=char_min; i--;}
+      else {failed=1;}
+      }
+   } while((!found) &amp;&amp; (!failed));
+
+if(found) {return(1);}
+else {return(0);}
+}
+
+/***********************************************************************/
+/* If Intersection is of type 4, we are not sure that a valid key0     */
+/* (i.e. a key0 such as: key0 OR or_const = key1) can be found in zone */
+/* because neither key0_min nor key0_max are included in search space  */
+/* case 4:   |------- k0 -------| &lt;-- key0 belongs to this space       */
+/*                   |-- key --|  &lt;-- we search here B_min&lt;=key&lt;=B_max */
+/* so we check that B_min and B_max are not both wrong and similar     */
+/* for instance:    B_min OR const_or != key1                          */
+/*                  B_max OR const_or != key1                          */
+/*          high bits                      low bits                    */
+/*  B_min = 000011111001101111000000...............                    */
+/*  B_max = 000011111001101111111100...............                    */
+/*          &lt;   similarity * &gt;                                         */
+/*	                   |                                           */
+/*                       wrong bit                                     */
+/* B_min and B_max are similar and wrong, so we skip this zone         */
+void Check_inter4(int pwd_len_min,int pwd_len_max,int *nb_zone_ok,
+		  int **Zone_ok,int *Intersection,unsigned long	key1,
+		  unsigned long const_or,unsigned long *Bound_min,
+		  unsigned long *Bound_max)
+{
+int i,len,bad_bit,bad_bit_pos,same_start;
+unsigned long o_v_bit,bound_min_bit,bound_max_bit,key1_bit,mask;
+
+for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+   {
+   if(Intersection[len]==4)
+      {
+      bad_bit=0; mask=0x80000000;
+      for(i=31;i&gt;=0;i--)
+	 {
+	 o_v_bit=(const_or &amp; mask);
+	 if(!o_v_bit)
+	    {
+	    bound_min_bit=(Bound_min[len] &amp; mask);
+	    key1_bit=(key1 &amp; mask);
+	    if(bound_min_bit!=key1_bit)
+	       {
+	       bad_bit=1;
+	       bad_bit_pos=i;
+	       break;
+	       }
+	    }
+	 mask/=2;
+	 }
+      if(bad_bit)
+	 {
+	 same_start=1; mask=0x80000000;
+	 for(i=31;i&gt;=bad_bit_pos;i--)
+	    {
+	    bound_min_bit=(Bound_min[len] &amp; mask);
+	    bound_max_bit=(Bound_max[len] &amp; mask);
+	    if(bound_min_bit!=bound_max_bit) {same_start=0; break;}
+	    mask/=2;
+	    }
+	 if(same_start)
+	    {
+	    if((*Zone_ok)[len])
+	       {
+	       (*Zone_ok)[len]=0;
+	       (*nb_zone_ok)--;
+	       }
+	    }
+	 }
+      }
+   } //each pwd_len
+}
+
+/***********************************************************************/
+/* We have:                                                            */
+/* Good   Zone (GZ) : k0_min &lt;= key0 &lt;= k0_max                         */
+/* Search Zone (SZ) :  B_min &lt;= key0 &lt;= B_max                          */
+/* Given k0_min, k0_max, B_min, B_max, 5 intersection cases possible:  */
+/*                                                                     */
+/* case 0:   |--- GZ ---|                or               |--- GZ ---| */
+/*                        |--- SZ ---|      |--- SZ ---|               */
+/*                                                                     */
+/* case 1:            |--- GZ ---|                                     */
+/*           |---------- SZ ----------| 	                       */
+/*                                                                     */
+/* case 2:                |------- GZ -------|                         */
+/*           |--------- SZ ---------|                                  */
+/*                                                                     */
+/* case 3:   |----- GZ -----|                                          */
+/*                |---------- SZ ----------|                           */
+/*                                                                     */
+/* case 4:   |------------ GZ ------------|                            */
+/*                            |-- SZ --|                               */
+/* so:                                                                 */
+/*       if case = 0: skip zone, otherwise: keep zone                  */
+void Check_inter(int pwd_len_min,int pwd_len_max,int *nb_zone_ok,
+		 int **Zone_ok,unsigned long key0_min,unsigned long key0_max,
+		 unsigned long *Bound_min,unsigned long *Bound_max,
+		 int **Intersection)
+{
+int len,key1_odd;
+
+for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+   {
+   if((Bound_max[len]&lt;key0_min) || (Bound_min[len]&gt;key0_max))
+      {
+      (*Intersection)[len]=0;
+      if((*Zone_ok)[len])
+	 {
+	 (*Zone_ok)[len]=0;   //null intersection: bad zone
+	 (*nb_zone_ok)--;
+	 }
+      }
+   else if(Bound_min[len]&lt;=key0_min)
+      {
+      if(Bound_max[len]&gt;=key0_max) {(*Intersection)[len]=1;}
+      else {(*Intersection)[len]=2;}
+      }
+   else
+      {
+      if(Bound_max[len]&gt;=key0_max) {(*Intersection)[len]=3;}
+      else {(*Intersection)[len]=4;}
+      }
+   }
+}
+
+/***********************************************************************/
+/*  we have:            key0 OR const_or = key1                        */
+/*  remember that:                                                     */
+/*                       ODD   OR  ODD   =  ODD                        */
+/*                       ODD   OR  EVEN  =  ODD                        */
+/*                       EVEN  OR  EVEN  =  EVEN                       */
+/*    key0 = weighted sum of Password's characters                     */
+/*         = Coef[len][0]*Pwd[0] + ... + Coef[len][len-1]*Pwd[len-1]   */
+/*  remember too that:                                                 */
+/*     ODD   *  ODD   =  ODD            ODD   +  ODD   =  EVEN         */
+/*     ODD   *  EVEN  =  EVEN           ODD   +  EVEN  =  ODD          */
+/*     EVEN  *  EVEN  =  EVEN           EVEN  +  EVEN  =  EVEN         */
+/*  so if key1 is ODD and const_or is EVEN, key0 must be ODD           */
+/*  and to obtain an ODD key0, you must have at least 1 ODD coeficient */
+/*  this function checks that key1 can effectively be obtained using   */
+/*  calculated coeficients                                             */
+/*  Parity_ok = 1: no problem, key1 can be obtained: keep zone         */
+/*  Parity_ok = 0: wrong, key1 can not be obtained:  skip zone         */
+void Check_parity(unsigned long key1,int pwd_len_min,int pwd_len_max,
+		  int *Odd_nb,int *nb_zone_ok,int **Zone_ok,int **Parity_ok)
+{
+int len,key1_odd;
+
+key1_odd=(key1&amp;0x00000001); //0:even    1:odd
+
+for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+   {
+   if(key1_odd &amp;&amp; !Odd_nb[len])
+      {
+      (*Parity_ok)[len]=0;
+      if((*Zone_ok)[len])
+	 {
+	 (*Zone_ok)[len]=0;
+	 (*nb_zone_ok)--;
+	 }
+      }
+   else {(*Parity_ok)[len]=1;}
+   }
+}
+
+/***********************************************************************/
+/* we look for key0_min and key0_max:    key0_min &lt;= key0 &lt;= key0_max  */
+/* key1 and const_or are known                                         */
+/* key0_min: smallest key0 value such as: key0_min OR const_or = key1  */
+/* key0_max: largest  key0 value such as: key0_max OR const_or = key1  */
+void Calc_key0_bound(unsigned long const_or,unsigned long key1,
+		     unsigned long *key0_min,unsigned long *key0_max)
+{
+*key0_max=key1;
+*key0_min=key1-const_or;
+}
+
+/***********************************************************************/
+/*  we have:          key0 OR const_or = key1                          */
+/*  at this point, we don't know key0 but we can check that key1 is    */
+/*  compatible with const_or (const_or is a known constant)            */
+/*  so we check, at BIT level, that:  const_or[ 0] &lt; or = key1[ 0]     */
+/*                                    const_or[ 0] &lt; or = key1[ 0]     */
+/*                                            ...                      */
+/*                                    const_or[31] &lt; or = key1[31]     */
+/*  return 1 if compatible, 0 otherwise                                */
+int Check_key1(unsigned long key1,unsigned long const_or)
+{
+int i;
+unsigned long o_v_bit, key1_bit, mask=1;
+
+for(i=0;i&lt;32;i++)
+   {
+   o_v_bit=(const_or &amp; mask);
+   key1_bit=(key1 &amp; mask);
+   if(o_v_bit&gt;key1_bit) {return(0); /*no good*/}
+   mask*=2;
+   }
+return(1); //OK
+}
+
+/***********************************************************************/
+/*    Coeficient depend only on:                                       */
+/*      - 2 hash tables (H1 and H2)                                    */
+/*      - password's lenght (len)                                      */
+/*      - coeficient's position (l)                                    */
+/*                                                                     */
+/*    Coeficient[len][l] = Hash_1[len+l] * Hash_2[l] * l               */
+void Calc_coef(int pwd_len_min,int pwd_len_max,unsigned long ***Coef,
+	       unsigned long **Coef_sum,int ***Odd,int **Odd_nb,
+	       int **Last_odd)
+{
+int i,l,len;
+unsigned long h1h2,h1h2l;
+
+(*Coef)=(unsigned long **)malloc(sizeof(unsigned long *)*(pwd_len_max+1));
+(*Odd)=(int **)malloc(sizeof(int *)*(pwd_len_max+1));
+(*Coef_sum)=(unsigned long *)malloc(sizeof(unsigned long)*(pwd_len_max+1));
+(*Odd_nb)=(int *)malloc(sizeof(int)*(pwd_len_max+1));
+(*Last_odd)=(int *)malloc(sizeof(int)*(pwd_len_max+1));
+
+for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+   {
+   (*Coef)[len]=(unsigned long *)malloc(sizeof(unsigned long)*len);
+   (*Odd)[len]=(int *)malloc(sizeof(int)*len);
+   }
+
+for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+   {
+   (*Odd_nb)[len]=0;
+   (*Coef_sum)[len]=0;
+   for(l=0;l&lt;len;l++)
+      {
+      h1h2=Hash_1[l+len]*Hash_2[l];
+      h1h2l=h1h2*(l+1);
+      (*Coef)[len][l]=h1h2l;
+      (*Coef_sum)[len]+=h1h2l;
+      if(h1h2l&amp;0x00000001)
+	 {
+	 (*Odd)[len][l]=1;
+	 (*Odd_nb)[len]++;
+	 (*Last_odd)[len]=l;
+	 }
+      else {(*Odd)[len][l]=0;}
+      }
+   }
+}
+
+/***********************************************************************/
+/*   we have:                                                          */
+/*         key0 = Co[len][0]*Pwd[0] + ... + Co[len][len-1]*Pwd[len-1]  */
+/*   so the smallest value we can obtain for key0 is:                  */
+/*    B_min[len] = Co[len][0]*char_min + ... + Co[len][len-1]*char_min */
+/*               = Coef_sum[len]*char_min                              */
+/*   and the greatest value:                                           */
+/*    B_max[len] = Co[len][0]*char_max + ... + Co[len][len-1]*char_max */
+/*               = Coef_sum[len]*char_max                              */
+/*   B_min and B_max delimit a search zone                             */
+void Calc_pwd_bound(int pwd_len_min,int pwd_len_max,
+		    unsigned long char_min,unsigned long char_max,
+		    unsigned long *Coef_sum,
+		    unsigned long **Bound_min,unsigned long **Bound_max)
+{
+int len;
+unsigned long tmp;
+
+(*Bound_min)=(unsigned long *)malloc(sizeof(unsigned long)*(pwd_len_max+1));
+(*Bound_max)=(unsigned long *)malloc(sizeof(unsigned long)*(pwd_len_max+1));
+
+for(len=pwd_len_min;len&lt;=pwd_len_max;len++)
+   {
+   (*Bound_min)[len]=Coef_sum[len]*char_min;
+   (*Bound_max)[len]=Coef_sum[len]*char_max;
+   }
+}
+
+/***********************************************************************/
+/*    key0 = weighted sum of Password's characters                     */
+/*         = Coef[len][0]*Pwd[0] + ... + Coef[len][len-1]*Pwd[len-1]   */
+/*    return key0                                                      */
+unsigned long Calc_key0(int len,unsigned long *Pwd,unsigned long **Coef)
+{
+int i;
+unsigned long key0;
+
+key0=0;
+for(i=0;i&lt;len;i++)
+   {
+   key0+=(Coef[len][i]*Pwd[i]);
+   }
+return(key0);
+}
+
+/***********************************************************************/
+void Hi_folks(void)
+{
+printf(&quot;\n\nYet Another Password Cracker by CASIMIR {:-)&quot;);
+printf(&quot;\n-&gt; Target: Crypto v2.6/3.5 by Gregory Braun\n&quot;);
+}
+
+/***********************************************************************/
+/*    try to open crypted file  (must be in the SAME directory)        */
+/*    - success : return file'handle                                   */
+/*    - failure : exit prg                                             */
+int Get_target(void)
+{
+unsigned char buf[110];
+int fn;
+
+printf(&quot;\nFile to decrypt [ e.g: secret.(=txt=) or secret.(_t ]? &quot;);
+gets(buf);
+
+// try to open file
+fn=open(buf,O_BINARY|O_RDONLY);
+switch(fn)
+   {
+   case -1:printf(&quot;\nFILE NOT FOUND!&quot;);
+   printf(&quot;\n-&gt;File to crack MUST be in SAME directory as Cracker&quot;);
+   printf(&quot;\n-&gt;DO NOT forget file's extension (usually (=txt=) or (_t)!\n&quot;);
+   Wait_key(); exit(0);
+   default: /*printf(&quot;\nOK, FILE FOUND&quot;)*/; return(fn);
+   }
+}
+
+/***********************************************************************/
+/* Header from encrypted file has following structure:                 */
+/*                                                                     */
+/* v2.6:   CryptoHeader????pathfilename.............encryptedfile      */
+/* v3.5:   CryptoHdrBlk????pathfilename.............encryptedfile      */
+/*         &lt;------------- 276 bytes ---------------&gt;&lt;  original &gt;      */
+/*                                                       size          */
+/* The ???? is the key_chk we're looking for.                          */
+unsigned long Get_key_chk(int fn)
+{
+unsigned long *Buffer;
+
+//start reading on byte 12
+lseek(fn,12,0);
+//read 4 bytes
+read(fn,Buffer,4);
+close(fn);
+return(*Buffer);
+}
+
+/***********************************************************************/
+/* The 12 first characters from header tell us which release of Crypto */
+/* was used to encrypt file:                                           */
+/*     CryptoHeader &lt;=&gt; v2.6                                           */
+/*     CryptoHdrBlk &lt;=&gt; v3.5                                           */
+int Get_release(int fn)
+{
+char *tmp;
+tmp=(char *)malloc(sizeof(char)*13);
+read(fn,tmp,12);
+tmp[12]='\0';
+if(!strcmp(tmp,&quot;CryptoHeader&quot;)) {return(26);}
+else {return(35);}
+}
+
+/***********************************************************************/
+/*                   wait for key pressed                              */
+void Wait_key()
+{
+printf(&quot;\n&quot;);
+printf(&quot;              ******************\n&quot;);
+printf(&quot;              * hit any key... *\n&quot;);
+printf(&quot;              ******************\n&quot;);
+getch();       //kbhit
+}
+
+/***********************************************************************/
+/*                        display password                             */
+void Print_pwd(int pwd_len,unsigned long *Pwd)
+{
+int i;
+int pwd_char;
+
+printf(&quot;\n\n ASCII seq: &quot;);
+for(i=0;i&lt;pwd_len;i++)
+   {//normal character : 000000XX      extended character : FFFFFFXX
+   if(Pwd[i]&lt;0x80) {pwd_char=Pwd[i];}
+   else {pwd_char=(Pwd[i]-0xFFFFFF00);}
+   printf(&quot;[%d]&quot;,pwd_char);
+   if((i+1)%10==0) {printf(&quot;\n            &quot;);}
+   }
+
+printf(&quot;\n\n  PASSWORD: &gt;&gt;&gt;&quot;);
+for(i=0;i&lt;pwd_len;i++)
+   {
+   if(Pwd[i]&lt;0x80) {pwd_char=Pwd[i];}
+   else {pwd_char=(Pwd[i]-0xFFFFFF00);}
+   printf(&quot;%c&quot;,Pwd[i]);
+   }
+printf(&quot;&lt;&lt;&lt; (%d characters)\n\n&quot;,pwd_len);
+printf(&quot;(don't type &gt;&gt;&gt; and &lt;&lt;&lt;)\n&quot;);
+}</FONT></PRE>
+	<P><BR>
+	Converted to hypertext by Joe Peschel September 20, 1999; revised January 8, 2000.
+</BLOCKQUOTE>
+
+<P>
+
+</BODY>
+
+</HTML>

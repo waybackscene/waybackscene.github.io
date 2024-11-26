@@ -1,0 +1,63 @@
+'FC search' Reversme - Revme #1
+-------------------------------------------
+
+His story:
+
+WTF ?! 
+
+Le projet ultra secret 'FC search' est un moteur surpuissant de recherche dans la base du forum de FC. 
+Malheureusement on a engager des programmeurs au rabais, et ceux ci n'ont pas été capable de terminer notre 
+programme convenablement.
+
+Par dessus le marché, un virus très virulent s'est introduit dans notre réseau et a effacé nos code sources et 
+modifié quelque peu le programme.
+
+Nous avons besoin d'un Reverser qui puisse finir le boulot, après différent contact dans les milieux underground, 
+nous pensons que vous êtes à même d'accomplir cette tâche.
+
+------------------------------
+
+Wad ya gotta do :
+
+1) Il manque le parsing de keywords (quand on entre plusieurs mot clés, un '+' devrait s'intercaler entre eux). 
+Par exemple si l'utilisateur entre dans l'edit box:
+
+IAT Process
+
+Le programme devra chercher:
+
+IAT+Process
+
+2) Le Menu EXIT ne fonctionne pas très bien on dirait...
+
+3) Si aucun mot clé n'est entré une boite de message devrait apparaitre, notifiant l'utilisateur qu'il a oublié 
+qque chose... (A vous de trouver le texte et le caption)
+
+4) Le menu About ne fonctionne pas
+
+5) Le menu About > About est grisé... et heu... ne fonctionne pas non plus
+
+6) La fonction de recherche avec IE ne fonctionne pas... :\
+
+7) Le menu File > search ne fait rien, il devrait faire comme l'appui sur le bouton de recherche.
+
+8) Le menu About > greetz ne fonctionne pas (le texte est...là où il doit être, mais facilement repérable)
+----------------------------
+
+Wad ya shall not do !
+
+- pas de tools automatisant un processus de modification :
+
+Par exemple interdiction d'utiliser des programmes de type ResourceHack et autres pour modifier directement le 
+programme. Vous pouvez par contre procéder par comparaison, mais vous devrez alors comprendre les modifications 
+mises en oeuvre et être capable de les expliquer.
+
+----------------------------
+
+Ecrivez un tutorial expliquant votre démarche et agrémentez le de code si possible. Pas besoin de faire un roman, 
+notifiez simplement les points importants et votre manière de procéder face à chaque problème.
+
+Merci à vous de sauver notre entreprise. Ce programme devrait à terme nous rapporte un gazillion de kopecks au 
+minimum !
+
+

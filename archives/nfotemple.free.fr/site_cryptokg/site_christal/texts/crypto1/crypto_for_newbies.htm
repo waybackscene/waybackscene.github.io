@@ -1,0 +1,1067 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<META content="text/html; charset=windows-1252" http-equiv=Content-Type>
+<SCRIPT language=JavaScript>
+<!--
+
+// Declarations generales
+var FormClef = "";
+var FormCodage = "";
+var CodageGroupSize = 0;
+var CodageTableChar = "";
+
+function Init()
+{
+FormClef = document.forms[0];
+FormCodage = document.forms[1];
+CodageGroupSize = 1;
+CodageTableChar = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&~#|*+-\\/=%!:;?,<>'" + '"';
+FormClef.TableConv.value = CodageTableChar;
+};
+
+// calcul les differentes clefs necessaires
+function CalculClef()
+{
+p = ( FormClef.P.value == "") ? 0 : FormClef.P.value;
+q = ( FormClef.Q.value == "") ? 0 : FormClef.Q.value;
+n = p * q;
+FormClef.N.value = parseFloat( n);
+//euler=(p-1)(q-1)
+Euler = n - p - q + 1;
+FormClef.Euler.value = parseFloat( Euler);
+
+// Calcul de d (ed=1mod(euler))
+e = ( FormClef.E.value == "") ? 0 : FormClef.E.value;
+TmpNe = 1;
+d = 1;
+while
+( ( ( d * e) % Euler) != 1)
+ {
+  TmpNe += 1;
+  d = Math.ceil( TmpNe * Euler / e);
+ };
+FormClef.D.value = parseFloat( d);
+
+// verification si n est assez "grand"
+CodageGroupSize = FormClef.Groupage.value;
+if
+ ( CodageTableChar.length * Math.pow( 100, CodageGroupSize - 1) > n)
+  {
+  alert( "P ou Q risquent d'etre trop petits !");
+  };
+}
+
+// Calcul du premier nombre premier suivant
+function PremierSuivant( Concerner)
+{
+p = ( Concerner.value == "") ? 3 : Concerner.value;
+p = p - ( p % 2) + 1;
+Premier = 0;
+while
+ ( Premier == 0)
+  {
+  p += 2;
+  Diviseur = 3;
+  while
+   ( ( ( p % Diviseur) != 0) && ( Diviseur < ( p / 2)))
+  {
+  Diviseur += 2;
+  };
+  Premier = ( ( p % Diviseur) != 0) ? 1 : 0;
+  };
+ Concerner.value = p;
+}
+
+//Retourne la valeur d'un char 
+function ValeurChar( Lettre)
+{
+return ( CodageTableChar.indexOf( Lettre, 0));
+};
+
+// Calcul du modulo "Modulo" de "Base" a la puissance "Exposant"
+function ModuloDexpo( Base, Exposant, Modulo)
+{
+var ModuloBase2 = new Array();
+
+// Niveau de puissance de 2 a considerer
+ModuloLevel = Math.max( Math.floor( ( Math.log( Exposant) / 0.6931471805599)), 1);
+
+// Preparation du tableau de transcodage
+ModuloBase2[ 0] = Base % Modulo;
+for
+ ( Level = 1; Level <= ModuloLevel; Level++)
+   {
+   ModuloBase2[ Level] = ( ModuloBase2[ Level - 1] * ModuloBase2[ Level - 1]) % Modulo;
+   };
+
+// Utilisation pour decomposition en utilisant le tableau
+ExpoDec = Exposant;
+Valeur = 1;
+Level = ModuloLevel;
+while
+ ( ExpoDec > 0)
+   {
+   if
+    ( ExpoDec >= Math.pow( 2, Level))
+     {
+     Valeur = ( Valeur * ModuloBase2[ Level]) % Modulo;
+     ExpoDec -= Math.pow( 2, Level--);
+     }
+    else
+     {
+     Level--;
+     };
+   };
+return Valeur;
+};
+
+function Encodage( Message, E, N)
+{
+CodageGroupSize = FormClef.Groupage.value;
+CodageTableChar = FormClef.TableConv.value;
+PreSize = Math.ceil( Math.log( N) / Math.LN10);
+PreZero = ""
+window.status = "En cours [ ]";  
+for
+ ( Temp = 0; Temp < PreSize; Temp++)
+  {
+  PreZero += "0";
+  };
+MessageCode = "";
+
+// Debut de la procedure
+while
+ ( Message.length > 0)
+  {
+// Prend les morceaux du texte à chiffrer de long. CodageGroupSize
+  if
+   ( Message.length > ( CodageGroupSize - 1))
+    {
+    GroupeLettre =  Message.substring( 0, CodageGroupSize);
+    Message = Message.substring( CodageGroupSize, Message.length);
+    }
+   else
+    {
+    GroupeLettre = Message + "   ".substring( 0, ( CodageGroupSize) - Message.length);
+    Message = "";
+    };
+
+// Donne les valeurs des donnees
+  GroupeValue = 0;
+  for
+   ( Letter = CodageGroupSize - 1; Letter >= 0; Letter--)
+    {
+	GroupeValue = GroupeValue * 100 + ValeurChar( GroupeLettre.charAt( Letter));
+    };
+
+// chiffre le groupe
+  GroupePreCode = ModuloDexpo( GroupeValue, E, N);
+// on allonge au besoin
+  GroupePreSize =  Math.ceil( Math.log( GroupePreCode) / Math.LN10);
+  MessageCode += PreZero.substring( 0, PreSize - GroupePreSize) + GroupePreCode;
+  window.status = "En cours [" + GroupePreCode + "]";
+  };
+//window.status = window.defaultStatus;
+return MessageCode;
+};
+
+function Decodage( MessageCode, D, E, N)
+{
+CodageGroupSize = FormClef.Groupage.value;
+CodageTableChar = FormClef.TableConv.value;
+PreSize = Math.ceil( Math.log( N) / Math.LN10);
+Message = "";
+window.status = "En cours [ ]";
+while
+ ( MessageCode.length > 0)
+  {
+// Prend les morceaux du texte à chiffrer de long. CodageGroupSize
+  GroupeCode = parseInt( MessageCode.substring( 0, PreSize), 10);
+  MessageCode = MessageCode.substring( PreSize, MessageCode.length);
+
+// Dechiffre le groupe
+  GroupeLettreValue = ModuloDexpo( GroupeCode, D, N);
+  PreMessage = "";
+  for
+   ( Lettre = 0; Lettre < CodageGroupSize; Lettre++)
+    {
+    PreMessage += CodageTableChar.charAt( GroupeLettreValue % 100);
+    GroupeLettreValue = Math.floor( GroupeLettreValue / 100);
+    };
+  Message += PreMessage;
+  window.status = "En cours [" + PreMessage + "]";
+  };
+//window.status = window.defaultStatus;
+return Message;
+};
+
+function Encode()
+{
+FormCodage.Crypte.value = Encodage( FormCodage.Texte.value, FormClef.E.value, FormClef.N.value);
+}; 
+
+function Decoder()
+{
+FormCodage.Texte.value = Decodage( FormCodage.Crypte.value, FormClef.D.value, FormClef.E.value, FormClef.N.value);
+}; 
+
+// -->
+</SCRIPT>
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>crypto for newbies</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="fondopri.jpg" TEXT="black" BGCOLOR="#000099" LINK="#A62A2A" ALINK="#FF9900" VLINK="#6E003A" onload="Init()">
+
+<FORM METHOD="POST" ENCTYPE="application/x-www-form-urlencoded">
+<P ALIGN="RIGHT"><B><FONT SIZE="6" COLOR="#FFCC00" FACE="Arial Black">For Newbies Only</FONT></B></P>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="955">
+	<TR>
+		<TD WIDTH="941" BGCOLOR="#FFFFCC"><B><U><FONT SIZE="4" FACE="Arial">Introduction</FONT></U></B><FONT SIZE="2" FACE="Arial"><BR>
+			<BR>
+			La cryptographie est dans l'air, comme les packers l'ont &eacute;t&eacute; fut un temps. Peut &ecirc;tre une question
+			de mode (aujourd'hui si t'as pas un portable dont la taille est inversement proportionnelle &agrave; celle de </FONT><STRIKE><FONT
+			SIZE="2" FACE="Arial">ta bi</FONT></STRIKE><FONT SIZE="2" FACE="Arial"> ton organe sexuel, et un shareware crypt&eacute;
+			en RSA, m&eacute;rites tu d'exister ?).<BR>
+			<BR>
+			Je n'ai pas l'intention, dans les lignes qui suivent, de r&eacute;expliquer le principe (disons de faire un copi&eacute;/coll&eacute;...)
+			des diff&eacute;rents algorithmes de cryptage, tout au plus un l&eacute;ger rappel des points les plus importants.
+			De tout fa&ccedil;on, si vous utilisez Google, il me semble qu'il n'y a qu'en Inuit que l'algorithme RSA n'a pas
+			&eacute;t&eacute; expliqu&eacute;, et encore je n'en mettrais pas ma main &agrave; couper... Ceci expliquant cela,
+			le nombre de LIB pour C/C++/VC++ ou Delphi sont l&eacute;gions sur le NET, et les auteurs de sharewares ne s'en
+			privent pas. Le seul avantage, c'est que beaucoup ne comprennent pas comment fonctionne exactement la LIB qu'ils
+			incluent dans leurs programmes, ce qui pourra nous aider de temps en temps...<BR>
+			<BR>
+			En fait, mon intention n'est m&ecirc;me pas d'expliquer comment cracker tel ou tel algo, mais simplement d'essayer
+			d'aider les tous d&eacute;butants &agrave; reconna&icirc;tre &agrave; quel mode de cryptage ils auront affaire.
+			Ensuite&nbsp;&agrave; chacun de trouver &agrave; quoi est utilis&eacute; le r&eacute;sultat du cryptage obtenu
+			ou l'origine du message &agrave; crypter...<BR>
+			<BR>
+			Comme il est impossible de faire le tour de tous les algorithmes, je ne parlerai cette fois ci que de MD5 (tr&egrave;s
+			courant), SHA (courant) et RSA (tr&egrave;s courant). Les deux premiers sont des fonctions de condensation (ou
+			de hashage), le dernier est de type asym&eacute;trique.<BR>
+			<BR>
+			Citons, pour m&eacute;moire, quelques autres algorithmes couramment utilis&eacute;s: Twofish, Rijndael, Blowfish,
+			Cast 128, Gost, IDEA, Misty1<BR>
+			<BR>
+			Bonne lecture<BR>
+			christal</FONT></TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="952">
+	<TR>
+		<TD WIDTH="938" BGCOLOR="#FFFFCC">
+			<P ALIGN="RIGHT"><U><FONT SIZE="5" COLOR="blue" FACE="Arial Black">MD5</FONT></U></P>
+			<P><FONT SIZE="2" FACE="Arial">Le premier programme auquel nous allons nous int&eacute;resser est un </FONT><A
+			HREF="crackme.exe"><FONT SIZE="2" FACE="Arial">crackme</FONT></A><FONT SIZE="2" FACE="Arial"> &agrave; serial unique
+			&eacute;crit en Delphi et compress&eacute; par UPX.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Une fois d&eacute;compress&eacute; (en utilisant l'option &quot;Decompress&quot;
+			d'UpxGui), IDA va avoir des choses &agrave; dire (View </FONT><FONT SIZE="2" FACE="Courier New">-&gt;</FONT><FONT
+			SIZE="2" FACE="Arial"> Open subwiews </FONT><FONT SIZE="2" FACE="Courier New">-&gt;</FONT><FONT SIZE="2" FACE="Arial">
+			Strings) :</FONT>
+			<BLOCKQUOTE>
+				<P><FONT SIZE="2" COLOR="blue" FACE="Arial">&quot;a5ba6896&quot;<BR>
+				&quot;MD5&quot;<BR>
+				&quot;serial valide&quot;</FONT>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Pas compliqu&eacute; de deviner ici qu'il s'agit d'un hashage MD5....<BR>
+			Par contre, l'esp&egrave;ce de serial semble tr&egrave;s prometteur :</FONT></P>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00441065  mov     edx, dword ptr [ebp-08]  &gt; edx = caract&egrave;res entr&eacute;s
+...
+:00441087  mov     eax, dword ptr [ebp-04]  &gt; eax = hash corespondant
+...
+:004410A1  mov     eax, dword ptr [ebp-04]  &gt; eax = 8 derniers bytes du hash
+
+</FONT><FONT SIZE="2" COLOR="#009900">* Possible StringData Ref from Code Obj -&gt;&quot;a5ba6896&quot;</FONT><FONT
+				SIZE="2">
+:004410A4  mov     edx, 004410FC            &gt; edx = a5ba6896
+:004410A9  call    00403C74                 &gt; comparaison avec les 8 derniers bytes du hash_serial_entr&eacute;
+:004410AE  jne     004410C8                 &gt; Pas Glop ! c'est la sortie
+:004410B0  push    00000000                 &gt; Glop Glop ! la MsgBox s'affiche.
+:004410B2  mov     ecx, 00441108
+
+</FONT><FONT SIZE="2" COLOR="green">* Possible StringData Ref from Code Obj -&gt;&quot;serial valide&quot;</FONT><FONT
+				SIZE="2">
+:004410B7  mov     edx, 0044110C            &gt; serial valide</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Et le tout l'un au-dessus de l'autre, il n'y a plus &agrave; h&eacute;siter !</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Reste que dans ce cas pr&eacute;cis, il sera n&eacute;cessaire de bricoler un </FONT><A
+			HREF="BRUTe.exe"><FONT SIZE="2" FACE="Arial">MD5 Brute Forcer</FONT></A><FONT SIZE="2" FACE="Arial"> testant des
+			valeurs num&eacute;riques puis alphanum&eacute;riques. Heureusement, le serial sera de type d&eacute;cimal, compos&eacute;
+			de 4 caract&egrave;res, et rapide &agrave; trouver. (mode d'emploi: vous entrez le DWORD recherch&eacute; dans
+			la quatri&egrave;me case, vous indiquez que la recherche doit se faire entre 1 et 99999 par exemple dans les valeurs
+			mini/maxi et vous cliquez sue &quot;</FONT><FONT SIZE="2" COLOR="navy" FACE="Arial">Search</FONT><FONT SIZE="2"
+			FACE="Arial">&quot;)</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">MD5 recoit, lors de son initialisation (c'est une de ses caract&egrave;ristiques),
+			une chaine de caract&egrave;res typiques:</FONT></P>
+			<BLOCKQUOTE>
+				<P><FONT SIZE="2" FACE="Arial">DATA:00442050 a0123456789abcdef_0 db '</FONT><B><FONT SIZE="2" FACE="Arial">0123456789ABCDEF'</FONT></B></P>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Suivant les programmeurs, elle est, ou non, en clair.<BR>
+			En soit m&ecirc;me, une telle cha&icirc;ne de caract&egrave;res n'est pas sp&eacute;cifique aux fonctions de Hash
+			MD5, mais lorqu'elle apparait cod&eacute; ainsi:</FONT></P>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">30 31 32 33 34 35 36 37-38 39 61 62 63 64 65 66  0123456789abcdef
+</FONT><B><FONT SIZE="2">01 23 45 67 89 AB CD EF-FE</FONT></B><FONT SIZE="2"> DC BA 98 76 54 32 10  .</FONT><FONT
+				SIZE="2" COLOR="blue">#Eg</FONT><FONT SIZE="2">........vT2. (le </FONT><FONT SIZE="2" COLOR="blue">#Eg</FONT><FONT
+				SIZE="2"> est significatif)</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">il va falloir commencer &agrave; regarder dans la fen&ecirc;tre des Data si un hash
+			n'apparait pas...</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Mais cette string n'est pas toujours apparente dans les Strings Ref<BR>
+			Bien souvent, m&ecirc;me, elle sera initialis&eacute;e ainsi:</FONT></P>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00401800  mov     dword ptr [ecx],     067452301h   ; </FONT><B><FONT SIZE="2" COLOR="blue"
+				FACE="Arial">Possible Hash found can be SHA-1 or MD5a or Ripe-MD !!!</FONT></B><FONT SIZE="2">
+:00401806  mov     dword ptr [ecx+4],   0EFCDAB89h
+:0040180D  mov     dword ptr [ecx+8],   098BADCFEh
+:00401814  mov     dword ptr [ecx+0Ch], 010325476h</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Vous vous doutez bien que la jolie petite phrase en bleu n'est pas apparue magiquement
+			lors du d&eacute;ssasemblage.<BR>
+			</FONT><B><FONT SIZE="2" FACE="Arial">Et bien SI!</FONT></B><FONT SIZE="2" FACE="Arial"><BR>
+			Grace &agrave; un fichier IDC (&eacute;crit par Snacker &amp; Defiler pour IDA), la routine d'implantation a &eacute;t&eacute;
+			imm&eacute;diatement rep&eacute;r&eacute;e.<BR>
+			(touche F2 -&gt; choix du fichier </FONT><A HREF="hashfinder.idc" target="_blank"><FONT SIZE="2" FACE="Arial">hashfinder.idc</FONT></A><FONT
+			SIZE="2" FACE="Arial"> que vous aurez judicieusement plac&eacute; dans le r&eacute;pertoire ad'hoc).</FONT></P>
+
+			<P><FONT SIZE="2" FACE="Arial">MD5 est tout simple et ne pose pas de probl&egrave;me, par contre il est souvent
+			utilis&eacute; combin&eacute; avec un autres algo, et bien souvent du RSA...</FONT>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="97%">
+	<TR>
+		<TD WIDTH="869" BGCOLOR="#FFFFCC">
+			<CENTER>
+			<P>
+			<TABLE BORDER="0" WIDTH="84%">
+<TBODY>
+  																																								<TR>
+					<TD VALIGN="TOP">
+						<CENTER>
+						<P>
+						<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%" BGCOLOR="#0000AA" background="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crypto1/Paj's%20Home%20Cryptography%20JavaScript%20MD5_fichiers/patt.gif">
+<TBODY>
+        																																																																															<TR>
+								<TD><B><FONT SIZE="4" COLOR="white" FACE="arial">&nbsp;Demonstration</FONT></B></TD>
+							</TR>
+</TBODY>																																																																		</TABLE>
+<SCRIPT  SRC="md4.js" language="JavaScript"></SCRIPT> <SCRIPT  SRC="md5.js" language="JavaScript"></SCRIPT> <SCRIPT 
+						SRC="sha1.js" language="JavaScript"></SCRIPT> 
+						<TABLE BORDER="0">
+<TBODY>
+          																																																																																		<TR>
+								<TD WIDTH="85"><FONT SIZE="4" COLOR="blue" FACE="Arial">Entr&eacute;e:</FONT></TD>
+								<TD><INPUT TYPE="TEXT" NAME="input" SIZE="40"></TD>
+							</TR>
+							<TR>
+								<TD WIDTH="85"><FONT SIZE="4" COLOR="blue" FACE="Arial">Calcul:</FONT></TD>
+								<TD>
+									<CENTER>
+									<P>
+									<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
+										<TR>
+											<TD WIDTH="33%">
+												<P ALIGN="CENTER"><INPUT onclick="hash.value = calcMD4(input.value)" type=button value=MD4>
+											</TD>
+											<TD WIDTH="33%">
+												<P ALIGN="CENTER"><INPUT onclick="hash.value = calcMD5(input.value)" type=button value=MD5>
+											</TD>
+											<TD WIDTH="34%">
+												<P ALIGN="CENTER"><INPUT onclick="hash.value = calcSHA1(input.value)" type=button value=SHA-1>
+											</TD>
+										</TR>
+									</TABLE>
+
+</CENTER>
+								</TD>
+							</TR>
+							<TR>
+								<TD WIDTH="85"><FONT SIZE="4" COLOR="blue" FACE="Arial">Resultat:</FONT></TD>
+								<TD><INPUT TYPE="TEXT" NAME="hash" SIZE="40"></TD>
+							</TR>
+</TBODY>																																																																					</TABLE>
+
+						<TABLE BORDER="0" CELLSPACING="0" WIDTH="100%" BGCOLOR="#0000AA" background="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crypto1/Paj's%20Home%20Cryptography%20JavaScript%20MD5_fichiers/patt.gif">
+<TBODY>
+        																																																																															<TR>
+								<TD><B><FONT SIZE="4" COLOR="white" FACE="arial">&nbsp;Demonstration</FONT></B></TD>
+							</TR>
+</TBODY>																																																																		</TABLE>
+
+</CENTER>
+					</TD>
+				</TR>
+</TBODY>																											</TABLE>
+
+</CENTER>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="952">
+	<TR>
+		<TD WIDTH="938" BGCOLOR="#FFFFCC">
+			<P ALIGN="RIGHT"><U><FONT SIZE="5" COLOR="blue" FACE="Arial Black">SHA</FONT></U></P>
+			<P><FONT SIZE="2" FACE="Arial">Et maintenant, un ch'tit coup de SHA-256 sur un autre </FONT><A HREF="Keygenme.exe"><FONT
+			SIZE="2" FACE="Arial">crackme</FONT></A><FONT SIZE="2" FACE="Arial"> de JuLio eL NeGRo &eacute;crit en ASM</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Le gros avantage de l'ASM, c'est que le code n'est pas &quot;perverti&quot; par
+			les mois de l'ann&eacute;e, ou Dieu sait quels autres cochoneries qui viennet se rajouter lors de la compilation
+			de langages &quot;&eacute;volu&eacute;s&quot;. Et donc, en dehors de la cr&eacute;ation de la dialog box, la totalit&eacute;
+			du reste du code est consacr&eacute; &agrave; la routine de cryptage, ce qui la rendra facile &agrave; ripper pour
+			en faire un copi&eacute;/coll&eacute; dans un </FONT><A HREF="Gen_SHA.exe"><FONT SIZE="2" FACE="Arial">Key Generator</FONT></A><FONT
+			SIZE="2" FACE="Arial">, mais ce ne sera pas toujours aussi simple...</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Comme son copain MD5, SHA est initialis&eacute;:</FONT></P>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00401023   mov     dword_0_406804, </FONT><FONT SIZE="2" COLOR="blue">6A09E667</FONT><FONT
+				SIZE="2">h
+:0040102D   mov     dword_0_406808, BB67AE85h
+:00401037   mov     dword_0_40680C, 3C6EF372h
+:00401041   mov     dword_0_406810, A54FF53Ah
+:0040104B   mov     dword_0_406814, 510E527Fh
+:00401055   mov     dword_0_406818, 9B05688Ch
+:0040105F   mov     dword_0_40681C, 1F83D9ABh
+:00401069   mov     dword_0_406820, 5BE0CD19h</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Moins facile &agrave; identifier, j'ai juste fait une recherche sur le net en utilisant
+			&quot;</FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">6A09E667</FONT><FONT SIZE="2" FACE="Arial">&quot; comme cl&eacute;,
+			pour trouver immediatement ce site et la r&eacute;ponse &agrave; ma question:</FONT></P>
+			<P><B><FONT SIZE="2" FACE="Arial">Description of SHA-1 and SHA-256</FONT></B><FONT SIZE="2" FACE="Arial"> </FONT><A
+			HREF="http://home.ecn.ab.ca/~jsavard/crypto/mi060501.htm" target="_blank"><FONT SIZE="2" FACE="Arial">http://home.ecn.ab.ca/~jsavard/crypto/mi060501.htm</FONT></A></P>
+			<P><FONT SIZE="2" COLOR="#006600" FACE="Arial">The SHA-256 algorithm is very similar in structure to SHA-1, but
+			not only does it use eight, rather than five, 32-bit subblocks, but there are other ways in which it is not analogous.<BR>
+			<BR>
+			For SHA-256, the message is padded, and divided into 512-bit blocks, in the same way as for SHA-1.<BR>
+			<BR>
+			From each block, considered as 16 32-bit words, 64 (rather than 80) 32-bit words are produced, the first 16 being
+			the block itself, and the remaining words being the sum, modulo 2^32, of the following quantities:</FONT></P>
+			<BLOCKQUOTE>
+				<P><FONT SIZE="2" COLOR="#006600" FACE="Arial">the word 16 words ago; <BR>
+				the word 7 words ago; <BR>
+				the XOR of the following three quantities:</FONT>
+				<BLOCKQUOTE>
+					<P><FONT SIZE="2" COLOR="#006600" FACE="Arial">the word 2 words ago rotated right 17 places <BR>
+					that word rotated right 19 places <BR>
+					that word shifted right 10 places;</FONT>
+				</BLOCKQUOTE>
+				<P><FONT SIZE="2" COLOR="#006600" FACE="Arial">the XOR of the following three quantities:</FONT>
+				<BLOCKQUOTE>
+					<P><FONT SIZE="2" COLOR="#006600" FACE="Arial">the word 15 words ago rotated right 7 places <BR>
+					that word rotated right 18 places <BR>
+					that word shifted right 3 places.</FONT>
+				</BLOCKQUOTE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Comme j'avais eu l'occasion de le dire un peu plus t&ocirc;t, le calcul d'un hash
+			n'est pas tout, sinon il suffirait d'utiliser un tool comme celui de </FONT><A HREF="dm_hc151.zip"><FONT SIZE="2"
+			FACE="Arial">DAMN</FONT></A><FONT SIZE="2" FACE="Arial"> pour solutionner le crackme:</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">La r&eacute;ponse du Hash Calculator de DAMN va donner:</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Calculating hash of 8 bytes string `christal`...</FONT>
+			<BLOCKQUOTE>
+				<P><FONT SIZE="2" FACE="Arial">SHA-256 : </FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">0AE43A9D51ADD58D6F75E7529BE67970AD7D5BC68F7B97771F4F511A8007886F</FONT>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Le crackme, lui, va dabord saisir le Name, et l'envoyer dans la routine de hashage:</FONT></P>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00404457  CALL      USER32!GetWindowTextA     ; get the name
+:0040445C  OR        EAX,EAX                   ; si le champ n'est pas vide
+:0040445E  JZ        004044A8
+:00404460  PUSH      0040616C                  ; pousse le name
+:00404465  PUSH      EAX                       ; pousse sa taille
+:00404466  PUSH      0040656C                  ; pousse adresse de stockage du hash SHA-256
+:0040446B  CALL      00401000                  ; hachage du name
+:00404470  MOV       ESI,0040656C              ; r&eacute;cup&egrave;re le hash</FONT></PRE>
+				<PRE><FONT SIZE="2">:0040656C </FONT><FONT SIZE="2" COLOR="blue">0A E4 3A 9D 51 AD D5 8D-6F 75 E7 52 9B E6 79 70</FONT><FONT
+				SIZE="2">  ..:.Q...ou.R..yp
+:0040657C </FONT><FONT SIZE="2" COLOR="blue">AD 7D 5B C6 8F 7B 97 77-1F 4F 51 1A 80 07 88 6F</FONT><FONT SIZE="2">  .}[..{.w.OQ....o
+
+:00404475  XOR       ECX,ECX                   ; pointeur caract&egrave;re                        
+:00404477  XOR       EAX,EAX                   ; stockage du r&eacute;sultat
+:00404479  XOR       EBX,EBX
+:0040447B  MOV       BL,[ESI+ECX]              ; r&eacute;cup&egrave;re une valeur du hash
+:0040447E  TEST      BL,BL                     ; v&eacute;rifie que ce n'est pas la derni&egrave;re
+:00404480  JZ        00404490                  ; sinon -&gt; out vers XORage
+:00404482  IMUL      EBX,ECX                   ; bidouille 1
+:00404485  IMUL      EBX,EBX                   ; bidouille 2
+:00404488  ADD       EBX,50                    ; bidouille 3
+:0040448B  ADD       EAX,EBX                   ; stock le r&eacute;sultat
+:0040448D  INC       ECX                       ; incr&eacute;mente pointeur caract&egrave;re
+:0040448E  JMP       00404479     
+:00404490  XOR       EAX,12345678              ; et &agrave; la sortie, le r&eacute;sultat est XOR&eacute;
+:00404495  PUSH      EAX                       ; avant d'&ecirc;tre transform&eacute; en string
+:00404496  PUSH      00406078                  ; et d'&ecirc;tre compar&eacute; avec le serial
+:0040449B  PUSH      0040676C
+:004044A0  CALL      USER32!wsprintfA
+:004044A5  ADD       ESP,0C
+:004044A8  RET</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Bref, rien de compliqu&eacute; quand on a les bons outils...</FONT>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="957">
+<TBODY>
+                    																																								<TR>
+		<TD WIDTH="357" VALIGN="TOP" BGCOLOR="#FFFFCC">
+			<P><B><FONT SIZE="2" FACE="Arial">L'algorithme en bref: </FONT></B><FONT SIZE="2" FACE="Arial"><BR>
+			- Prenez deux grands nombres premiers, </FONT><B><FONT SIZE="2" FACE="Arial">p</FONT></B><FONT SIZE="2" FACE="Arial">
+			et </FONT><B><FONT SIZE="2" FACE="Arial">q</FONT></B><FONT SIZE="2" FACE="Arial">.<BR>
+			- Calculez leur produit, </FONT><B><FONT SIZE="2" FACE="Arial">n</FONT></B><FONT SIZE="2" FACE="Arial"> = p.q,
+			le </FONT><U><FONT SIZE="2" FACE="Arial">modulo public</FONT></U><FONT SIZE="2" FACE="Arial">.<BR>
+			- Choisissez </FONT><B><FONT SIZE="2" FACE="Arial">e</FONT></B><FONT SIZE="2" FACE="Arial">, tel que e&lt;n et
+			e est premier avec n.<BR>
+			- Calculez </FONT><B><FONT SIZE="2" FACE="Arial">d</FONT></B><FONT SIZE="2" FACE="Arial"> tel que e.d = 1 [(p-1).(q-1)].</FONT></P>
+			<PRE ALIGN="CENTER"><FONT SIZE="2">Cryptage,  Ciphertext c = m ^ e [n]
+D&eacute;cryptage, Plaintext m = c ^ d [n]</FONT></PRE>
+			<P ALIGN="CENTER"><B><U><FONT SIZE="3" FACE="arial, helvetica, sans-serif">Une d&eacute;mo de RSA</FONT></U></B></P>
+			<P><FONT SIZE="2" FACE="Arial">Dans l'exemple ci contre, les valeurs que l'on trouve sont suffisament petites pour
+			&ecirc;tre calcul&eacute;es dans cette page. Vous pouvez bien sur changer les valeurs, mais sans oublier que ce
+			n'est jamais que du javaScript...</FONT><FONT SIZE="3" FACE="Arial"><BR>
+			</FONT><FONT SIZE="3" FACE="arial, helvetica, sans-serif"><BR>
+			</FONT><B><FONT SIZE="2" FACE="Arial">p</FONT></B><FONT SIZE="2" FACE="Arial"> premier: </FONT><FONT SIZE="3" FACE="arial, helvetica, sans-serif"><INPUT name=P size=6 
+                        type=TEXTE value=1667></FONT><FONT
+			SIZE="2" FACE="Arial"> <BR>
+			<BR>
+			</FONT><B><FONT SIZE="2" FACE="Arial">q</FONT></B><FONT SIZE="2" FACE="Arial"> premier: </FONT><FONT SIZE="3" FACE="arial, helvetica, sans-serif"><INPUT name=Q size=6 type=TEXTE value=7673></FONT><FONT
+			SIZE="2" FACE="Arial"><BR>
+			<BR>
+			Il nous faut maintenant donner un </FONT><B><FONT SIZE="2" FACE="Arial">e</FONT></B><FONT SIZE="2" FACE="Arial">
+			tel que </FONT><B><FONT SIZE="2" FACE="Arial">e</FONT></B><FONT SIZE="2" FACE="Arial"> et phi(n)=(p-1)(q-1) soient
+			premiers entre eux).<BR>
+			<BR>
+			nombre </FONT><B><FONT SIZE="2" FACE="Arial">e</FONT></B><FONT SIZE="2" FACE="Arial"> : <INPUT TYPE="TEXT" NAME="E"
+			SIZE="6" VALUE="9901"><BR>
+			<BR>
+			Groupage: ce param&egrave;tre sp&eacute;cifie la taille des blocs &agrave; traiter <INPUT TYPE="TEXT" NAME="Groupage"
+			SIZE="2" VALUE="1"><BR>
+			<BR>
+			Maintenant on peut lancer le premier calcul:</FONT></P>
+			<P ALIGN="CENTER"><FONT SIZE="3" FACE="arial, helvetica, sans-serif"><INPUT onclick=CalculClef() type=button value=Calcul></FONT></P>
+			<PRE><FONT SIZE="2" FACE="Arial">On a </FONT><B><FONT SIZE="2" FACE="Arial">n</FONT></B><FONT SIZE="2" FACE="Arial"> = p*q =         <INPUT
+			TYPE="TEXT" NAME="N" SIZE="10">
+
+Phi(n) = (p-1)(q-1) =  </FONT><FONT SIZE="3" FACE="arial, helvetica, sans-serif"><INPUT name=Euler size=10 
+                        type=TEXTE></FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Il ne reste qu'&agrave; calculer la cl&eacute; priv&eacute;e d telle que:</FONT></P>
+			<P ALIGN="CENTER"><B><FONT SIZE="2" FACE="Arial">e*d=1*mod((p-1)(q-1))</FONT></B></P>
+			<PRE><FONT SIZE="2" FACE="Arial">On trouve: </FONT><B><FONT SIZE="2" FACE="Arial">d</FONT></B><FONT SIZE="2" FACE="Arial"> =          </FONT><FONT
+			SIZE="3" FACE="arial, helvetica, sans-serif"><INPUT name=D size=10 
+                        type=TEXTE></FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Nous avons maintenant:<BR>
+			- Une cl&eacute; priv&eacute;e, le couple (d,n)<BR>
+			- Une cl&eacute; publique, le couple (e,n)</FONT></P>
+
+			<P><FONT SIZE="2" FACE="Arial">Il ne reste plus qu'&agrave; faire un 8483678 ^ 10961333 mod 12790891 pour trouver
+			</FONT><B><FONT SIZE="2" FACE="Arial">7167622</FONT></B><FONT SIZE="2" FACE="Arial"> et un 5666933 ^ 10961333 mod
+			12790891 pour obtenir </FONT><B><FONT SIZE="2" FACE="Arial">3196885</FONT></B><FONT SIZE="2" FACE="Arial"> avec
+			un </FONT><A HREF="calculator.exe"><FONT SIZE="2" FACE="Arial">calculator.<BR>
+			</FONT></A><FONT SIZE="2" FACE="Arial">A aucun moment le nom n'est utilis&eacute;, le serial est </FONT><B><FONT
+			SIZE="2" FACE="Arial">71676223196885.</FONT></B>
+		</TD>
+		<TD WIDTH="4">&nbsp;</TD>
+		<TD WIDTH="552" BGCOLOR="#FFFFCC">
+			<P ALIGN="RIGHT"><B><U><FONT SIZE="5" COLOR="blue" FACE="Arial Black">RSA</FONT></U></B></P>
+			<P><FONT SIZE="2" FACE="Arial">Dans le </FONT><A HREF="rsacrak.zip"><FONT SIZE="2" FACE="Arial">crackme</FONT></A><FONT
+			SIZE="2" FACE="Arial"> de TFC, les Strings Data pourraient induire en erreur (</FONT><FONT SIZE="2" COLOR="#CC0000"
+			FACE="Arial">1279089184836785666933 </FONT><FONT SIZE="2" FACE="Arial">&eacute;tant factorisable sur 71 bits </FONT><FONT
+			SIZE="2" FACE="Courier New">-&gt;</FONT><FONT SIZE="2" FACE="Arial"> 258963172219 x 4939270607</FONT><FONT SIZE="2"
+			COLOR="#CC0000" FACE="Arial">)</FONT><FONT SIZE="4" FACE="Arial">, </FONT><FONT SIZE="2" FACE="Arial">mais TFC
+			ayant pr&eacute;cis&eacute; que son crackme &eacute;tait en RSA 24, la seule valeur qui convienne est </FONT><FONT
+			SIZE="2" COLOR="blue" FACE="Arial">12790891.</FONT><FONT SIZE="2" FACE="Arial"> A quoi peuvent donc bien servir
+			les 2 autres valeurs (</FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">8483678 </FONT><FONT SIZE="2" FACE="Arial">et</FONT><FONT
+			SIZE="2" COLOR="blue" FACE="Arial"> 5666933</FONT><FONT SIZE="2" COLOR="blue">) </FONT><FONT SIZE="2" FACE="Arial">?</FONT></P>
+			<PRE><FONT SIZE="2">data:004200C0 </FONT><FONT SIZE="2" COLOR="blue">a5666933</FONT><FONT SIZE="2">        db '</FONT><FONT
+			SIZE="2" COLOR="#CC0000">5666933</FONT><FONT SIZE="2">',0 
+data:004200C8 </FONT><FONT SIZE="2" COLOR="blue">a8483678</FONT><FONT SIZE="2">        db '</FONT><FONT SIZE="2"
+			COLOR="#CC0000">8483678</FONT><FONT SIZE="2">',0 
+data:004200D0 </FONT><FONT SIZE="2" COLOR="blue">a12790891</FONT><FONT SIZE="2">       db '</FONT><FONT SIZE="2"
+			COLOR="#CC0000">12790891</FONT><FONT SIZE="2">',0 
+data:004200DC </FONT><FONT SIZE="2" COLOR="blue">a9901</FONT><FONT SIZE="2">           db '</FONT><FONT SIZE="2"
+			COLOR="#CC0000">9901</FONT><FONT SIZE="2">',0      ; Public Exponent ?</FONT></PRE>
+
+			<PRE><FONT SIZE="2" FACE="Arial">En utilisant SoftIce, voici ce que l'on peut en d&eacute;duire:</FONT></PRE>
+
+			<PRE><FONT SIZE="2">:004029CD push    offset </FONT><FONT SIZE="2" COLOR="red">9901</FONT><FONT SIZE="2">       ; Exponent        
+:004029D2 lea     ecx, [esp+0E4h]
+:004029D9 call    Lg_String         ; calcul longueur string
+:004029DE push    offset </FONT><FONT SIZE="2" COLOR="red">12790891</FONT><FONT SIZE="2">   ; Modulus
+:004029E3 lea     ecx, [esp+1Ch]
+:004029E7 mov     [esp+664h], 0     ; Flag
+:004029F2 call    Lg_String
+:004029F7 push    offset </FONT><FONT SIZE="2" COLOR="red">8483678 </FONT><FONT SIZE="2">   ; string 1
+:004029FC lea     ecx, [esp+274h]
+:00402A03 mov     [esp+664h], 1
+:00402A0B call    Lg_String
+:00402A10 push    offset </FONT><FONT SIZE="2" COLOR="red">5666933</FONT><FONT SIZE="2">    ; string 2
+:00402A15 lea     ecx, [esp+1ACh]
+:00402A1C mov     [esp+664h], 2
+:00402A24 call    GetSerial         ; r&eacute;cup&egrave;re le serial entr&eacute;
+:00402A29 mov     edx, [esp+668h]   ; offset serial sur la pile   
+:00402A30 or      esi, 0FFFFFFFFh   ; mise &agrave; -1 de esi
+:00402A33 mov     edi, edx          ; edi = offset serial
+:00402A35 mov     ecx, esi          ; ecx = -1 (taille du scan)
+:00402A37 xor     eax, eax          ; recherche Null Terminated String
+:00402A39 mov     [esp+660h], 3     ; Flag
+:00402A41 repne   scasb             ; calcul de la taille du serial
+:00402A43 not     ecx               ; ecx = taille serial + &quot;0&quot;
+:00402A45 dec     ecx               ; d&eacute;duit le Null Terminated String
+:00402A46 cmp     ecx, 0Eh          ; compare si serial = 14 digits
+:00402A49 jnz     loc_0_402BB2      ; if not goto bad boy</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Le format doit &ecirc;tre de type num&eacute;rique (v&eacute;rification en 00402A51).
+			Le serial RSA_crypted est divis&eacute; en 2 partie, les 7 premiers digits sont compar&eacute; avec </FONT><FONT
+			SIZE="2" COLOR="blue" FACE="Arial">8483678</FONT><FONT SIZE="2" FACE="Arial">, les 7 suivants avec </FONT><FONT
+			SIZE="2" COLOR="blue" FACE="Arial">5666933:</FONT></P>
+			<PRE><FONT SIZE="2">:00401D78 mov     dl, [eax]         ; rsa result 1 (7 digits)
+:00401D7A mov     bl, [esi]         ; string 1 </FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">8483678</FONT><FONT
+			SIZE="2">
+:00401D7C mov     cl, dl           
+:00401D7E cmp     dl, bl            ; comparaison caract&egrave;re/caract&egrave;re        
+</FONT><FONT FACE="Arial">etc...</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Gr&acirc;ce &agrave; </FONT><A HREF="RSATool2v17.exe"><FONT SIZE="2" FACE="Arial">RSA
+			Tool2</FONT></A><FONT SIZE="2" FACE="Arial"> de tE, entrez </FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">12790891</FONT><FONT
+			SIZE="2" FACE="Arial">comme Modulus, et 26AD (</FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">9901</FONT><FONT
+			SIZE="2" FACE="Arial"> en base 16) comme Public Exponent, puis cliquez sur </FONT><B><FONT SIZE="2" FACE="Arial">Factor
+			N</FONT></B><FONT SIZE="2" FACE="Arial">, vous aurez 1667 (Prime P) et 7673 (prime Q). Passez en Base 16, puis
+			cliquez sur </FONT><B><FONT SIZE="2" FACE="Arial">Calc.d</FONT></B><FONT SIZE="2" FACE="Arial"> pour obtenir d
+			= A741B5h et repassez en base 10 pour d = 10961333. Tous les &eacute;lements sont r&eacute;unis pour r&eacute;soudre
+			le Crackme.</FONT>
+		</TD>
+	</TR>
+</TBODY>									</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="97%">
+	<TR>
+		<TD COLSPAN="2" BGCOLOR="#FFFFCC">
+			<P><FONT SIZE="2" FACE="Arial">Bien souvent, une partie des informations qui nous mettrons sur le piste se trouvent
+			dans les Datas.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Dans le cas de &quot;</FONT><A HREF="total_recorder.htm" target="_blank"><FONT SIZE="2"
+			FACE="Arial">Keygen Total Recorder v3.2</FONT></A><FONT SIZE="2" FACE="Arial">&quot; sur lequel LuTiN NoIR avait
+			&eacute;crit un Tutor, l'identification de la Library utilis&eacute;e lui a permis de consid&eacute;rablement se
+			faciliter la t&acirc;che. Relisons ce qu'il avait &eacute;crit:</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">&quot;</FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">Le plus simple serait de trouver
+			la lib qu'il utilise. En faisant une petite recherche sur les strings sous google, j'ai d&eacute;couvert qu'il
+			s'agissait de CryptoLib.<BR>
+			<BR>
+			C'est ici que IDA va &ecirc;tre d'un grand recourt, on va utiliser cette librarie et cr&eacute;er un fichier de
+			reconnaissance de lib pour ida, comme cela il va reconnaitre les fonctions utilis&eacute;es et ce sera plus simple
+			de comprendre le code. On recup&egrave;re d'abord cette lib (ici CryptoLib v1.1) sur le net. On a les sources en
+			C, on les compile donc en librairie static avec Visual C++ 6.0 (ou 5.0) car le programme utilise VC++ (ida nous
+			l'apprend au d&eacute;but du disasm). Ensuite on va utiliser FLAIR (un programme fournit avec la version compl&egrave;te
+			d'ida, ou alors il faut se d&eacute;brouiller pour le r&eacute;cup&eacute;rer). On fait les manip suivantes :<BR>
+			<BR>
+			PCF cryptolib.lib cryptolib.pat<BR>
+			<BR>
+			sigmake cryptolib.pat cryptolib.sig<BR>
+			<BR>
+			Et on a maintenant un fichier .sig qui va permettre &agrave; ida de reconnaitre les fonctions de cette librairie.
+			On met les .sig dans le rep d'ida concu &agrave; cette effet, puis on le charge pour qu'ida reconnaisse les fonctions
+			(File-&gt;Load File-&gt;Flirt Signature File)</FONT><FONT SIZE="2" FACE="Arial">&quot;</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Le challenger de CrytoLib est MIRACL dont on trouve parfois des traces fort peu
+			discr&egrave;tes dans les Data:</FONT></P>
+			<PRE><FONT SIZE="2">0040CAF0 aNoModulusDefined db '</FONT><FONT SIZE="2" COLOR="blue">No modulus defined</FONT><FONT
+			SIZE="2">',0Ah,0
+0040CB04 aIllegalModulus db '</FONT><FONT SIZE="2" COLOR="blue">Illegal modulus</FONT><FONT SIZE="2">',0Ah,0 
+0040CB18 aMiraclNotInitialised db '</FONT><FONT SIZE="2" COLOR="blue">MIRACL</FONT><FONT SIZE="2"> not initialised - no call to mirsys()',0Ah,0
+0040CB48 aIOBufferOverflow db 'I/O buffer overflow',0Ah,0
+0040CD58 a</FONT><FONT SIZE="2" COLOR="blue">Miracl</FONT><FONT SIZE="2">ErrorFromRoutine db 0Ah          
+0040CD58 db '</FONT><FONT SIZE="2" COLOR="blue">MIRACL</FONT><FONT SIZE="2"> error from routine ',0</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Si avec ca, vous avez encore des doutes sur la pr&eacute;sence d'un algo de cryptage...<BR>
+			Et ce qui est vrai pour CryptoLib, l'est egalement pour </FONT><A HREF="miracl.sig"><FONT SIZE="2" FACE="Arial">MIRACL</FONT></A><FONT
+			SIZE="2" FACE="Arial"> concernant les fichiers de reconnaissance!</FONT></P>
+
+			<P><FONT SIZE="2" FACE="Arial">Dans les Strings Data, on reperera imm&eacute;diatement la trace d'un Private Exponent
+			(tr&egrave;s certainement), et une tr&egrave;s classique cl&eacute; public: 10001 (toujours un nombre premier 3,
+			11, 17, 257d...)</FONT></P>
+
+			<P><FONT SIZE="2" FACE="Arial">A bien regarder D, son format est de type hexad&eacute;cimal (bien que la cl&eacute;
+			&quot;</FONT><FONT SIZE="2" COLOR="red" FACE="Arial">65537</FONT><FONT SIZE="2" FACE="Arial">&quot;&quot; soit
+			d&eacute;cimale...), et sa taille de 190 bits (dans RSA Tool, cliquez sur le rectangle [Exact Size])</FONT></P>
+			<PRE><FONT SIZE="2">data:0040B0A8 modulus     db '</FONT><FONT SIZE="2" COLOR="blue">2F774486FD3B97FFA559687F7F9D5335CA3D16FBB60C0019</FONT><FONT
+			SIZE="2">',0
+data:0040B0DC Public_key  db '</FONT><FONT SIZE="2" COLOR="#CC0000">65537</FONT><FONT SIZE="2">',0</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Mais aussi la trace de l'initialisation d'un MD5:</FONT></P>
+			<PRE><FONT SIZE="2">004012BC  mov     dword ptr [eax],     67452301h ; </FONT><FONT SIZE="2" COLOR="#006600">Possible Hash found can be SHA-1 or MD5a or Ripe-MD !!!</FONT><FONT
+			SIZE="2">
+004012C2  mov     dword ptr [eax+4],   EFCDAB89h
+004012C9  mov     dword ptr [eax+8],   98BADCFEh
+004012D0  mov     dword ptr [eax+0Ch], 10325476h</FONT></PRE>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH="42%" BGCOLOR="#FFFFCC">
+			<P><FONT SIZE="2" FACE="Arial">De la &agrave; conclure que nous sommes face &agrave; un algo de type </FONT><B><FONT
+			SIZE="2" FACE="Arial">[Hash(Name)MD5] ^ D mod N</FONT></B><FONT SIZE="2" FACE="Arial">, il n'y a qu'un pas que
+			je vais all&eacute;grement essayer de franchir.<BR>
+			<BR>
+			Comme le modulus est de type hexad&eacute;cimal, la valeur du hash devra l'&ecirc;tre aussi, et il faudra convertir
+			la valeur de la cl&eacute; publique pour que tout soit en base 16.<BR>
+			<BR>
+			Commen&ccedil;ons par chercher le private Exponent.<BR>
+			Une fois trouv&eacute;, il n'y a plus qu'&agrave; remplir les champs d'un calculator, et essayer si le r&eacute;sultat
+			donn&eacute; est le bon. Fine! Its works...</FONT></P>
+			<P ALIGN="CENTER"><IMG SRC="calcul.jpg" WIDTH="332" HEIGHT="328" ALIGN="BOTTOM" BORDER="0">
+		</TD>
+		<TD WIDTH="58%" VALIGN="BOTTOM" BGCOLOR="#FFFFCC">
+			<P ALIGN="CENTER"><IMG SRC="rsa_tool.jpg" WIDTH="545" HEIGHT="522" ALIGN="BOTTOM" BORDER="0">
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN="2" BGCOLOR="#FFFFCC"><FONT SIZE="2" FACE="Arial">Une petite pr&eacute;cision, un Hash MD5 n'aura pas la m&ecirc;me valeur si votre nom
+			est en minuscule ou en Majuscule, et de m&ecirc;me pour un cryptage RSA (Case Sensitive).</FONT></TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="97%">
+	<TR>
+		<TD COLSPAN="2" BGCOLOR="#FFFFCC">
+			<P ALIGN="RIGHT"><B><FONT COLOR="blue" FACE="Arial">Un Vrai/Faux RSA...</FONT></B></P>
+			<P><FONT SIZE="2" FACE="Arial">M&ecirc;me cas de figure pour le </FONT><A HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crypto1/pgc-kgme.exe"><FONT SIZE="2" FACE="Arial">PGC
+			RSA Crackme</FONT></A><FONT SIZE="2" FACE="Arial">, dans les String Data on retrouve les trace d'un Modulus RSA
+			:</FONT></P>
+			<PRE><FONT SIZE="2">data:00404275 Public_Key    db '</FONT><B><FONT SIZE="2" COLOR="blue">10001</FONT></B><FONT
+			SIZE="2">',0            
+data:0040427B Modulus       db '</FONT><B><FONT SIZE="2" COLOR="blue">8e701a4c793eb8b739166bb23b49e421</FONT></B><FONT
+			SIZE="2">',0
+data:0040429C Pgctrial2oo2  db '[PGCTRiAL/2oo2]',0</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">et l'initialisation d'un hash MD5 avec HashFinder.idc</FONT></P>
+			<PRE><FONT SIZE="2">text:00401054  mov     dword ptr [esi],     67452301h ; Possible Hash found can be MD5
+text:0040105A  mov     dword ptr [esi+4],   EFCDAB89h
+text:00401061  mov     dword ptr [esi+8],   98BADCFEh
+text:00401068  mov     dword ptr [esi+0Ch], 10325476h</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Le Modulus se factorise sans probl&egrave;me avec RSA TooL2, mais le Private Exponent
+			ne sera pas n&eacute;cessaire comme vous le verrez ensuite. La cl&eacute; public est typique au cryptage RSA. Nous
+			sommes bien, &agrave; priori, face &agrave; du RSA...</FONT></P>
+			<P><B><FONT SIZE="2" FACE="Arial">Prime p</FONT></B><FONT SIZE="2" FACE="Arial">:<BR>
+			C2E0C6C46F34EEEB<BR>
+			<BR>
+			</FONT><B><FONT SIZE="2" FACE="Arial">Prime q</FONT></B><FONT SIZE="2" FACE="Arial">:<BR>
+			BB1CC85B7A9D2E23<BR>
+			<BR>
+			</FONT><B><FONT SIZE="2" FACE="Arial">Modulus n</FONT></B><FONT SIZE="2" FACE="Arial">:<BR>
+			8E701A4C793EB8B739166BB23B49E421<BR>
+			<BR>
+			</FONT><B><FONT SIZE="2" FACE="Arial">Private Exponent d</FONT></B><FONT SIZE="2" FACE="Arial">:<BR>
+			8074D942DE95923F52DCB90FBC292981 (not used)<BR>
+			<BR>
+			Le Crackme &eacute;tant &eacute;crit en assembleur, il est tr&egrave;s facile &agrave; suivre, le programme attrape
+			le nom dans le premier champ, puis le serial:</FONT></P>
+			<PRE><FONT SIZE="2">text:00401A31  push    22h                      ; nombre de caract&egrave;res que doit faire le serial           
+text:00401A33  push    offset Serial_entered       
+text:00401A38  push    hWndNewOwner             ; handle du second champ d'&eacute;dition
+text:00401A3E  call    GetWindowTextA
+text:00401A43  cmp     eax, 1                   ; si la taille de la string retourn&eacute;e 
+text:00401A46  jl      Serial_too_small         ; est &eacute;gale ou inf&eacute;rieur &agrave; 1 -&gt; message d'erreur
+
+text:00401A4C  mov     Lg_name, eax             ; m&eacute;morise la taille de la string 'serial'
+text:00401A51  push    0                        ; initailisation d'un espace m&eacute;moire
+text:00401A53  call    BigCreate                ; r&eacute;serv&eacute; pour cr&eacute;er un bignum 
+
+text:00401A58  mov     Big_Serial_entered, eax  ; stockage de l'adresse r&eacute;serv&eacute;e
+text:00401A5D  mov     eax, Lg_Serial_entered
+text:00401A62  push    Big_Serial_entered
+text:00401A68  push    offset Serial_entered
+text:00401A6D  call    Fill_Big                 ; place le serial dans l'espace r&eacute;serv&eacute;</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Concat&egrave;ne le nom et la string [PGC/TRIAL 2oo2], et r&eacute;cup&egrave;re
+			la taille de la cha&icirc;ne cr&eacute;&eacute;e</FONT></P>
+			<PRE><FONT SIZE="2">text:00401A72  push    offset Pgctrial2oo2 
+text:00401A77  push    offset Name_entered  
+text:00401A7C  call    lstrcatA
+text:00401A81  push    offset Name_entered   
+text:00401A86  call    lstrlenA</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Hash MD5 de la cha&icirc;ne cr&eacute;&eacute;e:</FONT></P>
+			<PRE><FONT SIZE="2">text:00401A8B  push    offset @_Hash_Name_entered
+text:00401A90  push    offset hash_return_value
+text:00401A95  push    eax                       ; taille de la nouvelle string
+text:00401A96  push    offset Name_entered
+text:00401A9B  call    HashMD5_Function          ; hashage de la string</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">hash_return_value = </FONT><FONT SIZE="2" COLOR="blue" FACE="Arial">1A0D184AEA4E9B2EE50602C87BF9DE70</FONT><FONT
+			SIZE="2" FACE="Arial"> (pour 'christal').<BR>
+			<BR>
+			Cr&eacute;ation des espaces m&eacute;moires pour les autres BIG Numbers (Modulus, Public Key et adresse de retour
+			du calcul RSA)</FONT></P>
+			<PRE><FONT SIZE="2">text:00401AA0  push    0
+text:00401AA2  call    BigCreate
+text:00401AA7  mov     Big_Hash, eax
+text:00401AAC  push    0
+text:00401AAE  call    BigCreate
+text:00401AB3  mov     Return_RSA, eax
+text:00401AB8  push    0
+text:00401ABA  call    BigCreate
+text:00401ABF  mov     Big_Modulus, eax
+text:00401AC4  push    0
+text:00401AC6  call    BigCreate
+text:00401ACB  mov     Big_Public_Key, eax</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Le calcul RSA est lanc&eacute; ici:</FONT></P>
+			<PRE><FONT SIZE="2">text:00401AD8  push    Big_Hash
+text:00401ADE  push    offset @_Hash_Serial_entered 
+text:00401AE3  call    Fill_Big                  ; transforme le hash en Big Number h&eacute;xad&eacute;cimal        
+text:00401AE8  push    Big_Public_Key            ; push l'adresse de retour du calcul RSA
+text:00401AEE  push    offset Public_Key         ; push </FONT><FONT SIZE="2" COLOR="blue">10001</FONT><FONT SIZE="2"> 
+text:00401AF3  call    Fill_Big                  ; le transforme en Big Number h&eacute;xad&eacute;cimal
+text:00401AF8  push    Big_Modulus               ; idem pour le modulus  
+text:00401AFE  push    offset Modulus            ; </FONT><FONT SIZE="2" COLOR="blue">8e701a4c793eb8b739166bb23b49e421</FONT><FONT
+			SIZE="2">
+text:00401B03  call    Fill_Big</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">En fait de RSA, il pourait s'agir de n'importe quoi d'autre, le calcul effectu&eacute;
+			est un simple cryptage de type </FONT><B><FONT SIZE="2" COLOR="blue" FACE="Arial">C = M ^ E mod N</FONT></B><FONT
+			SIZE="2" FACE="Arial"><BR>
+			Aucun VRAI cryptage RSA n'est effectu&eacute;...</FONT></P>
+			<PRE><FONT SIZE="2">text:00401B08  push    Return_RSA                
+text:00401B0E  push    Big_Modulus
+text:00401B14  push    Big_Public_Key
+text:00401B1A  push    Big_Hash
+text:00401B20  call    RSA_Function              ; PowerMod </FONT><B><FONT SIZE="2" COLOR="blue" FACE="Arial">C = Hash ^ E mod N</FONT></B></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Ce crackme n'ex&eacute;cute qu'un cryptage, &agrave; la diff&eacute;rence des autres
+			exemples qui font des d&eacute;cryptages, ce qui implique que le Private Exponent n'est pas n&eacute;cessaire et
+			que le programme ne contient pas, du coup, de lib RSA.<BR>
+			<BR>
+			Pour finir, le r&eacute;sultat du PowerMod et du serial entr&eacute; se fait quelques lignes plus bas:</FONT></P>
+			<PRE><FONT SIZE="2">text:00401B25  push    Big_Serial_entered
+text:00401B2B  push    Return_RSA
+text:00401B31  call    compare2Big_nbr
+text:00401B36  test    eax, eax
+text:00401B38  jz      short loc_0_401B6B        ; Well Done Good boy</FONT><FONT SIZE="2" FACE="Arial"> !</FONT></PRE>
+
+			<PRE><FONT SIZE="2" FACE="Arial">Rien de plus simple que de cr&eacute;er le </FONT><A HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crypto1/PGC_RSA.exe"><FONT
+			SIZE="2" FACE="Arial">KeyGenerateur</FONT></A><FONT SIZE="2" FACE="Arial">, il n'y a qu'&agrave; ripper la presque totalit&eacute; du Crackme en cr&eacute;ant un fichier asm avec IDA...</FONT></PRE>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="958">
+	<TR>
+		<TD WIDTH="944" BGCOLOR="#FFFFCC">
+			<P><FONT SIZE="2" FACE="Arial">Dans le </FONT><A HREF="egokgme2.zip"><FONT SIZE="2" FACE="Arial">KeygenMe #2</FONT></A><FONT
+			SIZE="2" FACE="Arial"> de TMG cod&eacute; par tHE EGOiSTE, les String Data d'IDA ne donnent rien, et pour cause,
+			la seule s&eacute;rie des Data ressemblant &agrave; une valeur RSA est cod&eacute;e ainsi:</FONT>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">DATA:00402000 unk_0_402000    db  0Ah 
+DATA:00402001                 db    0   
+DATA:00402002                 db 0D2h ; &Ecirc;
+DATA:00402003                 db 0E9h ; &Uacute;
+DATA:00402004                 db 0BFh ; +
+DATA:00402005                 db  9Bh ; &oslash;
+DATA:00402006                 db  3Dh ; =
+DATA:00402007                 db  25h ; %
+DATA:00402008                 db  8Eh ; &Auml;
+DATA:00402009                 db  47h ; G
+DATA:0040200A                 db  9Dh ; &Oslash;
+DATA:0040200B                 db  8Ch ; &icirc;
+DATA:0040200C                 db 0C2h ; -
+DATA:0040200D                 db  3Ch ; &lt;
+DATA:0040200E                 db  7Ah ; z
+DATA:0040200F                 db  33h ; 3
+DATA:00402010                 db 0E1h ; &szlig;
+DATA:00402011                 db 0F8h ; &deg;
+DATA:00402012                 db 0EBh ; &Ugrave;
+DATA:00402013                 db 0B3h ; &brvbar;
+DATA:00402014                 db 0ADh ; &iexcl;
+DATA:00402015                 db 0B1h ; &brvbar;</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Soit D2E9BF9B3D258E479D8CC23C7A33E1F8EBB3ADB1, ce qui pourrait bien &ecirc;tre un
+			Modulus...<BR>
+			Par contre, pas de trace d'une cl&eacute; publique (10001, 65557... &agrave; ce sujet 10001h = 65557d !)<BR>
+			Comme la cha&icirc;ne est d&eacute;j&agrave; au format hexa, il y a fort &agrave; parier qu'il ne faudra pas s'attendre
+			&agrave; trouver une cha&icirc;ne alphanum&eacute;rique contenant le bon serial, et qu'il faudra guetter les big
+			numbers dans la fen&ecirc;tre des Datas...<BR>
+			<BR>
+			tHe EGOiSTE ayant &eacute;crit son crackme en assembleur, il est tr&egrave;s facile de tracer le programme, et
+			par la suite de ripper les fonctions qui seront int&eacute;ressantes:</FONT></P>
+			<PRE><FONT SIZE="2">0040128E  MOV       EDI,00402230         ; load Magic adresse 
+00401293  XOR       EAX,EAX              ; EAX = 0
+00401295  PUSH      05
+00401297  POP       ECX
+00401298  REPZ STOSD                     ; efface son contenu
+0040129A  DEC       EAX                  ; EAX = -1
+0040129B  MOV       ESI,004020F0         ; esi = Name
+004012A0  MOV       EDI,00402230         ; Magic adresse         
+004012A5  MOV       ECX,[EBP-04]         ; ECX = taille du name
+004012A8  XOR       EDX,EDX              ; edx est un pointeur
+004012AA  LODSB                          ; charge une lettre du name
+004012AB  XOR       AH,AL                ; Xor -&gt; c'est la base du &quot;cryptage&quot; du name
+004012AD  IMUL      EAX,EAX,89177313     ; bidouilles pour modifier la valeur de la lettre charg&eacute;e
+004012B3  AND       EAX,55AA55AA                |
+004012B8  IMUL      EAX,EAX,12299381            |
+004012BE  XOR       EAX,AA55AA11                |
+004012C3  IMUL      EAX,EAX,61                  |
+004012C6  XOR       AH,AL                       |
+004012C8  OR        EAX,10030118                |
+004012CD  IMUL      EAX,EAX,00988279            |
+004012D3  RCL       EAX,CL                      V
+004012D5  XOR       [EDX+EDI],EAX        ; xor le r&eacute;sultat avec le contenu de Magic Adresse (initialis&eacute; &agrave; 0) </FONT></PRE>
+			<BLOCKQUOTE>
+				<BLOCKQUOTE>
+					<PRE><FONT SIZE="2">:00402230 E0 31 EE EF 7A AD CE 46-F2 80 BF E1 16 84 CC 23  
+:00402240 1A AB C3 04 00 00 00 00-00 00 00 00 00 00 00 00  </FONT></PRE>
+				</BLOCKQUOTE>
+			</BLOCKQUOTE>
+			<PRE><FONT SIZE="2">004012D8  ADD       EDX,03                             
+004012DB  AND       EDX,0F
+004012DE  INC       EDX                  ; pointera sur le caract&egrave;re suivant
+004012DF  DEC       ECX                  ; ecx = taille de la string Name &agrave; traiter
+004012E0  JG        004012AA             ; loop jusqu'&agrave; concurrence de 40 caract&egrave;res trait&eacute;s
+004012E2  MOV       ESI,00402170         ; charge le serial entr&eacute;
+004012E7  MOV       EDI,00402230         ; load la magic Adresse
+004012EC  MOV       ECX,[EBP-08]         ; ECX = taille de la Compagny
+004012EF  XOR       EDX,EDX              ; et on recommence la m&ecirc;me chose
+004012F1  LODSB                          ; avec le serial entr&eacute;
+004012F2  SUB       AH,AL                ; en continuant &agrave; modifier la
+004012F4  IMUL      EAX,EAX,89157313     ; Magic Adresse
+etc...
+00401327  JG        004012F1
+etc...</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">pour arriver ici:</FONT></P>
+			<PRE><FONT SIZE="2">00401329  SUB       EAX,[EDI+08]
+0040132C  IMUL      EAX,EAX,34814815
+00401332  ADD       [EDI+10],EAX
+00401335  SHR       EAX,0B
+00401338  AND       EAX,03
+0040133B  MOV       [EDI],AL
+0040133D  PUSH      00402270              ; adresse de destination du calcul RSA
+00401342  PUSH      00402370              ; 0A00E031EE...  contenu de la Magic Adresse
+00401347  PUSH      00402000              ; 0A00D2E9BF9... cha&icirc;ne trouv&eacute;e dans les Data
+0040134C  CALL      004013CD              ; RSA decrypt </FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Vous n'aurez pas &eacute;t&eacute; sans remarquer qu'il n'y a pas de Public Exponent
+			de pouss&eacute; en param&egrave;tre, le conclusion logique &eacute;tant que nous sommes sur une phase de d&eacute;cryptage
+			du Cipher Text (stock&eacute; dans la Magic Adresse), soit: </FONT><B><FONT SIZE="2" COLOR="blue" FACE="Arial">M
+			= C ^ D MOD N</FONT></B><FONT SIZE="2" FACE="Arial"><BR>
+			Petite particularit&eacute; du cryptage &agrave; la tHE EGOiSTE, le premier WORD contient le nombre de bits RSA
+			dans laquelle la cha&icirc;ne est d&eacute;crypt&eacute;e. Ici nous sommes sur un cryptage 160 bits (160/16=0Ah)</FONT></P>
+			<PRE><FONT SIZE="2">00401351  PUSH      05
+00401353  POP       ECX                   ; nombre de DWORDs de la cha&icirc;ne &agrave; contr&ocirc;ler.
+00401354  MOV       ESI,00402272          ; load le r&eacute;sultat du calcul RSA (sans le 0A00)
+00401359  MOV       EDI,00402230          ; load l'adresse o&ugrave; est stock&eacute; le serial entr&eacute;
+0040135E  LODSD
+0040135F  XOR       [EDI],EAX             ; xor les 2 cha&icirc;nes entre elles, DWORD par DWORD. 
+00401361  JNZ       00401382              ; Si elles sont identiques, le r&eacute;sultat sera 0 -&gt; sinon Go Out
+00401363  ADD       EDI,04                ; passe au DWORD suivant
+00401366  DEC       ECX                   ; decremente le nb de dword (8x5=40)
+00401367  JG        0040135E              ; loop. Si ECX = 0 -&gt; GoTo Good Boy</FONT></PRE>
+			<P><FONT SIZE="2" FACE="Arial">Une chose assez surprenante, avec beaucoup de programme utilisant des algorithmes
+			de cryptage, c'est que le bon serial appara&icirc;t souvent en clair, comme ici, dans la fen&ecirc;tre des Data,
+			&quot;neutralisant&quot; les effets de l'utilisation de RSA...</FONT></P>
+
+			<P><FONT SIZE="2" FACE="Arial">Il ne reste plus qu'&agrave; ripper tout ca, et faire un </FONT><A HREF="TMG_rsa.exe"><FONT
+			SIZE="2" FACE="Arial">Key Generator RSA</FONT></A><FONT SIZE="2" FACE="Arial"> 160 bits.</FONT>
+		</TD>
+	</TR>
+</TABLE>
+</P>
+</CENTER>
+<CENTER>
+<P>
+<TABLE BORDER="0" CELLPADDING="6" CELLSPACING="0" WIDTH="958">
+	<TR>
+		<TD WIDTH="944" BGCOLOR="#FFFFCC">
+			<P><FONT SIZE="2" FACE="Arial">Allez!<BR>
+			Un ch'tit dernier, pour la route...<BR>
+			<BR>
+			Mais comme c'est un d&eacute;fi de l'UFDC, je ne vais quand m&ecirc;me pas bazarder mon fond de commerce, n'est
+			ce pas...<BR>
+			<BR>
+			Voil&agrave; ce que l'on d&eacute;couvre dans les String Data:</FONT>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00446E70 Prime_P db '321531933146223116297714231272921230731',0
+:00446EA0 Prime_Q db '328953248147600083343294590689304010411',0
+:00446ED0 a65537  db '65537',0  </FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">J'ai rebaptis&eacute; Prime P et Prime Q, tout simplement parce qu'il est douteux
+			que le Modulus et le Private Exponent soient tout deux pr&eacute;sents dans le programme, que ces deux valeurs
+			sont pratiquement identiques, une des caract&eacute;ristiques courantes des Prime Numbers RSA, et que finalement
+			ces deux nombres sont premiers...<BR>
+			Le tout est au format d&eacute;cimal.<BR>
+			<BR>
+			En utilisant un </FONT><A HREF="rsa_calculator.exe"><FONT SIZE="2" FACE="Arial">calculator Big_Number</FONT></A><FONT
+			SIZE="2" FACE="Arial"> (au passage je tiens &agrave; tirer mon chapeau &agrave; Roy </FONT><A HREF="http://www.effervescence.com"
+			target="_blank"><FONT SIZE="2" FACE="Arial">http://www.effervescence.com</FONT></A><FONT SIZE="2" FACE="Arial">
+			pour sa remarquable &quot;BigLib&quot; dont la facilit&eacute; d'utilisation n'a d'&eacute;gale que sa fiabilit&eacute;),
+			une fois les deux Prime Numbers multipli&eacute;s, il va &ecirc;tre possible de remplir les champs de RSA Tool
+			2, pour obtenir le Private Exponent:<BR>
+			<BR>
+			Le produit de 321531933146223116297714231272921230731 et 328953248147600083343294590689304010411 donne<BR>
+			105768973791627093168727987838085212294123493500168896927946603100184157140441 (256 bits)<BR>
+			<BR>
+			Le Private Exponent est: <BR>
+			90913191504492689814620519872667595082410264501256857244959499776932082148273.</FONT></P>
+			<P><FONT SIZE="2" FACE="Arial">Il est &agrave; noter que la factorisation d'une cl&eacute; RSA 256 bits (78 chiffres)
+			a &eacute;t&eacute; r&eacute;ussie en 1985, qu'une cl&eacute; RSA 512 a &eacute;t&eacute; cass&eacute;e en 1999
+			(pr&eacute;voir quand m&ecirc;me 8000 Mips.An </FONT><FONT SIZE="2" FACE="Courier New">-&gt;</FONT><FONT SIZE="2"
+			FACE="Arial"> 1 Mips.An = 2</FONT><SUP><FONT SIZE="2" FACE="Arial">45</FONT></SUP><FONT SIZE="2" FACE="Arial">
+			op&eacute;rations &eacute;l&eacute;mentaires), et que le &quot;cassage&quot; d'une cl&eacute; 1024 est seulement
+			pr&eacute;vue pour... 2080. Reste heureusement, comme dans ce crackme, que d'autres alternatives &agrave; la factorisation
+			peuvent &ecirc;tre trouv&eacute;es...<BR>
+			<BR>
+			Maintenant, que va faire le programme?<BR>
+			Et bien apr&egrave;s la saisie du name, il va transformer chaque lettre le composant en son &eacute;quivalent binaire
+			(soit 01100011 pour &quot;c&quot;), et accoler les series binaires les unes derri&egrave;res les autres (C'est
+			le propre de FGint, la lib utilis&eacute;e...).</FONT>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00BB5348 30 31 31 30 31 31 30 31-30 30 31 30 30 31 31 31  0110110100100111
+:00BB5358 30 30 30 31 30 31 30 30-30 30 30 30 30 31 30 31  0001010000000101</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial">Vous devinez la suite, le r&eacute;sultat de ces bidouillages va &ecirc;tre crypt&eacute;
+			par RSA...<BR>
+			<BR>
+			Pour finir, le bon serial appara&icirc;t en clair:</FONT>
+			<BLOCKQUOTE>
+				<PRE><FONT SIZE="2">:00BB53F8 01 00 00 00 4E 00 00 00-31 35 37 32 34 34 31 39  ....N...</FONT><B><FONT SIZE="2"
+				COLOR="blue">15724419</FONT></B><FONT SIZE="2">
+:00BB5408 38 32 32 37 39 34 36 35-36 35 33 32 34 35 31 33  </FONT><B><FONT SIZE="2" COLOR="blue">8227946565324513</FONT></B><FONT
+				SIZE="2">
+:00BB5418 39 38 32 34 32 31 34 37-31 35 36 31 36 31 31 34  </FONT><B><FONT SIZE="2" COLOR="blue">9824214715616114</FONT></B><FONT
+				SIZE="2">
+:00BB5428 36 32 32 33 37 39 31 38-37 37 31 34 32 33 31 32  </FONT><B><FONT SIZE="2" COLOR="blue">6223791877142312</FONT></B><FONT
+				SIZE="2">
+:00BB5438 33 32 35 30 38 30 31 39-34 39 31 35 35 37 33 31  </FONT><B><FONT SIZE="2" COLOR="blue">3250801949155731</FONT></B><FONT
+				SIZE="2">
+:00BB5448 39 37 31 31 32 33 00 00-50 54 BB 00 50 54 BB 00  </FONT><B><FONT SIZE="2" COLOR="blue">971123</FONT></B><FONT
+				SIZE="2">..PT..PT..</FONT></PRE>
+			</BLOCKQUOTE>
+			<P><FONT SIZE="2" FACE="Arial"><BR>
+			Avec ce dernier Crackme, sans avoir fait le tour de la question, et loin de l&agrave; !, vous avez une premi&egrave;re
+			approche des programmes utilisant des algorithmes de cryptages. Puissiez vous en faire bon usage....</FONT></P>
+
+			<P><FONT SIZE="2" FACE="Arial">Bonne journ&eacute;e<BR>
+			</FONT><A HREF="mailto:christal@lemel.fr"><FONT SIZE="2" FACE="Arial">Christal</FONT></A>
+		</TD>
+	</TR>
+</TABLE>
+<FONT SIZE="1" COLOR="#666666" FACE="Arial">Les informations ci dessus ont &eacute;t&eacute; compl&eacute;t&eacute;es
+grace au travail et aux scripts de WinTerMiNator, Roy (et sa fameuse BigLib), HCCC6, tHE EGOiSTE, cryptosec.lautre.net</FONT>
+</CENTER>
+<P>
+</FORM>
+
+</BODY>
+
+</HTML>

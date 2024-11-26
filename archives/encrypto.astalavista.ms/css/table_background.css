@@ -1,0 +1,5 @@
+.main-bg {
+	background-image: url(../images/bg_main.gif);
+	background-repeat: repeat-y;
+	background-position: center top;
+}

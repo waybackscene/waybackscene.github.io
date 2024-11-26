@@ -1,0 +1,12 @@
+<html>
+<head>
+<script language="JavaScript" type="text/JavaScript">
+function goToURL() { 
+  var i, args=goToURL.arguments; document.returnValue = false;
+  for (i=0; i<(args.length-1); i+=2) eval(args[i]+".location='"+args[i+1]+"'");
+}
+</script>
+</head>
+<body onLoad="goToURL('parent','http://www.labo-asso.com');return document.returnValue">
+</body>
+</html>

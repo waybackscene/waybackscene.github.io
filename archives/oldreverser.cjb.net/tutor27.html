@@ -1,0 +1,155 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+	how to crack Sionide VB crackme 2 by ACiD BuRN [ECLiPSE/CiA]
+
+
+
+Protections : - Pcode
+	      - Name / Serial
+	      - Serial only
+	      - Code Word
+	      - Nag (not done yet coz no time to look)
+
+
+Tools needed : - Soft ice 3.2X or superior (i used 4.01)
+	       - Smart check 6
+
+
+
+I)Serial Only :
+
+
+Well , lot of VB apps use the __vbastrcomp function...
+So , this crackme is coded in vb6 so in soft ice type : bpx msvbvm60!__vbastrcomp
+Now press F5. we return to the prog !
+
+cODE: 112233
+Enter a serial like 112233 and press Check !
+
+now , we are in soft-ice due to the bpx ! cool !
+you have to press F12 for go in the __vbastrcomp function !
+you must see esp in color , it is good !
+now type dd esp (to display memory at esp)
+you will see : aaaaaaaa bbbbbbbb cccccccc dddddddd 
+
+try to do d aaaaaaaa , and you won't have interesting things in the
+data window.
+let's try d bbbbbbbb , and you don't see good thing too...
+so , try d cccccccc 
+
+exemple:
+
+for me , cccccccc = 00402DE4
+so just do in soft ice : d 402dE4
+and look the serial : 1RTZ-83DP-QU84-ALS4
+
+yes it look like a code ! we will try it !
+eheh , cool we get : Well Done , correct serial !
+let's go to next part :)
+
+
+2)Name Serial :
+
+Fire up smart check , open the crack with it , and run it!
+click on Name-serial , enter as name : ACiD BuRN  and serial : 112233
+click on the check button , you see : Sorry , try again blablabla...
+now , exit the crackme , and look in smart check.
+double click on the "+   _Click" thing , and now u must see something looking like this :
+
+Mid(varian:byReF String:"ACiD BuRN",long1,VARIANT:Integer:1)
+Asc(string:"A")returns Integer:65
+Mid(varian:byReF String:"ACiD BuRN",long2,VARIANT:Integer:1)
+Asc(string:"C")returns Integer:67
+Mid(varian:byReF String:"ACiD BuRN",long3,VARIANT:Integer:1)
+Asc(string:"i")returns Integer:105
+Mid(varian:byReF String:"ACiD BuRN",long4,VARIANT:Integer:1)
+Asc(string:"D")returns Integer:68
+Mid(varian:byReF String:"ACiD BuRN",long5,VARIANT:Integer:1)
+Asc(string:" ")returns Integer:32
+Mid(varian:byReF String:"ACiD BuRN",long6,VARIANT:Integer:1)
+Asc(string:"B")returns Integer:66
+Mid(varian:byReF String:"ACiD BuRN",long7,VARIANT:Integer:1)
+Asc(string:"u")returns Integer:117
+Mid(varian:byReF String:"ACiD BuRN",long8,VARIANT:Integer:1)
+Asc(string:"R")returns Integer:82
+Mid(varian:byReF String:"ACiD BuRN",long8,VARIANT:Integer:1)
+Asc(string:"N")returns Integer:78
+
+and just below , u see :
+
+MsbBox(VARIANT:String:"Sorry. Wrong...." blablabla
+
+you just have to click on this line , and in smart check , in the view menu
+choose : "show all events"...
+
+now , just scroll down a bit and look in the right window in smart check
+u must see : 112233
+scroll down 2 more times , and you see : ser-81400621
+wtf is this ?? it looks like a serial =)
+run the crackme again , go in name-serial part and enter :
+
+name: ACiD BuRN
+serial: ser-81400621
+
+Click on check , and u see : "Wrong serial blablabla" :-/
+duh !!! what the fuck is wrong ??
+click on ok, and now you see: "Well Done. Correct Serial" =)))
+better now , this crackme is just bugged !! 
+we cracked it anyway !!
+Let's go in Code World level..
+
+
+3)Code World:
+
+well , to crack this , it is similar to the serial only part...
+do the same technic , and you will get : cracking-up
+this is the code word :)
+Enter it , and you get the nice msgbox =)
+have Fun , and enjoy !
+
+4)Ending....
+
+
+Well , this tut is finish , hope u understand all this piece of shit, but if you have a 
+comment or one question, mail me 
+you can found all my tuts at : 
+
+MAIL: ACiD_BuRN@nema.com
+Web page URL: http://acidburn2000.cjb.net/
+
+Enjoy!
+
+
+Greetings to my groups : ECLiPSE / CiA / ODT
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , Killer_3K
+TaMaMBoLo...
+
+
+if your name is not here sorry !!! too much ppls to greets !
+
+
+				ACiD BuRN [ECL/CiA]
+
+
+
+
+
+
+
+
+</PRE></left>
+</BODY>
+</HTML>

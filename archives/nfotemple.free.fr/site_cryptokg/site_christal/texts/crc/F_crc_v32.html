@@ -1,0 +1,302 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!-- TlJHdR Ver 3.12 1/8/97 -->
+<LINK REL="home" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/index-3.htm" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/index.htm">
+<LINK REL="toc" HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/F_ToC.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_ToC.html">
+<LINK REV="made" HREF="mailto:filipg@repairfaq.org">
+<META HTTP-EQUIV="Reply-to" CONTENT="filipg@repairfaq.org (Filip Gieszczykiewicz)">
+<meta name="description" content="HTML-ized FAQs that I need to link to. LOTS of electronics/life related FAQs.">
+<meta name="keywords" content="AD4PC CPM CallerID ChangeLog DSO DTMF Dating FD_steppers FM10 FM10_more Hardware Homebuilt IDE-tech LCD_HD44780 LCD_menu LCD_progr LINK_IN MIDI MacroVision OnHook PCjr Pads_LOG_Man Pads_PCB_Man Phrack_Mag Running SCSI SMPTE_faq Tech_LCD Theory_LCD UPS Woman_speak archivers cardreader crc_uP crc ibmkey mail_order meeting midi2 pal_gal pixcon quiz touchscreen Keyboard MODEMS PARALLEL Parallel The_Serial_Port gameport isabus rs-232 rs232c PC IBMPC IBM Port 68hc11 8051 ATA COP8 ELE I2C PIC ST6 8085 8080 8088 8086 6811 Parallax MicroChip Programmer GAL PAL PLD">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Fil's FAQ-Link-In Corner: CRC algorithms</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crc/Background.gif" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/Background.gif">
+
+<H1>A PAINLESS GUIDE TO CRC ERROR DETECTION ALGORITHMS</H1>
+<P>Contents:</P>
+
+<UL>
+<!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI><A HREF="F_crc_v32.html#CRCV_001">Chapter 6) Binary Arithmetic with No Carries</A>
+	<LI><A HREF="F_crc_v32.html#CRCV_002">Chapter 7) A Fully Worked Example</A>
+	<LI><A HREF="F_crc_v32.html#CRCV_003">Chapter 8) Choosing A Poly</A> <!-- TlJHdR AutoNext_Back 1.05 -->
+	<LI>Jump to [<A HREF="F_crc_v33.html" tppabs="http://christalmirror.ifrance.com/assembly/CRC/files/F_crc_v33.html">Next</A>] segment
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_001"></A>Chapter 6) Binary Arithmetic with No Carries</H1>
+<P>Having dispensed with polynomials, we can focus on the real arithmetic issue, which is that all the arithmetic
+performed during CRC calculations is performed in binary with no carries. Often this is called polynomial arithmetic,
+but as I have declared the rest of this document a polynomial free zone, we'll have to call it CRC arithmetic instead.
+As this arithmetic is a key part of CRC calculations, we'd better get used to it. Here we go:</P>
+<P>Adding two numbers in CRC arithmetic is the same as adding numbers in ordinary binary arithmetic except there
+is no carry. This means that each pair of corresponding bits determine the corresponding output bit without reference
+to any other bit positions. For example:</P>
+<P>
+<PRE>        10011011
+       +11001010
+        --------
+        01010001
+        --------
+</PRE>
+<P>There are only four cases for each bit position:</P>
+<P>
+<PRE>   0+0=0
+   0+1=1
+   1+0=1
+   1+1=0  (no carry)
+</PRE>
+<P>Subtraction is identical:</P>
+<P>
+<PRE>        10011011
+       -11001010
+        --------
+        01010001
+        --------
+</PRE>
+<P>with</P>
+<P>
+<PRE>   0-0=0
+   0-1=1  (wraparound)
+   1-0=1
+   1-1=0
+</PRE>
+<P>In fact, both addition and subtraction in CRC arithmetic is equivalent to the XOR operation, and the XOR operation
+is its own inverse. This effectively reduces the operations of the first level of power (addition, subtraction)
+to a single operation that is its own inverse. This is a very convenient property of the arithmetic.</P>
+<P>By collapsing of addition and subtraction, the arithmetic discards any notion of magnitude beyond the power
+of its highest one bit. While it seems clear that 1010 is greater than 10, it is no longer the case that 1010 can
+be considered to be greater than 1001. To see this, note that you can get from 1010 to 1001 by both adding and
+subtracting the same quantity:</P>
+<P>
+<PRE>   1010 = 1010 + 0011
+   1010 = 1010 - 0011
+</PRE>
+<P>This makes nonsense of any notion of order.</P>
+<P>Having defined addition, we can move to multiplication and division. Multiplication is absolutely straightforward,
+being the sum of the first number, shifted in accordance with the second number.</P>
+<P>
+<PRE>        1101
+      x 1011
+        ----
+        1101
+       1101.
+      0000..
+     1101...
+     -------
+     1111111  Note: The sum uses CRC addition
+     -------
+</PRE>
+<P>Division is a little messier as we need to know when &quot;a number goes into another number&quot;. To do this,
+we invoke the weak definition of magnitude defined earlier: that X is greater than or equal to Y iff the position
+of the highest 1 bit of X is the same or greater than the position of the highest 1 bit of Y. Here's a fully worked
+division (nicked from [Tanenbaum81]).</P>
+<P>
+<PRE>            1100001010
+       _______________
+10011 ) 11010110110000
+        10011,,.,,....
+        -----,,.,,....
+         10011,.,,....
+         10011,.,,....
+         -----,.,,....
+          00001.,,....
+          00000.,,....
+          -----.,,....
+           00010,,....
+           00000,,....
+           -----,,....
+            00101,....
+            00000,....
+            -----,....
+             01011....
+             00000....
+             -----....
+              10110...
+              10011...
+              -----...
+               01010..
+               00000..
+               -----..
+                10100.
+                10011.
+                -----.
+                 01110
+                 00000
+                 -----
+                  1110 = Remainder
+</PRE>
+<P>That's really it. Before proceeding further, however, it's worth our while playing with this arithmetic a bit
+to get used to it.</P>
+<P>We've already played with addition and subtraction, noticing that they are the same thing. Here, though, we
+should note that in this arithmetic A+0=A and A-0=A. This obvious property is very useful later.</P>
+<P>In dealing with CRC multiplication and division, it's worth getting a feel for the concepts of MULTIPLE and
+DIVISIBLE.</P>
+<P>If a number A is a multiple of B then what this means in CRC arithmetic is that it is possible to construct
+A from zero by XORing in various shifts of B. For example, if A was 0111010110 and B was 11, we could construct
+A from B as follows:</P>
+<P>
+<PRE>                  0111010110
+                = .......11.
+                + ....11....
+                + ...11.....
+                  .11.......
+</PRE>
+<P>However, if A is 0111010111, it is not possible to construct it out of various shifts of B (can you see why?
+- see later) so it is said to be not divisible by B in CRC arithmetic.</P>
+<P>Thus we see that CRC arithmetic is primarily about XORing particular values at various shifting offsets.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_002"></A>Chapter 7) A Fully Worked Example</H1>
+<P>Having defined CRC arithmetic, we can now frame a CRC calculation as simply a division, because that's all it
+is! This section fills in the details and gives an example.</P>
+<P>To perform a CRC calculation, we need to choose a divisor. In maths marketing speak the divisor is called the
+&quot;generator polynomial&quot; or simply the &quot;polynomial&quot;, and is a key parameter of any CRC algorithm.
+It would probably be more friendly to call the divisor something else, but the poly talk is so deeply ingrained
+in the field that it would now be confusing to avoid it. As a compromise, we will refer to the CRC polynomial as
+the &quot;poly&quot;. Just think of this number as a sort of parrot. &quot;Hello poly!&quot;</P>
+<P>You can choose any poly and come up with a CRC algorithm. However, some polys are better than others, and so
+it is wise to stick with the tried an tested ones. A later section addresses this issue.</P>
+<P>The width (position of the highest 1 bit) of the poly is very important as it dominates the whole calculation.
+Typically, widths of 16 or 32 are chosen so as to simplify implementation on modern computers. The width of a poly
+is the actual bit position of the highest bit. For example, the width of 10011 is 4, not 5. For the purposes of
+example, we will chose a poly of 10011 (of width W of 4).</P>
+<P>Having chosen a poly, we can proceed with the calculation. This is simply a division (in CRC arithmetic) of
+the message by the poly. The only trick is that W zero bits are appended to the message before the CRC is calculated.
+Thus we have:</P>
+<P>
+<PRE>   Original message                : 1101011011
+   Poly                            :      10011
+   Message after appending W zeros : 11010110110000
+</PRE>
+<P>Now we simply divide the augmented message by the poly using CRC arithmetic. This is the same division as before:</P>
+<P>
+<PRE>            1100001010 = Quotient (nobody cares about the quotient)
+       _______________
+10011 ) 11010110110000 = Augmented message (1101011011 + 0000)
+=Poly  10011,,.,,....
+        -----,,.,,....
+         10011,.,,....
+         10011,.,,....
+         -----,.,,....
+          00001.,,....
+          00000.,,....
+          -----.,,....
+           00010,,....
+           00000,,....
+           -----,,....
+            00101,....
+            00000,....
+            -----,....
+             01011....
+             00000....
+             -----....
+              10110...
+              10011...
+              -----...
+               01010..
+               00000..
+               -----..
+                10100.
+                10011.
+                -----.
+                 01110
+                 00000
+                 -----
+                  1110 = Remainder = THE CHECKSUM!!!!
+</PRE>
+<P>The division yields a quotient, which we throw away, and a remainder, which is the calculated checksum. This
+ends the calculation.</P>
+<P>Usually, the checksum is then appended to the message and the result transmitted. In this case the transmission
+would be: 11010110111110.</P>
+<P>At the other end, the receiver can do one of two things:</P>
+
+<OL>
+	<LI>Separate the message and checksum. Calculate the checksum for the message (after appending W zeros) and compare
+	the two checksums.
+	<LI>Checksum the whole lot (without appending zeros) and see if it comes out as zero!
+</OL>
+
+<P>These two options are equivalent. However, in the next section, we will be assuming option b because it is marginally
+mathematically cleaner.</P>
+<P>A summary of the operation of the class of CRC algorithms:</P>
+
+<OL>
+	<LI>Choose a width W, and a poly G (of width W).
+	<LI>Append W zero bits to the message. Call this M'.
+	<LI>Divide M' by G using CRC arithmetic. The remainder is the checksum.
+</OL>
+
+<P>That's all there is to it.</P>
+<P>
+<HR ALIGN="CENTER">
+
+<H1><A NAME="CRCV_003"></A>Chapter 8) Choosing A Poly</H1>
+<P>Choosing a poly is somewhat of a black art and the reader is referred to [Tanenbaum81] (p.130-132) which has
+a very clear discussion of this issue. This section merely aims to put the fear of death into anyone who so much
+as toys with the idea of making up their own poly. If you don't care about why one poly might be better than another
+and just want to find out about high-speed implementations, choose one of the arithmetically sound polys listed
+at the end of this section and skip to the next section.</P>
+<P>First note that the transmitted message T is a multiple of the poly. To see this, note that 1) the last W bits
+of T is the remainder after dividing the augmented (by zeros remember) message by the poly, and 2) addition is
+the same as subtraction so adding the remainder pushes the value up to the next multiple. Now note that if the
+transmitted message is corrupted in transmission that we will receive T+E where E is an error vector (and + is
+CRC addition (i.e. XOR)). Upon receipt of this message, the receiver divides T+E by G. As T mod G is 0, (T+E) mod
+G = E mod G. Thus, the capacity of the poly we choose to catch particular kinds of errors will be determined by
+the set of multiples of G, for any corruption E that is a multiple of G will be undetected. Our task then is to
+find classes of G whose multiples look as little like the kind of line noise (that will be creating the corruptions)
+as possible. So let's examine the kinds of line noise we can expect.</P>
+
+<DL>
+	<DT><STRONG>SINGLE BIT ERRORS</STRONG></DT>
+	<DD>A single bit error means E=1000...0000. We can ensure that this class of error is always detected by making
+	sure that G has at least two bits set to 1. Any multiple of G will be constructed using shifting and adding and
+	it is impossible to construct a value with a single bit by shifting an adding a single value with more than one
+	bit set, as the two end bits will always persist.
+	<DT><STRONG>TWO-BIT ERRORS</STRONG></DT>
+	<DD>To detect all errors of the form 100...000100...000 (i.e. E contains two 1 bits) choose a G that does not have
+	multiples that are 11, 101, 1001, 10001, 100001, etc. It is not clear to me how one goes about doing this (I don't
+	have the pure maths background), but Tanenbaum assures us that such G do exist, and cites G with 1 bits (15,14,1)
+	turned on as an example of one G that won't divide anything less than 1...1 where ... is 32767 zeros.
+	<DT><STRONG>ERRORS WITH AN ODD NUMBER OF BITS</STRONG></DT>
+	<DD>We can catch all corruptions where E has an odd number of bits by choosing a G that has an even number of bits.
+	To see this, note that 1) CRC multiplication is simply XORing a constant value into a register at various offsets,
+	2) XORing is simply a bit-flip operation, and 3) if you XOR a value with an even number of bits into a register,
+	the oddness of the number of 1 bits in the register remains invariant. Example: Starting with E=111, attempt to
+	flip all three bits to zero by the repeated application of XORing in 11 at one of the two offsets (i.e. &quot;E=E
+	XOR 011&quot; and &quot;E=E XOR 110&quot;) This is nearly isomorphic to the &quot;glass tumblers&quot; party puzzle
+	where you challenge someone to flip three tumblers by the repeated application of the operation of flipping any
+	two. Most of the popular CRC polys contain an even number of 1 bits. (Note: Tanenbaum states more specifically
+	that all errors with an odd number of bits can be caught by making G a multiple of 11).
+	<DT><STRONG>BURST ERRORS</STRONG></DT>
+	<DD>A burst error looks like E=000...000111...11110000...00. That is, E consists of all zeros except for a run
+	of 1s somewhere inside. This can be recast as E=(10000...00)(1111111...111) where there are z zeros in the LEFT
+	part and n ones in the RIGHT part. To catch errors of this kind, we simply set the lowest bit of G to 1. Doing
+	this ensures that LEFT cannot be a factor of G. Then, so long as G is wider than RIGHT, the error will be detected.
+	See Tanenbaum for a clearer explanation of this; I'm a little fuzzy on this one. Note: Tanenbaum asserts that the
+	probability of a burst of length greater than W getting through is (0.5)^W.
+</DL>
+
+<P>That concludes the section on the fine art of selecting polys.</P>
+<P>Some popular polys are:</P>
+<P>
+<PRE>16 bits: (16,12,5,0)                              [X25 standard]
+         (16,15,2,0)                              [&quot;CRC-16&quot;]
+32 bits: (32,26,23,22,16,12,11,10,8,7,5,4,2,1,0)  [Ethernet]
+</PRE>
+<!-- Footer -->
+<P>
+<HR ALIGN="CENTER">
+
+
+</BODY>
+
+</HTML>

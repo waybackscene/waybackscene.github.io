@@ -1,0 +1,6 @@
+a:active {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #902800; text-decoration: none}
+a:hover {  font-family: Verdana, Arial, Helvetica, sans-serif; font-variant: small-caps; color: #902800; text-decoration: none; font-weight: bold}
+a:link {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #902800; text-decoration: none}
+a:visited {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #902800; text-decoration: none}
+
+BODY {SCROLLBAR-FACE-COLOR: #F0C438; SCROLLBAR-HIGHLIGHT-COLOR: #F0C438; SCROLLBAR-SHADOW-COLOR: #982400; SCROLLBAR-3DLIGHT-COLOR: #FFCC99; SCROLLBAR-ARROW-COLOR:  #000000; SCROLLBAR-TRACK-COLOR: #902800; SCROLLBAR-DARKSHADOW-COLOR: #F0BCA8; }

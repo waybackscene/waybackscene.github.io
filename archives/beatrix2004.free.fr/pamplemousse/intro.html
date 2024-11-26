@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+<title>Pamplemousse - Analyse de BeatriX</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" media="print" href="style_print.css"  />
+
+</head>
+
+<body>
+<div id="titre_print">
+MIRACL : solution de Pamplemousse.
+<p>par BeatriX / FRET.</p>
+</div>
+<div id="titre"></div>
+<div id="menu">
+	<ul>
+	<li> <a href="intro.html">1. Intro</a></li>
+	<li><a href="schema.html">2. Schéma</a></li>
+	<li><a href="tricks.html">3. Tricks du keygen</a></li>
+	<li><a href="equation.html">4. Résoudre l'équation</a></li>
+	<li><a href="keygen.html">5. Créer le keygen</a></li>
+	<li><a href="greetz.html">6. Greetz</a></li>
+	</ul>
+</div>
+<div id="contenu">
+<p> Selon Robert,</p>
+<div class="definition">
+<p><strong>Pamplemousse:</strong>1666; du néerlandais pomelmoes "gros citron" Fruit du pamplemoussier,gros agrume sphérique à peau JAUNE,juteux et légèrement amer.</p>
+</div>
+<p> Droit de réponse : Notez néanmoins que ++meat pense que le pamplemousse est orange...</p>
+<h1>1.Introduction</h1>
+<p>Je vais vous présenter ici une analyse du keygenme <a href="pamplemousse.exe">Pamplemousse.exe</a> de Bigbang. Ce binaire a été codé en C et utilise entre autre <a href="http://indigo.ie/~mscott/">MIRACL</a>, lib qui permet de réaliser des calculs mathématiques sur de grands nombres (autant de chiffres que l'on veut) appelés communément BIGNUMS. </p>
+<p> Bigbang est un adepte de la cryptographie et il nous le démontre ici de façon très intéressante. En effet, pour résoudre ce keygenme, il est nécessaire de connaître les grands principes de base de la cryptographie actuelle, à savoir :</p>
+<ul>
+<li> Les principes de HASHAGE de messages ( ici, SHA-1)</li>
+<li> Les techniques de résolution d'un LOGARITHME DISCRET (ici, j'utilise une implémentation basée sur la méthode de Pohlig-Hellman)</li>
+<li> Le problème de l'attaque d'un RSA,protocole à clés publiques (ici, RSA à 222 bits que j'ai bruteforcé à l'aide de PARI/GP)</li>
+</ul>
+<p> Dans ce tutorial, nous verrons donc comment implementer un SHA-1 pour réaliser un keygen, comment attaquer un problème de logarithme discret (DLP) par une méthode de bruteforce rapide et comment attaquer un RSA 222 par bruteforce également. La partie résolution sera essentiellement mathématique et nécessite donc un minimum de connaissances en arithmétique modulaire.</p>
+<h2>1.1.Considérations sur MIRACL</h2>
+<p> Je vais donc commencer cette étude à l'envers. Je vous propose d'abord une rapide introduction du fonctionnement de la lib MIRACL du point de vue du codeur. Il me semble que le reversing d'une telle lib nécessite a priori une connaissance minimale sur l'utilisation de cet outil. Une fois que j'aurai établi les bases, je regarderai cette lib du point de vue du reverser en utilisant des outils tels que OllyDbg ou IDA.</p>
+<p> MIRACL est donc une lib C qui permet de gérer de grands nombres (BIGNUMS). Elle dispose d'une centaine de fonctions pour réaliser les opérations arithmétiques qui vont des plus simples comme l'addition aux plus complexes comme le CRT ou les courbes elliptiques. Voici donc notre routine d'introduction qui permet d'additionner deux bignums :</p>
+<pre>
+#include "miracl.h" 
+int main()
+{
+big x,y; 
+miracl *mip;
+mip=mirsys(100,0,0);  --------------- Initialise MIRACL 
+mip->IOBASE=10;  --------------------- Fixe la base numérique 
+x = mirvar(0);  ---------------------- Initialise le bignum x
+y = mirvar(0);
+cinstr(x,"123456789");  -------------- Affecte une chaine à un bignum 
+cinstr(y,"789456213");
+add(x,y,x);  ------------------------- x = x + y 
+mirkill(x);  ------------------------- Détruit le bignum x 
+mirkill(y);
+return 0;
+}
+</pre>
+<p> Nous voyons donc que l'initialisation d'un bignum se fait toujours à l'aide de MIRVAR et que sa destruction se fait à l'aide de MIRKILL. CINSTR est une fonction très utile qu'il faut également retenir puisqu'elle convertit une chaine en un bignum en respectant la base.</p>
+
+<p> Pour résumer ce rapide aperçu, nous retiendrons les choses suivantes :</p>
+
+	<ul>
+	<li>1. MIRVAR permet de créer un nouveau Bignum</li>
+	<li>2. MIRKILL permet de détruire un tel nombre</li>
+	<li>3. CINSTR permet de convertir une chaine en un bignum</li>
+	</ul>
+
+
+<p> Plaçons nous dès à présent du côté du reverser. Si nous désassemblons ou débuggons une routine codée à l'aide de MIRACL, nous aurons une série de calls incompréhensibles. </p>
+
+<p> Il existe en fait depuis longtemps 2 techniques pour identifier les routines de MIRACL utilisées dans un binaire. </p>
+
+<h2> Première méthode : utiliser IDA </h2>
+<p> Il s'agit de la méthode la plus simple et la plus efficace. Je l'ai découverte en parcourant l'un des articles d'initiation à la cryptographie écrit par +Christal intitulé <a href="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/crypto1/crypto_for_newbies.htm">"Crypto4Newbies"</a>. IDA est un formidable désassembleur capable d'identifier des routines existantes en utilisant des signatures. Ces dernières sont stockées sous forme de fichiers *.sig dans le sous-dossier C:\Program Files\IDA\sig . Pour identifier les fonctions de MIRACL, il suffit donc de disposer d'un fichier miracl.sig permettant la reconnaissance. Pour générer un tel fichier, il suffit de disposer du fichier miracl.lib et d'utiliser l'outil FLAIR de IDA (Fast Library Acquisition for Identification and Recognition). </p>
+<p> Pour faire plus simple, je mets à disposition le fichier <a href="miracl.sig">ICI</a>.</p>
+<p> Pour utiliser la reconnaissance FLIRT, il suffit donc au moment du désassemblage de faire SHIFT + F5. Cette commande permet d'ouvrir la 'signatures Windows'. Il suffit alors de taper INS et de choisir la signature pour miracl.</p>
+<h6><img class ="noborder" src = "images/liste_sig.jpg" alt="" /></h6>
+
+<p> Après reconnaissance des fonctions MIRACL, nous devons obtenir un code semblable à celui-ci :</p>
+<h6><img class ="noborder" src = "images/IDA_sig.jpg" alt="" /></h6>
+<p> Nous pouvons y voir dès à présent les fonctions MIRVAR et CINSTR et en 0x4012C4, on voit apparaître le choix de la base 10.</p>
+<h3> CHOIX de la BASE 10 en ASM : </h3>
+<pre>
+4012C4 mov dword ptr [edx + <strong>234h</strong>], <strong>0Ah</strong>
+</pre>
+<h3> CHOIX de la BASE 10 - CODE SOURCE </h3>
+<pre>
+mip->IOBASE=10;  --------------------- Fixe la base à 10 <br />
+</pre>
+<h2> Deuxième méthode : identification manuelle. </h2>
+<p> On peut néanmoins faire le même travail à la main. En fait, chaque routine de MIRACL est identifiée par un numéro unique visible en clair dans le code. Par exemple, si nous jetons un coup d'oeil sur la fonction MIRVAR, on peut voir ceci :</p>
+<h6><img class ="noborder" src = "images/MIRVAR_sig.jpg" alt="" /></h6>
+<p> On voit en 0x403E56 le format de code suivant : mov dword ptr [esi+eax*4+20], 17h. Le 17h est le numéro d'identification pour la fonction MIRVAR.</p>
+<p> Une liste complète des fonctions MIRACL a déjà été dressée par bLaCk-eye que vous pouvez consulter <a href="magic.table.txt">ICI</a>. Le tutorial concernant cette reconnaissance est aussi à disposition <a href="miracl.pdf">ICI</a>.</p>
+<p> Bref, vous l'aurez compris, quelquesoit la méthode employée, vous pouvez toujours identifier les routines de MIRACL très facilement</p>
+<h3>Remarque :</h3>
+<p> Malheureusement, parce que les routines de MIRACL sont aisément identifiables, certains codeurs ne se sont pas fait prier pour les modifier en profondeur. Ceci a pour conséquence de rendre les deux méthodes précédentes complètement inefficaces. Vous pouvez à titre d'exemple étudier le keygenme nommé "Citron" du même auteur qui pose gentiment ce genre de problèmes. Cela dit, nous sommes avertis, si IDA ne reconnait pas MIRACL, ceci ne veut pas dire que MIRACL n'est pas employé.</p>
+<h2> Troisième méthode : Format d'un bignum miracl. </h2>
+<p> Le problème reste donc entier quant à la reconnaissance de ces fameuses routines. Il existe néanmoins quelques "trucs" pour détecter leur présence. MIRACL stocke les bignums en mémoire d'une façon assez particulière qui vaut la peine d'être étudié.</p>
+<p> Je rappelle que pour définir un bignum, nous devons faire appel à la fonction MIRVAR. En asm, on doit pouvoir repérer un code similaire à celui-ci :</p>
+
+<pre>
+push 0
+call _mirvar
+mov dword ptr ds:[414B70],eax
+</pre>
+<p> La fonction MIRVAR renvoie donc dans eax l'adresse du bignum nouvellement créé et cette adresse est stockée à l'adresse mémoire 414B70. Dans notre exemple ci-dessus, si nous nous rendons à l'adresse pointée par eax (dans mon cas, ce sera 871CC0), nous obtenons quelque chose qui doit ressembler à ceci :</p>
+<h6><img class ="noborder" src = "images/bignum_init.jpg" alt="" /></h6>
+<p> Le bignum est en fait une STRUCTURE composée de 3 champs, à savoir:</p>
+<ul>
+<li> +00 : taille du bignum en dwords et signe du bignum</li>
+<li> +04 : Adresse de la valeur absolue du bignum</li>
+<li> +0C : Valeur absolue du bignum stockée au format little endian.</li>
+</ul>
+<p> Dans notre exemple, nous voyons donc en 871CC4, la valeur 871CCC qui pointe vers le début de notre bignum (ici, 0).</p>
+<p> Si nous affectons une valeur (par exemple, 65793d, soit 101010 en hexa) à un bignum,nous obtenons quelque chose qui doit ressembler à ceci :</p>
+<h6><img class ="noborder" src = "images/bignum_65793.jpg" alt="" /></h6>
+<p> Vous voyez donc dans le premier champ (en 872CC0) la valeur 1 qui indique que le bignum est contenu sur 1 DWORD, dans le troisième champ (en 872CCC), vous voyez 65793 stocké en little endian et en hexadécimal.</p>
+<p> Désormais, si vous voyez un keygen qui stocke ses nombres sous cette forme là, attendez-vous fortement à ce que ce soit du MIRACL.</p>
+<p> Il est donc temps pour nous de jeter un oeil à la structure générale de ce keygen...</p>
+
+<div class="page_suivante">
+<a href="schema.html"><img class ="noborder" src = "images/hand.jpg" alt="Page suivante" title="Page suivante" /></a>
+</div>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+	<title> Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" href="includes/style.css" type="text/css" media="screen" />
+</head>
+
+<body>
+
+<div id="titre">
+	<div class="barre_bleue"></div>
+	<div class="barre_bleue2"></div>
+	<div id="fretsdn"><a href="http://binary-reverser.org"></a></div>
+	<div class="menu"><ul>
+    <li><a href='memory.php.html'>&#62; voir en version Française</a></li>
+    </ul></div>
+</div>
+
+<div id="menu">
+	<div class="barre_bleue3"></div>
+	<div class="barre_grise"></div>
+		<ul>
+	<li><a href="index1.php.html">Home</a></li>
+	<li><a href="download1.php.html">Downloads</a></li>
+	<li> <a href="screenshots1.php.html">Screenshots</a></li>
+	<li> <a href="links1.php.html">Documentations</a></li>
+	<li><a href="support1.php.html">Support</a></li>
+	</ul>
+	<p><strong>BeaEngine documentation</strong></p>
+	<ul>
+	<li> <a href="fonction1.php.html">Disasm function</a></li>
+	<li><a href="structure1.php.html">_Disasm structure</a></li>
+	<li><a href="constants1.php.html">Constants</a></li>
+	<li><a href="exemples1.php.html">Examples</a></li>
+	<li><a href="licence1.php.html">License</a></li>
+	</ul>
+ 
+</div>
+
+<div id="contenu">
+	<div class="barre_bleue">Welcome to the BeaEngine Sweet Home - x86 x86-64 disassembler library - (IA-32 & Intel64) </div>
+<h1>MEMORYTYPE Structure</h1>
+<p>
+This structure gives informations on the memory access type.
+</p>
+<pre>
+struct MEMORYTYPE {
+   long BaseRegister;
+   long IndexRegister;
+   long Scale;
+   long long Displacement;
+};
+</pre>
+<p>Membres</p>
+<p class="champ"><strong>BaseRegister</strong></p>
+<p class="explanation">[out] Indicate the base register in the formula : [BaseRegister + IndexRegister*Scale + Displacement].</p>
+
+<p class="champ"><strong>IndexRegister</strong></p>
+<p class="explanation">[out] Indicate the index register in the formula : [BaseRegister + IndexRegister*Scale + Displacement].</p>
+
+
+<p class="champ"><strong>Scale</strong></p>
+<p class="explanation">[out] Indicate the scale : 1, 2, 4 ou 8.</p>
+
+<p class="champ"><strong>Displacement</strong></p>
+<p class="explanation">[out] Value of the displacement in the formula : [BaseRegister + IndexRegister*Scale + Displacement].</p>
+
+<p class="w3c">
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
+</p>
+
+<p class="w3c">
+ <a href="http://jigsaw.w3.org/css-validator/">
+  <img style="border:0;width:88px;height:31px"
+       src="http://jigsaw.w3.org/css-validator/images/vcss" 
+       alt="Valid CSS!" />
+ </a>
+</p>
+</div>
+</body>
+</html>

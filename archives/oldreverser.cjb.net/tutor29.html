@@ -1,0 +1,285 @@
+<html>
+<!- Notepad, the best html editor !!!  !->
+<!- what else ? !->
+
+<head><title>Cracking Tutorial, (c) ACiD BuRN / ID</title></head>
+<body bgcolor="#C0C0C0" text="#000000" link="#008000" vlink="#800080" alink="#FF0000">
+
+<center>
+<font size="+3"><b>Visual Basic Keygening<br>The Power 1.0 fr</b><br></font><br>
+<font size="+2">Tutorial by ACiD BuRN [Immortal Descendants]<br>(September 30th, 1999)</font>
+</center><br>
+<hr>
+<u>Contents:</u><br><blockquote>
+<a href="tutor29.html#intro">Introduction</a><br>
+<a href="tutor29.html#essay">ESSAY</a><br>
+<a href="tutor29.html#keygen">Coding a Keygen!</a><br>
+</blockquote><br>
+<hr>
+<!- ***************************************************************************** -!>
+<font size="+2"><a name="intro"><b><u>Introduction:</u></b></a></font><br><br>
+this tutorial is on a VB Serial only protection.
+the serial is based on the hard drive number...
+we will study how the the valid serial is calculated , and how does
+the prog calcul the valid serial ...
+all this , to make a little keygen!
+enough blablabla , let's start ...<br>
+btw :<br><br>
+
+<center>tools of the trade are : <br><br>
+
+   - Smart check 6 : must be well configured<br>
+   - Visual Basic to code the keygen<br>
+   - a lil brain<br>
+   - the app: http://www.ifrance.com/vbandjava<br>
+<br></center>
+<hr>
+<!- ***************************************************************************** -!>
+<font size="+2"><a name="essay"><b><u>ESSAY:</u></b></a></font><br><br>
+<pre>
+Fire up smart check , and run our target with it.
+now you must see a msgbox saying us : "the power est un shareware...."
+this mean : the power is a shareware , blablabla...
+so , this is only a little nag , click on OK button , and now you must
+see , an input box , with some text...
+lemme traduce you it , we see :
+
+<font color=red>"Le numero de votre disque (celui a partir duquel vous avez lancé the power)
+is : (your hard disk serial number here)
+Si vous souhaitez vous enreistrez , notez ce numero et blablablabla"</font>
+
+In english :
+
+<font color=red>"the hard disk number (the one of the computer where the prower has been run)
+is : (your hard disk serial number here)
+if you would like to register , writte down this number blablabla..."</font>
+
+so , now i think you start to understand , the programme ask you to writte down your
+hard disk based number , and send it to the author for registering.
+so , this programme will need a keygen coz , the valid serial of your computer won't work
+on others computer...
+
+
+now , u understand , enter a fake serial in the input box : 112233 and click on the OK button!
+you got a msgbox saying us : "Vous vous etes trompé(e) blablabla"
+this mean : "you did an error blablabla"...
+so , close this little progy , or end the task in smart check , and now we have to look for
+the algo!
+
+In smart check , double click on : Form1_load
+now , we are looking for something messing with our hard disk serial (the api the most used is
+GetvolumeinformationA)
+look down , and you see it !!
+
+<font color=blue>GetVolumeInformationA(LPSTR:00413BA4....)</font>
+2 lines under it you see : <font color=blue>Right(VARIANT:Double:8.92936e+008,long:8)</font>
+well , this look nice , click on it and look the value in the right window
+you see : <font color=blue>892935893</font>  <== this is our hard disk serial
+
+so <font color=blue>"Right(VARIANT:Double:8.92936e+008,long:8)"</font> is equal to:<font color=blue>"Right(VARIANT:Double:892935893,long:8)"</font>
+wich means it take value from the right with longer:8
+the 8th value from the right of <font color=blue>892935893</font> are <font color=blue>92935893</font> (it is the serial we see in input box)
+Btw , all this value are different on each computer because it is hard disk based!
+
+About 2 lines under , you see :
+
+<font color=blue>Len(String:"92935893")returns LONG:8</font>
+
+click on it , and in view menu , choose , show all events...
+now you see something like this:
+
+<font color=blue>Mid$(String:"92935893",long:1,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("9") --> Double (9)
+Double (9) --> Integer (9)</font>
+
+......
+
+<font color=blue>Mid$(String:"92935893",long:2,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("2") --> Double (2)
+Double (11) --> Integer (11)
+</font>
+......
+
+<font color=blue>Mid$(String:"92935893",long:3,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("9") --> Double (9)
+Double (20) --> Integer (20)
+</font>
+......
+
+<font color=blue>Mid$(String:"92935893",long:4,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("3") --> Double (3)
+Double (23) --> Integer (23)
+</font>
+......
+
+<font color=blue>Mid$(String:"92935893",long:5,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("5") --> Double (5)
+Double (28) --> Integer (28)
+</font>
+......
+
+<font color=blue>Mid$(String:"92935893",long:6,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("8") --> Double (8)
+Double (36) --> Integer (36)
+</font>
+......
+
+
+<font color=blue>Mid$(String:"92935893",long:7,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("9") --> Double (9)
+Double (45) --> Integer (45)
+</font>
+......
+
+
+<font color=blue>Mid$(String:"92935893",long:8,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("3") --> Double (3)
+Double (48) --> Integer (48)
+</font>
+......
+
+so , you must wonder how this value are calculated!!
+lemme explain a little bit :
+
+it take each char of the serial , and add the next char to the previous
+result, like this :
+<font color=red>
+ 0 + 9 = 9  (0 coz 9 is 1st char , so nothing to add)
+ 9 + 2 = 11
+11 + 9 = 20
+20 + 3 = 23
+23 + 5 = 28
+28 + 8 = 36
+36 + 9 = 45
+45 + 3 = 48
+</font>
+
+so , you see how this value is calculated , i just think a bit to 
+find how it does...
+
+anyway , just under :
+
+<font color=blue>Mid$(String:"92935893",long:8,VARIANT:Integer:1)</font>
+....
+<font color=blue>String("3") --> Double (3)
+Double (48) --> Integer (48)</font>
+
+there is :
+
+<font color=blue>Hex(VARIANT:integer:19952)
+__vbastrVarMove(VARIANT:String:"4DF0") ....</font>
+.....
+
+so , it take the hex value of <font color=red>19952 (4DF0)</font>
+and if you scroll down a little , you will find the final compare :
+
+<font color=blue>__vbaStrCmp(String:"4DF0",String:"112233") returns DWORD: FFFFFFFF</font>
+
+this is the Visual basic function the most used to compare
+here it compares : <font color=red>4DF0</font> with <font color=red>112233</font> 
+112233 = fake serial , we entered
+4DF0 = the hexadecimal of the serial we saw , few lines above. it is also the
+valid serial to enter..
+
+so , how can we get , this "19952" ??
+
+
+lets look again what we saw in smart check :
+
+<font color=blue>Mid$(String:"92935893",long:8,VARIANT:Integer:1)</font>
+....
+<font color=blue>Double (48) --> Integer (48)
+Hex(VARIANT:integer:19952)
+__vbastrVarMove(VARIANT:String:"4DF0") ....</font>
+
+hmm , lets add <font color=red>48</font> and <font color=red>19952</font>, we obtain : <font color=red>20000</font>
+so , it looks like the programme substract the value from the hd serial to 20000.
+
+48 = value from hard disk
+20000 = constant
+
+<font color=red>20000 - 48 = 19952</font>
+
+And after this , it just converts the result in hexadecimal
+<font color=red>19952(d) = 4DF0(h)</font>
+
+and we get the good serial !!! : <font color=red>4DF0</font>
+this is for my comuter !
+let's code a lil keygen!
+
+</pre>
+<br>
+<hr>
+<!- ***************************************************************************** -!>
+<font size="+2"><a name="keygen"><b><u>Coding a Keygen:</u></b></a></font><br><br>
+<pre>
+well for this , you need to use Windows API to get the hard disk serial
+and then do the rest of the calculation...
+I joined complete source with this tutor , but i will just show the part of
+code who do calculations on the serial we get from our hard disk!!
+I used Visual basic 5 to code this keygen...
+
+<font color=green>
+-----------------------------little cut of source---------------------------------
+</font>
+<font color=blue>
+'Here is normaly the code to get the hard disk number, look the full source joined
+
+serial = Right(Format$(lngVolumeSerialNumber), 8)
+'serial = our 8 first digits from the right of the full hard disk serial
+
+Label1.Caption = "The value from your hard drive is: " + serial
+For i = 1 To Len(serial)
+temp = temp + Val(Mid(serial, i, 1))
+Next i
+'this is the loop to calculate the value from our hard disk
+
+Text1.Text = "Your personal  unlocking code is :" + Hex(20000 - temp)
+'here comes the final serial , in hexadecimal
+'ACiD BuRN / ID</font>
+<font color=green>
+-------------------------end of little cut of source-------------------------------
+</font>
+
+Now , u got a full Keygenerator for The Power v1.0
+i hope you have understood all this essay , and if you got any comments , or 
+questions , just mail me to : <a href="mailto:ACiD_BuRN@nema.com">ACiD_BuRN@nema.com</a> or <a href="mailto:acid2600@hotmail.com">acid2600@hotmail.com</a>
+you can find all of my tuts at :
+Web page URL: <a href=http://acidburn2000.cjb.net/ target=new>http://acidburn2000.cjb.net</a>
+
+</pre>
+
+<br>
+<b><u>Greetings</u></b>:
+<pre>
+group greetings : ID - ECLiPSE - CiA - ODT - EXEC - TiTaNe - PWA - PC - UCF- CORE
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , Killer_3K
+TaMaMBoLo , gizmo , Gota , ExtaBrain , Alpine , WarezPup...
+
+
+eheh , i bet i forget some peoples :-/ , sorry !!!
+
+			ACiD BuRN / Immortal Descendants
+
+<br>
+<hr>
+<br><div align="center"><font face="Times New Roman, Times, serif" size="3">Copyright 1999 <a href="mailto:acid2600@hotmail.com">ACiD BuRN</a> and the <a href="http://www.ImmortalDescendants.com">Immortal Descendants</a></font></div>
+  
+
+</body></html>

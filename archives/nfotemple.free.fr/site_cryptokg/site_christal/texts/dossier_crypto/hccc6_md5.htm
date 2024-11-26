@@ -1,0 +1,924 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>MD5 hasher</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" BGCOLOR="#FFFFCC">
+
+<P ALIGN="CENTER"></P>
+
+<P ALIGN="CENTER"><BR>
+<BR>
+<B><FONT SIZE="4" COLOR="maroon" FACE="Arial">How To Find HCCC6 MD5 CrackMe's Serial</FONT></B></P>
+
+<BLOCKQUOTE>
+	<P><FONT SIZE="2" FACE="Arial"><BR>
+	A la sortie du nouvel HCCC, le 6, Kahel qui avait cod&eacute; l'interface du wiever avait aussi inclu un petit
+	exercice sympa bas&eacute; sur l'algorithme de hashage MD5.<BR>
+	Dans les explications que Kahel donnait, il y avait beaucoup &agrave; prendre :<BR>
+	<BR>
+	</FONT><I><FONT SIZE="2" FACE="Arial">&quot; Le but du crackme est tout d'abord de trouver quel est le hash pr&eacute;d&eacute;fini
+	&quot;.<BR>
+	&quot; ... ensuite il faudra &eacute;crire un bruteforcer pour trouver le serial &quot;.<BR>
+	&quot; ... Maximum 5 minutes de calculs :) &quot;.<BR>
+	&quot; ... Le crackme peut etre keygennable , en effet il ne compare que les 8 premiers bytes du Hash &quot;.<BR>
+	&quot; Le serial auquel je pensais en codant ce crackme n'est compos&eacute; que de chiffres... &quot;.</FONT></I><FONT
+	SIZE="2" FACE="Arial"><BR>
+	<BR>
+	Il y a donc :<BR>
+	<BR>
+	- un hash pr&eacute;d&eacute;fini &agrave; trouver<BR>
+	- le texte correspondant &agrave; ce hash est forcement court, sinon les 5 minutes de recherche seront largement
+	d&eacute;pass&eacute;es (comptez plusieurs heures, suivant les cas…), m&ecirc;me pour une recherche ne portant
+	que sur les 8 premiers bytes.<BR>
+	- le texte n'est compos&eacute; que de chiffres<BR>
+	<BR>
+	et pour nous aider, Kahel avait de plus inclu dans un zip toute la doc n&eacute;cessaire, dont en voici un extrait
+	:<BR>
+	<BR>
+	&quot; </FONT><B><U><FONT SIZE="2" FACE="Arial">Notion de fonction de hachage</FONT></U></B><FONT SIZE="2" FACE="Arial"><BR>
+	<BR>
+	Une fonction de hachage est une fonction math&eacute;matique qui a partir d'un message (d'une donn&eacute;e) g&eacute;n&egrave;re
+	une autre cha&icirc;ne (g&eacute;n&eacute;ralement plus courte).<BR>
+	<BR>
+	Terminologie: fonction de contraction, digest, empreinte digitale, ...<BR>
+	Exemples:<BR>
+	Calcul de parit&eacute; verticale :<BR>
+	On fait le OU exclusif de tous les octets d'une cha&icirc;ne de caract&egrave;res.<BR>
+	<BR>
+	</FONT><U><FONT SIZE="2" FACE="Arial">Calcul de code polynomial :</FONT></U><FONT SIZE="2" FACE="Arial"><BR>
+	<BR>
+	Notion de fonction de hachage &agrave; sens unique sans cl&eacute; :<BR>
+	C'est une fonction de hachage &agrave; sens unique qui peut &ecirc;tre calcul&eacute;e par n'importe qui (MD5).<BR>
+	<BR>
+	Notion de fonction de hachage &agrave; sens unique avec cl&eacute; :<BR>
+	C'est une fonction de hachage &agrave; sens unique qui ne peut &ecirc;tre calcul&eacute;e que par<BR>
+	une seule entit&eacute; d&eacute;tentrice de la cl&eacute;.<BR>
+	<BR>
+	</FONT><U><FONT SIZE="2" FACE="Arial">Signatures num&eacute;riques :</FONT></U><FONT SIZE="2" FACE="Arial"><BR>
+	<BR>
+	Une signature manuscrite id&eacute;ale est r&eacute;put&eacute;e poss&eacute;der les propri&eacute;t&eacute;s suivantes:<BR>
+	<BR>
+	- La signature ne peut-&ecirc;tre imit&eacute;e. Elle prouve que le signataire a d&eacute;lib&eacute;r&eacute;ment
+	sign&eacute; le document.<BR>
+	<BR>
+	- La signature authentifie le signataire. Seul le signataire peut avoir sign&eacute;.<BR>
+	<BR>
+	- La signature appartient &agrave; un seul document (elle n'est pas r&eacute;utilisable).<BR>
+	<BR>
+	- Le document sign&eacute; ne peut &ecirc;tre partiellement ou totalement modifi&eacute;.<BR>
+	<BR>
+	- La signature ne peut-&ecirc;tre reni&eacute;e.<BR>
+	<BR>
+	Base de la signature num&eacute;rique:<BR>
+	<BR>
+	L'existence d'une fonction de hachage &agrave; sens unique avec cl&eacute; :<BR>
+	<BR>
+	Une solution possible: une fonctions de hachage &agrave; sens unique et une technique<BR>
+	classique de cryptographie (exemple le RSA)<BR>
+	<BR>
+	MD5 Message Digest version 5 :<BR>
+	<BR>
+	</FONT><U><FONT SIZE="2" FACE="Arial">Une fonction de hachage &agrave; sens unique :</FONT></U><FONT SIZE="2" FACE="Arial"><BR>
+	<BR>
+	On g&eacute;n&egrave;re une signature sur 128 bits. Le message est d&eacute;compos&eacute; en blocs de 512 bits
+	soient 16 sous-blocs Mj de 32 bits. Pour chaque bloc de 512 bits on r&eacute;alise 4 s&eacute;ries de 16 applications
+	successives des fonctions de base FF, GG , HH, II qui d&eacute;pendent des sous-blocs Mj et de constantes a, b,
+	c, d, ti:</FONT></P>
+	<PRE><FONT SIZE="2" FACE="Courier New">FF(a,b,c,d,Mj,s,ti)   -&gt; a = b + ((a = F(b, c,d) + Mj+ ti) &lt;s)
+GG(a, b,c,d,Mj,s, ti) -&gt; a = b + ((a = G(b,c,d) + Mj+ ti) &lt;s)
+HH(a,b, c,d,Mj,s,ti)  -&gt; a = b + ((a = H(b,c,d) + Mj + ti) &lt;s)
+II(a,b, c,d,Mj,s,ti)  -&gt; a = b + ((a = I(b,c, d) + Mj + ti) &lt;s)</FONT></PRE>
+	<P><FONT SIZE="2" FACE="Arial">Dans les formules pr&eacute;c&eacute;dentes &lt;s d&eacute;signe un d&eacute;calage
+	&agrave; gauche de &lt;s positions les fonctions F,G, H,I sont donn&eacute;es par:</FONT></P>
+	<PRE><FONT SIZE="2" FACE="Courier New">F(X,Y,Z)  = (X AND Y) OR (NOT X AND Z)
+G(X,Y, Z) = (X AND Z) OR (Y AND NOT Z)
+H(X,Y,Z)  = (X XOR Y XOR Z)
+I(X,Y,Z)  =  Y XOR (X OR  NOT Z) &quot;.</FONT></PRE>
+	<P><FONT SIZE="2" FACE="Arial">(Il est &agrave; noter que Kahel a aussi sign&eacute; dans HCCC6 un article sur
+	</FONT><A HREF="http://nfotemple.free.fr/site_cryptokg/site_christal/texts/dossier_crypto/elgamal.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/ElGamal/elgamal.htm"><FONT SIZE="2" FACE="Arial">le cryptage El Gamal</FONT></A><FONT SIZE="2"
+	FACE="Arial"> qui m&eacute;rite vraiment d'&ecirc;tre lu !)<BR>
+	<BR>
+	Apr&egrave;s cette introduction un peu longue, voyons ce qu'il en est du crackme de Kahel.<BR>
+	<BR>
+	On peut y acc&eacute;der via le viewer.<BR>
+	Serait ce &agrave; dire que le crackme est une dialogbox incorpor&eacute; &agrave; ce wiever ?<BR>
+	Non !<BR>
+	En fermant HCCC6, la box est toujours pr&eacute;sente, donc elle a &eacute;t&eacute; cr&eacute;e pour &ecirc;tre
+	ind&eacute;pendante du wiever.<BR>
+	Le plus simple est de faire une recherche sur le HDD en prenant le caption comme cl&eacute;. Et effectivement,
+	on trouve rapidement que le crackme a &eacute;t&eacute; copi&eacute; dans C:\WINDOWS\TEMP\.<BR>
+	<BR>
+	Pour faire plus compliqu&eacute;, il y avait moyen d'utiliser FileMon pour l'apprendre :</FONT></P>
+	<PRE><B><FONT SIZE="2" FACE="Arial">Ezine	Open	C:\WINDOWS\TEMP\CRACKME.EXE	0x50	CREATENEW READWRITE</FONT></B></PRE>
+	<P><FONT SIZE="2" FACE="Arial">Ou encore d'utiliser SoftIce pour breaker sur les APIs ShellExecute ou ShellExecuteEx,
+	histoire de jeter un coup d'œil dans lpDirectory :<BR>
+	<BR>
+	La fonction ShellExecute ouvre ou imprime un fichier sp&eacute;cifi&eacute;. Ce fichier peut &ecirc;tre un ex&eacute;cutable
+	ou un document. <BR>
+	<BR>
+	HINSTANCE ShellExecute(</FONT></P>
+	<PRE><FONT SIZE="2" FACE="Courier New">    HWND hwnd,               </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">// handle de la fen&ecirc;tre propri&eacute;taire</FONT><FONT
+	SIZE="2" FACE="Courier New">
+    LPCTSTR lpOperation,    </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">// pointe vers une string sp&eacute;cifiant l'op&eacute;ration &agrave; ex&eacute;cuter</FONT><FONT
+	SIZE="2" FACE="Courier New">
+    LPCTSTR lpFile,        </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">// pointe vers le fichier ou le r&eacute;pertoire &agrave; atteindre</FONT><FONT
+	SIZE="2" FACE="Courier New">
+    LPCTSTR lpParameters, </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">// pointe vers une string sp&eacute;cifiant les param&egrave;tres d'ex&eacute;cution </FONT><FONT
+	SIZE="2" FACE="Courier New">
+    LPCTSTR lpDirectory, </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">// pointe vers une string sp&eacute;cifiant le r&eacute;pertoire par d&eacute;faut</FONT><FONT
+	SIZE="2" FACE="Courier New">
+    INT nShowCmd        </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">// indique le statut du fichier lors de son ouverture</FONT></PRE>
+	<P><FONT SIZE="2" FACE="Arial">Finalement, Wdasm donne les strings data qui vont bien (un fois HCCC6 Un-UPX&eacute;
+	-&gt; sensationnelle cette fonction d&eacute;compress !) :<BR>
+	<BR>
+	&quot; Hccc Crackme&quot;<BR>
+	&quot;c:\windows\temp\crackme.exe&quot;<BR>
+	&quot;CRACKME&quot;<BR>
+	&quot;open&quot;<BR>
+	<BR>
+	et un chtit double clic de mulot nous envoie ici :</FONT></P>
+	<PRE><FONT SIZE="2" FACE="Courier New">:004015B1 6A01                    push 00000001
+:004015B3 6A00                    push 00000000
+:004015B5 6A00                    push 00000000
+:004015B7 68C2B14400              push 0044B1C2  </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">-&gt;&quot;c:\windows\temp\crackme.exe&quot;</FONT><FONT
+	SIZE="2" FACE="Courier New">
+:004015BC 6861B14400              push 0044B161  </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">-&gt;&quot;open&quot;</FONT><FONT
+	SIZE="2" FACE="Courier New">
+:004015C1 6A00                    push 00000000
+:004015C3 E8B40C0000              Call SHELL32.ShellExecuteA</FONT></PRE>
+	<P><FONT SIZE="2" FACE="Arial">Bene, maintenant que l'on sait ou se trouve le crackme de kahel, voyons ce qu'il
+	a dans le ventre :</FONT></P>
+	<PRE><FONT SIZE="2" FACE="Courier New">__________________________________________________________
+sections :
+&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;&macr;
+name     vSize     vAddress  rawSize   rOffset   Caract
+UPX0     00034000h 00001000h 00000000h 00000400h E0000080h
+UPX1     00021000h 00035000h 00020400h 00000400h E0000040h
+.rsrc    00001000h 00056000h 00000C00h 00020800h C0000040h
+__________________________________________________________</FONT></PRE>
+	<P><FONT SIZE="2" FACE="Arial">PARFAIT !<BR>
+	Lui aussi est compress&eacute; avec UPX, histoire de le rendre plus petit.<BR>
+	Kahel a vraiment &eacute;t&eacute; cool !<BR>
+	<BR>
+	Une fois d&eacute;compress&eacute;, Wdasm va encore avoir des choses &agrave; dire :<BR>
+	<BR>
+	&quot;a5ba6896&quot;<BR>
+	&quot;MD5&quot;<BR>
+	&quot;serial valide&quot;<BR>
+	<BR>
+	Si kahel n'avait pas pr&eacute;cis&eacute; qu'il s'agissait d'un hashage MD5, la seconde string que j'ai retenue
+	ne m'aurait peut &ecirc;tre pas saut&eacute; au yeux.<BR>
+	Par contre, l'esp&egrave;ce de serial semble tr&egrave;s prometteur :</FONT></P>
+	<PRE><FONT SIZE="2" FACE="Courier New">:00441065  mov edx, dword ptr [ebp-08]  </FONT><FONT SIZE="2" COLOR="blue"
+	FACE="Courier New">&gt; edx = caract&egrave;res entr&eacute;s</FONT><FONT SIZE="2" FACE="Courier New">
+...
+:00441087  mov eax, dword ptr [ebp-04]  </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">&gt; eax = hash corespondant</FONT><FONT
+	SIZE="2" FACE="Courier New">
+...
+:004410A1  mov eax, dword ptr [ebp-04]  </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">&gt; eax = 8 derniers bytes du hash</FONT><FONT
+	SIZE="2" FACE="Courier New">
+
+* Possible StringData Ref from Code Obj </FONT><FONT SIZE="2" COLOR="#CC0000" FACE="Courier New">-&gt;&quot;a5ba6896&quot;</FONT><FONT
+	SIZE="2" FACE="Courier New">
+
+:004410A4  mov edx, 004410FC            </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">&gt; edx = a5ba6896</FONT><FONT
+	SIZE="2" FACE="Courier New">
+:004410A9  call 00403C74               </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New"> &gt; comparaison</FONT><FONT
+	SIZE="2" FACE="Courier New">
+:004410AE  jne 004410C8                 </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">&gt; Pas Glop ! c'est la sortie</FONT><FONT
+	SIZE="2" FACE="Courier New">
+:004410B0  push 00000000                </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">&gt; Glop Glop ! la MsgBox s'affiche.</FONT><FONT
+	SIZE="2" FACE="Courier New">
+:004410B2  mov ecx, 00441108
+
+* Possible StringData Ref from Code Obj </FONT><FONT SIZE="2" COLOR="#CC0000" FACE="Courier New">-&gt;&quot;serial valide&quot;</FONT><FONT
+	SIZE="2" FACE="Courier New">
+
+:004410B7  mov edx, 0044110C            </FONT><FONT SIZE="2" COLOR="blue" FACE="Courier New">&gt; serial valide</FONT></PRE>
+	<P><FONT SIZE="2" FACE="Arial">Et le tout l'un au-dessus de l'autre, il n'y a plus &agrave; h&eacute;siter !<BR>
+	Kahel a cependant conserv&eacute; un peu de myst&egrave;re…<BR>
+	Il avait parl&eacute; des 8 premiers bytes du hash compar&eacute;s avec une cl&eacute; pr&eacute;d&eacute;finie,
+	mais sans pr&eacute;ciser qu'il en faisait la lecture de la droite vers la gauche : en fait c'est le dernier Dword
+	du hash qui est compar&eacute; avec la cl&eacute; !<BR>
+	<BR>
+	Il ne reste plus qu'&agrave; trouver un texte de quelques caract&egrave;res num&eacute;riques (disons 5) dont le
+	hash donnerait une s&eacute;rie se finissant par a5ba6896.<BR>
+	<BR>
+	Je ne sais pas s'il existe un Un_hasher, capable de reverser MD5 pour en donner le serial (je crois que DAMN et
+	TMG en ont r&eacute;alis&eacute;), mais j'ai d&eacute;couvert, pour l'avoir test&eacute;, qu'il faut environ deux
+	heures pour calculer une s&eacute;rie allant de 1 &agrave; 99999999h. En incluant des caract&egrave;res alphab&eacute;tiques,
+	le temps augmente consid&eacute;rablement…<BR>
+	<BR>
+	Voici le source que je propose comme </FONT><A HREF="MD5.exe" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/programmes/MD5.exe"><FONT SIZE="2" FACE="Arial">solution</FONT></A><FONT
+	SIZE="2" FACE="Arial"> &agrave; l'exercice de Kahel , bas&eacute; sur un source de roy|crisiscrackers pour le calcul
+	du Hash MD5:</FONT><FONT SIZE="2" FACE="Courier New"></FONT>
+</BLOCKQUOTE>
+
+
+<BLOCKQUOTE ALIGN="CENTER">
+	<P>
+	<TABLE BORDER="0" CELLPADDING="8" CELLSPACING="0" WIDTH="74%">
+		<TR>
+			<TD WIDTH="100%" BGCOLOR="#CCFFCC">
+				<BLOCKQUOTE>
+					<PRE><FONT SIZE="2" FACE="Courier New"> .386
+      .model flat, stdcall
+      option casemap :none   ; case sensitive
+
+      ; d&eacute;claration des proc&eacute;dures
+
+      DlgProc       proto    :dword,:dword,:dword,:dword
+      FF            proto    :dword,:dword,:dword,:dword,:dword,:byte,:dword
+      GG            proto    :dword,:dword,:dword,:dword,:dword,:byte,:dword
+      HH            proto    :dword,:dword,:dword,:dword,:dword,:byte,:dword
+      II            proto    :dword,:dword,:dword,:dword,:dword,:byte,:dword
+      procMD5hash   proto    :dword,:dword,:dword
+      StaticImage   PROTO    :DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD
+      Str2Hex       PROTO    :DWORD, :DWORD
+      OpenDialog    PROTO    :DWORD
+
+      ; r&eacute;cup&eacute;ration des Dll et des fonctions
+
+      include \masm32\include\windows.inc
+      include \masm32\include\user32.inc
+      include \masm32\include\kernel32.inc
+      include \masm32\include\gdi32.inc
+      include \masm32\include\comdlg32.inc 
+      include \masm32\include\comctl32.inc
+      include \masm32\include\masm32.inc
+      include \masm32\include\shell32.inc 
+
+      includelib \masm32\lib\user32.lib
+      includelib \masm32\lib\kernel32.lib
+      includelib \masm32\lib\gdi32.lib
+      includelib \masm32\lib\comdlg32.lib 
+      includelib \masm32\lib\comctl32.lib        
+      includelib \masm32\lib\masm32.lib
+      includelib \MASM32\LIB\shell32.lib 
+
+      ; d&eacute;claration de la structure MD5
+
+      MD5RESULT        STRUCT
+                dtA        dd    ?
+                dtB        dd    ?
+                dtC        dd    ?
+                dtD        dd    ?
+      MD5RESULT        ENDS
+      
+.const
+      
+      IDC_ABOUT        equ    101
+      IDC_EDITTEXT     equ    102
+      IDC_EDITHASH     equ    103
+      IDD_DIALOG       equ    100
+      IDI_ICON         equ    200
+      IDC_progress     equ    130
+      ID_Fond          equ    500
+      IDC_STATIC2      equ   1004
+      IDC_Search       equ    106
+      IDC_Exit         equ    108
+      IDC_Result       equ    123
+      IDC_Open         equ    107
+      IDC_mini         equ    113
+      IDC_maxi         equ    114
+      IDC_h1           equ    118
+      IDC_h2           equ    120
+      IDC_h3           equ    121
+      IDC_h4           equ    122 
+      
+      MAXSIZE          equ 260
+      
+.data
+      
+      bfBuffer         db    MAXSIZE dup (0)
+      buffer1          db    MAXSIZE dup (0)
+      buffer2          db    MAXSIZE dup (0)
+      buffer3          db    10      dup (0)
+      buffer4          db    10      dup (0)
+      buffer5          db    10      dup (0)
+      buffer6          db    10      dup (0)
+      brut             dd    20      dup (0)
+     
+      szAboutCaption   db    'about HCCC6 md5 hasher',0
+      szAboutText      db    'md5hasher',13,10,'bas&eacute; sur un source de'
+                       db    13,10,'roy|crisiscrackers.',13,10
+                       db    13,10,&quot;La recherche ne porte que&quot;
+                       db    13,10,&quot;sur un seul Dword du hash&quot;
+                       db    13,10,&quot;dans le cadre mini/maxi,&quot;
+                       db    13,10,&quot;que vous aurez indiqu&eacute;.&quot;
+                       db    13,10,13,10,&quot;Coded by Christal&quot;,0
+      szMD5Format      db    '%.8x%.8x%.8x%.8x',0
+      serialformat     db    &quot;%d&quot;,0
+      format2          db    &quot;8x%&quot;,0
+      dlgname          db    &quot;dialogbox&quot;,0
+      good             db    &quot;Serial trouv&eacute;&quot;,0
+      nogood           db    &quot;Serial non trouv&eacute;&quot;,0
+      error_1          db    &quot;Erreur entre valeurs mini et maxi&quot;,0
+      error_2          db    &quot;valeur de hash non valide&quot;,0
+      open             db    &quot;open&quot;,0
+      crackme          db    &quot;crackme.exe&quot;,0
+      slash            db    &quot;C:\WINDOWS\TEMP\CRACKME.EXE&quot;,0
+      cible_ok         db    &quot;Crackme trouv&eacute;&quot;,0
+
+      TimerID          dd 0
+      hBmp             dd 0
+      lg_mini          dd 0
+      lg_maxi          dd 0
+      rang             dd 0
+      
+      StaticClass      db &quot;static&quot;,0 
+      FilterString     db &quot;HCCC6 Crackme&quot;,0,&quot;crackme.exe&quot;,0
+                       db &quot;Tous les Fichiers&quot;,0,&quot;*.*&quot;,0,0
+      
+      ofn   OPENFILENAME &lt;&gt;
+      
+.data?
+      
+      hInstance        HINSTANCE ?
+      stMD5Result      MD5RESULT &lt;?&gt;
+      
+      hwndProgress     dd ?
+      hwndResult       dd ?
+      hwndStatus       dd ?
+      hStatImage       dd ?
+      CurrentStep      dd ?
+      Directory        db 512 dup (?)
+
+.code
+
+start:      invoke  GetModuleHandle,0
+            mov      hInstance,eax
+
+; appel de la dialgBox cr&eacute;e dans les ressources
+
+            invoke  DialogBoxParam,hInstance,ADDR dlgname,0,ADDR DlgProc,0
+            invoke  ExitProcess,eax
+
+DlgProc proc    uses ebx edi esi,hWnd:HWND,uMsg:UINT,wParam:WPARAM,lParam:LPARAM
+
+            cmp   uMsg,WM_INITDIALOG
+            jz    initdialog
+
+            cmp   uMsg,WM_CLOSE
+            jz    close
+
+            cmp   uMsg,WM_COMMAND
+            jz    command
+
+            ret
+
+bruteforcer:
+
+; saisie du 1er dword du hash. Si absent passe au suivant, etc...
+
+            invoke    GetDlgItemText,hWnd,IDC_h1,addr buffer3,9    
+            mov       dword ptr [rang],0
+            cmp       eax,8
+            je        @F
+            invoke    GetDlgItemText,hWnd,IDC_h2,addr buffer3,
+            mov       dword ptr [rang],8
+            cmp       eax,8
+            je        @F
+            invoke    GetDlgItemText,hWnd,IDC_h3,addr buffer3,9
+            mov       dword ptr [rang],16 
+            cmp       eax,8
+            je        @F           
+            invoke    GetDlgItemText,hWnd,IDC_h4,addr buffer3,9
+            mov       dword ptr [rang],24
+            cmp       eax,8
+            je        @F
+            invoke    SetWindowTextA,hwndProgress, addr error_2 
+            ret
+
+; saisie de la plus petite et de la plus grande valeur qui serviront 
+; de fourchette de recherche
+
+@@:
+            invoke    GetDlgItemText,hWnd,IDC_mini,addr buffer5,9
+            cmp       eax,0
+            jle       error1             
+            mov       dword ptr [lg_mini],eax
+            invoke    GetDlgItemText,hWnd,IDC_maxi,addr buffer6,9
+            cmp       eax,0
+            jle       error1             
+            mov       dword ptr [lg_maxi],eax
+
+; les valeurs mini et maxi sont transform&eacute;es d'une string en une valeur hexad&eacute;cimale
+
+            invoke    Str2Hex, addr buffer5,dword ptr [lg_mini]
+            mov       dword ptr [buffer5],eax
+            invoke    Str2Hex, addr buffer6,dword ptr [lg_maxi]
+            mov       dword ptr [buffer6],eax
+            sub       eax, dword ptr [buffer5]
+            jle       error1 
+            invoke    SetWindowTextA,hwndProgress, NULL 
+
+            mov       eax, dword ptr [buffer5]
+            mov       dword ptr [brut],eax
+loop1:
+            invoke    wsprintfA,addr buffer1,addr serialformat, dword ptr [brut] 
+            invoke    wsprintfA,addr buffer2,addr serialformat, dword ptr [brut] 
+            invoke    lstrlen,addr buffer1
+            invoke    procMD5hash,addr buffer1,eax,addr stMD5Result
+            mov       eax, dword ptr [buffer3]
+            mov       esi, dword ptr [rang]
+            cmp       dword ptr [buffer1+esi], eax
+            je        trouve1
+            inc       dword ptr [brut]
+            mov       eax, dword ptr [buffer6]
+            cmp       dword ptr [brut], eax
+            jle       loop1
+Pas_Glop:  
+            invoke    SetWindowTextA,hwndResult, NULL
+            invoke    SetWindowTextA,hwndProgress, addr nogood 
+            ret
+trouve1:
+            mov       eax, dword ptr [buffer3+4]
+            mov       esi, dword ptr [rang]
+            add       esi,4
+            cmp       dword ptr [buffer1+esi], eax
+            je        trouve2
+            inc       dword ptr [brut]
+            mov       eax, dword ptr [buffer5]
+            cmp       dword ptr [brut], eax
+            jle       loop1
+            jmp       Pas_Glop
+trouve2:    
+            invoke    SetWindowTextA,hwndResult, addr buffer2
+            invoke    SetWindowTextA,hwndProgress, addr good              
+            ret
+error1:            
+            invoke    SetWindowTextA,hwndProgress, addr error_1 
+            ret  
+endcheck:   
+            mov     eax,1
+            ret
+command:    
+            mov     eax,wParam
+        mov     edx,wParam
+
+            .if    ax == IDC_Search
+                   invoke SetWindowTextA,hwndProgress, NULL 
+                   jmp    bruteforcer
+            .endif
+
+            .if    ax == IDC_Exit
+                   invoke ExitProcess,0
+            .endif
+            
+            .if     ax == IDC_Open
+                    invoke ShellExecuteA,hWnd,addr open,addr crackme,NULL,NULL,01
+                    cmp    eax,32
+                    jnle   @F
+                    invoke ShellExecuteA,hWnd,addr open,addr slash,NULL,NULL,01
+                    cmp    eax,32
+                    jnle   @F
+                    invoke OpenDialog, hWnd
+
+  @@:
+            .endif
+
+              shr     edx,16
+
+        cmp     edx,BN_CLICKED
+        jnz     @f
+
+        cmp     ax,IDC_ABOUT
+        jnz     endcheck
+        invoke MessageBoxA,hWnd,addr szAboutText,addr szAboutCaption,MB_OK or MB_ICONASTERISK
+
+        ret 
+            
+@@:         cmp    edx,EN_CHANGE
+            jnz    endcheck
+
+            cmp    ax,IDC_EDITTEXT
+            jnz    endcheck
+
+            invoke    GetDlgItemText,hWnd,IDC_EDITTEXT,addr bfBuffer,MAXSIZE
+            invoke    procMD5hash,addr bfBuffer,eax,addr stMD5Result
+            invoke    SendDlgItemMessageA,hWnd,IDC_EDITHASH,WM_SETTEXT,0,addr bfBuffer
+
+            ret
+initdialog: 
+
+        invoke      LoadIconA,hInstance,IDI_ICON
+        invoke      SendMessageA,hWnd,WM_SETICON,1,eax
+        invoke      SendDlgItemMessageA,hWnd,IDC_EDITTEXT,WM_SETTEXT,0,0
+
+; load bitmap 
+        invoke      StaticImage,NULL,hWnd,10,10,121,44,IDC_STATIC2
+        mov         hStatImage, eax
+        invoke      LoadBitmap,hInstance,ID_Fond   
+        mov         hBmp, eax  
+        
+; place l'image dans static control
+  
+        invoke      SendMessage,hStatImage,STM_SETIMAGE,IMAGE_BITMAP,hBmp
+        invoke      GetDlgItem, hWnd, IDC_progress
+        mov         hwndProgress, eax
+
+        invoke      GetDlgItem, hWnd, IDC_Result
+        mov         hwndResult, eax
+        ret
+
+close:  invoke      EndDialog,hWnd,0
+        ret
+
+DlgProc    endp
+
+procMD5hash proc    ptBuffer:dword,dtBufferLength:dword,ptMD5Result:dword
+            local   dta:dword,dtb:dword,dtc:dword,dtd:dword
+
+; phase I &middot; padding
+            mov    edi,ptBuffer
+            mov    eax,dtBufferLength
+            inc    eax
+            add    edi,eax
+            mov    byte ptr [edi-1],080h
+            xor    edx,edx
+            mov    ebx,64
+            div    ebx
+            neg    edx
+            add    edx,64
+            cmp    edx,8
+            jae    @f
+            add    edx,64
+
+@@:         mov    ecx,edx
+            xor    al,al
+            rep    stosb
+            mov    eax,dtBufferLength
+            inc    edx
+            add    dtBufferLength,edx
+            xor    edx,edx
+            mov    ebx,8
+            mul    ebx
+            mov    dword ptr [edi-8],eax
+            mov    dword ptr [edi-4],edx
+            mov    edx,dtBufferLength
+            mov    edi,ptBuffer
+
+; phase II &middot; chaining variables initialization
+
+            mov     esi,ptMD5Result
+            assume esi:ptr MD5RESULT
+            mov     [esi].dtA,067452301h
+            mov     [esi].dtB,0efcdab89h
+            mov     [esi].dtC,098badcfeh
+            mov     [esi].dtD,010325476h
+
+; phase III &middot; hashing
+
+hashloop:   mov    eax,[esi].dtA
+            mov    dta,eax
+            mov    eax,[esi].dtB
+            mov    dtb,eax
+            mov    eax,[esi].dtC
+            mov    dtc,eax
+            mov    eax,[esi].dtD
+            mov    dtd,eax
+
+; round 1
+            invoke    FF,dta,dtb,dtc,dtd,dword ptr [edi+00*4],07,0d76aa478h
+            mov    dta,eax
+            invoke    FF,dtd,dta,dtb,dtc,dword ptr [edi+01*4],12,0e8c7b756h
+            mov    dtd,eax
+            invoke    FF,dtc,dtd,dta,dtb,dword ptr [edi+02*4],17,0242070dbh
+            mov    dtc,eax
+            invoke    FF,dtb,dtc,dtd,dta,dword ptr [edi+03*4],22,0c1bdceeeh
+            mov    dtb,eax
+            invoke    FF,dta,dtb,dtc,dtd,dword ptr [edi+04*4],07,0f57c0fafh
+            mov    dta,eax
+            invoke    FF,dtd,dta,dtb,dtc,dword ptr [edi+05*4],12,04787c62ah
+            mov    dtd,eax
+            invoke    FF,dtc,dtd,dta,dtb,dword ptr [edi+06*4],17,0a8304613h
+            mov    dtc,eax
+            invoke    FF,dtb,dtc,dtd,dta,dword ptr [edi+07*4],22,0fd469501h
+            mov    dtb,eax
+            invoke    FF,dta,dtb,dtc,dtd,dword ptr [edi+08*4],07,0698098d8h
+            mov    dta,eax
+            invoke    FF,dtd,dta,dtb,dtc,dword ptr [edi+09*4],12,08b44f7afh
+            mov    dtd,eax
+            invoke    FF,dtc,dtd,dta,dtb,dword ptr [edi+10*4],17,0ffff5bb1h
+            mov    dtc,eax
+            invoke    FF,dtb,dtc,dtd,dta,dword ptr [edi+11*4],22,0895cd7beh
+            mov    dtb,eax
+            invoke    FF,dta,dtb,dtc,dtd,dword ptr [edi+12*4],07,06b901122h
+            mov    dta,eax
+            invoke    FF,dtd,dta,dtb,dtc,dword ptr [edi+13*4],12,0fd987193h
+            mov    dtd,eax
+            invoke    FF,dtc,dtd,dta,dtb,dword ptr [edi+14*4],17,0a679438eh
+            mov    dtc,eax
+            invoke    FF,dtb,dtc,dtd,dta,dword ptr [edi+15*4],22,049b40821h
+            mov    dtb,eax
+
+; round 2
+            invoke    GG,dta,dtb,dtc,dtd,dword ptr [edi+01*4],05,0f61e2562h
+            mov    dta,eax
+            invoke    GG,dtd,dta,dtb,dtc,dword ptr [edi+06*4],09,0c040b340h
+            mov    dtd,eax
+            invoke    GG,dtc,dtd,dta,dtb,dword ptr [edi+11*4],14,0265e5a51h
+            mov    dtc,eax
+            invoke    GG,dtb,dtc,dtd,dta,dword ptr [edi+00*4],20,0e9b6c7aah
+            mov    dtb,eax
+            invoke    GG,dta,dtb,dtc,dtd,dword ptr [edi+05*4],05,0d62f105dh
+            mov    dta,eax
+            invoke    GG,dtd,dta,dtb,dtc,dword ptr [edi+10*4],09,002441453h
+            mov    dtd,eax
+            invoke    GG,dtc,dtd,dta,dtb,dword ptr [edi+15*4],14,0d8a1e681h
+            mov    dtc,eax
+            invoke    GG,dtb,dtc,dtd,dta,dword ptr [edi+04*4],20,0e7d3fbc8h
+            mov    dtb,eax
+            invoke    GG,dta,dtb,dtc,dtd,dword ptr [edi+09*4],05,021e1cde6h
+            mov    dta,eax
+            invoke    GG,dtd,dta,dtb,dtc,dword ptr [edi+14*4],09,0c33707d6h
+            mov    dtd,eax
+            invoke    GG,dtc,dtd,dta,dtb,dword ptr [edi+03*4],14,0f4d50d87h
+            mov    dtc,eax
+            invoke    GG,dtb,dtc,dtd,dta,dword ptr [edi+08*4],20,0455a14edh
+            mov    dtb,eax
+            invoke    GG,dta,dtb,dtc,dtd,dword ptr [edi+13*4],05,0a9e3e905h
+            mov    dta,eax
+            invoke    GG,dtd,dta,dtb,dtc,dword ptr [edi+02*4],09,0fcefa3f8h
+            mov    dtd,eax
+            invoke    GG,dtc,dtd,dta,dtb,dword ptr [edi+07*4],14,0676f02d9h
+            mov    dtc,eax
+            invoke    GG,dtb,dtc,dtd,dta,dword ptr [edi+12*4],20,08d2a4c8ah
+            mov    dtb,eax
+
+; round 3
+            invoke    HH,dta,dtb,dtc,dtd,dword ptr [edi+05*4],04,0fffa3942h
+            mov    dta,eax
+            invoke    HH,dtd,dta,dtb,dtc,dword ptr [edi+08*4],11,08771f681h
+            mov    dtd,eax
+            invoke    HH,dtc,dtd,dta,dtb,dword ptr [edi+11*4],16,06d9d6122h
+            mov    dtc,eax
+            invoke    HH,dtb,dtc,dtd,dta,dword ptr [edi+14*4],23,0fde5380ch
+            mov    dtb,eax
+            invoke    HH,dta,dtb,dtc,dtd,dword ptr [edi+01*4],04,0a4beea44h
+            mov    dta,eax
+            invoke    HH,dtd,dta,dtb,dtc,dword ptr [edi+04*4],11,04bdecfa9h
+            mov    dtd,eax
+            invoke    HH,dtc,dtd,dta,dtb,dword ptr [edi+07*4],16,0f6bb4b60h
+            mov    dtc,eax
+            invoke    HH,dtb,dtc,dtd,dta,dword ptr [edi+10*4],23,0bebfbc70h
+            mov    dtb,eax
+            invoke    HH,dta,dtb,dtc,dtd,dword ptr [edi+13*4],04,0289b7ec6h
+            mov    dta,eax
+            invoke    HH,dtd,dta,dtb,dtc,dword ptr [edi+00*4],11,0eaa127fah
+            mov    dtd,eax
+            invoke    HH,dtc,dtd,dta,dtb,dword ptr [edi+03*4],16,0d4ef3085h
+            mov    dtc,eax
+            invoke    HH,dtb,dtc,dtd,dta,dword ptr [edi+06*4],23,004881d05h
+            mov    dtb,eax
+            invoke    HH,dta,dtb,dtc,dtd,dword ptr [edi+09*4],04,0d9d4d039h
+            mov    dta,eax
+            invoke    HH,dtd,dta,dtb,dtc,dword ptr [edi+12*4],11,0e6db99e5h
+            mov    dtd,eax
+            invoke    HH,dtc,dtd,dta,dtb,dword ptr [edi+15*4],16,01fa27cf8h
+            mov    dtc,eax
+            invoke    HH,dtb,dtc,dtd,dta,dword ptr [edi+02*4],23,0c4ac5665h
+            mov    dtb,eax
+
+; round 4
+            invoke    II,dta,dtb,dtc,dtd,dword ptr [edi+00*4],06,0f4292244h
+            mov    dta,eax
+            invoke    II,dtd,dta,dtb,dtc,dword ptr [edi+07*4],10,0432aff97h
+            mov    dtd,eax
+            invoke    II,dtc,dtd,dta,dtb,dword ptr [edi+14*4],15,0ab9423a7h
+            mov    dtc,eax
+            invoke    II,dtb,dtc,dtd,dta,dword ptr [edi+05*4],21,0fc93a039h
+            mov    dtb,eax
+            invoke    II,dta,dtb,dtc,dtd,dword ptr [edi+12*4],06,0655b59c3h
+            mov    dta,eax
+            invoke    II,dtd,dta,dtb,dtc,dword ptr [edi+03*4],10,08f0ccc92h
+            mov    dtd,eax
+            invoke    II,dtc,dtd,dta,dtb,dword ptr [edi+10*4],15,0ffeff47dh
+            mov    dtc,eax
+            invoke    II,dtb,dtc,dtd,dta,dword ptr [edi+01*4],21,085845dd1h
+            mov    dtb,eax
+            invoke    II,dta,dtb,dtc,dtd,dword ptr [edi+08*4],06,06fa87e4fh
+            mov    dta,eax
+            invoke    II,dtd,dta,dtb,dtc,dword ptr [edi+15*4],10,0fe2ce6e0h
+            mov    dtd,eax
+            invoke    II,dtc,dtd,dta,dtb,dword ptr [edi+06*4],15,0a3014314h
+            mov    dtc,eax
+            invoke    II,dtb,dtc,dtd,dta,dword ptr [edi+13*4],21,04e0811a1h
+            mov    dtb,eax
+            invoke    II,dta,dtb,dtc,dtd,dword ptr [edi+04*4],06,0f7537e82h
+            mov    dta,eax
+            invoke    II,dtd,dta,dtb,dtc,dword ptr [edi+11*4],10,0bd3af235h
+            mov    dtd,eax
+            invoke    II,dtc,dtd,dta,dtb,dword ptr [edi+02*4],15,02ad7d2bbh
+            mov    dtc,eax
+            invoke    II,dtb,dtc,dtd,dta,dword ptr [edi+09*4],21,0eb86d391h
+            mov    dtb,eax
+            mov    eax,dta
+            add    [esi].dtA,eax
+            mov    eax,dtb
+            add    [esi].dtB,eax
+            mov    eax,dtc
+            add    [esi].dtC,eax
+            mov    eax,dtd
+            add    [esi].dtD,eax
+            add    edi,64
+            sub    edx,64
+            jnz    hashloop
+
+; phase IV &middot; results
+
+            mov    ecx,4
+
+@@:         mov    eax,dword ptr [esi]
+            xchg   al,ah
+            rol    eax,16
+            xchg   al,ah
+            mov    dword ptr [esi],eax
+            add    esi,4
+            loop   @b
+            mov    esi,ptMD5Result
+            invoke wsprintfA,ptBuffer,addr szMD5Format,[esi].dtA,[esi].dtB,[esi].dtC,[esi].dtD
+            ret
+
+procMD5hash        endp
+
+FF    proc   dta,dtb,dtc,dtd,x,s:byte,t   ; a = b + ((a + F(b,c,d) + x + t) &lt;&lt; s )
+
+            mov    eax,dtb
+            mov    ebx,dtc
+            mov    ecx,dtd
+
+; F(x,y,z) = (x and y) or ((not x) and z)
+            and    ebx,eax
+            not    eax
+            and    eax,ecx
+            or    eax,ebx
+            add    eax,dta
+            add    eax,x
+            add    eax,t
+            mov    cl,s
+            rol    eax,cl
+            add    eax,dtb
+            ret
+
+FF            endp
+
+GG   proc  dta,dtb,dtc,dtd,x,s:byte,t    ; a = b + ((a + G(b,c,d) + x + t) &lt;&lt; s)
+
+            mov    eax,dtb
+            mov    ebx,dtc
+            mov    ecx,dtd
+
+; G(x,y,z) = (x and z) or (y and (not z))
+            and    eax,ecx
+            not    ecx
+            and    ecx,ebx
+            or    eax,ecx
+            add    eax,dta
+            add    eax,x
+            add    eax,t
+            mov    cl,s
+            rol    eax,cl
+            add    eax,dtb
+            ret
+
+GG            endp
+
+HH    proc   dta,dtb,dtc,dtd,x,s:byte,t        ; a = b + ((a + H(b,c,d) + x + t) &lt;&lt; s)
+
+            mov    eax,dtb
+            mov    ebx,dtc
+            mov    ecx,dtd
+
+; H(x,y,z) = x xor y xor z
+            xor    eax,ebx
+            xor    eax,ecx
+            add    eax,dta
+            add    eax,x
+            add    eax,t
+            mov    cl,s
+            rol    eax,cl
+            add    eax,dtb
+            ret
+
+HH            endp
+
+II   proc   dta,dtb,dtc,dtd,x,s:byte,t        ; a = b + ((a + I(b,c,d) + x + t) &lt;&lt; s)
+
+            mov    eax,dtb
+            mov    ebx,dtc
+            mov    ecx,dtd
+
+; I(x,y,z) = y xor (x or (not z))
+            not    ecx
+            or    eax,ecx
+            xor    eax,ebx
+            add    eax,dta
+            add    eax,x
+            add    eax,t
+            mov    cl,s
+            rol    eax,cl
+            add    eax,dtb
+            ret
+
+II            endp
+
+;=========================================================================
+;                           affichage BitMap
+;=========================================================================
+
+StaticImage proc lpText:DWORD,hParent:DWORD,
+                 a:DWORD,b:DWORD,wd:DWORD,ht:DWORD,ID:DWORD
+
+    invoke CreateWindowEx,WS_EX_STATICEDGE,\
+    ADDR StaticClass ,lpText,\
+    WS_CHILD or WS_VISIBLE or SS_BITMAP,\
+    a,b,wd,ht,hParent,ID,\
+    hInstance,NULL
+    ret
+StaticImage endp
+
+
+;=========================================================================
+;                           conversion string en val hex
+;=========================================================================
+
+Str2Hex PROC uses ebx ecx edx Buff:DWORD, Lenght:DWORD
+
+        mov ebx,Buff        
+        mov ecx,Lenght
+        xor eax,eax
+        xor edx,edx
+CHC_pour1:
+        mov dl,byte ptr[ebx+ecx-1]
+        cmp dl,'A'
+        jge CHC_sinon1
+        sub dl,'0'
+        jmp CHC_fsi1
+
+CHC_sinon1:
+        sub dl,'A'-10
+
+CHC_fsi1:
+        or al,dl        
+        ror eax,04
+        loop CHC_pour1
+       
+CHC_fpour1:
+        mov ecx, Lenght
+        neg ecx
+        add ecx, 8
+        shl ecx, 2        
+        ror eax, cl
+ret
+Str2Hex endp
+
+;========================================================================= 
+;                                Brownse  
+;=========================================================================
+OpenDialog    PROC hWin:DWORD
+
+        mov [Directory],00
+
+        mov  ofn.lStructSize,SIZEOF ofn
+        mov  ofn.lpstrFilter, OFFSET FilterString
+        mov  ofn.lpstrFile, OFFSET Directory
+        mov  ofn.nMaxFile,512
+        mov  ofn.Flags, OFN_FILEMUSTEXIST or \
+                        OFN_PATHMUSTEXIST or OFN_LONGNAMES or\
+                        OFN_EXPLORER or OFN_HIDEREADONLY
+        invoke    GetOpenFileName, offset ofn
+        cmp       eax, FALSE
+        jz        EndOD
+        invoke    SetWindowTextA,hwndProgress, ADDR cible_ok
+        invoke    ShellExecuteA,hWin,addr open,addr Directory,NULL,NULL,01
+EndOD:
+    ret
+
+OpenDialog    ENDP
+
+end    start</FONT></PRE>
+				</BLOCKQUOTE>
+			</TD>
+		</TR>
+	</TABLE>
+</P>
+</BLOCKQUOTE>
+
+
+<BLOCKQUOTE>
+	<P><B><FONT SIZE="2" FACE="Arial">Bonne Journ&eacute;e</FONT></B></P>
+
+	<P><A HREF="mailto:christal@lemel.fr"><FONT SIZE="2" FACE="Arial">Christal</FONT></A>
+</BLOCKQUOTE>
+
+
+</BODY>
+
+</HTML>

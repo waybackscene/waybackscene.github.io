@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<!--	#03 		 										 	 //-->
+<!--        kharneth@free.fr         //-->
+<!--    Page codée sous HTML-KIT     //-->
+<!-- http://www.chami.com/html-kit   //-->
+
+<html>
+<head>
+
+<title>KeyGen_PsYc0p4tH</title>
+<style type="text/css">
+<!--
+td { border-width:1;border-style:solid;border-color:#FFFFFF;font-size:12; }
+a:active { color: #E00000; }
+a:hover { color: #E00000; }
+a:link { color: #E00000; }
+a:visited { color: #E00000; }
+'img {  border-width:2;border-style:inset;border-color:#FFFFFF; }
+-->
+</style>
+</head>
+
+<body bgcolor="#000000" color="#FFFFFF" style="font-family:Arial;">
+<table style="color:#FFFFFF;" align="center" width="650" cellspacing="8" cellpadding="6" border="0">
+<tr><th colspan="4" style="font-size:30;color:#E00000;">KeyGenMe 01 de PsYc0p4tH<br><i style="font-size:20;">par Kharneth</i></th></tr>
+<tr><th colspan="4">&nbsp;</th></tr>
+<tr><th colspan="2" width="33%">Outils utilisés</th><th width="34%">Public</th><th width="33%">Cible</th></tr>
+<tr><td colspan="2">&nbsp;- PEId<br>&nbsp;- OllyDbg<br>&nbsp;- Compilateur au choix<br>&nbsp;- Calculatrice<br>&nbsp;- Papier, Crayon, Cerveau 5.0</td><td width="34%" align="center">&nbsp;Débutant en Cracking<br>ayant des connaissances de base en programmation</td><td width="33%" align="center">&nbsp;<a href="Cible/KeyGen_PsYc0p4tH.exe">Keygenme_PsYc0p4tH</a></td></tr>
+
+<tr><th colspan="4">&nbsp;</th></tr>
+
+<tr><td width="20%"><b>1 - PEId</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comme d'habitude, on commence par une analyse rapide avec <i>PeId</i> pour vérifier que le programme n'est pas compressé ou crypté. 
+Il ne l'est pas. Par contre on voit qu'il a été compilé avec Visual Basic 6.0.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour étudier les programmes VB, l'outil idéal est <i>Smartcheck</i>. Mais pour varier les plaisirs et éviter de faire 2 fois un même tutorial, on va utiliser <i>OllyDbg</i> cette fois.
+</p></td></tr>
+
+<tr><td nowrap><b>2 - OllyDbg</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On lance <i>OllyDbg</i> et on charge le programme avec <i>F3</i>. La première chose à faire est de trouver un endroit intéressant dans le programme. Par exemple, là où sont comparés les serials. On va d'abord regarder les chaînes de caractères présentes en espérant trouver une phrase du style "Mauvais serial". On fait un click-droit dans la fenêtre principale, puis "Search for" et "All referenced text strings".<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On voit "Bravo!", "Mauvais serial" et une chaîne qui ressemble étrangement à un morceau de serial: "CRKM-". On va voir où nous mène la chaîne "Bravo!", donc on double-click dessus. 
+
+</p><center><img src="Captures/Olly01.gif" alt=""></center><p align="justify">
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plusieurs choses intéressantes:<br>
+&nbsp;- Au-dessus de "Bravo!", en 0x00417B78, on voit un saut conditionnel (JNZ) qui nous envoit vers l'affichage de la MsgBox "Mauvais serial".<br>
+&nbsp;- Un peu au-dessus, en 0x00417B54, on voit un appel de la fonction <i>_vbaStrCmp</i> qui teste l'égalité entre 2 chaînes de caractères. Suivi d'un <i>TEST EAX, EAX</i> qui va déterminer le passage du saut conditionnel.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Juste avant cette fonction, on voit que <i>ECX</i> et <i>EBX</i> lui sont passés en paramètre. On va mettre un point d'arrêt (<i>F2</i>) sur cette fonction pour voir ce qu'elle teste, puis lancer le programme (<i>F9</i>). On tape un nom et un serial, par exemple: "kharneth" et "123456". On valide et <i>OllyDbg</i> arrête l'exécution du programme.
+</p><center><img src="Captures/Olly02.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On regarde la fenêtre des registres et on voit clairement que la fonction compare notre serial bidon (dont l'adresse est contenue dans <i>EDX</i>) avec le bon serial (dont l'adresse est contenue dans <i>ECX</i>). Reste à retrouver comment le serial a été généré.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La première chose frappante est le "CRKM-" que l'on avait vu dans la liste des chaînes. On retourne dans la fenêtre de référence des chaînes pour double-clicker sur "CRKM-" et voir où il nous emmène. On pose un point d'arrêt dessus et on relance le programme. On valide et on retourne sous <i>OllyDbg</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On trace avec <i>F8</i> pour voir ce qu'il se passe. On arrive en 0x004177AE où la fonction <i>_vbaLenBstr</i> prend notre nom et renvoie le nombre de caractères qu'il contient, soit 8 qui est stocké dans <i>EAX</i>. On remarque que notre nom a été converti en majuscule. Continuons à tracer.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On arrive sur une partie intéressante qui contient plusieurs fonctions de manipulation de chaînes. 
+<i>rtcMidCharVar, _vbaStrVarVal, rtcAnsiValueBstr, _vbaStrI2, _vbaStrCat</i>. Voyons ce que tout ça fait en traçant doucement. Et en surveillant les registres.
+</p><center><img src="Captures/Olly03.gif" alt=""></center><p align="justify">
+&nbsp;- D'abord, <i>_vbaStrVarVal</i> renvoie le premier caractère de notre nom ('K').<br>
+&nbsp;- Puis, <i>rtcAnsiValueBstr</i> renvoie la valeur hexa de ce caractère (0x4B).<br>
+&nbsp;- <i>_vbaStrI2</i> prend cette valeur au format décimal et la transforme en chaîne ("75").<br>
+&nbsp;- Finalement cette chaîne est copiée à la suite du résultat précédent avec <i>_vbaStrCat</i>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;En continuant à tracer, on arrive en 0x00417944 sur un saut (<i>JMP</i>) qui nous renvoit au début de la boucle pour traiter le caractère suivant. La 4ème instruction (après le début de la boucle) est un saut conditionnel (<i>JE</i>) qui sort de la boucle lorsque tous les caractères ont été traités. On click dessus puis on presse Entrer pour arriver sur l'instruction suivante une fois que la boucle est terminée. 
+On se trouve donc en 0x00417949 où on place un point d'arrêt. On relance le programme avec <i>F9</i> pour que la boucle s'exécute complètement.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Maintenant que tous les caractères sont traités, on va tracer en surveillant les registres pour voir ce que le programme fait de la chaîne de caractères. On arrive en 0x004179BD sur un appel de la foncion <i>_vbaLenBstr</i> qui prend comme paramètre notre chaîne ("7572658278698472") et renvoie sa taille (10). En continuant de tracer, on arrive en 0x00417A14 sur une nouvelle boucle qui prend les caractères de la chaîne 2 par 2 et les copie à la suite de "CRKM-" en 0x00417A9B.<br>  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensuite, si les 2 premiers groupes de 2 caractères sont traités, le programme insère un '-' à la suite puis continue de copier les caractères restants.
+</p><center><img src="Captures/Olly04.gif" alt=""></center><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Une fois que la boucle est terminée, on arrive sur la fonction <i>_vbaStrCmp</i>, vue précédemment, qui compare notre serial bidon avec le serial calculé.<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Récapitulons l'algorithme:<br>
+&nbsp;- Le nom est convertie en majuscule.<br>
+&nbsp;- Le code ASCII de chaque caractère est récupéré au format décimal puis convertie en chaîne.<br>
+&nbsp;- Le tout est copié à la suite de "CRKM-" en insérant un '-' aprés les 4 premiers caractères.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On peut maintenant coder le KeyGen! :o)
+
+</p>
+</td></tr>
+
+
+<tr><td width="20%"><b>3 - KeyGen</b></td><th colspan="3">&nbsp;</th></tr>
+<tr><td></td><td colspan="3"><p align="justify">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici le code source d'un KeyGen écrit sous Dev-C++.<br>
+<!-- Code HTML généré à partir de Dev-C++ -->
+<!--StartFragment-->
+<pre><code><font color="#808080">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+</font><font color="#008000"><i>// Fonction de conversion de caractères minuscules en majuscules.
+</i></font><font color="#800000"><b>char </b></font>UpCase</font><font color="#808000">(</font><font color="#800000"><b>char </b></font>minus</font><font color="#808000">) {
+     </font><font color="#800000"><b>if </b></font><font color="#808000">(</font>minus</font><font color="#808000">&gt;=</font><font color="#0000FF">'a' </font><font color="#808000">&amp;&amp; </font>minus</font><font color="#808000">&lt;=</font><font color="#0000FF">'z'</font><font color="#808000">) {
+        </font><font color="#800000"><b>return </b></font>minus</font><font color="#808000">-</font><font color="#0000FF">'a'</font><font color="#808000">+</font><font color="#0000FF">'A'</font><font color="#808000">;
+     }
+     </font><font color="#800000"><b>else </b></font><font color="#808000">{
+          </font><font color="#800000"><b>return </b></font>minus</font><font color="#808000">;
+     }
+}
+
+</font><font color="#800000"><b>int </b></font>main</font><font color="#808000">(</font><font color="#800000"><b>int </b></font>argc</font><font color="#808000">, </font><font color="#800000"><b>char </b></font><font color="#808000">*</font>argv</font><font color="#808000">[])
+{
+ </font><font color="#800000"><b>char </b></font>nom</font><font color="#808000">[</font><font color="#FF0000">128</font><font color="#808000">] = </font><font color="#0000FF">&quot;&quot;</font><font color="#808000">;
+ </font><font color="#800000"><b>char </b></font>serial</font><font color="#808000">[</font><font color="#FF0000">256</font><font color="#808000">] = </font><font color="#0000FF">&quot;CRKM-&quot;</font><font color="#808000">;
+ </font><font color="#800000"><b>char </b></font>maj</font><font color="#808000">[</font><font color="#FF0000">128</font><font color="#808000">] = </font><font color="#0000FF">&quot;&quot;</font><font color="#808000">;
+ </font><font color="#800000"><b>char </b></font>buffer</font><font color="#808000">[</font><font color="#FF0000">20</font><font color="#808000">] = </font><font color="#0000FF">&quot;&quot;</font><font color="#808000">;
+ </font><font color="#800000"><b>int </b></font>i </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+ </font><font color="#800000"><b>int </b></font>t </font><font color="#808000">= </font><font color="#FF0000">0</font><font color="#808000">;
+
+ </font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Entrez votre nom: &quot;</font><font color="#808000">);
+ </font>scanf</font><font color="#808000">(</font><font color="#0000FF">&quot;%s&quot;</font><font color="#808000">, </font>nom</font><font color="#808000">);
+
+ </font><font color="#800000"><b>for </b></font><font color="#808000">(</font>i</font><font color="#808000">=</font><font color="#FF0000">0</font><font color="#808000">;</font>i</font><font color="#808000">&lt;</font>strlen</font><font color="#808000">(</font>nom</font><font color="#808000">);</font>i</font><font color="#808000">++) {          </font><font color="#008000"><i>// Pour chaque caractère
+     </i></font>maj</font><font color="#808000">[</font>i</font><font color="#808000">] = </font>UpCase</font><font color="#808000">(</font>nom</font><font color="#808000">[</font>i</font><font color="#808000">]);           </font><font color="#008000"><i>// le converti en maj
+     </i></font>itoa</font><font color="#808000">(</font>maj</font><font color="#808000">[</font>i</font><font color="#808000">], </font>buffer</font><font color="#808000">, </font><font color="#FF0000">10</font><font color="#808000">);          </font><font color="#008000"><i>// converti son code ASCII
+                                        // décimal en chaîne
+     </i></font>strcat</font><font color="#808000">(</font>serial</font><font color="#808000">, </font>buffer</font><font color="#808000">);            </font><font color="#008000"><i>// copie le tout à la suite
+                                        // de &quot;CRKM-&quot;
+     </i></font><font color="#800000"><b>if </b></font><font color="#808000">(</font>i</font><font color="#808000">==</font><font color="#FF0000">1</font><font color="#808000">) {                        </font><font color="#008000"><i>// Si les 2 1ers car sont traités
+        </i></font>serial</font><font color="#808000">[</font>strlen</font><font color="#808000">(</font>serial</font><font color="#808000">)] = </font><font color="#0000FF">'-'</font><font color="#808000">;   </font><font color="#008000"><i>// insérer un '-'
+     </i></font><font color="#808000">}
+ }
+
+ </font>printf</font><font color="#808000">(</font><font color="#0000FF">&quot;Serial: %s\n&quot;</font><font color="#808000">, </font>serial</font><font color="#808000">);
+ </font>system</font><font color="#808000">(</font><font color="#0000FF">&quot;pause&quot;</font><font color="#808000">);
+ </font><font color="#800000"><b>return </b></font><font color="#FF0000">0</font><font color="#808000">;
+}
+</font></code></pre>
+<!--EndFragment-->
+<hr noshade width="80%"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Voici le code source d'un KeyGen écrit sous Delphi.<br>
+
+<pre>
+<b>procedure</b> TForm1.Button1Click(Sender: TObject);
+<b>var</b> nom, maj, serial: <b>String</b>;
+    i: Integer;
+<b>begin</b>
+    serial := 'CRKM-';
+    nom := edit1.Text;
+    maj := UpperCase(nom);
+
+    <b>for</b> i:=1 <b>to</b> length(nom) <b>do</b>
+    <b>begin</b>
+      serial := serial + IntToStr(Ord(maj[i]));
+      if i=2 then
+        serial := serial + '-';
+    <b>end;</b>
+
+    edit2.Text := serial;
+<b>end;</b>
+</pre> 
+
+</p></td></tr>
+
+
+<tr><td align="center"><i>Kharneth</i></td><th colspan="3">&nbsp;</th></tr>
+
+<tr><th colspan="4" style="font-family:Times;font-weight:normal;"><br><i>
+
+Lost in a Roman...wilderness of pain<br>
+And all the children are insane,
+<!--  The End  //-->
+
+</i><br><br></th></tr>
+<tr><td colspan="4"><center>
+Merci à toutes les personnes qui se battent pour que l'Information soit accessible à tous!</center>
+</td></tr>
+
+<tr><th colspan="4"><img style="border-width:0;" src="Captures/chaos2.jpg" alt="">
+</th></tr>
+
+</table>
+</body>
+</html>

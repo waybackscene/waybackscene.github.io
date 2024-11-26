@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<META NAME="Author" CONTENT="ACiD BuRN">
+</HEAD>
+<BODY BGCOLOR="black" TEXT=red>
+
+<PRE>
+How to "Pine" KingPin French version by ACiD BuRN [ECLiPSE / CiA]
+
+
+note : i bet you are wondering what "pine" mean , heh it is french word , kinda equal to : fuck
+it was just a word game , heh i am so bored ;)
+
+Level : easy
+protection : CD-Check
+comment : Very cool Doom-like Game !!
+
+tools needed : Wdasm 8.9
+               Hex editor (i use hex workshop)
+
+
+Intro:
+~~~~~~
+well , i just got this nice recent game , and on the cd , i found the crack , but
+i hate using others ppls crack when i can do it my self !!
+so , lets crack this Cool game !
+
+
+1)Cracking part:
+
+1st , install the game from a burned copy , and run the game.
+you must see now the nice message : You must have the KingPin CD in the drive to play...
+hehe , i love this =) , Fire up wdasm and open the game with it.
+go in String data reference , and look for this phrase in it.
+double click on it , and u don't see important things , so double click again on this
+reference , and u must land here :
+
+
+* Referenced by a CALL at Address:
+|:0043D5F1                                                       <== hmm interesting =)
+|
+:00442030 56                      push esi
+:00442031 E84AFFFFFF              call 00441F80
+:00442036 8BF0                    mov esi, eax
+:00442038 85F6                    test esi, esi
+:0044203A 750E                    jne 0044204A
+
+* Possible StringData Ref from Data Obj ->"You must have the KINGPIN CD in "
+                                        ->"the drive to play."
+                                  |
+:0044203C 68C8414500              push 004541C8                   <== you land here !
+:00442041 50                      push eax
+:00442042 E859D7FDFF              call 0041F7A0
+:00442047 83C408                  add esp, 00000008
+
+
+
+so , we see the error message , and a little jne just before , but don't think like
+newbie (don't try to reverse it with je) , but think a bit...
+you see :
+
+* Referenced by a CALL at Address:
+|:0043D5F1 
+
+
+So , lets see in wdasm the little call calling this shit :)
+go in "Goto" menu , and click on "goto code location" and enter : 43D5F1
+Now , you land here :
+
+
+:0043D5E5 A184274900              mov eax, dword ptr [00492784]
+:0043D5EA 83C40C                  add esp, 0000000C
+:0043D5ED 85C0                    test eax, eax
+:0043D5EF 7505                    jne 0043D5F6
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Address:
+|:0043D5D2(U)
+|
+:0043D5F1 E83A4A0000              call 00442030           <== here !!!
+
+* Referenced by a (U)nconditional or (C)onditional Jump at Addresses:
+|:0043D51F(U), :0043D532(C), :0043D55A(U), :0043D5BA(C), :0043D5D0(C)
+|:0043D5EF(C)
+
+
+hehe , this call is the bitch who call the cd check , so why not noping it ??
+click on this call , at the down of wdasm window , u must see offset : 3D5F1
+so , fire up your hex editor , goto this offset and replace the : E83A4A0000
+by : 9090909090
+Now , save the file , and run the game...
+choose new game shit , and WOW , the game is running !!
+We made it , i said you , a recent game , but with a stupid protection , and very easy
+to crack ;)
+Lot of cd checks are lame like this , but if you find a file with ".icd" as extension
+don't hope cracking it with this way , hehe !!
+It is a cdilla bitch protected game..
+
+this tut was very fast , but it is really easy , i think it doesn't need more explication
+If you got a prob , ask me !
+
+2)Ending....
+
+
+Well , this tut is finish , hope u understand all this piece of shit, but if you have a 
+comment or one question, mail me 
+you can found all my tuts at : 
+
+MAIL: ACiD_BuRN@nema.com
+Web page URL: http://acidburn2000.cjb.net/
+
+Enjoy!
+
+
+Greetings to my groups : ECLiPSE / CiA / ODT
+
+Also greetingz to: (no specific order)
+
+R!SC, ^Inferno^, AB4DS, Cyber Blade, Klefz, , Volatility, TORN@DO, T4D
+Jeff, [Virus], JaNe , Appbusta , Duelist , tKC , BuLLeT , Lucifer48 , 
+MiZ , DnNuke , Bjanes , Skymarshall , afkayas , elmopio , SiFLyiNG , 
+Fire Worx , Crackz , neural_en  , WarezPup , _y , SiONIDE , SKORPIEN
+Lazarus , Eternal_Bliss , Magic Raphoun , DEZM , Bisoux , Carpathia ,
+K17 , theMc , noos , Xmen , TeeJi , JB007 , Arobas , T0AD ,ytc , Kwai_lo , Killer_3K
+TaMaMBoLo...
+
+
+if your name is not here sorry !!! too much ppls to greets !
+
+
+				ACiD BuRN [ECL/CiA]
+ 
+
+
+
+
+
+
+
+
+
+</PRE></left>
+</BODY>
+</HTML>

@@ -1,0 +1,649 @@
+<html><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+<!doctype html public "-//W3C//DTD HTML 3.2 //EN">
+
+	<META NAME="GENERATOR" Content="Visual Page 2.0 for Windows - Trial Version">
+	<TITLE>Cracking of Gregory Braun's Crypto v3.5</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="spirbind2.gif" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/images/spirbind2.gif" TEXT="blue" BGCOLOR="#FFFFCC" LINK="black" ALINK="#FF8000" VLINK="#CC0000">
+
+<H1 ALIGN="CENTER"><FONT COLOR="blue">The Cracking of Gregory Braun's Crypto v3.5</FONT></H1>
+<P ALIGN="CENTER"><FONT COLOR="blue">by</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">CASIMIR</FONT></P>
+<P ALIGN="CENTER"><FONT COLOR="blue">Part B</FONT></P>
+<P>Table of contents:</P>
+<PRE>  Abstract
+  What do I need?
+  From the outside
+
+  PART A. REVERSING OF BRAUN'S CRYPTO V3.5
+       A1. Input handling 
+       A2. Hash tables and the making of KEY_0
+       A3. The making of KEY_1
+       A4. The making of KEY_2
+       A5. The check routine
+       A6. The decryption process
+
+  PART B. ANALYSIS AND BREAKING OF BRAUN'S CRYPTO V3.5
+       B1. The recovery of KEY_1
+            B11. Method 1
+            B12. Method 2
+            B13. Method 2 vs Method 1
+       B2. The recovery of KEY_0 and PASSWORD
+            B21. Feasibility
+            B22. Unicity
+            B23. KEY_0's range
+            B24. Reduced ASCII Character Set
+            B25. Choosing suitable Password's length(s)
+            B26. Building a Password
+       B3. Benchmark
+      
+  PART C. 'C' SOURCE FOR CRACKER
+</PRE>
+<P>
+<HR ALIGN="CENTER">
+
+<H2 ALIGN="CENTER">PART B. ANALYSIS AND BREAKING OF BRAUN'S CRYPTO V3.5</H2>
+<H2></H2>
+<P>
+<PRE>OK, let's sum up actions performed by Braun:
+
+              f_p_0              f_0_1              f_1_2
+   PASSWORD  -------&gt;   KEY_0   -------&gt;   KEY_1   -------&gt;   KEY_2
+   (n bits)           (32 bits)          (32 bits)          (32 bits)
+
+</PRE>
+<P>Reverse-engineering (see PART A) gave us the 3 functions : f_i_0 , f_0_1 and f_1_2.</P>
+<P>We know that if input is good then we have : KEY_2 = KEY_CHK (remember KEY_CHK is written in cypher's header,
+we just have to read it).</P>
+<P>We are going to work backwards:</P>
+<PRE>1. knowing KEY_2 = f_1_2(KEY_1)    , recover KEY_1
+2. knowing KEY_1 = f_0_1(KEY_0)    , recover KEY_0
+3. knowing KEY_0 = f_i_0(PASSWORD) , recover PASSWORD
+</PRE>
+<P>Once PASSWORD is found, we can decrypt file using Crypto, so we're done. In fact, Braun uses KEY_1 to decrypt
+file, so we could stop once step 1 is completed. But it's much more convenient -and challenging- to find a password
+too.</P>
+<P>
+<H3>Warning</H3>
+<P>
+<HR ALIGN="CENTER">
+Don't forget we're dealing with unsigned 32 bits integers, so the highest value a key can take is : FFFFFFFF. Higher
+values are truncated.</P>
+<P>For instance:</P>
+<PRE>343FD * 00001000 = 343FD000
+343FD * 00010000 = 43FD0000  (instead of 343FD0000)
+</PRE>
+<P>As we're dealing with integers (instead of floats), we also obtain unespected results with division: the decimal
+part is lost, we only keep the integer part (3/2 = 1), for instance:
+
+<UL>
+	(12345678/10000)*10000 = 1234*10000 = 12340000 (instead of 12345678)
+</UL>
+
+<P>
+<HR ALIGN="CENTER">
+=========================
+<H3>B1. The recovery of KEY_1</H3>
+<P>=========================</P>
+<P>We must find all the KEY_1s such as: KEY_2 = f_1_2(KEY_1)</P>
+<P>We have (see <A HREF="cas2-1.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/cas2.htm">PART A</A><A HREF="javascript:if(confirm('http://christalmirror.ifrance.com/assembly/caz6a.htm  \n\nThis file was not retrieved by Teleport Pro, because the server reports that this file cannot be found.  \n\nDo you want to open it from the server?'))window.location='http://christalmirror.ifrance.com/assembly/caz6a.htm'" tppabs="http://christalmirror.ifrance.com/assembly/caz6a.htm">)</A>:</P>
+<PRE>KEY_TMP_1 = 343FD * KEY_1     + 269EC3 
+KEY_TMP_2 = 343FD * KEY_TMP_1 + 269EC3
+KEY_2 = (KEY_TMP_1 and 7FFF0000) / 10000 + (KEY_TMP_2 and 7FFF0000) + KEY_1
+</PRE>
+<H3>B11. Method 1</H3>
+<P>*************</P>
+<P>In order to find KEY_2, we could try each possible KEY_1 from 00000000 to FFFFFFFF:</P>
+<PRE>for KEY_1 = 00000000 to FFFFFFFF
+   {   
+   compute KEY_TMP_1
+   compute KEY_TMP_2
+   compute KEY_2
+   if KEY_2 = KEY_CHK : KEY_1 is good, store it and go on searching
+   else               : KEY_1 is wrong, go on searching
+   }
+
+</PRE>
+<P>It works, but we have to try 100000000 (4.294.967.296 in decimal) keys. Not a big deal for an average PC (it
+takes approx. 30 minutes with a 150Mhz 32MB Pentium).</P>
+<P>
+<H3>B12. Method 2</H3>
+<P>*************</P>
+<P>We can reduce strongly workload using a smarter algorithm:</P>
+<PRE>KEY_2 =  (KEY_TMP_1 and 7FFF0000) / 10000 + (KEY_TMP_2 and 7FFF0000) + KEY_1
+      =  (KEY_TMP_1 and 7FFF0000) / 10000 
+       + ((343FD * KEY_TMP_1 + 269EC3) and 7FFF0000) 
+       + KEY_1   
+      =  ((343FD * KEY_1 + 269EC3) and 7FFF0000) / 10000 
+       + KEY_1
+       + ((343FD * (343FD * KEY_1 + 269EC3) + 269EC3) and 7FFF0000) 
+
+Let 
+	KEY_1 = ghijklmn
+      KEY_2 = GHIJKLMN
+
+(NB : 1 character represents 4 bits) 
+
+so we have: 
+
+       KEY_1 = 10000*ghij + klmn 
+       KEY_2 = 10000*GHIJ + KLMN
+
+</PRE>
+<P>and now we can compute SEPARATELY the 16 low-weight bits and the 16 high-weight bits (resp. KLMN and GHIJ) of
+KEY_2:</P>
+<PRE>KEY_2 =   {((343FD*KEY_1+269EC3) and 7FFF0000)/10000 + klmn}  
+        + {((343FD*(343FD*KEY_1+269EC3)+269EC3) and 7FFF0000) + 10000*ghij}
+
+We obtain 2 equations:
+
+KLMN  =  {((343FD*KEY_1+269EC3) and 7FFF0000)/10000 + klmn}         [eq. 1]
+ 
+10000*GHIJ  =  {((343FD*(343FD*KEY_1+269EC3)+269EC3) and 7FFF0000) 
+               + 10000*ghij}                                        [eq. 2]
+
+</PRE>
+<P>And we want to obtain : KEY_2 = KEY_CHK, so we have too:</P>
+<PRE>KEY_CHK_LOW  = KLMN 
+KEY_CHK_HIGH = GHIJ
+
+Let's focus on [eq. 1]: 
+
+KLMN = ((343FD*KEY_1    + 269EC3) and 7FFF0000)/10000 + klmn
+     = ((343FD*ghijklmn + 269EC3) and 7FFF0000)/10000 + (10000*klmn)/10000
+
+Remember we're dealing with unsigned 32 bits integers, so we have:
+
+10000*klmn     = klmn0000
+10000*ghijklmn = klmn0000  (instead of ghijklmn0000)
+
+Using this &quot;trick&quot;, we can write: 
+
+KLMN = ((343FD*ghijklmn+269EC3) and 7FFF0000)/10000 + (10000*ghijklmn)/10000
+     = [((343FD*ghijklmn+269EC3) and 7FFF0000) + 10000*ghijklmn]/10000
+</PRE>
+<P>Now let's have a look at the masking:</P>
+<P>Let 343FD*ghijklmn+269EC3 = opqrstuv</P>
+<PRE>       opqrstuv
+   and
+       7FFF0000
+       --------
+     = ?pqr0000
+
+The value of : (g and 7) depends on o :
+
+        o=0 : (0 and 7) = 0               o=8 : (8 and 7) = 0
+        o=1 : (1 and 7) = 1               o=9 : (9 and 7) = 1
+        o=2 : (2 and 7) = 2               o=A : (A and 7) = 2
+        o=3 : (3 and 7) = 3               o=B : (B and 7) = 3
+        o=4 : (4 and 7) = 4               o=C : (C and 7) = 4
+        o=5 : (5 and 7) = 5               o=D : (D and 7) = 5
+        o=6 : (6 and 7) = 6               o=E : (E and 7) = 6
+        o=7 : (7 and 7) = 7               o=F : (F and 7) = 7
+</PRE>
+<P>So we are facing 2 cases:</P>
+<PRE>----------
+-Case 1 -  we suppose : opqrstuv &lt; 80000000
+----------               =&gt; (opqrstuv and 7FFF0000) = opqr0000
+</PRE>
+<P>So we can write:</P>
+<PRE>KLMN = [(opqrstuv and 7FFF0000) + 10000*ghijklmn]/10000
+     = [opqr0000 + 10000*ghijklmn]/10000
+     = [343FD*ghijklmn + 269EC3 + 10000*ghijklmn]/10000
+     = (443FD*ghijklmn + 269EC3)/10000
+     = (443FD*KEY_1 + 269EC3)/10000
+</PRE>
+<P>Now our goal is to find every KEY_1 such as:</P>
+<PRE>       KEY_CHK_LOW = KLMN       
+   &lt;=&gt;
+       KLMN = (443FD*KEY_1 + 269EC3)/10000 
+   &lt;=&gt; 
+       KLMN0000 &lt;= (443FD*KEY_1 + 269EC3) &lt;= KLMNFFFF 
+</PRE>
+<P>We proceed this way : we try each KEY_1 such as :</P>
+<PRE>       (443FD*KEY_1 + 269EC3) = KLMN7FFF + n*FFFFFFFF     with n=0,1,2...
+
+* first  try : KEY_1 = (KLMN7FFF - 269EC3)/443FD + 0*(FFFFFFFF/443FD)
+  (+ checkings)
+* second try : KEY_1 = (KLMN7FFF - 269EC3)/443FD + 1*(FFFFFFFF/443FD)
+  (+ checkings)
+* third  try : KEY_1 = (KLMN7FFF - 269EC3)/443FD + 2*(FFFFFFFF/443FD)
+  (+ checkings)
+</PRE>
+<P>...we stop when KEY_1 &gt; FFFFFFFF.</P>
+<P>For each KEY_1 computed, 3 points must be checked:</P>
+<PRE>1. we supposed : opqrstuv &lt; 80000000, check it using value of KEY_1 
+2. KEY_CHK_LOW  = KLMN ?
+3. KEY_CHK_HIGH = GHIJ ?
+
+</PRE>
+<P>If KEY_1 passes the 3 tests, then KEY_1 is good, we store it and go on searching. Otherwise, we discard it and
+go on searching.</P>
+<P>
+<PRE>e.g: let KEY_CHK_LOW = KLMN = 1597:
+
+* first  try : KEY_1 = (15977FFF - 269EC3)/443FD = 506
+
+- check if we're in Case 1 : 343FD*KEY_1 + 269EC3 = 108E27B1 &lt; 80000000
+  OK, we're in Case 1
+
+- check if we have : 15970000 &lt;= (443FD*KEY_1 + 269EC3) &lt;= 1597FFFF 
+  (443FD*506+269EC3)=159427B1 &lt; 15970000  so KEY_1 is wrong
+
+* second try : KEY_1 = (15977FFF - 269EC3)/443FD + FFFFFFFF/443FD = 4109
+
+- check if we're in Case 1 : 343FD*KEY_1 + 269EC3 = D4873FA8 &gt; 7FFFFFFF
+  we are NOT in Case 1, so KEY_1 is wrong
+
+...and so on.
+
+
+----------
+- Case 2 -  we suppose : opqrstuv &gt; 7FFFFFFF 
+----------               =&gt; (opqrstuv and 7FFF0000) = opqr0000 - 80000000
+
+</PRE>
+<P>We proceed the same way as previously, but I'll describe it in-extenso, just in case someone didn't get it the
+first time {;-)</P>
+<P>We can write:</P>
+<PRE>KLMN = [(opqrstuv and 7FFF0000) + 10000*ghijklmn]/10000
+     = [opqr0000 - 80000000 + 10000*ghijklmn]/10000
+     = [343FD*ghijklmn + 269EC3 - 80000000 + 10000*ghijklmn]/10000
+     = (443FD*ghijklmn - 7FD9613D)/10000
+     = (443FD*KEY_1 - 7FD9613D)/10000
+</PRE>
+<P>Now our goal is to find every KEY_1 such as:</P>
+<PRE>       KEY_CHK_LOW = KLMN       
+   &lt;=&gt;
+       KLMN = (443FD*KEY_1 - 7FD9613D)/10000 
+   &lt;=&gt; 
+       KLMN0000 &lt;= (443FD*KEY_1 - 7FD9613D) &lt;= KLMNFFFF 
+
+We proceed this way : we try each KEY_1 such as : 
+
+       (443FD*KEY_1 - 7FD9613D) = KLMN7FFF + n*FFFFFFFF
+
+with n=0,1,2...
+
+* first  try : KEY_1 = (KLMN7FFF + 7FD9613D)/443FD + 0*(FFFFFFFF/443FD)
+  (+ checkings)
+* second try : KEY_1 = (KLMN7FFF + 7FD9613D)/443FD + 1*(FFFFFFFF/443FD)
+  (+ checkings)
+* third  try : KEY_1 = (KLMN7FFF + 7FD9613D)/443FD + 2*(FFFFFFFF/443FD)
+  (+ checkings)
+
+...we stop when KEY_1 &gt; FFFFFFFF. </PRE>
+<P>For each KEY_1 computed, 3 points must be checked:</P>
+<PRE>1. we supposed : opqrstuv &gt; 7FFFFFFF, check it using value of KEY_1 
+2. KEY_CHK_LOW  = KLMN ?
+3. KEY_CHK_HIGH = GHIJ ?
+
+</PRE>
+<P>If KEY_1 passes the 3 tests, then KEY_1 is good, we store it and go on searching. Otherwise, we discard it and
+go on searching.</P>
+<P>
+<PRE>e.g: let KEY_CHK_LOW = KLMN = 2A33:
+
+* first  try : KEY_1 = (2A337FFF + 7FD9613D)/443FD = 27DD
+
+- check if we're in Case 2 : 343FD*KEY_1 + 269EC3 = 8253DB2C &gt; 7FFFFFFF
+  OK, we're in Case 2
+
+- check if we have : 2A330000 &lt;= (443FD*KEY_1 - 7FD9613D) &lt;= 2A33FFFF 
+  (443FD*27DD-7FD9613D)=2A30DB2C &lt; 2A330000  so KEY_1 is wrong
+
+* second try : KEY_1 = (2A337FFF + 7FD9613D)/443FD + FFFFFFFF/443FD = 63E0
+
+- check if we're in Case 2 : 343FD*KEY_1 + 269EC3 = 464CF323 &lt; 80000000
+  we are NOT in Case 2, so KEY_1 is wrong
+
+...and so on.
+
+</PRE>
+<P>We use the same algorithm twice, one time for each case.</P>
+<P>As usual, let KEY_2 = GHIJKLMN</P>
+<P>
+<PRE>Case 1 : n = 0
+         do
+          {
+          compute KEY_1 = (KLMN7FFF - 269EC3)/443FD + n*(FFFFFFFF/443FD)
+                -&gt; check if : (343FD*KEY_1 + 269EC3) &lt; 80000000 ?
+          if OK -&gt; check if : KEY_CHK_LOW  = KLMN ?
+          if OK -&gt; check if : KEY_CHK_HIGH = GHIJ ?
+          if OK -&gt; KEY_1 is good, store it and go on searching
+          else  -&gt; KEY_1 is wrong, go on searching
+          n ++
+          } while KEY_1 &lt; 100000000        
+
+Case 2 : n = 0
+         do
+          {
+          compute KEY_1 = (KLMN7FFF + 7FD9613D)/443FD + n*(FFFFFFFF/443FD)
+                -&gt; check if : (343FD*KEY_1 + 269EC3) &gt; 7FFFFFFF ?
+          if OK -&gt; check if : KEY_CHK_LOW  = KLMN ?
+          if OK -&gt; check if : KEY_CHK_HIGH = GHIJ ?
+          if OK -&gt; KEY_1 is good, store it and go on searching
+          else  -&gt; KEY_1 is wrong, go on searching
+          n ++
+          } while KEY_1 &lt; 100000000        
+
+</PRE>
+<H3>B13. Method 2 vs Method 1</H3>
+<P>*************************</P>
+<P>Even if more complex, Method 2 is much faster than Method 1 (it takes a few seconds to find every KEY_1, instead
+of 30 minutes with Method 1).</P>
+<P>In both cases (see above), n varies approx. from 0 to 443FD (we stop searching when KEY_1 &gt; FFFFFFFF). So
+we only try 2*443FD=887FA keys, instead of 100000000 keys with Method 1. Of course, KEY_1(s) found doesn't/don't
+depend on method used. The number of &quot;hits&quot; (i.e. number of KEY_1 found) is difficult to predict. I always
+get at least one hit. Uusualy, I get 1, 2 or 3 keys.</P>
+<P>For instance, using KEY_CHK from encrypted text braun.(=txt=), we obtain:</P>
+<PRE>KEY_CHK = 6BF6F492   =&gt; two KEY_1 found :    KEY_1 = 06FB8DEB 
+                                             KEY_1 = 0AA07CCA
+
+</PRE>
+<P>OK, now we can look for KEY_0.</P>
+<P>======================================
+<H3>B2. The recovery of KEY_0 and PASSWORD</H3>
+<P>======================================</P>
+<P>
+<H3>B21. Feasibility</H3>
+<P>****************</P>
+<P>We saw during reversing (see PART A) that :</P>
+<PRE>   KEY_1 = KEY_0 or 06A30DE8  [eq. 1]  
+
+(06A30DE8 is a constant, from now on we'll call it : CONST_OR)   
+But it will not always be possible to find KEY_0 such as eq. 1 is true.
+Actually, because of the &quot;or&quot; operator, KEY_1 must be &gt;= to 06A30DE8 at bit level:
+
+   KEY_1 : b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b b 
+           0 1 2 3 4 5 6 7 8 9 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
+                               0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+
+06A30DE8 : 0 0 0 0 0 1 1 0 1 0 1 0 0 0 1 1 0 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0
+
+So we must have: for i in 0;31 : b[i] &gt;= CONST_OR[i]   
+
+        b0  &gt;= 0       b8  &gt;= 1       b16 &gt;= 0       b24 &gt;= 1
+        b1  &gt;= 0       b9  &gt;= 0       b17 &gt;= 0       b25 &gt;= 1
+        b2  &gt;= 0       b10 &gt;= 1       b18 &gt;= 0       b26 &gt;= 1
+        b3  &gt;= 0       b11 &gt;= 0       b19 &gt;= 0       b27 &gt;= 0
+        b4  &gt;= 0       b12 &gt;= 0       b20 &gt;= 1       b28 &gt;= 1
+        b5  &gt;= 1       b13 &gt;= 0       b21 &gt;= 1       b29 &gt;= 0
+        b6  &gt;= 1       b14 &gt;= 1       b22 &gt;= 0       b30 &gt;= 0
+        b7  &gt;= 0       b15 &gt;= 1       b23 &gt;= 1       b31 &gt;= 0
+
+</PRE>
+<P>A bit can only take 2 values : 0 or 1, so we obtain allowed value(s) for each bit of KEY_1.</P>
+<P>
+<PRE>Allowed 
+value(s)
+for KEY_1: 0 0 0 0 0 1 1 0 1 0 1 0 0 0 1 1 0 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0
+           1 1 1 1 1     1   1   1 1 1     1 1 1 1     1         1   1 1 1
+
+</PRE>
+<P>We can now tell if KEY_0 can be obtained or not, by comparing allowed value(s) against corresponding bit from
+KEY_1. 2 cases:</P>
+<P>
+<PRE> * 1 bit (or more) from KEY_1 does NOT belong to corresponding allowed value(s):
+   it means we will NOT be able to find a KEY_0 such as eq. 1 is true. 
+   =&gt; discard KEY_1 
+
+ * Each bit from KEY_1 belongs to corresponding allowed value(s) : 
+   OK, we       can find at least 1 KEY_0 such as eq. 1 is true.
+   =&gt; keep KEY_1
+</PRE>
+<P>For instance, let's see if the two KEY_1 found for encrypted text braun.(=txt=) are OK:</P>
+<P>
+<PRE>-first KEY_1 found : KEY_1 = 06FB8DEB 
+
+06FB8DEB : 0 0 0 0 0 1 1 0 1 1 1 1 1 0 1 1 1 0 0 0 1 1 0 1 1 1 1 0 1 0 1 1
+
+Allowed 
+value(s)
+for KEY_1: 0 0 0 0 0 1 1 0 1 0 1 0 0 0 1 1 0 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0
+           1 1 1 1 1     1   1   1 1 1     1 1 1 1     1         1   1 1 1
+
+=&gt; no problem, each bit is OK, we keep this KEY_1.
+
+-second KEY_1 found : KEY_1 = 0AA07CCA
+
+0AA07CCA : 0 0 0 0 1 0 1 0 1 0 1 0 0 0 0 0 0 1 1 1 1 1 0 0 1 1 0 0 1 0 1 0
+                     W                 W W               W     W
+Allowed 
+value(s)
+for KEY_1: 0 0 0 0 0 1 1 0 1 0 1 0 0 0 1 1 0 0 0 0 1 1 0 1 1 1 1 0 1 0 0 0
+           1 1 1 1 1     1   1   1 1 1     1 1 1 1     1         1   1 1 1
+                           
+=&gt; bits 5, 14, 15, 23 and 26 are wrong (W); so we discard this KEY_1.
+
+</PRE>
+<H3>B22. Unicity</H3>
+<P>************</P>
+<P>How many KEY_1 pass feasibility test? Only one. This is the key Braun would use to decrypt file. But as we want
+to obtain a password too, some more work must be done.</P>
+<P>
+<H3>B23. KEY_0's range</H3>
+<P>******************</P>
+<P>The particularity of Eq. 1 is that it admits many solutions : if KEY_1 is OK, then we can find many KEY_0 such
+as : KEY_1 = KEY_0 or CONST_OR.</P>
+<P>For instance, let KEY_1 = 06FB8DEB:</P>
+<PRE>* KEY_0 = 00588003 : (00588003 or 06A30DE8) = 06FD8DEB = KEY_1
+* KEY_0 = 06588003 : (06588003 or 06A30DE8) = 06FD8DEB = KEY_1
+...
+</PRE>
+<P>But we know for sure that KEY_0 can be obtained, so we can determine KEY_0's range, i.e. min and max value KEY_0
+can take such as : KEY_1 = KEY_0 or CONST_OR</P>
+<PRE>KEY_0_MIN = (KEY_1 - CONST_OR) 
+KEY_0_MAX = KEY_1
+
+</PRE>
+<P>For instance, with KEY_1 = 06FB8DEB : KEY_0 is in zone [00588003 ; 06FB8DEB]</P>
+<P>Now we just have to find &quot;a&quot; password which will produce &quot;a&quot; KEY_0 in the good zone. N.B.
+: we don't care if password found is not the one used to encrypt file, it will work exactly the same. (By the way,
+we never recover the original password, but it doesn't matter.)</P>
+<P>
+<H3>B24. Reduced ASCII Character Set</H3>
+<P>******************************** For each character from Pwd, we have 256 values to choose from (the whole ASCII
+table). Characters are divided into Normal set (00-&gt;7F) and Extended set ().<BR>
+But many characters are not suitable, such as Line Feed (hex value: 0A), Carriage Return (0D), ect. So:</P>
+<PRE>-in Normal set, we'll only consider characters from Space (20) to ~ (7E), both included. 
+-in
+
+From now on, we consider that we have: 
+
+CHAR_MIN = 20
+CHAR_MAX = 7E
+</PRE>
+<H3>B25. Choosing suitable Password's length(s)</H3>
+<P>*******************************************</P>
+<P>Password's length can vary from 1 to 56 characters, but some lengths are not suitable and must be discarded.</P>
+<P>
+<H3>Overlap</H3>
+<P>-------</P>
+<P>We saw in PART A that KEY_0 is built this way:</P>
+<PRE>let input's length = len ,
+Pwd[i] = ith character from Password ,
+let Coef[i] = HashTable_1[len+i] * HashTable_2[i] * i ,
+we have:
+
+KEY_0 = Coef[1]*Pwd[1] + Coef[2]*Pwd[2] + ... + Coef[len]*Pwd[len]
+
+</PRE>
+<P>For each password's length, we can now determine minimal and maximal values that can be found for KEY_0. Those
+boundaries are called respectively B_MIN and B_MAX, and they demarcate a search zone.</P>
+<P>
+<PRE>B_MIN = Coef[1]*CHAR_MIN + Coef[2]*CHAR_MIN + ... + Coef[len]*CHAR_MIN
+      = (Coef[1] + Coef[2] + ... + Coef[len])*CHAR_MIN
+
+B_MAX = Coef[1]*CHAR_MAX + Coef[2]*CHAR_MAX + ... + Coef[len]*CHAR_MAX
+      = (Coef[1] + Coef[2] + ... + Coef[len])*CHAR_MAX
+
+</PRE>
+<P>For instance, let's see if password's length = 1 is suitable:</P>
+<PRE>Coef[1] = HashTable_1[1+1] * HashTable_2[1] * 1 
+        = 73 * 7C * 1
+        = 37B4
+
+B_MIN = Coef[1] * CHAR_MIN
+      = 37B4 * 20
+      = 6F680
+
+B_MAX = Coef[1] * CHAR_MAX
+      = 37B4 * 7E
+      = 1B6A98
+
+</PRE>
+<P>This means that if password's length = 1, then KEY_0 is in [0006F680 ; 001B6A98]</P>
+<P>To tell if this password's length is suitable or not, we compare search zone [B_MIN ; B_MAX] against good zone
+[KEY_0_MIN ; KEY_0_MAX]. 5 configurations are possible ( GZ=good zone ; SZ=search zone):</P>
+<PRE>case 0:   |--- GZ ---|                or               |--- GZ ---| 
+                       |--- SZ ---|      |--- SZ ---|             
+                                                                    
+case 1:            |--- GZ ---|                                     
+           |---------- SZ ----------| 	                       
+                                                                    
+case 2:                |------- GZ -------|                         
+          |--------- SZ ---------|                                 
+                                                                    
+case 3:   |----- GZ -----|                                          
+               |---------- SZ ----------|                          
+                                                                    
+case 4:   |------------ GZ ------------|                            
+                           |-- SZ --|                              
+
+* case 0       : zones do not overlap =&gt; discard password's length
+* case 1 2 3 4 : zones do overlap     =&gt; OK, password's length is suitable
+
+With pwd's len = 1, we have:
+
+search zone : 0....[6F680...1B6A98]....................................
+good   zone : 0.................................[588003...6FB8DEB].....
+
+Zones do not overlap (case 0), so password's length is no good.
+
+We compute B_MIN and B_MAX for each password's length:
+
+len |  B_MIN   |  B_MAX   | keep zone (Y/N)?
+    |          |          |
+1   |    6F680 |   1B6A98 | N
+2   |   110680 |   430998 | N
+3   |    F0E40 |   3B481C | N
+4   |   27A340 |   9C12CC | Y
+5   |   4E5100 |  1345EF0 | Y
+6   |   580780 |  15A9D88 | Y
+7   |   5D2620 |  16EC61E | Y
+8   |   61A000 |  1806600 | Y
+9   |   6EBAC0 |  1B3FF54 | Y
+10  |   9CB620 |  2690D1E | Y
+... |   ...    |   ...    | ... 
+56  | 19037AA0 | 627DB2D6 | N
+
+</PRE>
+<H3>Additional checking for case 4</H3>
+<P>------------------------------</P>
+<P>Configuration 4 (see above) requires one more test. We are not sure that a valid KEY_0 can be found in search
+zone because neither KEY_0_MIN nor KEY_0_MAX are included in search space:</P>
+<PRE> case 4:   |------- GZ -------| &lt;-- KEY_0 belongs to this space       
+                   |-- SZ --|   &lt;-- we search here 
+
+</PRE>
+<P>so we check that B_min and B_max are not both wrong and similar.</P>
+<PRE>     
+For instance:    B_MIN OR CONST_OR != KEY_1                          
+                 B_MAX OR CONST_OR != KEY_1                          
+
+          high bits                      low bits                    
+  B_min = 000011111001101111000000...............                    
+  B_max = 000011111001101111111100...............                    
+          &lt;   similarity * &gt;                                         
+	                   |                                           
+                       wrong bit                          
+           
+B_MIN and B_MAX are similar and wrong, so we skip this zone.      
+
+</PRE>
+<H3>Parity check</H3>
+<P>------------</P>
+<P>
+<PRE>we have:            KEY_0 OR CONST_OR = KEY_1                        
+remember that:                                                     
+                     ODD   OR  ODD   =  ODD                        
+                     ODD   OR  EVEN  =  ODD                        
+                     EVEN  OR  EVEN  =  EVEN                       
+
+ KEY_0 = weighted sum of Password's characters                     
+       = Coef[len][0]*Pwd[0] + ... + Coef[len][len-1]*Pwd[len-1]   
+
+remember too that:                                                 
+
+   ODD   *  ODD   =  ODD            ODD   +  ODD   =  EVEN         
+   ODD   *  EVEN  =  EVEN           ODD   +  EVEN  =  ODD          
+   EVEN  *  EVEN  =  EVEN           EVEN  +  EVEN  =  EVEN         
+
+</PRE>
+<P>so if KEY_1 is ODD and CONST_OR is EVEN, KEY_0 must be ODD and to obtain an ODD KEY_0, you must have at least
+1 ODD coeficient</P>
+<P>That's why we must check that KEY_1 can effectively be obtained using calculated coeficients. If KEY_1 can not
+be obtained, then we skip zone.</P>
+<P>
+<H3>B26. Building a Password</H3>
+<P>************************</P>
+<P>Once valid zone(s) have been selected, we can start searching for a password, zone after zone.</P>
+<P>
+<H3>Iterations</H3>
+<P>----------</P>
+<P>Password is made of n characters, for each character Pwd[i] we have:</P>
+<PRE>                    CHAR_MIN &lt;= Pwd[i] &lt;= CHAR_MAX                
+Every possible password is tried, until good password is found.     
+
+e.g.: password's lenght=5, CHAR_MIN=0x41 (&quot;A&quot;), CHAR_MAX=0x5A (&quot;Z&quot;) 
+          41 41 41 41 41   &lt;--- first password to try               
+          41 41 41 41 42                                            
+           .  .  .  .  .                                            
+          41 41 41 42 41                                            
+           .  .  .  .  .                                            
+          5A 5A 5A 5A 5A   &lt;--- last password to try                
+</PRE>
+<P>To know if a valid password has been found, we compute KEY_0 using password. If we have:</P>
+<PRE>          KEY_0 OR CONST_OR = KEY_1</PRE>
+<P>then password is good.</P>
+<P>Some &quot;adjustements&quot; can reduce workload:</P>
+<P>
+<H3>Character adjust</H3>
+<P>----------------</P>
+<PRE>If Intersection is of type 1 2 3 we increase char_min and/or        
+decrease char_max so we search only in the useful zone              
+                            |------ KEY_0 ------|                    
+before adjust:     |-------- search zone ---------|                  
+ after adjust:              |-- search  zone ---|                    
+
+</PRE>
+<H3>Parity adjust</H3>
+<P>-------------</P>
+<P>If KEY_0 must be odd, then we must multiplicate at least 1 ODD coeficient by 1 ODD character. <BR>
+If the character which is multiplied by the ODD coeficient is EVEN, then we add 1 to the character, if possible.</P>
+<PRE>  
+e.g:             coeficient     EVEN  ODD  EVEN  EVEN  EVEN             
+before adjust:   character      20    20   20    20    20             
+after adjust:    character      20    21   20    20    20
+
+</PRE>
+<P>=============
+<H3>B3. Benchmark</H3>
+<P>=============</P>
+<P>I coded the whole procedure in ANSI C, with no speed optimization of any kind. Running on a 150Mhz 32MbRAM Pentium,
+it takes Cracker less than one second to find a working Password. Enjoy!</P>
+<P>Part C, <A HREF="caz6c-1.htm" tppabs="http://christalmirror.ifrance.com/assembly/dossier10/fichiers/caz6c.htm">The Source Code</A>.</P>
+<P>Copyright September 1999 by Casimir.</P>
+<P>Mail <A HREF="mailto:casimir2@club-internet.fr">Casimir</A></P>
+
+<P>Converted to hypertext by Joe Peschel September 20, 1999.
+
+</BODY>
+
+</HTML>
